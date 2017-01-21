@@ -10,7 +10,9 @@ import { echo } from './debug'
 
 // these are 'external' to this folder ...needs to be reviewed
 import { CAG, CSG } from 'csg'
-import { log } from '../jscad/log'
+import { log } from './log' // FIXME: this is a duplicate of the one in openjscad itself,
+// mostly likely needs to be removed since it is in the OpenJsCad namespace anyway, leaving here
+// for now
 
 const exportedApi = {
   csg: {CAG, CSG},
