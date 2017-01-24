@@ -1,34 +1,34 @@
 {
   "name": "csg",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "",
   "repository": "https://github.com/jscad/csg.js",
   "main": "csg.js",
   "scripts": {
-    "release-patch": "git checkout master; npm version patch && npm run build; git commit -a -m 'chore(dist): built dist/'; git push origin master --tags ",
-    "release-minor": "git checkout master; npm version minor && npm run build; git commit -a -m 'chore(dist): built dist/'; git push origin master --tags ",
-    "release-major": "git checkout master; npm version major && npm run build; git commit -a -m 'chore(dist): built dist/'; git push origin master --tags "
+    "release-patch": "git checkout master; npm version patch; git commit -a -m 'chore(dist): built dist/'; git push origin master --tags ",
+    "release-minor": "git checkout master; npm version minor; git commit -a -m 'chore(dist): built dist/'; git push origin master --tags ",
+    "release-major": "git checkout master; npm version major; git commit -a -m 'chore(dist): built dist/'; git push origin master --tags "
   },
   "contributors": [
     {
       "name": "Alexandre Girard",
-      "url":"https://github.com/alx"
+      "url": "https://github.com/alx"
     },
     {
       "name": "Evan Wallace",
-      "url":"http://evanw.github.com/csg.js/"
+      "url": "http://evanw.github.com/csg.js/"
     },
     {
       "name": "Joost Nieuwenhuijse",
-      "email" : "joost@newhouse.nl"
+      "email": "joost@newhouse.nl"
     },
     {
       "name": "Eduard Bespalov",
-      "url":"http://evanw.github.com/csg.js/"
+      "url": "http://evanw.github.com/csg.js/"
     },
     {
-      "name":"bebbi",
-      "email" : "elghatta@gmail.com"
+      "name": "bebbi",
+      "email": "elghatta@gmail.com"
     },
     {
       "name": "Spiritdude Rene K Mueller",
