@@ -87,10 +87,10 @@ test('square (default size, centered)', t => {
   const obs = square({center: true})
 
   const expSides = [
-    [[0, 1], [0, 0]],
-    [[0, 0], [1, 0]],
-    [[1, 0], [1, 1]],
-    [[1, 1], [0, 1]]
+    [[-0.5, 0.5], [-0.5, -0.5]],
+    [[-0.5, -0.5], [0.5, -0.5]],
+    [[0.5, -0.5], [0.5, 0.5]],
+    [[0.5, 0.5], [-0.5, 0.5]]
   ]
 
   t.deepEqual(obs.sides.length, 4)
