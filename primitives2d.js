@@ -8,7 +8,7 @@ export function square () {
   let a = arguments
   let p = a[0]
 
-  if (p && !p.size) v = [p, p]
+  if (p && Number.isFinite(p)) v = [p, p]
   if (p && p.length) v = a[0], p = a[1]
   if (p && p.size && p.size.length) v = p.size
 
