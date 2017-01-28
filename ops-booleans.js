@@ -1,4 +1,4 @@
-import { CAG } from 'csg'
+import { CAG } from '@jscad/csg'
 
 // -- 3D operations (OpenSCAD like notion)
 export function union () {

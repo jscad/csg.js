@@ -1,4 +1,4 @@
-import { CAG } from 'csg'
+import { CAG } from '@jscad/csg'
 
 // -- 2D primitives (OpenSCAD like notion)
 

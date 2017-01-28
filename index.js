@@ -9,7 +9,7 @@ import * as text from './text'
 import { echo } from './debug'
 
 // these are 'external' to this folder ...needs to be reviewed
-import { CAG, CSG } from 'csg'
+import { CAG, CSG } from '@jscad/csg'
 import { log } from './log' // FIXME: this is a duplicate of the one in openjscad itself,
 // mostly likely needs to be removed since it is in the OpenJsCad namespace anyway, leaving here
 // for now
