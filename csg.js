@@ -103,7 +103,7 @@ for solid CAD anyway.
     /** Number of polygons per 360 degree revolution for 2D objects.
      * @default
      */
-    CSG.defaultResolution2D = 32;
+    CSG.defaultResolution2D = 32; // FIXME this seems excessive
     /** Number of polygons per 360 degree revolution for 3D objects.
      * @default
      */
@@ -121,7 +121,7 @@ for solid CAD anyway.
         return csg;
     };
 
-    /** Construct a CSG solid from generated slices.
+    /** Construct a CSG solid from a list of pre-generated slices.
      * See CSG.Polygon.prototype.solidFromSlices() for details.
      * @param {Object} options - options passed to solidFromSlices()
      * @returns {CSG} new CSG object
@@ -1491,14 +1491,15 @@ for solid CAD anyway.
     };
 
     /** Construct an axis-aligned solid cuboid.
-     * @param {Vector3D} [center=[0,0,0]] - center of cube
-     * @param {Vector3D} [radius=[1,1,1]] - radius of cube, single scalar also possible
+     * @param {Object} [options] - options for construction
+     * @param {Vector3D} [options.center=[0,0,0]] - center of cube
+     * @param {Vector3D} [options.radius=[1,1,1]] - radius of cube, single scalar also possible
      * @returns {CSG} new 3D solid
      *
      * @example
      * var cube = CSG.cube({
-     *   center: [0, 0, 0],
-     *   radius: 1 // scalar radius
+     *   center: [5, 5, 5],
+     *   radius: 5, // scalar radius
      * });
      */
     CSG.cube = function(options) {
@@ -1567,10 +1568,11 @@ for solid CAD anyway.
     };
 
     /** Construct a solid sphere
-     * @param {Vector3D} [center=[0,0,0]] - center of sphere
-     * @param {Number} [radius=1] - radius of sphere
-     * @param {Number} [resolution=CSG.defaultResolution3D] - number of polygons per 360 degree revolution
-     * @param {Array} [axes] -  an array with 3 vectors for the x, y and z base vectors
+     * @param {Object} [options] - options for construction
+     * @param {Vector3D} [options.center=[0,0,0]] - center of sphere
+     * @param {Number} [options.radius=1] - radius of sphere
+     * @param {Number} [options.resolution=CSG.defaultResolution3D] - number of polygons per 360 degree revolution
+     * @param {Array} [options.axes] -  an array with 3 vectors for the x, y and z base vectors
      * @returns {CSG} new 3D solid
      *
      *
@@ -1644,17 +1646,18 @@ for solid CAD anyway.
     };
 
     /** Construct a solid cylinder.
-     * @param {Vector} [start=[0,-1,0]] - start point of cylinder
-     * @param {Vector} [end=[0,1,0]] - end point of cylinder
-     * @param {Number} [radius=1] - radius of cylinder, must be scalar
-     * @param {Number} [resolution=CSG.defaultResolution3D] - number of polygons per 360 degree revolution
+     * @param {Object} [options] - options for construction
+     * @param {Vector} [options.start=[0,-1,0]] - start point of cylinder
+     * @param {Vector} [options.end=[0,1,0]] - end point of cylinder
+     * @param {Number} [options.radius=1] - radius of cylinder, must be scalar
+     * @param {Number} [options.resolution=CSG.defaultResolution3D] - number of polygons per 360 degree revolution
      * @returns {CSG} new 3D solid
      *
      * @example
      * var cylinder = CSG.cylinder({
-     *   start: [0, -1, 0],
-     *   end: [0, 1, 0],
-     *   radius: 1,
+     *   start: [0, -10, 0],
+     *   end: [0, 10, 0],
+     *   radius: 10,
      *   resolution: 16
      * });
      */
@@ -1730,19 +1733,20 @@ for solid CAD anyway.
         return result;
     };
 
-    /** Construct a solid cylinder, but with rounded ends instead of flat.
-     * @param {Vector3D} [start=[0,-1,0]] - start point of cylinder
-     * @param {Vector3D} [end=[0,1,0]] - end point of cylinder
-     * @param {Number} [radius=1] - radius of rounded ends, must be scalar
-     * @param {Vector3D} [normal] - vector determining the starting angle for tesselation. Should be non-parallel to start.minus(end)
-     * @param {Number} [resolution=CSG.defaultResolution3D] - number of polygons per 360 degree revolution
+    /** Construct a cylinder with rounded ends.
+     * @param {Object} [options] - options for construction
+     * @param {Vector3D} [options.start=[0,-1,0]] - start point of cylinder
+     * @param {Vector3D} [options.end=[0,1,0]] - end point of cylinder
+     * @param {Number} [options.radius=1] - radius of rounded ends, must be scalar
+     * @param {Vector3D} [options.normal] - vector determining the starting angle for tesselation. Should be non-parallel to start.minus(end)
+     * @param {Number} [options.resolution=CSG.defaultResolution3D] - number of polygons per 360 degree revolution
      * @returns {CSG} new 3D solid
      *
      * @example
      * var cylinder = CSG.roundedCylinder({
-     *   start: [0, -1, 0],
-     *   end: [0, 1, 0],
-     *   radius: 1,
+     *   start: [0, -10, 0],
+     *   end: [0, 10, 0],
+     *   radius: 2,
      *   resolution: 16
      * });
      */
@@ -1827,18 +1831,19 @@ for solid CAD anyway.
     };
 
     /** Construct an axis-aligned solid rounded cuboid.
-     * @param {Vector3D} [center=[0,0,0]] - center of cube
-     * @param {Vector3D} [radius=[1,1,1]] - radius of cube, single scalar is possible
-     * @param {Number} [roundradius=0.2] - radius of rounded edges
-     * @param {Number} [resolution=CSG.defaultResolution3D] - number of polygons per 360 degree revolution
+     * @param {Object} [options] - options for construction
+     * @param {Vector3D} [options.center=[0,0,0]] - center of rounded cube
+     * @param {Vector3D} [options.radius=[1,1,1]] - radius of rounded cube, single scalar is possible
+     * @param {Number} [options.roundradius=0.2] - radius of rounded edges
+     * @param {Number} [options.resolution=CSG.defaultResolution3D] - number of polygons per 360 degree revolution
      * @returns {CSG} new 3D solid
      *
      * @example
      * var cube = CSG.roundedCube({
-     *   center: [0, 0, 0],
-     *   radius: 1,
-     *   roundradius: 0.2,
-     *   resolution: 8,
+     *   center: [2, 0, 2],
+     *   radius: 15,
+     *   roundradius: 2,
+     *   resolution: 36,
      * });
      */
     CSG.roundedCube = function(options) {
@@ -1891,6 +1896,8 @@ for solid CAD anyway.
 
     /** Create a polyhedron using Openscad style arguments.
      * Define face vertices clockwise looking from outside.
+     * @param {Object} [options] - options for construction
+     * @returns {CSG} new 3D solid
      */
     CSG.polyhedron = function(options) {
         options = options || {};
@@ -5499,7 +5506,10 @@ for solid CAD anyway.
         this.isCanonicalized = true;
     };
 
-    // create from an untyped object with identical property names.
+    /** Reconstruct a CAG from an object with identical property names.
+     * @param {Object} obj - anonymous object, typically from JSON
+     * @returns {CAG} new CAG object
+     */
     CAG.fromObject = function(obj) {
         var sides = obj.sides.map(function(s) {
             return CAG.Side.fromObject(s);
@@ -5509,16 +5519,23 @@ for solid CAD anyway.
         return cag;
     };
 
-    // Construct a CAG from a list of `CAG.Side` instances.
+    /** Construct a CAG from a list of `CAG.Side` instances.
+     * @param {CAG.Side[]} sides - list of sides
+     * @returns {CAG} new CAG object
+     */
     CAG.fromSides = function(sides) {
         var cag = new CAG();
         cag.sides = sides;
         return cag;
     };
 
-    // Construct a CAG from a list of points (a polygon)
-    // Rotation direction of the points is not relevant. Points can be a convex or concave polygon.
-    // Polygon must not self intersect
+    /** Construct a CAG from a list of points (a polygon).
+     * The rotation direction of the points is not relevant.
+     * The points can define a convex or a concave polygon.
+     * The polygon must not self intersect.
+     * @param {points[]} points - list of points in 2D space
+     * @returns {CAG} new CAG object
+     */
     CAG.fromPoints = function(points) {
         var numpoints = points.length;
         if (numpoints < 3) throw new Error("CAG shape needs at least 3 points");
@@ -5594,13 +5611,13 @@ for solid CAD anyway.
         return false;
     };
 
-    /* Construct a circle
-    options:
-      center: a 2D center point
-      radius: a scalar
-      resolution: number of sides per 360 degree rotation
-    returns a CAG object
-    */
+    /** Construct a circle.
+     * @param {Object} [options] - options for construction
+     * @param {Vector2D} [options.center=[0,0]] - center of circle
+     * @param {Number} [options.radius=1] - radius of circle
+     * @param {Number} [options.resolution=CSG.defaultResolution2D] - number of sides per 360 rotation
+     * @returns {CAG} new CAG object
+     */
     CAG.circle = function(options) {
         options = options || {};
         var center = CSG.parseOptionAs2DVector(options, "center", [0, 0]);
@@ -5620,13 +5637,13 @@ for solid CAD anyway.
         return CAG.fromSides(sides);
     };
 
-    /* Construct an ellispe
-    options:
-      center: a 2D center point
-      radius: a 2D vector with width and height
-      resolution: number of sides per 360 degree rotation
-    returns a CAG object
-    */
+    /** Construct a ellispe.
+     * @param {Object} [options] - options for construction
+     * @param {Vector2D} [options.center=[0,0]] - center of ellipse
+     * @param {Vector2D} [options.radius=[1,1]] - radius of ellipse, width and height
+     * @param {Number} [options.resolution=CSG.defaultResolution2D] - number of sides per 360 rotation
+     * @returns {CAG} new CAG object
+     */
     CAG.ellipse = function(options) {
         options = options || {};
         var c = CSG.parseOptionAs2DVector(options, "center", [0, 0]);
@@ -5655,12 +5672,14 @@ for solid CAD anyway.
         return e2.innerToCAG();
     };
 
-    /* Construct a rectangle
-    options:
-      center: a 2D center point
-      radius: a 2D vector with width and height
-      returns a CAG object
-    */
+    /** Construct a rectangle.
+     * @param {Object} [options] - options for construction
+     * @param {Vector2D} [options.center=[0,0]] - center of rectangle
+     * @param {Vector2D} [options.radius=[1,1]] - radius of rectangle, width and height
+     * @param {Vector2D} [options.corner1=[0,0]] - bottom left corner of rectangle (alternate)
+     * @param {Vector2D} [options.corner2=[0,0]] - upper right corner of rectangle (alternate)
+     * @returns {CAG} new CAG object
+     */
     CAG.rectangle = function(options) {
         options = options || {};
         var c, r;
@@ -5684,12 +5703,24 @@ for solid CAD anyway.
         return CAG.fromPoints(points);
     };
 
-    //     var r = CSG.roundedRectangle({
-    //       center: [0, 0],
-    //       radius: [2, 1],
-    //       roundradius: 0.2,
-    //       resolution: 8,
-    //     });
+    /** Construct a rounded rectangle.
+     * @param {Object} [options] - options for construction
+     * @param {Vector2D} [options.center=[0,0]] - center of rounded rectangle
+     * @param {Vector2D} [options.radius=[1,1]] - radius of rounded rectangle, width and height
+     * @param {Vector2D} [options.corner1=[0,0]] - bottom left corner of rounded rectangle (alternate)
+     * @param {Vector2D} [options.corner2=[0,0]] - upper right corner of rounded rectangle (alternate)
+     * @param {Number} [options.roundradius=0.2] - round radius of corners
+     * @param {Number} [options.resolution=CSG.defaultResolution2D] - number of sides per 360 rotation
+     * @returns {CAG} new CAG object
+     *
+     * @example
+     * var r = CSG.roundedRectangle({
+     *   center: [0, 0],
+     *   radius: [5, 10],
+     *   roundradius: 2,
+     *   resolution: 36,
+     * });
+     */
     CAG.roundedRectangle = function(options) {
         options = options || {};
         var center, radius;
@@ -5723,7 +5754,10 @@ for solid CAD anyway.
         return rect;
     };
 
-    // Reconstruct a CAG from the output of toCompactBinary()
+    /** Reconstruct a CAG from the output of toCompactBinary().
+     * @param {CompactBinary} bin - see toCompactBinary()
+     * @returns {CAG} new CAG object
+     */
     CAG.fromCompactBinary = function(bin) {
         if (bin['class'] != "CAG") throw new Error("Not a CAG");
         var vertices = [];
@@ -6165,12 +6199,14 @@ for solid CAD anyway.
             return CSG.fromPolygons(polygons);
         },
 
-        /*
-         * extrude CAG to 3d object by rotating the origin around the y axis
+        /** Extrude to into a 3D solid by rotating the origin around the Y axis.
          * (and turning everything into XY plane)
-         * arguments: options dict with angle and resolution, both optional
+         * @param {Object} options - options for construction
+         * @param {Number} [options.angle=360] - angle of rotation
+         * @param {Number} [options.resolution=CSG.defaultResolution3D] - number of polygons per 360 degree revolution
+         * @returns {CSG} new 3D solid
          */
-        rotateExtrude: function(options) {
+        rotateExtrude: function(options) { // FIXME options should be optional
             var alpha = CSG.parseOptionAsFloat(options, "angle", 360);
             var resolution = CSG.parseOptionAsInt(options, "resolution", CSG.defaultResolution3D);
 
@@ -6251,6 +6287,10 @@ for solid CAD anyway.
             }
         },
 
+        /** Convert to compact binary form.
+         * See CAG.fromCompactBinary.
+         * @return {CompactBinary}
+         */
         toCompactBinary: function() {
             var cag = this.canonicalized();
             var numsides = cag.sides.length;
