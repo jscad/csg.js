@@ -1,14 +1,4 @@
 /*
-
-## IMPORTANT NOTE --- IMPORTANT 
-The master for this file is located at:
-https://github.com/joostn/openjscad/tree/gh-pages
-That is the gh-pages branch of the joostn/openjscad project
-If contributing from openjscad.org, please do NOT edit this local file but make pull requests against
-above joostn/gh-pages branch.
-## IMPORTANT NOTE --- IMPORTANT NOTE
-
-
 ## License
 
 Copyright (c) 2014 bebbi (elghatta@gmail.com)
@@ -1816,6 +1806,83 @@ for solid CAD anyway.
         result.properties.roundedCylinder.facepoint = p1.plus(xvector);
         return result;
     };
+	
+	// Construct a elliptic cylinder.
+    //
+    // Parameters:
+    //   start: start point of cylinder (default [0, -1, 0])
+    //   end: end point of cylinder (default [0, 1, 0])
+    //   radius: radius of cylinder (default [1,1]), must be two dimensional array
+	//	 radiusStart: can be used instead of radius with combination with radiousEnd
+	//	 radiusEnd: can be used instead of radius with combination with radiusStart
+    //   resolution: determines the number of polygons per 360 degree revolution (default 12)
+    //
+    // Example usage:
+    //
+    //     var cylinder = CSG.cylinderElliptic({
+    //       start: [0, -1, 0],
+    //       end: [0, 1, 0],
+    //       radiusStart: [10, 5],
+	//       radiusStart: [8, 3],
+    //       resolution: 16
+    //     });
+	CSG.cylinderElliptic = function(options) {
+		var s = CSG.parseOptionAs3DVector(options, "start", [0, -1, 0]);
+		var e = CSG.parseOptionAs3DVector(options, "end", [0, 1, 0]);
+		var r = CSG.parseOptionAs2DVector(options, "radius", [1,1]);
+		var rEnd = CSG.parseOptionAs2DVector(options, "radiusEnd", r);
+		var rStart = CSG.parseOptionAs2DVector(options, "radiusStart", r);
+
+		if((rEnd._x < 0) || (rStart._x < 0) || (rEnd._y < 0) || (rStart._y < 0) ) {
+			throw new Error("Radius should be non-negative");
+		}
+		if((rEnd._x === 0 || rEnd._y === 0) && (rStart._x === 0 || rStart._y === 0)) {
+			throw new Error("Either radiusStart or radiusEnd should be positive");
+		}
+
+		var slices = CSG.parseOptionAsInt(options, "resolution", CSG.defaultResolution2D);
+		var ray = e.minus(s);
+		var axisZ = ray.unit(); //, isY = (Math.abs(axisZ.y) > 0.5);
+		var axisX = axisZ.randomNonParallelVector().unit();
+
+		//  var axisX = new CSG.Vector3D(isY, !isY, 0).cross(axisZ).unit();
+		var axisY = axisX.cross(axisZ).unit();
+		var start = new CSG.Vertex(s);
+		var end = new CSG.Vertex(e);
+		var polygons = [];
+
+		function point(stack, slice, radius) {
+			var angle = slice * Math.PI * 2;
+			var out = axisX.times(radius._x * Math.cos(angle)).plus(axisY.times(radius._y * Math.sin(angle)));
+			var pos = s.plus(ray.times(stack)).plus(out);
+			return new CSG.Vertex(pos);
+		}
+		for(var i = 0; i < slices; i++) {
+			var t0 = i / slices,
+				t1 = (i + 1) / slices;
+			
+			if(rEnd._x == rStart._x && rEnd._y == rStart._y) {
+				polygons.push(new CSG.Polygon([start, point(0, t0, rEnd), point(0, t1, rEnd)]));
+				polygons.push(new CSG.Polygon([point(0, t1, rEnd), point(0, t0, rEnd), point(1, t0, rEnd), point(1, t1, rEnd)]));
+				polygons.push(new CSG.Polygon([end, point(1, t1, rEnd), point(1, t0, rEnd)]));
+			} else {
+				if(rStart._x > 0) {
+					polygons.push(new CSG.Polygon([start, point(0, t0, rStart), point(0, t1, rStart)]));
+					polygons.push(new CSG.Polygon([point(0, t0, rStart), point(1, t0, rEnd), point(0, t1, rStart)]));
+				}
+				if(rEnd._x > 0) {
+					polygons.push(new CSG.Polygon([end, point(1, t1, rEnd), point(1, t0, rEnd)]));
+					polygons.push(new CSG.Polygon([point(1, t0, rEnd), point(1, t1, rEnd), point(0, t1, rStart)]));
+				}
+			}
+		}
+		var result = CSG.fromPolygons(polygons);
+		result.properties.cylinder = new CSG.Properties();
+		result.properties.cylinder.start = new CSG.Connector(s, axisZ.negated(), axisX);
+		result.properties.cylinder.end = new CSG.Connector(e, axisZ, axisX);
+		result.properties.cylinder.facepoint = s.plus(axisX.times(rStart));
+		return result;
+	};
 
     // Construct an axis-aligned solid rounded cuboid.
     // Parameters:
@@ -1983,11 +2050,11 @@ for solid CAD anyway.
                                 this._z = 0;
                             }
                         }
-                    } else if (('_x' in x) && ('_y' in x)) {
-                        this._x = parseFloat(x._x);
-                        this._y = parseFloat(x._y);
-                        if ('_z' in x) {
-                            this._z = parseFloat(x._z);
+                    } else if (('x' in x) && ('y' in x)) {
+                        this._x = parseFloat(x.x);
+                        this._y = parseFloat(x.y);
+                        if ('z' in x) {
+                            this._z = parseFloat(x.z);
                         } else {
                             this._z = 0;
                         }
@@ -4023,7 +4090,7 @@ for solid CAD anyway.
     };
 
     // Get an orthonormal basis for the standard XYZ planes.
-    // Parameters: the names of two 3D axes. The 2d x axis will map to the first given 3D axis, the 2d y 
+    // Parameters: the names of two 3D axes. The 2d x axis will map to the first given 3D axis, the 2d y
     // axis will map to the second.
     // Prepend the axis with a "-" to invert the direction of this axis.
     // For example: CSG.OrthoNormalBasis.GetCartesian("-Y","Z")
@@ -5483,17 +5550,18 @@ for solid CAD anyway.
     // Each side is a line between 2 points
     var CAG = function() {
         this.sides = [];
-        this.isCanonicalized = false;
+        this.isCanonicalized = true;
     };
 
-    // create from an untyped object with identical property names:
+    // create from an untyped object with identical property names.
     CAG.fromObject = function(obj) {
         var sides = obj.sides.map(function(s) {
             return CAG.Side.fromObject(s);
         });
         var cag = CAG.fromSides(sides);
+        cag.isCanonicalized = obj.isCanonicalized;
         return cag;
-    }
+    };
 
     // Construct a CAG from a list of `CAG.Side` instances.
     CAG.fromSides = function(sides) {
@@ -5654,8 +5722,8 @@ for solid CAD anyway.
             if (('center' in options) || ('radius' in options)) {
                 throw new Error("rectangle: should either give a radius and center parameter, or a corner1 and corner2 parameter")
             }
-            corner1 = CSG.parseOptionAs2DVector(options, "corner1", [0, 0]);
-            corner2 = CSG.parseOptionAs2DVector(options, "corner2", [1, 1]);
+            var corner1 = CSG.parseOptionAs2DVector(options, "corner1", [0, 0]);
+            var corner2 = CSG.parseOptionAs2DVector(options, "corner2", [1, 1]);
             c = corner1.plus(corner2).times(0.5);
             r = corner2.minus(corner1).times(0.5);
         } else {
@@ -5683,8 +5751,8 @@ for solid CAD anyway.
             if (('center' in options) || ('radius' in options)) {
                 throw new Error("roundedRectangle: should either give a radius and center parameter, or a corner1 and corner2 parameter")
             }
-            corner1 = CSG.parseOptionAs2DVector(options, "corner1", [0, 0]);
-            corner2 = CSG.parseOptionAs2DVector(options, "corner2", [1, 1]);
+            var corner1 = CSG.parseOptionAs2DVector(options, "corner1", [0, 0]);
+            var corner2 = CSG.parseOptionAs2DVector(options, "corner2", [1, 1]);
             center = corner1.plus(corner2).times(0.5);
             radius = corner2.minus(corner1).times(0.5);
         } else {
@@ -5825,7 +5893,7 @@ for solid CAD anyway.
         /*
          * given 2 connectors, this returns all polygons of a "wall" between 2
          * copies of this cag, positioned in 3d space as "bottom" and
-         * "top" plane per connectors toConnector1, and toConnector2, respectively 
+         * "top" plane per connectors toConnector1, and toConnector2, respectively
          */
         _toWallPolygons: function(options) {
             // normals are going to be correct as long as toConn2.point - toConn1.point
@@ -6075,13 +6143,17 @@ for solid CAD anyway.
             return result;
         },
 
-        // extrude the CAG in a certain plane. 
+        // extrude the CAG in a certain plane.
         // Giving just a plane is not enough, multiple different extrusions in the same plane would be possible
         // by rotating around the plane's origin. An additional right-hand vector should be specified as well,
         // and this is exactly a CSG.OrthoNormalBasis.
+        //
         // orthonormalbasis: characterizes the plane in which to extrude
-        // depth: thickness of the extruded shape. Extrusion is done symmetrically above and below the plane.
-        extrudeInOrthonormalBasis: function(orthonormalbasis, depth) {
+        // depth: thickness of the extruded shape. Extrusion is done upwards from the plane
+        //        (unless symmetrical option is set, see below)
+        // options:
+        //   {symmetrical: true}  // extrude symmetrically in two directions about the plane
+        extrudeInOrthonormalBasis: function(orthonormalbasis, depth, options) {
             // first extrude in the regular Z plane:
             if (!(orthonormalbasis instanceof CSG.OrthoNormalBasis)) {
                 throw new Error("extrudeInPlane: the first parameter should be a CSG.OrthoNormalBasis");
@@ -6089,6 +6161,9 @@ for solid CAD anyway.
             var extruded = this.extrude({
                 offset: [0, 0, depth]
             });
+            if(CSG.parseOptionAsBool(options, "symmetrical", false)) {
+                extruded = extruded.translate([0,0,-depth/2]);
+            }
             var matrix = orthonormalbasis.getInverseProjectionMatrix();
             extruded = extruded.transform(matrix);
             return extruded;
@@ -6098,8 +6173,10 @@ for solid CAD anyway.
         // one of ["X","Y","Z","-X","-Y","-Z"]
         // The 2d x axis will map to the first given 3D axis, the 2d y axis will map to the second.
         // See CSG.OrthoNormalBasis.GetCartesian for details.
-        extrudeInPlane: function(axis1, axis2, depth) {
-            return this.extrudeInOrthonormalBasis(CSG.OrthoNormalBasis.GetCartesian(axis1, axis2), depth);
+        // options:
+        //   {symmetrical: true}  // extrude symmetrically in two directions about the plane
+        extrudeInPlane: function(axis1, axis2, depth, options) {
+            return this.extrudeInOrthonormalBasis(CSG.OrthoNormalBasis.GetCartesian(axis1, axis2), depth, options);
         },
 
         // extruded=cag.extrude({offset: [0,0,10], twistangle: 360, twiststeps: 100});
@@ -6594,7 +6671,7 @@ for solid CAD anyway.
 
     But we'll keep CSG.Polygon2D as a stub for backwards compatibility
     */
-    
+
     CSG.Polygon2D = function(points) {
         var cag = CAG.fromPoints(points);
         this.sides = cag.sides;
