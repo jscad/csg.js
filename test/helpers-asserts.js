@@ -1,7 +1,6 @@
 import test from 'ava';
-import comparePolygons from "../helpers/comparePolygons";
+import {comparePolygons} from "../helpers/asserts";
 
-// bit of testing on comparePolygons function
 test('comparePolygons on same single vertex', t => {
     let a = {vertices:[{_x:0,_y:0,_z:0}]};
     t.true(comparePolygons(a, a));
