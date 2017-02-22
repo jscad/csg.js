@@ -1,25 +1,6 @@
 import test from 'ava';
 import {CSG} from '../csg';
-import comparePolygons from "../helpers/comparePolygons";
-
-function sameCSG(a, b){
-    return containsCSG(a, b) && containsCSG(b, a);
-}
-
-// a contains b if b polygons are also found in a
-function containsCSG(a, b){
-    return a.toPolygons().map(p => {
-        let found = false;
-        let bp = b.toPolygons();
-        for (let i=0; i<bp.length;i++) {
-            if (comparePolygons(p, bp[i])) {
-                found = true;
-                break;
-            }
-        }
-        return found;
-    }).reduce((a,b) => a && b);
-};
+import {assertSameGeometry} from "../helpers/asserts";
 
 function createOperands(){
     const a = CSG.cube({
@@ -40,22 +21,13 @@ function createOperands(){
 // Constructive operations
 test('CSG.union', t => {
     const {a, b, c} = createOperands();
-    sameCSG(a.union(b), c) ? t.pass() : t.fail();
+    assertSameGeometry(t, a.union(b), c);
 });
 test('CSG.intersect', t => {
     const {a, b, c} = createOperands();
-    sameCSG(c.intersect(b), b) ? t.pass() : t.fail();
+    assertSameGeometry(t, c.intersect(b), b)
 });
 test('CSG.subtract', t => {
     const {a, b, c} = createOperands();
-    sameCSG(c.subtract(a), b) ? t.pass() : t.fail();
+    assertSameGeometry(t, c.subtract(a), b)
 });
-
-// geometry
-
-// CSG cube
-// CSG sphere
-// CSG cylinder
-// CSG roundedCylinder
-// CSG roundedCube
-// CSG polyhedron
