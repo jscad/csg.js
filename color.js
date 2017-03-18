@@ -174,9 +174,6 @@ var cssColors = {
  * @return  Array           The RGB representation, or [0,0,0] default
  */
 export function css2rgb(s) {
-  var r = 0;
-  var g = 0;
-  var b = 0;
   return cssColors[s.toLowerCase()]
 }
 
@@ -391,6 +388,6 @@ export function html2rgb (s) {
 export function rgb2html (r, g, b) {
   if (r.length) { b = r[2], g = r[1], r = r[0]; }
   var s = '#' +
-  Number(0x1000000 + r * 255 * 0x10000 + g * 255 * 0x100 + b * 255).toString(16).substring(1)
+  Number(0x1000000 + r * 255 * 0x10000 + g * 255 * 0x100 + b * 255).toString(16).substring(1,7)
   return s
 }
