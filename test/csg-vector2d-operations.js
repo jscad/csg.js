@@ -1,5 +1,6 @@
 import test from 'ava';
 import {CSG} from '../csg';
+import {nearlyEqual} from "../helpers/nearlyEqual";
 
 test("CSG.Vector2D creation", t => {
   // FAILS const v1 = new CSG.Vector2D()
@@ -24,24 +25,24 @@ test("CSG.Vector2D creation", t => {
   t.is(v6.y, 5)
 
   const v7 = CSG.Vector2D.fromAngleRadians(2)
-  t.is(v7.x,-0.4161468365471424)
-  t.is(v7.y, 0.9092974268256817)
+  nearlyEqual(t,v7.x,-0.4161468365,1e-10)
+  nearlyEqual(t,v7.y, 0.9092974268,1e-10)
 
   const v8 = CSG.Vector2D.fromAngle(-2)
-  t.is(v8.x,-0.4161468365471424)
-  t.is(v8.y,-0.9092974268256817)
+  nearlyEqual(t,v8.x,-0.4161468365,1e-10)
+  nearlyEqual(t,v8.y,-0.9092974268,1e-10)
 
   const v9 = CSG.Vector2D.fromAngleDegrees(45)
-  t.is(v9.x,0.7071067811865476)
-  t.is(v9.y,0.7071067811865475)
+  nearlyEqual(t,v9.x, 0.7071067811,1e-10)
+  nearlyEqual(t,v9.y, 0.7071067811,1e-10)
 });
 
 test("CSG.Vector2D operations", t => {
   const v1 = CSG.Vector2D.fromAngleDegrees(45)
 
   var v2 = v1.clone()
-  t.is(v2.x,0.7071067811865476)
-  t.is(v2.y,0.7071067811865475)
+  nearlyEqual(t,v2.x,0.7071067811,1e-10)
+  nearlyEqual(t,v2.y,0.7071067811,1e-10)
 
   var l = v2.length()
   t.is(l,1.0)
@@ -49,27 +50,27 @@ test("CSG.Vector2D operations", t => {
   t.is(l,1.0)
 
   var a = v2.angle()
-  t.is(a,0.7853981633974482)
+  nearlyEqual(t,a, 0.7853981633,1e-10)
   a = v2.angleRadians()
-  t.is(a,0.7853981633974482)
+  nearlyEqual(t,a, 0.7853981633,1e-10)
   a = v2.angleDegrees()
-  t.is(a,44.99999999999999)
+  nearlyEqual(t,a,45.0,1e-10)
 
   var v3 = v2.negated()
-  t.is(v3.x,-0.7071067811865476)
-  t.is(v3.y,-0.7071067811865475)
+  nearlyEqual(t,v3.x,-0.7071067811,1e-10)
+  nearlyEqual(t,v3.y,-0.7071067811,1e-10)
 
   v3 = v2.unit()
-  t.is(v3.x,0.7071067811865476)
-  t.is(v3.y,0.7071067811865475)
+  nearlyEqual(t,v3.x,0.7071067811,1e-10)
+  nearlyEqual(t,v3.y,0.7071067811,1e-10)
 
   v3 = v3.negated().abs()
-  t.is(v3.x,0.7071067811865476)
-  t.is(v3.y,0.7071067811865475)
+  nearlyEqual(t,v3.x,0.7071067811,1e-10)
+  nearlyEqual(t,v3.y,0.7071067811,1e-10)
 
   v3 = v2.normal()
-  t.is(v3.x, 0.7071067811865475)
-  t.is(v3.y,-0.7071067811865476)
+  nearlyEqual(t,v3.x, 0.7071067811,1e-10)
+  nearlyEqual(t,v3.y,-0.7071067811,1e-10)
 
   t.true(v1.equals(v2))
 
@@ -115,11 +116,11 @@ test("CSG.Vector2D operations", t => {
   t.is(d, 0)
 
   d = c1.distanceTo(c2)
-  t.is(d,7.0710678118654755)
+  nearlyEqual(t,d,7.0710678118,1e-10)
   d = c1.distanceTo(c3)
-  t.is(d,10.0)
+  nearlyEqual(t,d,10.0,1e-10)
   d = c1.distanceTo(c4)
-  t.is(d,7.0710678118654755)
+  nearlyEqual(t,d,7.0710678118,1e-10)
 
   d = c1.distanceToSquared(c2)
   t.is(d,50.0)
