@@ -1,7 +1,7 @@
 import test from 'ava';
 import {CSG} from '../csg';
-import {OBJ} from '../helpers/obj-store';
-import {assertSameGeometry} from '../helpers/asserts';
+import {OBJ} from './helpers/obj-store';
+import {assertSameGeometry} from './helpers/asserts';
 
 test("CSG can be packed into and retrieved from a compact binary", t => {
   // test using simple default shapes. Compact binary do not provide however
