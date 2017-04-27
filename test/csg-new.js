@@ -1,6 +1,5 @@
 import test from 'ava'
-import {CSG} from '../csg'
-import {CAG} from '../csg'
+import {CSG, CAG} from '../csg'
 
 //
 // Test suite for CSG initialization (new)

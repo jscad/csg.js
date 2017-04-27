@@ -1,7 +1,5 @@
 import test from 'ava'
-import {CSG} from '../csg'
 import {CAG} from '../csg'
-import {OBJ} from './helpers/obj-store'
 
 //
 // Test suite for CAG Conversions
