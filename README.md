@@ -19,7 +19,6 @@ Constructive Solid Geometry (CSG) is a modeling technique that uses Boolean oper
 - [Contribute](#contribute)
 - [License](#license)
 
-
 ## Installation
 
 ```
@@ -36,13 +35,19 @@ const csg = require('csg')
 
 ## API
 
-TODO
+```
+npm run build-docs
+```
 
-## Contribute
+And open out/index.html using a browser.
 
 For questions about the API, please contact the [User Group](https://plus.google.com/communities/114958480887231067224)
 
-PRs accepted.
+## Contribute
+
+Pull Requests are accepted.
+
+Please see the guidelines [here](https://github.com/jscad/csg.js/blob/master/CONTRIBUTING.md)
 
 Small Note: If editing this README, please conform to the [standard-readme](https://github.com/RichardLitt/standard-readme) specification.
 
