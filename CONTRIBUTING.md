@@ -12,7 +12,7 @@ This library is part of the JSCAD Organization, and is maintained by a group of 
 
 * If you have a question about how to use CSG.js, then please start a conversation at the [OpenJSCAD.org User Group](https://plus.google.com/communities/114958480887231067224). You might find the answer in the [OpenJSCAD.org User Guide](https://github.com/Spiritdude/OpenJSCAD.org/wiki/User-Guide).
 
-* If you have a change or new feature in mind, please start a converstation with the [Core Developers](https://plus.google.com/communities/114958480887231067224) and start contributing changes.
+* If you have a change or new feature in mind, please start a conversation with the [Core Developers](https://plus.google.com/communities/114958480887231067224) and start contributing changes.
 
 Thanks!
 
@@ -20,7 +20,7 @@ The JSCAD Organization
 
 ## Making Changes
 
-First, we suggest that you fork this GIT repository. This will keep your changes seperate from the fast lane.  And make pull requests easier.
+First, we suggest that you fork this GIT repository. This will keep your changes separate from the fast lane.  And make pull requests easier.
 
 Once forked, clone your copy of the CSG library.
 ```
@@ -62,7 +62,7 @@ git push
 ```
 Finally, you can review your changes via GitHub, and create a pull request. 
 
-TIPS for sucessful pull requests:
+TIPS for successful pull requests:
 - Commit often, and comment well
 - Create test cases for all changes
 - Verify that all tests suites pass
