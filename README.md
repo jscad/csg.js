@@ -41,6 +41,8 @@ npm run build-docs
 
 And open out/index.html using a browser.
 
+Also see the [OpenJsCad User Guide](https://en.wikibooks.org/wiki/OpenJSCAD_User_Guide).
+
 For questions about the API, please contact the [User Group](https://plus.google.com/communities/114958480887231067224)
 
 ## Contribute
