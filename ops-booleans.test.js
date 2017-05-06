@@ -1,7 +1,7 @@
-import test from 'ava'
-import { cube } from './primitives3d'
-import { square } from './primitives2d'
-import { union, difference, intersection } from './ops-booleans'
+const test = require('ava')
+const { cube } = require('./primitives3d')
+const { square } = require('./primitives2d')
+const { union, difference, intersection } = require('./ops-booleans')
 
 test('union (defaults)', t => {
   const op1 = cube()

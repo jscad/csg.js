@@ -1,5 +1,5 @@
-import test from 'ava'
-import { lookup } from './maths'
+const test = require('ava')
+const { lookup } = require('./maths')
 
 test('lookup', t => {
   const values = [

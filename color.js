@@ -167,18 +167,19 @@ var cssColors = {
   'yellowgreen': [ 154 / 255, 205 / 255, 50 / 255 ],
 };
 
+
 /**
  * Converts an CSS color name to RGB color.
  *
  * @param   String  s       The CSS color name
  * @return  Array           The RGB representation, or [0,0,0] default
  */
-export function css2rgb(s) {
+function css2rgb(s) {
   return cssColors[s.toLowerCase()]
 }
 
 // color( (array[r,g,b] | css-string) [,alpha] (,array[objects] | list of objects) )
-export function color () {
+function color () {
   var o, i = 1, a = arguments, c = a[0], alpha
 
   // assume first argument is RGB array
@@ -211,7 +212,7 @@ export function color () {
  * @param   Number  b       The blue color value
  * @return  Array           The HSL representation
  */
-export function rgb2hsl (r, g, b) {
+function rgb2hsl (r, g, b) {
   if (r.length) { b = r[2], g = r[1], r = r[0]; }
   var max = Math.max(r, g, b), min = Math.min(r, g, b)
   var h, s, l = (max + min) / 2
@@ -249,7 +250,7 @@ export function rgb2hsl (r, g, b) {
  * @param   Number  l       The lightness
  * @return  Array           The RGB representation
  */
-export function hsl2rgb (h, s, l) {
+function hsl2rgb (h, s, l) {
   if (h.length) { l = h[2], s = h[1], h = h[0]; }
   var r, g, b
 
@@ -287,7 +288,7 @@ function hue2rgb (p, q, t) {
  * @return  Array           The HSV representation
  */
 
-export function rgb2hsv (r, g, b) {
+function rgb2hsv (r, g, b) {
   if (r.length) { b = r[2], g = r[1], r = r[0]; }
   var max = Math.max(r, g, b), min = Math.min(r, g, b)
   var h, s, v = max
@@ -326,7 +327,7 @@ export function rgb2hsv (r, g, b) {
  * @param   Number  v       The value
  * @return  Array           The RGB representation
  */
-export function hsv2rgb (h, s, v) {
+function hsv2rgb (h, s, v) {
   if (h.length) { v = h[2], s = h[1], h = h[0]; }
   var r, g, b
 
@@ -367,7 +368,7 @@ export function hsv2rgb (h, s, v) {
  * - split the string; "#RRGGBB" into RGB components
  * - convert the HEX value into RGB values
  */
-export function html2rgb (s) {
+function html2rgb (s) {
   var r = 0
   var g = 0
   var b = 0
@@ -385,9 +386,20 @@ export function html2rgb (s) {
  * - convert R, G, B into HEX strings
  * - return HTML formatted string "#RRGGBB"
  */
-export function rgb2html (r, g, b) {
+function rgb2html (r, g, b) {
   if (r.length) { b = r[2], g = r[1], r = r[0]; }
   var s = '#' +
   Number(0x1000000 + r * 255 * 0x10000 + g * 255 * 0x100 + b * 255).toString(16).substring(1,7)
   return s
 }
+
+ module.exports = {
+   css2rgb,
+   color,
+   rgb2hsl,
+   hsl2rgb,
+   rgb2hsv,
+   hsv2rgb,
+   html2rgb,
+   rgb2html
+ }

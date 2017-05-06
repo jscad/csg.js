@@ -1,14 +1,14 @@
-import { CSG } from '@jscad/csg'
+const { CSG } = require('@jscad/csg')
 // -- 2D to 3D primitives (OpenSCAD like notion)
 
-export function linear_extrude (p, s) {
+function linear_extrude (p, s) {
   // console.log("linear_extrude() not yet implemented")
   // return
   let h = 1
   let off = 0
   let twist = 0
   let slices = 10
-  /* convexity = 10,*/
+  /* convexity = 10, */
 
   if (p.height) h = p.height
   // if(p.convexity) convexity = p.convexity      // abandoned
@@ -25,7 +25,7 @@ export function linear_extrude (p, s) {
   return o
 }
 
-export function rotate_extrude (p, o) {
+function rotate_extrude (p, o) {
   var fn = 32
   if (arguments.length < 2) {
     o = p // no switches, just an object
@@ -59,7 +59,7 @@ export function rotate_extrude (p, o) {
         new CSG.Vertex(p[0]),
         new CSG.Vertex(p[1]),
         new CSG.Vertex(p[2]),
-        new CSG.Vertex(p[3]), // we make a square polygon (instead of 2 triangles)
+        new CSG.Vertex(p[3]) // we make a square polygon (instead of 2 triangles)
       ])
       // var p2 = new CSG.Polygon([
       //   new CSG.Vertex(p[0]),
@@ -74,7 +74,7 @@ export function rotate_extrude (p, o) {
   return CSG.fromPolygons(ps)
 }
 
-export function rectangular_extrude (pa, p) {
+function rectangular_extrude (pa, p) {
   let w = 1
   let h = 1
   let fn = 8
@@ -88,4 +88,10 @@ export function rectangular_extrude (pa, p) {
     if (p.round !== undefined) round = p.round
   }
   return new CSG.Path2D(pa, closed).rectangularExtrude(w, h, fn, round)
+}
+
+module.exports = {
+  linear_extrude,
+  rotate_extrude,
+  rectangular_extrude
 }

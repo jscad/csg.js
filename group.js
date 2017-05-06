@@ -1,4 +1,4 @@
-import {CAG} from '@jscad/csg'
+const {CAG} = require('@jscad/csg')
 // FIXME : is this used anywhere ?
 export default function group () { // experimental
   var o

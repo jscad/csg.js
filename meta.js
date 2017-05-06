@@ -1,6 +1,8 @@
 //FIXME : are ANY of these used anywhere ??
+const json = require('../package.json')
+
 function version () {
-  return [0, 5, 2]
+  return json.version
 }
 
 function JStoMeta (src) {
@@ -29,4 +31,8 @@ function MetaToJS (m) {
     s += '// ' + k + ': ' + m[k] + '\n'
   }
   return s
+}
+
+module.exports = {
+  version
 }

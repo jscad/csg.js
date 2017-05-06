@@ -1,8 +1,8 @@
-import { CAG } from '@jscad/csg'
+const { CAG } = require('@jscad/csg')
 
 // -- 2D primitives (OpenSCAD like notion)
 
-export function square () {
+function square () {
   let v = [1, 1]
   let off
   let a = arguments
@@ -20,7 +20,7 @@ export function square () {
   return o
 }
 
-export function circle () {
+function circle () {
   let r = 1
   let off
   let fn = 32
@@ -35,7 +35,7 @@ export function circle () {
   return o
 }
 
-export function polygon (p) { // array of po(ints) and pa(ths)
+function polygon (p) { // array of po(ints) and pa(ths)
   var points = [ ]
   if (p.paths && p.paths.length && p.paths[0].length) { // pa(th): [[0,1,2],[2,3,1]] (two paths)
     for (var j = 0; j < p.paths.length; j++) {
@@ -57,9 +57,16 @@ export function polygon (p) { // array of po(ints) and pa(ths)
   return CAG.fromPoints(points)
 }
 
-export function triangle () { // -- new addition
+function triangle () { // -- new addition
   var a = arguments
   if (a[0] && a[0].length) a = a[0]
   var o = CAG.fromPoints(a)
   return o
+}
+
+module.exports = {
+  square,
+  circle,
+  polygon,
+  triangle
 }

@@ -1,16 +1,16 @@
 // -- 3D primitives (OpenSCAD like notion)
-import { CSG } from '@jscad/csg'
-import { circle } from './primitives2d'
-import { rotate_extrude } from './ops-extrusions'
+const { CSG } = require('@jscad/csg')
+const { circle } = require('./primitives2d')
+const { rotate_extrude } = require('./ops-extrusions')
 
-export function cube (p) {
+function cube (p) {
   var s = 1, v = null, off = [0, 0, 0], round = false, r = 0, fn = 8
   if (p && p.length) v = p
   if (p && p.size && p.size.length) v = p.size // { size: [1,2,3] }
   if (p && p.size && !p.size.length) s = p.size // { size: 1 }
   // if(p&&!p.size&&!p.length&&p.center===undefined&&!p.round&&!p.radius) s = p      // (2)
-  if (p && (typeof p != 'object')) s = p// (2)
-  if (p && p.round == true) { round = true, r = v && v.length ? (v[0] + v[1] + v[2]) / 30 : s / 10}
+  if (p && (typeof p !== 'object')) s = p// (2)
+  if (p && p.round === true) { round = true, r = v && v.length ? (v[0] + v[1] + v[2]) / 30 : s / 10}
   if (p && p.radius) { round = true, r = p.radius }
   if (p && p.fn) fn = p.fn // applies in case of round: true
 
@@ -34,7 +34,7 @@ export function cube (p) {
   return o
 }
 
-export function sphere (p) {
+function sphere (p) {
   var r = 1
   var fn = 32
   var off = [0, 0, 0]
@@ -45,27 +45,27 @@ export function sphere (p) {
   if (p && p.fn) fn = p.fn
   if (p && p.type) type = p.type
   // if(p&&!p.r&&!p.fn&&!p.type) r = p
-  if (p && (typeof p != 'object')) r = p
+  if (p && (typeof p !== 'object')) r = p
   off = [0, 0, 0] // center: false (default)
 
   var o
-  if (type == 'geodesic')
+  if (type === 'geodesic')
     o = geodesicSphere(p)
   else
-    o = CSG.sphere({radius: r,resolution: fn})
+    o = CSG.sphere({radius: r, resolution: fn})
 
   if (p && p.center && p.center.length) { // preparing individual x,y,z center
     off = [p.center[0] ? 0 : r, p.center[1] ? 0 : r, p.center[2] ? 0 : r]
-  } else if (p && p.center == true) {
+  } else if (p && p.center === true) {
     off = [0, 0, 0]
-  } else if (p && p.center == false) {
+  } else if (p && p.center === false) {
     off = [r, r, r]
   }
   if (off[0] || off[1] || off[2]) o = o.translate(off)
   return o
 }
 
-export function geodesicSphere (p) {
+function geodesicSphere (p) {
   var r = 1, fn = 5
 
   var ci = [ // hard-coded data of icosahedron (20 faces, all triangles)
@@ -173,7 +173,7 @@ export function geodesicSphere (p) {
   return polyhedron({points: c, triangles: f}).scale(r)
 }
 
-export function cylinder (p) {
+function cylinder (p) {
   var r1 = 1, r2 = 1, h = 1, fn = 32, round = false
   var a = arguments
   var off = [0, 0, 0]
@@ -229,7 +229,7 @@ export function cylinder (p) {
   return o
 }
 
-export function torus (p) {
+function torus (p) {
   var ri = 1, ro = 4, fni = 16, fno = 32, roti = 0
   if (p) {
     if (p.ri) ri = p.ri
@@ -245,7 +245,7 @@ export function torus (p) {
   return rotate_extrude({fn: fno}, c.translate([ro, 0, 0]))
 }
 
-export function polyhedron (p) {
+function polyhedron (p) {
   var pgs = []
   var ref = p.triangles || p.polygons
   var colors = p.colors || null
@@ -268,4 +268,13 @@ export function polyhedron (p) {
   }
   var r = CSG.fromPolygons(pgs)
   return r
+}
+
+module.exports = {
+  cube,
+  sphere,
+  geodesicSphere,
+  cylinder,
+  torus,
+  polyhedron
 }

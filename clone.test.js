@@ -1,6 +1,6 @@
-import test from 'ava'
-import { cube } from './primitives3d'
-import { clone } from './clone'
+const test = require('ava')
+const { cube } = require('./primitives3d')
+const { clone } = require('./clone')
 
 test('clone', t => {
   const obs = clone(cube())
@@ -18,7 +18,7 @@ test('clone', t => {
       { pos: { _x: 1, _y: 1, _z: 1 } },
       { pos: { _x: 0, _y: 1, _z: 1 } } ],
     shared: { color: null },
-  plane: { normal: { _x: 0, _y: -0, _z: 1 }, w: 1 } }
+    plane: { normal: { _x: 0, _y: -0, _z: 1 }, w: 1 } }
 
   t.deepEqual(obs.properties.cube.center, {_x: 0.5, _y: 0.5, _z: 0.5})
   t.deepEqual(obs.polygons.length, 6)

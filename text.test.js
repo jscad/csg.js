@@ -1,5 +1,5 @@
-import test from 'ava'
-import { vector_text, vector_char } from './text'
+const test = require('ava')
+const { vector_text, vector_char } = require('./text')
 
 test('vector_char', t => {
   const obs = vector_char(0, 2, 'O')

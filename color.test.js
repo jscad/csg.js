@@ -1,7 +1,7 @@
-import test from 'ava'
-import { cube, sphere, cylinder } from './primitives3d'
-import { square, circle } from './primitives2d'
-import { color, rgb2hsl, hsl2rgb, rgb2hsv, hsv2rgb, html2rgb, rgb2html, css2rgb } from './color'
+const test = require('ava')
+const { cube, sphere, cylinder } = require('./primitives3d')
+const { square, circle } = require('./primitives2d')
+const { color, rgb2hsl, hsl2rgb, rgb2hsv, hsv2rgb, html2rgb, rgb2html, css2rgb } = require('./color')
 
 test('css2rgb', t => {
   const c1 = css2rgb('black')
@@ -51,7 +51,7 @@ test('html2rgb', t => {
 })
 
 test('rgb2html', t => {
-  const html = rgb2html(1,0,0.5)
+  const html = rgb2html(1, 0, 0.5)
   const expHtml = '#ff007f'
 
   t.deepEqual(html, expHtml)

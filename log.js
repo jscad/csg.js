@@ -1,6 +1,6 @@
-export function log (txt) {
+function log (txt) {
   var timeInMs = Date.now()
-  var prevtime = undefined//OpenJsCad.log.prevLogTime
+  var prevtime// OpenJsCad.log.prevLogTime
   if (!prevtime) prevtime = timeInMs
   var deltatime = timeInMs - prevtime
   log.prevLogTime = timeInMs
@@ -10,12 +10,16 @@ export function log (txt) {
     console.log(txt)
   } else if ((typeof (self) === 'object') && (typeof (self.postMessage) === 'function')) {
     self.postMessage({cmd: 'log', txt: txt})
-  }
-  else throw new Error('Cannot log')
+  } else throw new Error('Cannot log')
 }
 
 // See Processor.setStatus()
 // Note: leave for compatibility
-export function status (s) {
+function status (s) {
   log(s)
+}
+
+module.exports = {
+  log,
+  status
 }

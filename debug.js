@@ -1,4 +1,4 @@
-export function echo () {
+function echo () {
   console.warn('echo() will be deprecated in the near future: please use console.log/warn/error instead')
   var s = '', a = arguments
   for (var i = 0; i < a.length; i++) {
@@ -206,4 +206,8 @@ let sprintf = (function () {
 function vsprintf (fmt, argv) {
   argv.unshift(fmt)
   return sprintf.apply(null, argv)
+}
+
+module.exports = {
+  echo
 }

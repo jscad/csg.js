@@ -1,5 +1,5 @@
 
-export function vector_char(x,y,c) {
+function vector_char(x,y,c) {
    c = c.charCodeAt(0);
    c -= 32;
    if(c<0||c>=95) return { width: 0, segments: [] };
@@ -23,7 +23,7 @@ export function vector_char(x,y,c) {
    return { width: w, segments: segs };
 }
 
-export function vector_text(x,y,s) {
+function vector_text(x,y,s) {
    var o = [];
    var x0 = x;
    for(var i=0; i<s.length; i++) {
@@ -613,3 +613,8 @@ var simplexFont = [
    -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
    -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
 ];
+
+module.exports = {
+  vector_char,
+  vector_text
+}

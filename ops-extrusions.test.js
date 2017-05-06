@@ -1,7 +1,7 @@
-import test from 'ava'
-import { cube } from './primitives3d'
-import { square } from './primitives2d'
-import { linear_extrude, rotate_extrude, rectangular_extrude } from './ops-extrusions'
+const test = require('ava')
+const { cube } = require('./primitives3d')
+const { square } = require('./primitives2d')
+const { linear_extrude, rotate_extrude, rectangular_extrude } = require('./ops-extrusions')
 
 test('linear_extrude (height)', t => {
   const op1 = square()
@@ -48,7 +48,7 @@ test('linear_extrude (height, twist, slices, center)', t => {
       { pos: { _x: 0.12533323356430387, _y: 0.9921147013144779, _z: 4.800000000000001 } } ],
     shared: { color: null },
     plane: { normal: { _x: 0.12523593496267418, _y: 0.9913445035756271, _z: 0.03939588588188166 },
-    w: 1.188323932985035 }
+      w: 1.188323932985035 }
   }
 
   t.deepEqual(obs.polygons.length, 402)
@@ -67,7 +67,7 @@ test('rotate_extrude (defaults)', t => {
       { pos: { _x: 3.9231411216129217, _y: -0.780361288064513, _z: 1 } } ],
     shared: { color: null },
     plane: { normal: { _x: -0.9951847266721969, _y: 0.09801714032956071, _z: 0 },
-    w: -3.9807389066887877 }
+      w: -3.9807389066887877 }
   }
 
   const expLastPoly = {
@@ -95,7 +95,7 @@ test('rotate_extrude (custom resolution)', t => {
       { pos: { _x: 2.4492935982947064e-16, _y: -4, _z: 1 } } ],
     shared: { color: null },
     plane: { normal: { _x: -0.7071067811865476, _y: 0.7071067811865475, _z: 0 },
-    w: -2.8284271247461903 }
+      w: -2.8284271247461903 }
   }
 
   const expLastPoly = {
@@ -136,10 +136,10 @@ test('rectangular_extrude ', t => {
     shared: { color: null, tag: 1612 },
     plane: { normal: { _x: 0.7071067811865476, _y: -0.7071067811865476, _z: 0 }, w: -13.642135623730951 }
   }
-  /*console.log(obs.polygons[0])
+  /* console.log(obs.polygons[0])
   console.log(obs.polygons[0].vertices)
   console.log(obs.polygons[obs.polygons.length - 1])
-  console.log(obs.polygons[obs.polygons.length - 1].vertices)*/
+  console.log(obs.polygons[obs.polygons.length - 1].vertices) */
   t.deepEqual(obs.polygons.length, 46)
   t.deepEqual(obs.polygons[0], expFirstPoly)
   t.deepEqual(obs.polygons[obs.polygons.length - 1], expLastPoly)
