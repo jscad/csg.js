@@ -1,42 +1,41 @@
 // -- Math functions (360 deg based vs 2pi)
-
-export function sin (a) {
+function sin (a) {
   return Math.sin(a / 360 * Math.PI * 2)
 }
-export function cos (a) {
+function cos (a) {
   return Math.cos(a / 360 * Math.PI * 2)
 }
-export function asin (a) {
+function asin (a) {
   return Math.asin(a) / (Math.PI * 2) * 360
 }
-export function acos (a) {
+function acos (a) {
   return Math.acos(a) / (Math.PI * 2) * 360
 }
-export function tan (a) {
+function tan (a) {
   return Math.tan(a / 360 * Math.PI * 2)
 }
-export function atan (a) {
+function atan (a) {
   return Math.atan(a) / (Math.PI * 2) * 360
 }
-export function atan2 (a, b) {
+function atan2 (a, b) {
   return Math.atan2(a, b) / (Math.PI * 2) * 360
 }
-export function ceil (a) {
+function ceil (a) {
   return Math.ceil(a)
 }
-export function floor (a) {
+function floor (a) {
   return Math.floor(a)
 }
-export function abs (a) {
+function abs (a) {
   return Math.abs(a)
 }
-export function min (a, b) {
+function min (a, b) {
   return a < b ? a : b
 }
-export function max (a, b) {
+function max (a, b) {
   return a > b ? a : b
 }
-export function rands (min, max, vn, seed) {
+function rands (min, max, vn, seed) {
   // -- seed is ignored for now, FIX IT (requires reimplementation of random())
   //    see http://stackoverflow.com/questions/424292/how-to-create-my-own-javascript-random-number-generator-that-i-can-also-set-the
   var v = new Array(vn)
@@ -44,10 +43,10 @@ export function rands (min, max, vn, seed) {
     v[i] = Math.random() * (max - min) + min
   }
 }
-export function log (a) {
+function log (a) {
   return Math.log(a)
 }
-export function lookup (ix, v) {
+function lookup (ix, v) {
   var r = 0
   for (var i = 0; i < v.length; i++) {
     var a0 = v[i]
@@ -71,18 +70,40 @@ export function lookup (ix, v) {
   return r
 }
 
-export function pow (a, b) {
+function pow (a, b) {
   return Math.pow(a, b)
 }
 
-export function sign (a) {
+function sign (a) {
   return a < 0 ? -1 : (a > 1 ? 1 : 0)
 }
 
-export function sqrt (a) {
+function sqrt (a) {
   return Math.sqrt(a)
 }
 
-export function round (a) {
+function round (a) {
   return floor(a + 0.5)
+}
+
+module.exports = {
+  sin,
+  cos,
+  asin,
+  acos,
+  tan,
+  atan,
+  atan2,
+  ceil,
+  floor,
+  abs,
+  min,
+  max,
+  rands,
+  log,
+  lookup,
+  pow,
+  sign,
+  sqrt,
+  round
 }
