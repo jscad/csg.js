@@ -1,6 +1,75 @@
 const test = require('ava')
 const { cube, sphere, geodesicSphere, cylinder, torus, polyhedron } = require('./primitives3d')
 
+function almostEquals (t, observed, expected, precision) {
+  t.is(Math.abs(expected - observed) < precision, true)
+}
+
+function compareNumbers (a, b, precision) {
+  return Math.abs(a - b) < precision
+}
+
+function compareVertices (a, b, precision) {
+  if ('_w' in a && !('_w' in b)) {
+    return false
+  }
+  const fields = ['_x', '_y', '_z']
+  for (let i = 0; i < fields.length; i++) {
+    const field = fields[i]
+    if (!compareNumbers(a[field], b[field], precision)) {
+      return false
+    }
+  }
+  return true
+}
+
+function comparePolygons (a, b, precision) {
+    // First find one matching vertice
+    // We try to find the first vertice of a inside b
+    // If there is no such vertice, then a != b
+  if (a.vertices.length !== b.vertices.length || a.vertices.length === 0) {
+    return false
+  }
+  if (a.shared.color && a.shared.color !== b.shared.color) {
+    return false
+  }
+  if (a.shared.tag && a.shared.tag !== b.shared.tag) {
+    return false
+  }
+  if (a.shared.plane && a.shared.plane !== b.shared.plane) {
+    return false
+  }
+
+  let start = a.vertices[0]
+  let index = b.vertices.findIndex(v => {
+    if (!v) { return false }
+    return v._x === start._x && v._y === start._y && v._z === start._z
+  })
+  if (index === -1) {
+    return false
+  }
+    // Rearrange b vertices so that they start with the same vertex as a
+  let vs = b.vertices
+  if (index !== 0) {
+    vs = b.vertices.slice(index).concat(b.vertices.slice(0, index))
+  }
+
+
+    // Compare now vertices one by one
+  for (let i = 0; i < a.vertices.length; i++) {
+    const vertex = a.vertices[i].pos
+    const otherVertex = vs[i].pos
+    if(!compareVertices(vertex, otherVertex, precision)){
+      return false
+    }
+    /*if (a.vertices[i]._x !== vs[i]._x ||
+            a.vertices[i]._y !== vs[i]._y ||
+            a.vertices[i]._z !== vs[i]._z) { return false }*/
+  }
+  return true
+}
+
+
 /* FIXME : not entirely sure how to deal with this, but for now relies on inspecting
 output data structures: we should have higher level primitives ... */
 
@@ -236,8 +305,8 @@ test('sphere (custom radius , resolution, center)', t => {
 
   t.deepEqual(obs.properties.sphere.center, {_x: 0, _y: 0, _z: 2})
   t.deepEqual(obs.polygons.length, 60)
-  t.deepEqual(obs.polygons[0], expFirstPoly)
-  t.deepEqual(obs.polygons[59], expPoly59)
+  t.is(comparePolygons(obs.polygons[0], expFirstPoly, 0.000001), true)
+  t.is(comparePolygons(obs.polygons[59], expPoly59, 0.000001), true)
 })
 
 test('cylinder (defaults)', t => {
@@ -302,8 +371,8 @@ test('cylinder (custom radius, height, center, resolution)', t => {
   t.deepEqual(obs.properties.cylinder.start, {point: {_x: 0, _y: 0, _z: 0}, axisvector: {_x: 0, _y: 0, _z: -1}, normalvector: {_x: 1, _y: 0, _z: 0}})
   t.deepEqual(obs.properties.cylinder.end, {point: {_x: 0, _y: 0, _z: 10}, axisvector: {_x: 0, _y: 0, _z: 1}, normalvector: {_x: 1, _y: 0, _z: 0}})
   t.deepEqual(obs.polygons.length, 30)
-  t.deepEqual(obs.polygons[0], expFirstPoly)
-  t.deepEqual(obs.polygons[29], expPoly29)
+  t.is(comparePolygons(obs.polygons[0], expFirstPoly, 0.000001), true)
+  t.is(comparePolygons(obs.polygons[29], expPoly29, 0.000001), true)
 })
 
 test('cylinder (custom double radius, rounded)', t => {
