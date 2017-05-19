@@ -1,16 +1,19 @@
-import * as primitives3d from './primitives3d'
-import * as primitives2d from './primitives2d'
-import * as booleanOps from './ops-booleans'
-import * as transformations from './ops-transformations'
-import * as extrusions from './ops-extrusions'
-import * as color from './color'
-import * as maths from './maths'
-import * as text from './text'
-import { echo } from './debug'
 
-// these are 'external' to this folder ...needs to be reviewed
-import { CAG, CSG } from '@jscad/csg'
-import { log } from './log' // FIXME: this is a duplicate of the one in openjscad itself,
+const primitives3d = require('./primitives3d')
+const primitives2d = require('./primitives2d')
+const booleanOps = require('./ops-booleans')
+const transformations = require('./ops-transformations')
+const extrusions = require('./ops-extrusions')
+const color = require('./color')
+const maths = require('./maths')
+const text = require('./text')
+const { echo } = require('./debug')
+
+// these are 'external' to this api and we basically just re-export for old api compatibility
+// ...needs to be reviewed
+const { CAG, CSG } = require('@jscad/csg')
+const { log } = require('./log') // FIXME: this is a duplicate of the one in openjscad itself,*/
+
 // mostly likely needs to be removed since it is in the OpenJsCad namespace anyway, leaving here
 // for now
 
@@ -28,4 +31,4 @@ const exportedApi = {
   debug: {echo}
 }
 
-export default exportedApi
+module.exports = exportedApi
