@@ -1,5 +1,5 @@
 const test = require('ava')
-const { cube } = require('./primitives3d')
+const { cube, sphere } = require('./primitives3d')
 const { square } = require('./primitives2d')
 const { union, difference, intersection } = require('./ops-booleans')
 
@@ -21,6 +21,23 @@ test('union (more than 2 operands)', t => {
 
   t.deepEqual(obs.polygons.length, 6)
 })
+
+test('union (complex)', t => {
+  const obs = union(
+        difference(
+           cube({size: 3, center: true}),
+           sphere({r:2, center: true})
+        ),
+        intersection(
+            sphere({r: 1.3, center: true}),
+            cube({size: 2.1, center: true})
+        )
+     )
+
+  t.deepEqual(obs.polygons.length, 610)
+})
+
+
 
 test('union (2d & 3d shapes)', t => {
   const op1 = cube()

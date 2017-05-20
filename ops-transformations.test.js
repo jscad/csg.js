@@ -238,7 +238,7 @@ test.failing('chain_hull (multiple items 3d)', t => {
   t.deepEqual(obs.properties.sphere.center, {_x: 0, _y: 10, _z: 0})
 })
 
-test.failing('chain_hull (multiple items, 2d)', t => {
+test('chain_hull (multiple items, 2d)', t => {
   const op1 = square()
   const op2 = circle()
   const obs = chain_hull(op1, op2)
