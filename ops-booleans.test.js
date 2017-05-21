@@ -37,13 +37,11 @@ test('union (complex)', t => {
   t.deepEqual(obs.polygons.length, 610)
 })
 
-
-
 test('union (2d & 3d shapes)', t => {
   const op1 = cube()
   const op2 = square([10, 2])
 
-  const obs = union(op1, op2)
+  const obs = union({extrude2d: true}, op1, op2)
 
   t.deepEqual(obs.polygons.length, 6)
 })
