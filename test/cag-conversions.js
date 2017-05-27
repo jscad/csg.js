@@ -71,7 +71,34 @@ test('CAG should convert to and from sides', t => {
   t.deepEqual(c4, f4)
 })
 
-test.todo('CAG should convert to and from points')
+test('CAG should convert to and from points', t => {
+  // test using simple default shapes
+  var c1 = CAG.circle()
+  var c2 = CAG.ellipse()
+  var c3 = CAG.rectangle()
+  var c4 = CAG.roundedRectangle()
+
+  var pts1 = c1.toPoints()
+  var pts2 = c2.toPoints()
+  var pts3 = c3.toPoints()
+  var pts4 = c4.toPoints()
+
+  var v1 = CAG.fromPoints(pts1)
+  t.deepEqual(c1, v1)
+  v1 = CAG.fromPointsNoCheck(pts1)
+  t.deepEqual(c1, v1)
+  var v2 = CAG.fromPoints(pts2)
+  t.deepEqual(c2, v2)
+  v2 = CAG.fromPointsNoCheck(pts2)
+  t.deepEqual(c2, v2)
+  var v3 = CAG.fromPoints(pts3)
+  t.deepEqual(c3, v3)
+  v3 = CAG.fromPointsNoCheck(pts3)
+  t.deepEqual(c3, v3)
+  // Order of points is wrong, see Issue #35
+  // var v4 = CAG.fromPoints(pts4)
+  // t.deepEqual(c4, v4)
+})
 
 test.failing('CAG should convert to and from paths', t => {
   // fails because of https://github.com/jscad/csg.js/issues/15
