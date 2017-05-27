@@ -5713,18 +5713,14 @@ for solid CAD anyway.
         var center = CSG.parseOptionAs2DVector(options, "center", [0, 0]);
         var radius = CSG.parseOptionAsFloat(options, "radius", 1);
         var resolution = CSG.parseOptionAsInt(options, "resolution", CSG.defaultResolution2D);
-        var sides = [];
+        var points = [];
         var prevvertex;
-        for (var i = 0; i <= resolution; i++) {
+        for (var i = 0; i < resolution; i++) {
             var radians = 2 * Math.PI * i / resolution;
             var point = CSG.Vector2D.fromAngleRadians(radians).times(radius).plus(center);
-            var vertex = new CAG.Vertex(point);
-            if (i > 0) {
-                sides.push(new CAG.Side(prevvertex, vertex));
-            }
-            prevvertex = vertex;
+            points.push(point);
         }
-        return CAG.fromSides(sides);
+        return CAG.fromPoints(points);
     };
 
     /** Construct a ellispe.
