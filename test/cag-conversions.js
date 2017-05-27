@@ -58,7 +58,7 @@ test('CAG should convert to and from sides', t => {
   var c4 = CAG.roundedRectangle()
 
   var s1 = c1.sides
-  var f1 = CAG.fromSides(s1)
+  var f1 = CAG.fromSides(s1).canonicalized()
   t.deepEqual(c1, f1)
   var s2 = c2.sides
   var f2 = CAG.fromSides(s2).canonicalized()
