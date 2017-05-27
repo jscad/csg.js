@@ -6002,6 +6002,24 @@ for solid CAD anyway.
             return polygons;
         },
 
+        /**
+         * Convert to a list of points.
+         * @return {points[]} list of points in 2D space
+         */
+        toPoints: function() {
+            var points = this.sides.map(function(side) {
+                var v0 = side.vertex0;
+                var v1 = side.vertex1;
+                return v0.pos;
+            });
+        // due to the logic of CAG.fromPoints()
+        // move the first point to the last
+            if (points.length > 0) {
+                points.push(points.shift());
+            }
+            return points;
+        },
+
         union: function(cag) {
             var cags;
             if (cag instanceof Array) {
