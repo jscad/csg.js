@@ -152,4 +152,9 @@ test('CSG.Vector2D conversions', t => {
   t.is(v3.x, 1)
   t.is(v3.y, -1)
   t.is(v3.z, 5)
+
+  v3 = new CSG.Vector3D(v1)
+  t.is(v3.x, 1)
+  t.is(v3.y, -1)
+  t.is(v3.z, 0)
 })
