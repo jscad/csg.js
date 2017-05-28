@@ -5653,8 +5653,14 @@ for solid CAD anyway.
         return result;
     };
 
-    // Like CAG.fromPoints but does not check if it's a valid polygon.
-    // Points should rotate counter clockwise
+    /** Construct a CAG from a list of points (a polygon).
+     * Like fromPoints() but does not check if the result is a valid polygon.
+     * The points MUST rotate counter clockwise.
+     * The points can define a convex or a concave polygon.
+     * The polygon must not self intersect.
+     * @param {points[]} points - list of points in 2D space
+     * @returns {CAG} new CAG object
+     */
     CAG.fromPointsNoCheck = function(points) {
         var sides = [];
         var prevpoint = new CSG.Vector2D(points[points.length - 1]);
@@ -5723,7 +5729,7 @@ for solid CAD anyway.
         return CAG.fromPoints(points);
     };
 
-    /** Construct a ellispe.
+    /** Construct an ellispe.
      * @param {Object} [options] - options for construction
      * @param {Vector2D} [options.center=[0,0]] - center of ellipse
      * @param {Vector2D} [options.radius=[1,1]] - radius of ellipse, width and height
