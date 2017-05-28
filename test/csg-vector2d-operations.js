@@ -146,7 +146,7 @@ test('CSG.Vector2D conversions', t => {
   const v1 = new CSG.Vector2D({x: 1, y: -1})
 
   var s1 = v1.toString()
-  t.is(v1.toString(), '(1.00, -1.00)')
+  t.is(v1.toString(), '(1.00000, -1.00000)')
 
   var v3 = v1.toVector3D(5)
   t.is(v3.x, 1)
