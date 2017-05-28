@@ -2228,7 +2228,7 @@ for solid CAD anyway.
         },
 
         toString: function() {
-            return "(" + this._x.toFixed(2) + ", " + this._y.toFixed(2) + ", " + this._z.toFixed(2) + ")";
+            return "(" + this._x.toFixed(5) + ", " + this._y.toFixed(5) + ", " + this._z.toFixed(5) + ")";
         },
 
         // find a vector that is somewhat perpendicular to this one
@@ -3924,7 +3924,7 @@ for solid CAD anyway.
         },
 
         toString: function() {
-            return "(" + this._x.toFixed(2) + ", " + this._y.toFixed(2) + ")";
+            return "(" + this._x.toFixed(5) + ", " + this._y.toFixed(5) + ")";
         },
 
         abs: function() {
@@ -5683,7 +5683,7 @@ for solid CAD anyway.
             })
             .filter(function(s) {
                 return s !== null;
-        });
+            });
         return CAG.fromSides(sides);
     };
 
@@ -6129,12 +6129,42 @@ for solid CAD anyway.
                 for (var ii = i + 1; ii < numsides; ii++) {
                     var side1 = this.sides[ii];
                     if (CAG.linesIntersect(side0.vertex0.pos, side0.vertex1.pos, side1.vertex0.pos, side1.vertex1.pos)) {
-                        if (debug) { OpenJsCad.log(side0); OpenJsCad.log(side1);}
+                        if (debug) { console.log("side "+i+": "+side0); console.log("side "+ii+": "+side1);}
                         return true;
                     }
                 }
             }
             return false;
+        },
+
+        fixClosure: function() {
+            var nsides = this.sides.length;
+            if (nsides < 4) return;
+            var gapstart = 0; // v1 vertex is missing
+            for (gapstart = 0; gapstart < nsides; gapstart++) {
+                var v1 = this.sides[gapstart].vertex1;
+                var ii = 0;
+                for (ii = 0; ii < nsides; ii++) {
+                  var v0 = this.sides[ii].vertex0;
+                  if (v0.pos.x == v1.pos.x & v0.pos.y == v1.pos.y) break;
+                }
+                if (ii == nsides) break;
+            }
+            if (gapstart < nsides) {
+                var gapend = 0; // v0 vertex is missing
+                for (gapend = 0; gapend < nsides; gapend++) {
+                    var v0 = this.sides[gapend].vertex0;
+                    var ii = 0;
+                    for (ii = 0; ii < nsides; ii++) {
+                      var v1 = this.sides[ii].vertex1;
+                      if (v0.pos.x == v1.pos.x & v0.pos.y == v1.pos.y) break;
+                    }
+                    if (ii == nsides) break;
+                }
+                if (gapend < nsides) {
+                    this.sides[gapend].vertex0 = this.sides[gapstart].vertex1;
+                }
+            }
         },
 
         expandedShell: function(radius, resolution) {
@@ -6598,7 +6628,7 @@ for solid CAD anyway.
 
     CAG.Vertex.prototype = {
         toString: function() {
-            return "(" + this.pos.x.toFixed(2) + "," + this.pos.y.toFixed(2) + ")";
+            return "(" + this.pos.x.toFixed(5) + "," + this.pos.y.toFixed(5) + ")";
         },
         getTag: function() {
             var result = this.tag;
@@ -6624,23 +6654,18 @@ for solid CAD anyway.
     };
 
     CAG.Side._fromFakePolygon = function(polygon) {
-        polygon.vertices.forEach(function(v) {
-            if (!((v.pos.z >= -1.001) && (v.pos.z < -0.999)) && !((v.pos.z >= 0.999) && (v.pos.z < 1.001))) {
-                throw("Assertion failed: _fromFakePolygon expects abs z values of 1");
-            }
-        })
         // this can happen based on union, seems to be residuals -
         // return null and handle in caller
         if (polygon.vertices.length < 4) {
             return null;
         }
-        var reverse = false;
         var vert1Indices = [];
         var pts2d = polygon.vertices.filter(function(v, i) {
             if (v.pos.z > 0) {
                 vert1Indices.push(i);
                 return true;
             }
+            return false;
         })
         .map(function(v) {
             return new CSG.Vector2D(v.pos.x, v.pos.y);
