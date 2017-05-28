@@ -6501,6 +6501,11 @@ for solid CAD anyway.
                     }
                     thisside = sideTagToSideMap[nextsidetag];
                 } // inner loop
+                // due to the logic of CAG.fromPoints()
+                // move the first point to the last
+                if (connectedVertexPoints.length > 0) {
+                    connectedVertexPoints.push(connectedVertexPoints.shift());
+                }
                 var path = new CSG.Path2D(connectedVertexPoints, true);
                 paths.push(path);
             } // outer loop
