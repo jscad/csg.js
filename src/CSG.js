@@ -1,3 +1,4 @@
+const Properties = require('./properties')
 /** Class CSG
  * Holds a binary space partition tree representing a 3D solid. Two solids can
  * be combined using the `union()`, `subtract()`, and `intersect()` methods.
@@ -1100,62 +1101,61 @@ CSG.prototype = {
                     let distancesquared = closestpoint.distanceToSquared(endpos)
                     if (distancesquared < (CSG.EPS * CSG.EPS)) {
                                             // Yes it's a t-junction! We need to split matchingside in two:
-                        let polygonindex = matchingside.polygonindex
-                        let polygon = polygons[polygonindex]
+                      let polygonindex = matchingside.polygonindex
+                      let polygon = polygons[polygonindex]
                                             // find the index of startvertextag in polygon:
-                        let insertionvertextag = matchingside.vertex1.getTag()
-                        let insertionvertextagindex = -1
-                        for (let i = 0; i < polygon.vertices.length; i++) {
-                            if (polygon.vertices[i].getTag() == insertionvertextag) {
-                                insertionvertextagindex = i
-                                break
-                              }
-                          }
-                        if (insertionvertextagindex < 0) throw new Error('Assertion failed')
+                      let insertionvertextag = matchingside.vertex1.getTag()
+                      let insertionvertextagindex = -1
+                      for (let i = 0; i < polygon.vertices.length; i++) {
+                        if (polygon.vertices[i].getTag() == insertionvertextag) {
+                          insertionvertextagindex = i
+                          break
+                        }
+                      }
+                      if (insertionvertextagindex < 0) throw new Error('Assertion failed')
                                             // split the side by inserting the vertex:
-                        let newvertices = polygon.vertices.slice(0)
-                        newvertices.splice(insertionvertextagindex, 0, endvertex)
-                        let newpolygon = new CSG.Polygon(newvertices, polygon.shared /* polygon.plane */)
+                      let newvertices = polygon.vertices.slice(0)
+                      newvertices.splice(insertionvertextagindex, 0, endvertex)
+                      let newpolygon = new CSG.Polygon(newvertices, polygon.shared /* polygon.plane */)
 
 // FIX
                                            // calculate plane with differents point
-                        if (isNaN(newpolygon.plane.w)) {
-
-                            let found = false,
-                                loop = function (callback) {
-                                    newpolygon.vertices.forEach(function (item) {
-                                        if (found) return
-                                        callback(item)
-                                      })
-                                  }
-
-                            loop(function (a) {
-                                loop(function (b) {
-                                    loop(function (c) {
-                                        newpolygon.plane = CSG.Plane.fromPoints(a.pos, b.pos, c.pos)
-                                        if (!isNaN(newpolygon.plane.w)) {
-                                            found = true
-                                          }
-                                      })
-                                  })
-                              })
+                      if (isNaN(newpolygon.plane.w)) {
+                        let found = false,
+                          loop = function (callback) {
+                            newpolygon.vertices.forEach(function (item) {
+                              if (found) return
+                              callback(item)
+                            })
                           }
+
+                        loop(function (a) {
+                          loop(function (b) {
+                            loop(function (c) {
+                              newpolygon.plane = CSG.Plane.fromPoints(a.pos, b.pos, c.pos)
+                              if (!isNaN(newpolygon.plane.w)) {
+                                found = true
+                              }
+                            })
+                          })
+                        })
+                      }
 // FIX
 
-                        polygons[polygonindex] = newpolygon
+                      polygons[polygonindex] = newpolygon
 
                                             // remove the original sides from our maps:
                                             // deleteSide(sideobj.vertex0, sideobj.vertex1, null);
-                        deleteSide(matchingside.vertex0, matchingside.vertex1, polygonindex)
-                        let newsidetag1 = addSide(matchingside.vertex0, endvertex, polygonindex)
-                        let newsidetag2 = addSide(endvertex, matchingside.vertex1, polygonindex)
-                        if (newsidetag1 !== null) sidestocheck[newsidetag1] = true
-                        if (newsidetag2 !== null) sidestocheck[newsidetag2] = true
-                        donewithside = false
-                        directionindex = 2 // skip reverse direction check
-                        donesomething = true
-                        break
-                      } // if(distancesquared < 1e-10)
+                      deleteSide(matchingside.vertex0, matchingside.vertex1, polygonindex)
+                      let newsidetag1 = addSide(matchingside.vertex0, endvertex, polygonindex)
+                      let newsidetag2 = addSide(endvertex, matchingside.vertex1, polygonindex)
+                      if (newsidetag1 !== null) sidestocheck[newsidetag1] = true
+                      if (newsidetag2 !== null) sidestocheck[newsidetag2] = true
+                      donewithside = false
+                      directionindex = 2 // skip reverse direction check
+                      donesomething = true
+                      break
+                    } // if(distancesquared < 1e-10)
                   } // if( (t > 0) && (t < 1) )
                 } // if(endingstidestartvertextag == endvertextag)
               } // for matchingsideindex
@@ -1216,3 +1216,5 @@ CSG.prototype = {
     return (result.length == 1) ? result[0] : result
   }
 }
+
+module.exports = CSG

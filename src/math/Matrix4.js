@@ -2,6 +2,7 @@ const Vector3D = require('./Vector3')
 const Vector2D = require('./Vector3')
 const OrthoNormalBasis = require('./OrthoNormalBasis')
 const Plane = require('./Plane')
+
 // # class Matrix4x4:
 // Represents a 4x4 matrix. Elements are specified in row order
 const Matrix4x4 = function (elements) {
