@@ -6137,36 +6137,6 @@ for solid CAD anyway.
             return false;
         },
 
-        fixClosure: function() {
-            var nsides = this.sides.length;
-            if (nsides < 4) return;
-            var gapstart = 0; // v1 vertex is missing
-            for (gapstart = 0; gapstart < nsides; gapstart++) {
-                var v1 = this.sides[gapstart].vertex1;
-                var ii = 0;
-                for (ii = 0; ii < nsides; ii++) {
-                  var v0 = this.sides[ii].vertex0;
-                  if (v0.pos.x == v1.pos.x & v0.pos.y == v1.pos.y) break;
-                }
-                if (ii == nsides) break;
-            }
-            if (gapstart < nsides) {
-                var gapend = 0; // v0 vertex is missing
-                for (gapend = 0; gapend < nsides; gapend++) {
-                    var v0 = this.sides[gapend].vertex0;
-                    var ii = 0;
-                    for (ii = 0; ii < nsides; ii++) {
-                      var v1 = this.sides[ii].vertex1;
-                      if (v0.pos.x == v1.pos.x & v0.pos.y == v1.pos.y) break;
-                    }
-                    if (ii == nsides) break;
-                }
-                if (gapend < nsides) {
-                    this.sides[gapend].vertex0 = this.sides[gapstart].vertex1;
-                }
-            }
-        },
-
         expandedShell: function(radius, resolution) {
             resolution = resolution || 8;
             if (resolution < 4) resolution = 4;
