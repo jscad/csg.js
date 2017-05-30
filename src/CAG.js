@@ -10,97 +10,6 @@ let CAG = function () {
   this.isCanonicalized = false
 }
 
-/** Reconstruct a CAG from an object with identical property names.
- * @param {Object} obj - anonymous object, typically from JSON
- * @returns {CAG} new CAG object
- */
-CAG.fromObject = function (obj) {
-  let sides = obj.sides.map(function (s) {
-    return CAG.Side.fromObject(s)
-  })
-  let cag = CAG.fromSides(sides)
-  cag.isCanonicalized = obj.isCanonicalized
-  return cag
-}
-
-/** Construct a CAG from a list of `CAG.Side` instances.
- * @param {CAG.Side[]} sides - list of sides
- * @returns {CAG} new CAG object
- */
-CAG.fromSides = function (sides) {
-  let cag = new CAG()
-  cag.sides = sides
-  return cag
-}
-
-/** Construct a CAG from a list of points (a polygon).
- * The rotation direction of the points is not relevant.
- * The points can define a convex or a concave polygon.
- * The polygon must not self intersect.
- * @param {points[]} points - list of points in 2D space
- * @returns {CAG} new CAG object
- */
-CAG.fromPoints = function (points) {
-  let numpoints = points.length
-  if (numpoints < 3) throw new Error('CAG shape needs at least 3 points')
-  let sides = []
-  let prevpoint = new CSG.Vector2D(points[numpoints - 1])
-  let prevvertex = new CAG.Vertex(prevpoint)
-  points.map(function (p) {
-    let point = new CSG.Vector2D(p)
-    let vertex = new CAG.Vertex(point)
-    let side = new CAG.Side(prevvertex, vertex)
-    sides.push(side)
-    prevvertex = vertex
-  })
-  let result = CAG.fromSides(sides)
-  if (result.isSelfIntersecting()) {
-    throw new Error('Polygon is self intersecting!')
-  }
-  let area = result.area()
-  if (Math.abs(area) < CSG.areaEPS) {
-    throw new Error('Degenerate polygon!')
-  }
-  if (area < 0) {
-    result = result.flipped()
-  }
-  result = result.canonicalized()
-  return result
-}
-
-/** Construct a CAG from a list of points (a polygon).
- * Like fromPoints() but does not check if the result is a valid polygon.
- * The points MUST rotate counter clockwise.
- * The points can define a convex or a concave polygon.
- * The polygon must not self intersect.
- * @param {points[]} points - list of points in 2D space
- * @returns {CAG} new CAG object
- */
-CAG.fromPointsNoCheck = function (points) {
-  let sides = []
-  let prevpoint = new CSG.Vector2D(points[points.length - 1])
-  let prevvertex = new CAG.Vertex(prevpoint)
-  points.map(function (p) {
-    let point = new CSG.Vector2D(p)
-    let vertex = new CAG.Vertex(point)
-    let side = new CAG.Side(prevvertex, vertex)
-    sides.push(side)
-    prevvertex = vertex
-  })
-  return CAG.fromSides(sides)
-}
-
-// Converts a CSG to a CAG. The CSG must consist of polygons with only z coordinates +1 and -1
-// as constructed by CAG._toCSGWall(-1, 1). This is so we can use the 3D union(), intersect() etc
-CAG.fromFakeCSG = function (csg) {
-  let sides = csg.polygons.map(function (p) {
-    return CAG.Side._fromFakePolygon(p)
-  })
-        .filter(function (s) {
-          return s !== null
-        })
-  return CAG.fromSides(sides)
-}
 
 // see if the line between p0start and p0end intersects with the line between p1start and p1end
 // returns true if the lines strictly intersect, the end points are not counted!
@@ -826,3 +735,5 @@ CAG.prototype = {
     return result
   }
 }
+
+module.exports = CAG

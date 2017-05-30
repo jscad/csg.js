@@ -1,22 +1,28 @@
-
+const Vector2D = require('./Vector3')
+const {EPS, angleEPS} = require('../constants')
+const {parseOptionAs2DVector, parseOptionAsFloat, parseOptionAsInt, parseOptionAsBool} = require('../optionParsers')
+const {defaultResolution2D} = require('../constants')
+const Vertex = require('./Vertex2')
+const Side = require('./Side')
+const {fromSides, fromPoints} = require('../CAGMakers')
 // ////////////////////////////////////
 // # Class Path2D
-CSG.Path2D = function (points, closed) {
+const Path2D = function (points, closed) {
   closed = !!closed
   points = points || []
-    // re-parse the points into CSG.Vector2D
+    // re-parse the points into Vector2D
     // and remove any duplicate points
   let prevpoint = null
   if (closed && (points.length > 0)) {
-    prevpoint = new CSG.Vector2D(points[points.length - 1])
+    prevpoint = new Vector2D(points[points.length - 1])
   }
   let newpoints = []
   points.map(function (point) {
-    point = new CSG.Vector2D(point)
+    point = new Vector2D(point)
     let skip = false
     if (prevpoint !== null) {
       let distance = point.distanceTo(prevpoint)
-      skip = distance < CSG.EPS
+      skip = distance < EPS
     }
     if (!skip) newpoints.push(point)
     prevpoint = point
@@ -27,7 +33,7 @@ CSG.Path2D = function (points, closed) {
 
 /*
 Construct a (part of a) circle. Parameters:
-  options.center: the center point of the arc (CSG.Vector2D or array [x,y])
+  options.center: the center point of the arc (Vector2D or array [x,y])
   options.radius: the circle radius (float)
   options.startangle: the starting angle of the arc, in degrees
     0 degrees corresponds to [1,0]
@@ -37,16 +43,16 @@ Construct a (part of a) circle. Parameters:
   options.resolution: number of points per 360 degree of rotation
   options.maketangent: adds two extra tiny line segments at both ends of the circle
     this ensures that the gradients at the edges are tangent to the circle
-Returns a CSG.Path2D. The path is not closed (even if it is a 360 degree arc).
+Returns a Path2D. The path is not closed (even if it is a 360 degree arc).
 close() the resulting path if you want to create a true circle.
 */
-CSG.Path2D.arc = function (options) {
-  let center = CSG.parseOptionAs2DVector(options, 'center', 0)
-  let radius = CSG.parseOptionAsFloat(options, 'radius', 1)
-  let startangle = CSG.parseOptionAsFloat(options, 'startangle', 0)
-  let endangle = CSG.parseOptionAsFloat(options, 'endangle', 360)
-  let resolution = CSG.parseOptionAsInt(options, 'resolution', CSG.defaultResolution2D)
-  let maketangent = CSG.parseOptionAsBool(options, 'maketangent', false)
+Path2D.arc = function (options) {
+  let center = parseOptionAs2DVector(options, 'center', 0)
+  let radius = parseOptionAsFloat(options, 'radius', 1)
+  let startangle = parseOptionAsFloat(options, 'startangle', 0)
+  let endangle = parseOptionAsFloat(options, 'endangle', 360)
+  let resolution = parseOptionAsInt(options, 'resolution', defaultResolution2D)
+  let maketangent = parseOptionAsBool(options, 'maketangent', false)
     // no need to make multiple turns:
   while (endangle - startangle >= 720) {
     endangle -= 360
@@ -54,18 +60,18 @@ CSG.Path2D.arc = function (options) {
   while (endangle - startangle <= -720) {
     endangle += 360
   }
-  let points = [],
-    point
+  let points = []
+  let point
   let absangledif = Math.abs(endangle - startangle)
-  if (absangledif < CSG.angleEPS) {
-    point = CSG.Vector2D.fromAngle(startangle / 180.0 * Math.PI).times(radius)
+  if (absangledif < angleEPS) {
+    point = Vector2D.fromAngle(startangle / 180.0 * Math.PI).times(radius)
     points.push(point.plus(center))
   } else {
     let numsteps = Math.floor(resolution * absangledif / 360) + 1
     let edgestepsize = numsteps * 0.5 / absangledif // step size for half a degree
     if (edgestepsize > 0.25) edgestepsize = 0.25
-    let numsteps_mod = maketangent ? (numsteps + 2) : numsteps
-    for (let i = 0; i <= numsteps_mod; i++) {
+    let numstepsMod = maketangent ? (numsteps + 2) : numsteps
+    for (let i = 0; i <= numstepsMod; i++) {
       let step = i
       if (maketangent) {
         step = (i - 1) * (numsteps - 2 * edgestepsize) / numsteps + edgestepsize
@@ -73,29 +79,29 @@ CSG.Path2D.arc = function (options) {
         if (step > numsteps) step = numsteps
       }
       let angle = startangle + step * (endangle - startangle) / numsteps
-      point = CSG.Vector2D.fromAngle(angle / 180.0 * Math.PI).times(radius)
+      point = Vector2D.fromAngle(angle / 180.0 * Math.PI).times(radius)
       points.push(point.plus(center))
     }
   }
-  return new CSG.Path2D(points, false)
+  return new Path2D(points, false)
 }
 
-CSG.Path2D.prototype = {
+Path2D.prototype = {
   concat: function (otherpath) {
     if (this.closed || otherpath.closed) {
       throw new Error('Paths must not be closed')
     }
     let newpoints = this.points.concat(otherpath.points)
-    return new CSG.Path2D(newpoints)
+    return new Path2D(newpoints)
   },
 
   appendPoint: function (point) {
     if (this.closed) {
       throw new Error('Path must not be closed')
     }
-    point = new CSG.Vector2D(point) // cast to Vector2D
+    point = new Vector2D(point) // cast to Vector2D
     let newpoints = this.points.concat([point])
-    return new CSG.Path2D(newpoints)
+    return new Path2D(newpoints)
   },
 
   appendPoints: function (points) {
@@ -104,13 +110,13 @@ CSG.Path2D.prototype = {
     }
     let newpoints = this.points
     points.forEach(function (point) {
-      newpoints.push(new CSG.Vector2D(point)) // cast to Vector2D
+      newpoints.push(new Vector2D(point)) // cast to Vector2D
     })
-    return new CSG.Path2D(newpoints)
+    return new Path2D(newpoints)
   },
 
   close: function () {
-    return new CSG.Path2D(this.points, true)
+    return new Path2D(this.points, true)
   },
 
     // Extrude the path by following it with a rectangle (upright, perpendicular to the path direction)
@@ -138,28 +144,28 @@ CSG.Path2D.prototype = {
       let pointindex = i
       if (pointindex < 0) pointindex = numpoints - 1
       let point = this.points[pointindex]
-      let vertex = new CAG.Vertex(point)
+      let vertex = new Vertex(point)
       if (i > startindex) {
-        let side = new CAG.Side(prevvertex, vertex)
+        let side = new Side(prevvertex, vertex)
         sides.push(side)
       }
       prevvertex = vertex
     }
-    let shellcag = CAG.fromSides(sides)
+    let shellcag = fromSides(sides)
     let expanded = shellcag.expandedShell(pathradius, resolution)
     return expanded
   },
 
   innerToCAG: function () {
     if (!this.closed) throw new Error('The path should be closed!')
-    return CAG.fromPoints(this.points)
+    return fromPoints(this.points)
   },
 
   transform: function (matrix4x4) {
     let newpoints = this.points.map(function (point) {
       return point.multiply4x4(matrix4x4)
     })
-    return new CSG.Path2D(newpoints, this.closed)
+    return new Path2D(newpoints, this.closed)
   },
 
   appendBezier: function (controlpoints, options) {
@@ -178,16 +184,16 @@ CSG.Path2D.prototype = {
     if (this.points.length < 1) {
       throw new Error('appendBezier: path must already contain a point (the endpoint of the path is used as the starting point for the bezier curve)')
     }
-    let resolution = CSG.parseOptionAsInt(options, 'resolution', CSG.defaultResolution2D)
+    let resolution = parseOptionAsInt(options, 'resolution', defaultResolution2D)
     if (resolution < 4) resolution = 4
     let factorials = []
-    let controlpoints_parsed = []
-    controlpoints_parsed.push(this.points[this.points.length - 1]) // start at the previous end point
+    let controlpointsParsed = []
+    controlpointsParsed.push(this.points[this.points.length - 1]) // start at the previous end point
     for (let i = 0; i < controlpoints.length; ++i) {
       let p = controlpoints[i]
       if (p === null) {
                 // we can pass null as the first control point. In that case a smooth gradient is ensured:
-        if (i != 0) {
+        if (i !== 0) {
           throw new Error('appendBezier: null can only be passed as the first control point')
         }
         if (controlpoints.length < 2) {
@@ -205,30 +211,30 @@ CSG.Path2D.prototype = {
                 // mirror the last bezier control point:
         p = this.points[this.points.length - 1].times(2).minus(lastBezierControlPoint)
       } else {
-        p = new CSG.Vector2D(p) // cast to Vector2D
+        p = new Vector2D(p) // cast to Vector2D
       }
-      controlpoints_parsed.push(p)
+      controlpointsParsed.push(p)
     }
-    let bezier_order = controlpoints_parsed.length - 1
+    let bezierOrder = controlpointsParsed.length - 1
     let fact = 1
-    for (let i = 0; i <= bezier_order; ++i) {
+    for (let i = 0; i <= bezierOrder; ++i) {
       if (i > 0) fact *= i
       factorials.push(fact)
     }
     let binomials = []
-    for (let i = 0; i <= bezier_order; ++i) {
-      let binomial = factorials[bezier_order] / (factorials[i] * factorials[bezier_order - i])
+    for (let i = 0; i <= bezierOrder; ++i) {
+      let binomial = factorials[bezierOrder] / (factorials[i] * factorials[bezierOrder - i])
       binomials.push(binomial)
     }
     let getPointForT = function (t) {
       let t_k = 1 // = pow(t,k)
-      let one_minus_t_n_minus_k = Math.pow(1 - t, bezier_order) // = pow( 1-t, bezier_order - k)
-      let inv_1_minus_t = (t != 1) ? (1 / (1 - t)) : 1
-      let point = new CSG.Vector2D(0, 0)
-      for (let k = 0; k <= bezier_order; ++k) {
-        if (k == bezier_order) one_minus_t_n_minus_k = 1
+      let one_minus_t_n_minus_k = Math.pow(1 - t, bezierOrder) // = pow( 1-t, bezierOrder - k)
+      let inv_1_minus_t = (t !== 1) ? (1 / (1 - t)) : 1
+      let point = new Vector2D(0, 0)
+      for (let k = 0; k <= bezierOrder; ++k) {
+        if (k === bezierOrder) one_minus_t_n_minus_k = 1
         let bernstein_coefficient = binomials[k] * t_k * one_minus_t_n_minus_k
-        point = point.plus(controlpoints_parsed[k].times(bernstein_coefficient))
+        point = point.plus(controlpointsParsed[k].times(bernstein_coefficient))
         t_k *= t
         one_minus_t_n_minus_k *= inv_1_minus_t
       }
@@ -236,43 +242,43 @@ CSG.Path2D.prototype = {
     }
     let newpoints = []
     let newpoints_t = []
-    let numsteps = bezier_order + 1
+    let numsteps = bezierOrder + 1
     for (let i = 0; i < numsteps; ++i) {
       let t = i / (numsteps - 1)
       let point = getPointForT(t)
       newpoints.push(point)
       newpoints_t.push(t)
     }
-        // subdivide each segment until the angle at each vertex becomes small enough:
-    let subdivide_base = 1
+    // subdivide each segment until the angle at each vertex becomes small enough:
+    let subdivideBase = 1
     let maxangle = Math.PI * 2 / resolution // segments may have differ no more in angle than this
     let maxsinangle = Math.sin(maxangle)
-    while (subdivide_base < newpoints.length - 1) {
-      let dir1 = newpoints[subdivide_base].minus(newpoints[subdivide_base - 1]).unit()
-      let dir2 = newpoints[subdivide_base + 1].minus(newpoints[subdivide_base]).unit()
+    while (subdivideBase < newpoints.length - 1) {
+      let dir1 = newpoints[subdivideBase].minus(newpoints[subdivideBase - 1]).unit()
+      let dir2 = newpoints[subdivideBase + 1].minus(newpoints[subdivideBase]).unit()
       let sinangle = dir1.cross(dir2) // this is the sine of the angle
       if (Math.abs(sinangle) > maxsinangle) {
                 // angle is too big, we need to subdivide
-        let t0 = newpoints_t[subdivide_base - 1]
-        let t1 = newpoints_t[subdivide_base + 1]
+        let t0 = newpoints_t[subdivideBase - 1]
+        let t1 = newpoints_t[subdivideBase + 1]
         let t0_new = t0 + (t1 - t0) * 1 / 3
         let t1_new = t0 + (t1 - t0) * 2 / 3
         let point0_new = getPointForT(t0_new)
         let point1_new = getPointForT(t1_new)
-                // remove the point at subdivide_base and replace with 2 new points:
-        newpoints.splice(subdivide_base, 1, point0_new, point1_new)
-        newpoints_t.splice(subdivide_base, 1, t0_new, t1_new)
+                // remove the point at subdivideBase and replace with 2 new points:
+        newpoints.splice(subdivideBase, 1, point0_new, point1_new)
+        newpoints_t.splice(subdivideBase, 1, t0_new, t1_new)
                 // re - evaluate the angles, starting at the previous junction since it has changed:
-        subdivide_base--
-        if (subdivide_base < 1) subdivide_base = 1
+        subdivideBase--
+        if (subdivideBase < 1) subdivideBase = 1
       } else {
-        ++subdivide_base
+        ++subdivideBase
       }
     }
         // append to the previous points, but skip the first new point because it is identical to the last point:
     newpoints = this.points.concat(newpoints.slice(1))
-    let result = new CSG.Path2D(newpoints)
-    result.lastBezierControlPoint = controlpoints_parsed[controlpoints_parsed.length - 2]
+    let result = new Path2D(newpoints)
+    result.lastBezierControlPoint = controlpointsParsed[controlpointsParsed.length - 2]
     return result
   },
 
@@ -302,32 +308,32 @@ CSG.Path2D.prototype = {
     if (this.points.length < 1) {
       throw new Error('appendArc: path must already contain a point (the endpoint of the path is used as the starting point for the arc)')
     }
-    let resolution = CSG.parseOptionAsInt(options, 'resolution', CSG.defaultResolution2D)
+    let resolution = parseOptionAsInt(options, 'resolution', defaultResolution2D)
     if (resolution < 4) resolution = 4
     let xradius, yradius
     if (('xradius' in options) || ('yradius' in options)) {
       if ('radius' in options) {
         throw new Error('Should either give an xradius and yradius parameter, or a radius parameter')
       }
-      xradius = CSG.parseOptionAsFloat(options, 'xradius', 0)
-      yradius = CSG.parseOptionAsFloat(options, 'yradius', 0)
+      xradius = parseOptionAsFloat(options, 'xradius', 0)
+      yradius = parseOptionAsFloat(options, 'yradius', 0)
     } else {
-      xradius = CSG.parseOptionAsFloat(options, 'radius', 0)
+      xradius = parseOptionAsFloat(options, 'radius', 0)
       yradius = xradius
     }
-    let xaxisrotation = CSG.parseOptionAsFloat(options, 'xaxisrotation', 0)
-    let clockwise = CSG.parseOptionAsBool(options, 'clockwise', false)
-    let largearc = CSG.parseOptionAsBool(options, 'large', false)
+    let xaxisrotation = parseOptionAsFloat(options, 'xaxisrotation', 0)
+    let clockwise = parseOptionAsBool(options, 'clockwise', false)
+    let largearc = parseOptionAsBool(options, 'large', false)
     let startpoint = this.points[this.points.length - 1]
-    endpoint = new CSG.Vector2D(endpoint)
+    endpoint = new Vector2D(endpoint)
         // round to precision in order to have determinate calculations
     xradius = Math.round(xradius * decimals) / decimals
     yradius = Math.round(yradius * decimals) / decimals
-    endpoint = new CSG.Vector2D(Math.round(endpoint.x * decimals) / decimals, Math.round(endpoint.y * decimals) / decimals)
+    endpoint = new Vector2D(Math.round(endpoint.x * decimals) / decimals, Math.round(endpoint.y * decimals) / decimals)
 
-    let sweep_flag = !clockwise
+    let sweepFlag = !clockwise
     let newpoints = []
-    if ((xradius == 0) || (yradius == 0)) {
+    if ((xradius === 0) || (yradius === 0)) {
             // http://www.w3.org/TR/SVG/implnote.html#ArcImplementationNotes:
             // If rx = 0 or ry = 0, then treat this as a straight line from (x1, y1) to (x2, y2) and stop
       newpoints.push(endpoint)
@@ -344,9 +350,9 @@ CSG.Path2D.prototype = {
             // round to precision in order to have determinate calculations
       let x = Math.round((cosphi * minushalfdistance.x + sinphi * minushalfdistance.y) * decimals) / decimals
       let y = Math.round((-sinphi * minushalfdistance.x + cosphi * minushalfdistance.y) * decimals) / decimals
-      let start_translated = new CSG.Vector2D(x, y)
+      let startTranslated = new Vector2D(x, y)
             // F.6.6.2:
-      let biglambda = (start_translated.x * start_translated.x) / (xradius * xradius) + (start_translated.y * start_translated.y) / (yradius * yradius)
+      let biglambda = (startTranslated.x * startTranslated.x) / (xradius * xradius) + (startTranslated.y * startTranslated.y) / (yradius * yradius)
       if (biglambda > 1.0) {
                 // F.6.6.3:
         let sqrtbiglambda = Math.sqrt(biglambda)
@@ -357,21 +363,21 @@ CSG.Path2D.prototype = {
         yradius = Math.round(yradius * decimals) / decimals
       }
             // F.6.5.2:
-      let multiplier1 = Math.sqrt((xradius * xradius * yradius * yradius - xradius * xradius * start_translated.y * start_translated.y - yradius * yradius * start_translated.x * start_translated.x) / (xradius * xradius * start_translated.y * start_translated.y + yradius * yradius * start_translated.x * start_translated.x))
-      if (sweep_flag == largearc) multiplier1 = -multiplier1
-      let center_translated = new CSG.Vector2D(xradius * start_translated.y / yradius, -yradius * start_translated.x / xradius).times(multiplier1)
+      let multiplier1 = Math.sqrt((xradius * xradius * yradius * yradius - xradius * xradius * startTranslated.y * startTranslated.y - yradius * yradius * startTranslated.x * startTranslated.x) / (xradius * xradius * startTranslated.y * startTranslated.y + yradius * yradius * startTranslated.x * startTranslated.x))
+      if (sweepFlag === largearc) multiplier1 = -multiplier1
+      let centerTranslated = new Vector2D(xradius * startTranslated.y / yradius, -yradius * startTranslated.x / xradius).times(multiplier1)
             // F.6.5.3:
-      let center = new CSG.Vector2D(cosphi * center_translated.x - sinphi * center_translated.y, sinphi * center_translated.x + cosphi * center_translated.y).plus((startpoint.plus(endpoint)).times(0.5))
+      let center = new Vector2D(cosphi * centerTranslated.x - sinphi * centerTranslated.y, sinphi * centerTranslated.x + cosphi * centerTranslated.y).plus((startpoint.plus(endpoint)).times(0.5))
             // F.6.5.5:
-      let vec1 = new CSG.Vector2D((start_translated.x - center_translated.x) / xradius, (start_translated.y - center_translated.y) / yradius)
-      let vec2 = new CSG.Vector2D((-start_translated.x - center_translated.x) / xradius, (-start_translated.y - center_translated.y) / yradius)
+      let vec1 = new Vector2D((startTranslated.x - centerTranslated.x) / xradius, (startTranslated.y - centerTranslated.y) / yradius)
+      let vec2 = new Vector2D((-startTranslated.x - centerTranslated.x) / xradius, (-startTranslated.y - centerTranslated.y) / yradius)
       let theta1 = vec1.angleRadians()
       let theta2 = vec2.angleRadians()
       let deltatheta = theta2 - theta1
       deltatheta = deltatheta % (2 * Math.PI)
-      if ((!sweep_flag) && (deltatheta > 0)) {
+      if ((!sweepFlag) && (deltatheta > 0)) {
         deltatheta -= 2 * Math.PI
-      } else if ((sweep_flag) && (deltatheta < 0)) {
+      } else if ((sweepFlag) && (deltatheta < 0)) {
         deltatheta += 2 * Math.PI
       }
 
@@ -383,12 +389,14 @@ CSG.Path2D.prototype = {
         let costheta = Math.cos(theta)
         let sintheta = Math.sin(theta)
                 // F.6.3.1:
-        let point = new CSG.Vector2D(cosphi * xradius * costheta - sinphi * yradius * sintheta, sinphi * xradius * costheta + cosphi * yradius * sintheta).plus(center)
+        let point = new Vector2D(cosphi * xradius * costheta - sinphi * yradius * sintheta, sinphi * xradius * costheta + cosphi * yradius * sintheta).plus(center)
         newpoints.push(point)
       }
     }
     newpoints = this.points.concat(newpoints)
-    let result = new CSG.Path2D(newpoints)
+    let result = new Path2D(newpoints)
     return result
   }
 }
+
+module.exports = Path2D
