@@ -176,6 +176,7 @@ CAG.fromCompactBinary = function (bin) {
 
 module.exports = {
   circle,
+  ellipse,
   rectangle,
   roundedRectangle,
   fromCompactBinary
