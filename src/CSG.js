@@ -1,4 +1,22 @@
+const {fnNumberSort, reTesselateCoplanarPolygons} = require('./utils')
+const {fuzzyCSGFactory} = require('./FuzzyCSGFactory')
+const Tree = require('./trees')
+const {EPS} = require('./constants')
+const Polygon = require('./math/Polygon2')
+const Plane = require('./math/Plane')
+const Vertex = require('./math/Vertex3')
+const Vector2D = require('./math/Vector2')
+const Vector3D = require('./math/Vector3')
+const Matrix4x4 = require('./math/Matrix4')
+const OrthoNormalBasis = require('./math/OrthoNormalBasis')
+
+const CAG = require('./CAG') // FIXME: circular dependency !
+const {fromPolygons} = require('./CSGMakers') // FIXME: circular dependency !
+const {sphere, cube} = require('./primitives2d') // FIXME: circular dependency !
+
 const Properties = require('./properties')
+const Connector = require('./connectors')
+
 /** Class CSG
  * Holds a binary space partition tree representing a 3D solid. Two solids can
  * be combined using the `union()`, `subtract()`, and `intersect()` methods.
@@ -6,13 +24,13 @@ const Properties = require('./properties')
  */
 let CSG = function () {
   this.polygons = []
-  this.properties = new CSG.Properties()
+  this.properties = new Properties()
   this.isCanonicalized = true
   this.isRetesselated = true
 }
 
 CSG.prototype = {
-    /** @return {CSG.Polygon[]} The list of polygons. */
+  /** @return {Polygon[]} The list of polygons. */
   toPolygons: function () {
     return this.polygons
   },
@@ -40,8 +58,9 @@ CSG.prototype = {
       csgs = [this, csg]
     }
 
+    let i
         // combine csg pairs in a way that forms a balanced binary tree pattern
-    for (let i = 1; i < csgs.length; i += 2) {
+    for (i = 1; i < csgs.length; i += 2) {
       csgs.push(csgs[i - 1].unionSub(csgs[i]))
     }
 
@@ -52,8 +71,8 @@ CSG.prototype = {
     if (!this.mayOverlap(csg)) {
       return this.unionForNonIntersecting(csg)
     } else {
-      let a = new CSG.Tree(this.polygons)
-      let b = new CSG.Tree(csg.polygons)
+      let a = new Tree(this.polygons)
+      let b = new Tree(csg.polygons)
       a.clipTo(b, false)
 
             // b.clipTo(a, true); // ERROR: this doesn't work
@@ -63,7 +82,7 @@ CSG.prototype = {
       b.invert()
 
       let newpolygons = a.allPolygons().concat(b.allPolygons())
-      let result = CSG.fromPolygons(newpolygons)
+      let result = fromPolygons(newpolygons)
       result.properties = this.properties._merge(csg.properties)
       if (retesselate) result = result.reTesselated()
       if (canonicalize) result = result.canonicalized()
@@ -75,7 +94,7 @@ CSG.prototype = {
     // Do not use if you are not completely sure that the solids do not intersect!
   unionForNonIntersecting: function (csg) {
     let newpolygons = this.polygons.concat(csg.polygons)
-    let result = CSG.fromPolygons(newpolygons)
+    let result = fromPolygons(newpolygons)
     result.properties = this.properties._merge(csg.properties)
     result.isCanonicalized = this.isCanonicalized && csg.isCanonicalized
     result.isRetesselated = this.isRetesselated && csg.isRetesselated
@@ -112,14 +131,14 @@ CSG.prototype = {
   },
 
   subtractSub: function (csg, retesselate, canonicalize) {
-    let a = new CSG.Tree(this.polygons)
-    let b = new CSG.Tree(csg.polygons)
+    let a = new Tree(this.polygons)
+    let b = new Tree(csg.polygons)
     a.invert()
     a.clipTo(b)
     b.clipTo(a, true)
     a.addPolygons(b.allPolygons())
     a.invert()
-    let result = CSG.fromPolygons(a.allPolygons())
+    let result = fromPolygons(a.allPolygons())
     result.properties = this.properties._merge(csg.properties)
     if (retesselate) result = result.reTesselated()
     if (canonicalize) result = result.canonicalized()
@@ -156,8 +175,8 @@ CSG.prototype = {
   },
 
   intersectSub: function (csg, retesselate, canonicalize) {
-    let a = new CSG.Tree(this.polygons)
-    let b = new CSG.Tree(csg.polygons)
+    let a = new Tree(this.polygons)
+    let b = new Tree(csg.polygons)
     a.invert()
     b.clipTo(a)
     b.invert()
@@ -165,7 +184,7 @@ CSG.prototype = {
     b.clipTo(a)
     a.addPolygons(b.allPolygons())
     a.invert()
-    let result = CSG.fromPolygons(a.allPolygons())
+    let result = fromPolygons(a.allPolygons())
     result.properties = this.properties._merge(csg.properties)
     if (retesselate) result = result.reTesselated()
     if (canonicalize) result = result.canonicalized()
@@ -178,7 +197,7 @@ CSG.prototype = {
     let flippedpolygons = this.polygons.map(function (p) {
       return p.flipped()
     })
-    return CSG.fromPolygons(flippedpolygons)
+    return fromPolygons(flippedpolygons)
         // TODO: flip properties?
   },
 
@@ -187,7 +206,7 @@ CSG.prototype = {
     let newpolygons = this.polygons.map(function (p) {
       return p.transform(matrix4x4)
     })
-    let result = CSG.fromPolygons(newpolygons)
+    let result = fromPolygons(newpolygons)
     result.properties = this.properties._transform(matrix4x4)
     result.isRetesselated = this.isRetesselated
     return result
@@ -219,9 +238,9 @@ CSG.prototype = {
         return newvertex
       })
       if (ismirror) newvertices.reverse()
-      return new CSG.Polygon(newvertices, p.shared, newplane)
+      return new Polygon(newvertices, p.shared, newplane)
     })
-    let result = CSG.fromPolygons(newpolygons)
+    let result = fromPolygons(newpolygons)
     result.properties = this.properties._transform(matrix4x4)
     result.isRetesselated = this.isRetesselated
     result.isCanonicalized = this.isCanonicalized
@@ -257,8 +276,8 @@ CSG.prototype = {
 
     // cut the solid at a plane, and stretch the cross-section found along plane normal
   stretchAtPlane: function (normal, point, length) {
-    let plane = CSG.Plane.fromNormalAndPoint(normal, point)
-    let onb = new CSG.OrthoNormalBasis(plane)
+    let plane = Plane.fromNormalAndPoint(normal, point)
+    let onb = new OrthoNormalBasis(plane)
     let crosssect = this.sectionCut(onb)
     let midpiece = crosssect.extrudeInOrthonormalBasis(onb, length)
     let piece1 = this.cutByPlane(plane)
@@ -335,16 +354,16 @@ CSG.prototype = {
         // if two edges are at, say, 10 degrees and the resolution is low.
         // Note: the result is not retesselated yet but it really should be!
     for (let vertextagpair in vertexpairs) {
-      let vertexpair = vertexpairs[vertextagpair],
-        startpoint = vertexpair.v1.pos,
-        endpoint = vertexpair.v2.pos,
+      let vertexpair = vertexpairs[vertextagpair]
+      let startpoint = vertexpair.v1.pos
+      let endpoint = vertexpair.v2.pos
                 // our x,y and z vectors:
-        zbase = endpoint.minus(startpoint).unit(),
-        xbase = vertexpair.planenormals[0].unit(),
-        ybase = xbase.cross(zbase),
+      let zbase = endpoint.minus(startpoint).unit()
+      let xbase = vertexpair.planenormals[0].unit()
+      let ybase = xbase.cross(zbase)
 
-                // make a list of angles that the cylinder should traverse:
-        angles = []
+      // make a list of angles that the cylinder should traverse:
+      let angles = []
 
             // first of all equally spaced around the cylinder:
       for (let i = 0; i < resolution; i++) {
@@ -353,10 +372,10 @@ CSG.prototype = {
 
             // and also at every normal of all touching planes:
       for (let i = 0, iMax = vertexpair.planenormals.length; i < iMax; i++) {
-        let planenormal = vertexpair.planenormals[i],
-          si = ybase.dot(planenormal),
-          co = xbase.dot(planenormal),
-          angle = Math.atan2(si, co)
+        let planenormal = vertexpair.planenormals[i]
+        let si = ybase.dot(planenormal)
+        let co = xbase.dot(planenormal)
+        let angle = Math.atan2(si, co)
 
         if (angle < 0) angle += Math.PI * 2
         angles.push(angle)
@@ -370,35 +389,36 @@ CSG.prototype = {
       angles = angles.sort(fnNumberSort)
 
             // Now construct the cylinder by traversing all angles:
-      let numangles = angles.length,
-        prevp1, prevp2,
-        startfacevertices = [],
-        endfacevertices = [],
-        polygons = []
+      let numangles = angles.length
+      let prevp1
+      let prevp2
+      let startfacevertices = []
+      let endfacevertices = []
+      let polygons = []
       for (let i = -1; i < numangles; i++) {
-        let angle = angles[(i < 0) ? (i + numangles) : i],
-          si = Math.sin(angle),
-          co = Math.cos(angle),
-          p = xbase.times(co * radius).plus(ybase.times(si * radius)),
-          p1 = startpoint.plus(p),
-          p2 = endpoint.plus(p),
-          skip = false
+        let angle = angles[(i < 0) ? (i + numangles) : i]
+        let si = Math.sin(angle)
+        let co = Math.cos(angle)
+        let p = xbase.times(co * radius).plus(ybase.times(si * radius))
+        let p1 = startpoint.plus(p)
+        let p2 = endpoint.plus(p)
+        let skip = false
         if (i >= 0) {
-          if (p1.distanceTo(prevp1) < CSG.EPS) {
+          if (p1.distanceTo(prevp1) < EPS) {
             skip = true
           }
         }
         if (!skip) {
           if (i >= 0) {
-            startfacevertices.push(new CSG.Vertex(p1))
-            endfacevertices.push(new CSG.Vertex(p2))
+            startfacevertices.push(new Vertex(p1))
+            endfacevertices.push(new Vertex(p2))
             let polygonvertices = [
-              new CSG.Vertex(prevp2),
-              new CSG.Vertex(p2),
-              new CSG.Vertex(p1),
-              new CSG.Vertex(prevp1)
+              new Vertex(prevp2),
+              new Vertex(p2),
+              new Vertex(p1),
+              new Vertex(prevp1)
             ]
-            let polygon = new CSG.Polygon(polygonvertices)
+            let polygon = new Polygon(polygonvertices)
             polygons.push(polygon)
           }
           prevp1 = p1
@@ -406,9 +426,9 @@ CSG.prototype = {
         }
       }
       endfacevertices.reverse()
-      polygons.push(new CSG.Polygon(startfacevertices))
-      polygons.push(new CSG.Polygon(endfacevertices))
-      let cylinder = CSG.fromPolygons(polygons)
+      polygons.push(new Polygon(startfacevertices))
+      polygons.push(new Polygon(endfacevertices))
+      let cylinder = fromPolygons(polygons)
       result = result.unionSub(cylinder, false, false)
     }
 
@@ -458,13 +478,13 @@ CSG.prototype = {
       }
       let yaxis = xaxis.cross(bestzaxis).unit()
       let zaxis = yaxis.cross(xaxis)
-      let sphere = CSG.sphere({
+      let _sphere = sphere({
         center: vertexobj.pos,
         radius: radius,
         resolution: resolution,
         axes: [xaxis, yaxis, zaxis]
       })
-      result = result.unionSub(sphere, false, false)
+      result = result.unionSub(_sphere, false, false)
     }
 
     return result
@@ -474,7 +494,7 @@ CSG.prototype = {
     if (this.isCanonicalized) {
       return this
     } else {
-      let factory = new CSG.fuzzyCSGFactory()
+      let factory = new fuzzyCSGFactory()
       let result = factory.getCSG(this)
       result.isCanonicalized = true
       result.isRetesselated = this.isRetesselated
@@ -490,7 +510,7 @@ CSG.prototype = {
       let csg = this
       let polygonsPerPlane = {}
       let isCanonicalized = csg.isCanonicalized
-      let fuzzyfactory = new CSG.fuzzyCSGFactory()
+      let fuzzyfactory = new fuzzyCSGFactory()
       csg.polygons.map(function (polygon) {
         let plane = polygon.plane
         let shared = polygon.shared
@@ -514,11 +534,11 @@ CSG.prototype = {
           destpolygons = destpolygons.concat(sourcepolygons)
         } else {
           let retesselayedpolygons = []
-          CSG.reTesselateCoplanarPolygons(sourcepolygons, retesselayedpolygons)
+          reTesselateCoplanarPolygons(sourcepolygons, retesselayedpolygons)
           destpolygons = destpolygons.concat(retesselayedpolygons)
         }
       }
-      let result = CSG.fromPolygons(destpolygons)
+      let result = fromPolygons(destpolygons)
       result.isRetesselated = true
             // result = result.canonicalized();
       result.properties = this.properties // keep original properties
@@ -526,11 +546,11 @@ CSG.prototype = {
     }
   },
 
-    // returns an array of two CSG.Vector3Ds (minimum coordinates and maximum coordinates)
+    // returns an array of two Vector3Ds (minimum coordinates and maximum coordinates)
   getBounds: function () {
     if (!this.cachedBoundingBox) {
-      let minpoint = new CSG.Vector3D(0, 0, 0)
-      let maxpoint = new CSG.Vector3D(0, 0, 0)
+      let minpoint = new Vector3D(0, 0, 0)
+      let maxpoint = new Vector3D(0, 0, 0)
       let polygons = this.polygons
       let numpolygons = polygons.length
       for (let i = 0; i < numpolygons; i++) {
@@ -589,12 +609,12 @@ CSG.prototype = {
     maxdistance *= 1.01 // make sure it's really larger
         // Now build a polygon on the plane, at any point farther than maxdistance from the plane center:
     let vertices = []
-    let orthobasis = new CSG.OrthoNormalBasis(plane)
-    vertices.push(new CSG.Vertex(orthobasis.to3D(new CSG.Vector2D(maxdistance, -maxdistance))))
-    vertices.push(new CSG.Vertex(orthobasis.to3D(new CSG.Vector2D(-maxdistance, -maxdistance))))
-    vertices.push(new CSG.Vertex(orthobasis.to3D(new CSG.Vector2D(-maxdistance, maxdistance))))
-    vertices.push(new CSG.Vertex(orthobasis.to3D(new CSG.Vector2D(maxdistance, maxdistance))))
-    let polygon = new CSG.Polygon(vertices, null, plane.flipped())
+    let orthobasis = new OrthoNormalBasis(plane)
+    vertices.push(new Vertex(orthobasis.to3D(new Vector2D(maxdistance, -maxdistance))))
+    vertices.push(new Vertex(orthobasis.to3D(new Vector2D(-maxdistance, -maxdistance))))
+    vertices.push(new Vertex(orthobasis.to3D(new Vector2D(-maxdistance, maxdistance))))
+    vertices.push(new Vertex(orthobasis.to3D(new Vector2D(maxdistance, maxdistance))))
+    let polygon = new Polygon(vertices, null, plane.flipped())
 
         // and extrude the polygon into a cube, backwards of the plane:
     let cube = polygon.extrude(plane.normal.times(-maxdistance))
@@ -605,9 +625,9 @@ CSG.prototype = {
     return result
   },
 
-    // Connect a solid to another solid, such that two CSG.Connectors become connected
-    //   myConnector: a CSG.Connector of this solid
-    //   otherConnector: a CSG.Connector to which myConnector should be connected
+    // Connect a solid to another solid, such that two Connectors become connected
+    //   myConnector: a Connector of this solid
+    //   otherConnector: a Connector to which myConnector should be connected
     //   mirror: false: the 'axis' vectors of the connectors should point in the same direction
     //           true: the 'axis' vectors of the connectors should point in opposite direction
     //   normalrotation: degrees of rotation between the 'normal' vectors of the two
@@ -621,9 +641,9 @@ CSG.prototype = {
     // Returns a new CSG solid, the original is unmodified!
   setShared: function (shared) {
     let polygons = this.polygons.map(function (p) {
-      return new CSG.Polygon(p.vertices, shared, p.plane)
+      return new Polygon(p.vertices, shared, p.plane)
     })
-    let result = CSG.fromPolygons(polygons)
+    let result = fromPolygons(polygons)
     result.properties = this.properties // keep original properties
     result.isRetesselated = this.isRetesselated
     result.isCanonicalized = this.isCanonicalized
@@ -631,7 +651,7 @@ CSG.prototype = {
   },
 
   setColor: function (args) {
-    let newshared = CSG.Polygon.Shared.fromColor.apply(this, arguments)
+    let newshared = Polygon.Shared.fromColor.apply(this, arguments)
     return this.setShared(newshared)
   },
 
@@ -749,7 +769,7 @@ CSG.prototype = {
 
     for (let vertextag in vertexmap) {
       let pos = vertexmap[vertextag]
-      let cube = CSG.cube({
+      let cube = cube({
         center: pos,
         radius: cuberadius
       })
@@ -764,7 +784,7 @@ CSG.prototype = {
     // So that it is in an orientation suitable for CNC milling
   getTransformationAndInverseTransformationToFlatLying: function () {
     if (this.polygons.length === 0) {
-      let m = new CSG.Matrix4x4() // unity
+      let m = new Matrix4x4() // unity
       return [m, m]
     } else {
             // get a list of unique planes in the CSG:
@@ -777,11 +797,11 @@ CSG.prototype = {
             // gives the least height in z-direction.
             // If two planes give the same height, pick the plane that originally had a normal closest
             // to [0,0,-1].
-      let xvector = new CSG.Vector3D(1, 0, 0)
-      let yvector = new CSG.Vector3D(0, 1, 0)
-      let zvector = new CSG.Vector3D(0, 0, 1)
-      let z0connectorx = new CSG.Connector([0, 0, 0], [0, 0, -1], xvector)
-      let z0connectory = new CSG.Connector([0, 0, 0], [0, 0, -1], yvector)
+      let xvector = new Vector3D(1, 0, 0)
+      let yvector = new Vector3D(0, 1, 0)
+      let zvector = new Vector3D(0, 0, 1)
+      let z0connectorx = new Connector([0, 0, 0], [0, 0, -1], xvector)
+      let z0connectory = new Connector([0, 0, 0], [0, 0, -1], yvector)
       let isfirst = true
       let minheight = 0
       let maxdotz = 0
@@ -797,12 +817,12 @@ CSG.prototype = {
         let yorthogonality = plane.normal.cross(yvector).length()
         if (xorthogonality > yorthogonality) {
                     // x is better:
-          let planeconnector = new CSG.Connector(pointonplane, plane.normal, xvector)
+          let planeconnector = new Connector(pointonplane, plane.normal, xvector)
           transformation = planeconnector.getTransformationTo(z0connectorx, false, 0)
           inversetransformation = z0connectorx.getTransformationTo(planeconnector, false, 0)
         } else {
                     // y is better:
-          let planeconnector = new CSG.Connector(pointonplane, plane.normal, yvector)
+          let planeconnector = new Connector(pointonplane, plane.normal, yvector)
           transformation = planeconnector.getTransformationTo(z0connectory, false, 0)
           inversetransformation = z0connectory.getTransformationTo(planeconnector, false, 0)
         }
@@ -820,9 +840,9 @@ CSG.prototype = {
         }
         if (isbetter) {
                     // translate the transformation around the z-axis and onto the z plane:
-          let translation = new CSG.Vector3D([-0.5 * (bounds[1].x + bounds[0].x), -0.5 * (bounds[1].y + bounds[0].y), -bounds[0].z])
-          transformation = transformation.multiply(CSG.Matrix4x4.translation(translation))
-          inversetransformation = CSG.Matrix4x4.translation(translation.negated()).multiply(inversetransformation)
+          let translation = new Vector3D([-0.5 * (bounds[1].x + bounds[0].x), -0.5 * (bounds[1].y + bounds[0].y), -bounds[0].z])
+          transformation = transformation.multiply(Matrix4x4.translation(translation))
+          inversetransformation = Matrix4x4.translation(translation.negated()).multiply(inversetransformation)
           minheight = zheight
           maxdotz = dotz
           besttransformation = transformation
@@ -851,7 +871,7 @@ CSG.prototype = {
     let cags = []
     this.polygons.filter(function (p) {
                 // only return polys in plane, others may disturb result
-      return p.plane.normal.minus(orthobasis.plane.normal).lengthSquared() < (CSG.EPS * CSG.EPS)
+      return p.plane.normal.minus(orthobasis.plane.normal).lengthSquared() < (EPS * EPS)
     })
             .map(function (polygon) {
               let cag = polygon.projectToOrthoNormalBasis(orthobasis)
@@ -866,8 +886,8 @@ CSG.prototype = {
   sectionCut: function (orthobasis) {
     let plane1 = orthobasis.plane
     let plane2 = orthobasis.plane.flipped()
-    plane1 = new CSG.Plane(plane1.normal, plane1.w)
-    plane2 = new CSG.Plane(plane2.normal, plane2.w + (5 * CSG.EPS))
+    plane1 = new Plane(plane1.normal, plane1.w)
+    plane2 = new Plane(plane2.normal, plane2.w + (5 * EPS))
     let cut3d = this.cutByPlane(plane1)
     cut3d = cut3d.cutByPlane(plane2)
     return cut3d.projectToOrthoNormalBasis(orthobasis)
@@ -900,12 +920,12 @@ CSG.prototype = {
       let polygon = csg.polygons[polygonindex]
       let numvertices = polygon.vertices.length
       if (numvertices >= 3) // should be true
-            {
+      {
         let vertex = polygon.vertices[0]
         let vertextag = vertex.getTag()
         for (let vertexindex = 0; vertexindex < numvertices; vertexindex++) {
           let nextvertexindex = vertexindex + 1
-          if (nextvertexindex == numvertices) nextvertexindex = 0
+          if (nextvertexindex === numvertices) nextvertexindex = 0
           let nextvertex = polygon.vertices[nextvertexindex]
           let nextvertextag = nextvertex.getTag()
           let sidetag = vertextag + '/' + nextvertextag
@@ -966,7 +986,7 @@ CSG.prototype = {
       function addSide (vertex0, vertex1, polygonindex) {
         let starttag = vertex0.getTag()
         let endtag = vertex1.getTag()
-        if (starttag == endtag) throw new Error('Assertion failed')
+        if (starttag === endtag) throw new Error('Assertion failed')
         let newsidetag = starttag + '/' + endtag
         let reversesidetag = endtag + '/' + starttag
         if (reversesidetag in sidemap) {
@@ -1010,10 +1030,10 @@ CSG.prototype = {
         let sideobjs = sidemap[sidetag]
         for (let i = 0; i < sideobjs.length; i++) {
           let sideobj = sideobjs[i]
-          if (sideobj.vertex0 != vertex0) continue
-          if (sideobj.vertex1 != vertex1) continue
+          if (sideobj.vertex0 !== vertex0) continue
+          if (sideobj.vertex1 !== vertex1) continue
           if (polygonindex !== null) {
-            if (sideobj.polygonindex != polygonindex) continue
+            if (sideobj.polygonindex !== polygonindex) continue
           }
           idx = i
           break
@@ -1080,8 +1100,8 @@ CSG.prototype = {
                 let matchingsideendvertex = (directionindex === 0) ? matchingside.vertex1 : matchingside.vertex0
                 let matchingsidestartvertextag = matchingsidestartvertex.getTag()
                 let matchingsideendvertextag = matchingsideendvertex.getTag()
-                if (matchingsideendvertextag != startvertextag) throw new Error('Assertion failed')
-                if (matchingsidestartvertextag == endvertextag) {
+                if (matchingsideendvertextag !== startvertextag) throw new Error('Assertion failed')
+                if (matchingsidestartvertextag === endvertextag) {
                                     // matchingside cancels sidetagtocheck
                   deleteSide(startvertex, endvertex, null)
                   deleteSide(endvertex, startvertex, null)
@@ -1099,7 +1119,7 @@ CSG.prototype = {
                   if ((t > 0) && (t < 1)) {
                     let closestpoint = startpos.plus(direction.times(t))
                     let distancesquared = closestpoint.distanceToSquared(endpos)
-                    if (distancesquared < (CSG.EPS * CSG.EPS)) {
+                    if (distancesquared < (EPS * EPS)) {
                                             // Yes it's a t-junction! We need to split matchingside in two:
                       let polygonindex = matchingside.polygonindex
                       let polygon = polygons[polygonindex]
@@ -1107,7 +1127,7 @@ CSG.prototype = {
                       let insertionvertextag = matchingside.vertex1.getTag()
                       let insertionvertextagindex = -1
                       for (let i = 0; i < polygon.vertices.length; i++) {
-                        if (polygon.vertices[i].getTag() == insertionvertextag) {
+                        if (polygon.vertices[i].getTag() === insertionvertextag) {
                           insertionvertextagindex = i
                           break
                         }
@@ -1116,7 +1136,7 @@ CSG.prototype = {
                                             // split the side by inserting the vertex:
                       let newvertices = polygon.vertices.slice(0)
                       newvertices.splice(insertionvertextagindex, 0, endvertex)
-                      let newpolygon = new CSG.Polygon(newvertices, polygon.shared /* polygon.plane */)
+                      let newpolygon = new Polygon(newvertices, polygon.shared /* polygon.plane */)
 
 // FIX
                                            // calculate plane with differents point
@@ -1132,7 +1152,7 @@ CSG.prototype = {
                         loop(function (a) {
                           loop(function (b) {
                             loop(function (c) {
-                              newpolygon.plane = CSG.Plane.fromPoints(a.pos, b.pos, c.pos)
+                              newpolygon.plane = Plane.fromPoints(a.pos, b.pos, c.pos)
                               if (!isNaN(newpolygon.plane.w)) {
                                 found = true
                               }
@@ -1157,7 +1177,7 @@ CSG.prototype = {
                       break
                     } // if(distancesquared < 1e-10)
                   } // if( (t > 0) && (t < 1) )
-                } // if(endingstidestartvertextag == endvertextag)
+                } // if(endingstidestartvertextag === endvertextag)
               } // for matchingsideindex
             } // for directionindex
           } // if(sidetagtocheck in sidemap)
@@ -1167,7 +1187,7 @@ CSG.prototype = {
         }
         if (!donesomething) break
       }
-      let newcsg = CSG.fromPolygons(polygons)
+      let newcsg = fromPolygons(polygons)
       newcsg.properties = csg.properties
       newcsg.isCanonicalized = true
       newcsg.isRetesselated = true
@@ -1179,8 +1199,8 @@ CSG.prototype = {
       break
     }
     if (!sidemapisempty) {
-            // throw new Error("!sidemapisempty");
-      OpenJsCad.log('!sidemapisempty')
+      // throw new Error("!sidemapisempty");
+      console.log('!sidemapisempty')
     }
     return csg
   },
@@ -1190,7 +1210,7 @@ CSG.prototype = {
     this.polygons.forEach(function (poly) {
       let firstVertex = poly.vertices[0]
       for (let i = poly.vertices.length - 3; i >= 0; i--) {
-        polygons.push(new CSG.Polygon([
+        polygons.push(new Polygon([
           firstVertex, poly.vertices[i + 1], poly.vertices[i + 2]
         ],
                     poly.shared, poly.plane))
@@ -1213,7 +1233,7 @@ CSG.prototype = {
                 return feat + (pv === 0 ? 0 : pv[i])
               })
             }, 0)
-    return (result.length == 1) ? result[0] : result
+    return (result.length === 1) ? result[0] : result
   }
 }
 

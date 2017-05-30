@@ -1,4 +1,3 @@
-
 function fnNumberSort (a, b) {
   return a - b
 }
@@ -69,7 +68,7 @@ const reTesselateCoplanarPolygons = function (sourcepolygons, destpolygons) {
   if (numpolygons > 0) {
     let plane = sourcepolygons[0].plane
     let shared = sourcepolygons[0].shared
-    let orthobasis = new CSG.OrthoNormalBasis(plane)
+    let orthobasis = new OrthoNormalBasis(plane)
     let polygonvertices2d = [] // array of array of CSG.Vector2D
     let polygontopvertexindexes = [] // array of indexes of topmost vertex per polygon
     let topy2polygonindexes = {}

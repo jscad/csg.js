@@ -1,3 +1,8 @@
+const {EPS} = require('./constants')
+const Plane = require('./math/Plane')
+const Vertex3D = require('./math/Vertex3')
+const Vector2D = require('./math/Vector2')
+const Vector3D = require('./math/Vector3')
 /**
  * Class CAG
  * Holds a solid area geometry like CSG but 2D.
@@ -10,13 +15,12 @@ let CAG = function () {
   this.isCanonicalized = false
 }
 
-
 // see if the line between p0start and p0end intersects with the line between p1start and p1end
 // returns true if the lines strictly intersect, the end points are not counted!
 CAG.linesIntersect = function (p0start, p0end, p1start, p1end) {
   if (p0end.equals(p1start) || p1end.equals(p0start)) {
     let d = p1end.minus(p1start).unit().plus(p0end.minus(p0start).unit()).length()
-    if (d < CSG.EPS) {
+    if (d < EPS) {
       return true
     }
   } else {
@@ -24,7 +28,7 @@ CAG.linesIntersect = function (p0start, p0end, p1start, p1end) {
     let d1 = p1end.minus(p1start)
         // FIXME These epsilons need review and testing
     if (Math.abs(d0.cross(d1)) < 1e-9) return false // lines are parallel
-    let alphas = CSG.solve2Linear(-d0.x, d1.x, -d0.y, d1.y, p0start.x - p1start.x, p0start.y - p1start.y)
+    let alphas = solve2Linear(-d0.x, d1.x, -d0.y, d1.y, p0start.x - p1start.x, p0start.y - p1start.y)
     if ((alphas[0] > 1e-6) && (alphas[0] < 0.999999) && (alphas[1] > 1e-5) && (alphas[1] < 0.999999)) return true
         //    if( (alphas[0] >= 0) && (alphas[0] <= 1) && (alphas[1] >= 0) && (alphas[1] <= 1) ) return true;
   }
@@ -51,8 +55,8 @@ CAG.prototype = {
         // transform m
     let pairs = this.sides.map(function (side) {
       let p0 = side.vertex0.pos, p1 = side.vertex1.pos
-      return [CSG.Vector3D.Create(p0.x, p0.y, 0),
-        CSG.Vector3D.Create(p1.x, p1.y, 0)]
+      return [Vector3D.Create(p0.x, p0.y, 0),
+        Vector3D.Create(p1.x, p1.y, 0)]
     })
     if (typeof m !== 'undefined') {
       pairs = pairs.map(function (pair) {
@@ -74,26 +78,26 @@ CAG.prototype = {
     let flipped = options.flipped || false
         // reference connector for transformation
     let origin = [0, 0, 0], defaultAxis = [0, 0, 1], defaultNormal = [0, 1, 0]
-    let thisConnector = new CSG.Connector(origin, defaultAxis, defaultNormal)
+    let thisConnector = new Connector(origin, defaultAxis, defaultNormal)
         // translated connector per options
     let translation = options.translation || origin
     let axisVector = options.axisVector || defaultAxis
     let normalVector = options.normalVector || defaultNormal
         // will override above if options has toConnector
     let toConnector = options.toConnector ||
-            new CSG.Connector(translation, axisVector, normalVector)
+            new Connector(translation, axisVector, normalVector)
         // resulting transform
     let m = thisConnector.getTransformationTo(toConnector, false, 0)
         // create plane as a (partial non-closed) CSG in XY plane
     let bounds = this.getBounds()
-    bounds[0] = bounds[0].minus(new CSG.Vector2D(1, 1))
-    bounds[1] = bounds[1].plus(new CSG.Vector2D(1, 1))
+    bounds[0] = bounds[0].minus(new Vector2D(1, 1))
+    bounds[1] = bounds[1].plus(new Vector2D(1, 1))
     let csgshell = this._toCSGWall(-1, 1)
     let csgplane = CSG.fromPolygons([new CSG.Polygon([
-      new CSG.Vertex(new CSG.Vector3D(bounds[0].x, bounds[0].y, 0)),
-      new CSG.Vertex(new CSG.Vector3D(bounds[1].x, bounds[0].y, 0)),
-      new CSG.Vertex(new CSG.Vector3D(bounds[1].x, bounds[1].y, 0)),
-      new CSG.Vertex(new CSG.Vector3D(bounds[0].x, bounds[1].y, 0))
+      new Vertex3D(new Vector3D(bounds[0].x, bounds[0].y, 0)),
+      new Vertex3D(new Vector3D(bounds[1].x, bounds[0].y, 0)),
+      new Vertex3D(new Vector3D(bounds[1].x, bounds[1].y, 0)),
+      new Vertex3D(new Vector3D(bounds[0].x, bounds[1].y, 0))
     ])])
     if (flipped) {
       csgplane = csgplane.invert()
@@ -122,13 +126,13 @@ CAG.prototype = {
         //     walls go from toConnector1 to toConnector2
         //     optionally, target cag to point to - cag needs to have same number of sides as this!
     let origin = [0, 0, 0], defaultAxis = [0, 0, 1], defaultNormal = [0, 1, 0]
-    let thisConnector = new CSG.Connector(origin, defaultAxis, defaultNormal)
+    let thisConnector = new Connector(origin, defaultAxis, defaultNormal)
         // arguments:
     let toConnector1 = options.toConnector1
-        // let toConnector2 = new CSG.Connector([0, 0, -30], defaultAxis, defaultNormal);
+        // let toConnector2 = new Connector([0, 0, -30], defaultAxis, defaultNormal);
     let toConnector2 = options.toConnector2
-    if (!(toConnector1 instanceof CSG.Connector && toConnector2 instanceof CSG.Connector)) {
-      throw ('could not parse CSG.Connector arguments toConnector1 or toConnector2')
+    if (!(toConnector1 instanceof Connector && toConnector2 instanceof Connector)) {
+      throw ('could not parse Connector arguments toConnector1 or toConnector2')
     }
     if (options.cag) {
       if (options.cag.sides.length != this.sides.length) {
@@ -145,9 +149,9 @@ CAG.prototype = {
     let polygons = []
     vps1.forEach(function (vp1, i) {
       polygons.push(new CSG.Polygon([
-        new CSG.Vertex(vps2[i][1]), new CSG.Vertex(vps2[i][0]), new CSG.Vertex(vp1[0])]))
+        new Vertex3D(vps2[i][1]), new Vertex3D(vps2[i][0]), new Vertex3D(vp1[0])]))
       polygons.push(new CSG.Polygon([
-        new CSG.Vertex(vps2[i][1]), new CSG.Vertex(vp1[0]), new CSG.Vertex(vp1[1])]))
+        new Vertex3D(vps2[i][1]), new Vertex3D(vp1[0]), new Vertex3D(vp1[1])]))
     })
     return polygons
   },
