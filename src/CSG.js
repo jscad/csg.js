@@ -19,6 +19,19 @@ const Connector = require('./connectors')
 let {fromPolygons} = require('./CSGMakers') // FIXME: circular dependency !
 
 
+const CSGFromCSGFuzzyFactory = function (factory, sourcecsg) {
+  let _this = factory
+  let newpolygons = []
+  sourcecsg.polygons.forEach(function (polygon) {
+    let newpolygon = _this.getPolygon(polygon)
+          // see getPolygon above: we may get a polygon with no vertices, discard it:
+    if (newpolygon.vertices.length >= 3) {
+      newpolygons.push(newpolygon)
+    }
+  })
+  return fromPolygons(CSG, newpolygons)
+}
+
 /** Class CSG
  * Holds a binary space partition tree representing a 3D solid. Two solids can
  * be combined using the `union()`, `subtract()`, and `intersect()` methods.
@@ -61,11 +74,10 @@ CSG.prototype = {
     }
 
     let i
-        // combine csg pairs in a way that forms a balanced binary tree pattern
+    // combine csg pairs in a way that forms a balanced binary tree pattern
     for (i = 1; i < csgs.length; i += 2) {
       csgs.push(csgs[i - 1].unionSub(csgs[i]))
     }
-
     return csgs[i - 1].reTesselated().canonicalized()
   },
 
@@ -492,12 +504,15 @@ CSG.prototype = {
     return result
   },
 
+
+
+
   canonicalized: function () {
     if (this.isCanonicalized) {
       return this
     } else {
       let factory = new FuzzyCSGFactory()
-      let result = factory.getCSG(this)
+      let result = CSGFromCSGFuzzyFactory(factory, this)
       result.isCanonicalized = true
       result.isRetesselated = this.isRetesselated
       result.properties = this.properties // keep original properties

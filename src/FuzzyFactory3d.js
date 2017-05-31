@@ -1,5 +1,4 @@
 const {EPS} = require('./constants')
-const {fromPolygons} = require('./CSGMakers') // FIXME: circular dependency !
 const Polygon = require('./math/Polygon3')
 const FuzzyFactory = require('./FuzzyFactory')
 
@@ -63,19 +62,6 @@ FuzzyCSGFactory.prototype = {
       newverticesDedup = []
     }
     return new Polygon(newverticesDedup, newshared, newplane)
-  },
-
-  getCSG: function (sourcecsg) {
-    let _this = this
-    let newpolygons = []
-    sourcecsg.polygons.forEach(function (polygon) {
-      let newpolygon = _this.getPolygon(polygon)
-            // see getPolygon above: we may get a polygon with no vertices, discard it:
-      if (newpolygon.vertices.length >= 3) {
-        newpolygons.push(newpolygon)
-      }
-    })
-    return fromPolygons(newpolygons)
   }
 }
 

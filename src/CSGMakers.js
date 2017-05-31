@@ -8,7 +8,7 @@ const Polygon = require('./math/Polygon3')
  * @returns {CSG} new CSG object
  */
 function fromPolygons (BaseType, polygons) {
-  let csg = new require('./CSG')//new BaseType() // CSG in disguise
+  let csg = BaseType ? new BaseType() : new require('./CSG')()// // CSG in disguise
   csg.polygons = polygons
   csg.isCanonicalized = false
   csg.isRetesselated = false

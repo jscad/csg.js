@@ -122,7 +122,7 @@ Polygon.prototype = {
     }
     polygon2 = polygon2.flipped()
     newpolygons.push(polygon2)
-    return fromPolygons(newpolygons)
+    return fromPolygons(null, newpolygons)
   },
 
   translate: function (offset) {
@@ -291,7 +291,7 @@ Polygon.prototype = {
       polygons.unshift(flipped ? bottom : bottom.flipped())
       polygons.push(flipped ? top.flipped() : top)
     }
-    return fromPolygons(polygons)
+    return fromPolygons(null, polygons)
   },
     /**
      *

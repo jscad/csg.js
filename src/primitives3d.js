@@ -30,8 +30,8 @@ const cube = function (options) {
     if (('center' in options) || ('radius' in options)) {
       throw new Error('cube: should either give a radius and center parameter, or a corner1 and corner2 parameter')
     }
-    let corner1 = parseOptionAs3DVector(options, 'corner1', [0, 0, 0])
-    let corner2 = parseOptionAs3DVector(options, 'corner2', [1, 1, 1])
+    corner1 = parseOptionAs3DVector(options, 'corner1', [0, 0, 0])
+    corner2 = parseOptionAs3DVector(options, 'corner2', [1, 1, 1])
     c = corner1.plus(corner2).times(0.5)
     r = corner2.minus(corner1).times(0.5)
   } else {
@@ -72,7 +72,6 @@ const cube = function (options) {
     })
     return new Polygon(vertices, null /* , plane */)
   }))
-  console.log('result', result.properties)
   result.properties.cube = new Properties()
   result.properties.cube.center = new Vector3D(c)
     // add 6 connectors, at the centers of each face:
@@ -216,8 +215,8 @@ const cylinder = function (options) {
   }
   if (alpha > 0) {
     for (let i = 0; i < slices; i++) {
-      let t0 = i / slices,
-        t1 = (i + 1) / slices
+      let t0 = i / slices
+      let t1 = (i + 1) / slices
       if (rEnd === rStart) {
         polygons.push(new Polygon([start, point(0, t0, rEnd), point(0, t1, rEnd)]))
         polygons.push(new Polygon([point(0, t1, rEnd), point(0, t0, rEnd), point(1, t0, rEnd), point(1, t1, rEnd)]))
@@ -402,8 +401,8 @@ const cylinderElliptic = function (options) {
     return new Vertex(pos)
   }
   for (let i = 0; i < slices; i++) {
-    let t0 = i / slices,
-      t1 = (i + 1) / slices
+    let t0 = i / slices
+    let t1 = (i + 1) / slices
 
     if (rEnd._x === rStart._x && rEnd._y === rStart._y) {
       polygons.push(new Polygon([start, point(0, t0, rEnd), point(0, t1, rEnd)]))
@@ -446,7 +445,10 @@ const cylinderElliptic = function (options) {
  */
 const roundedCube = function (options) {
   let minRR = 1e-2 // minroundradius 1e-3 gives rounding errors already
-  let center, cuberadius
+  let center
+  let cuberadius
+  let corner1
+  let corner2
   options = options || {}
   if (('corner1' in options) || ('corner2' in options)) {
     if (('center' in options) || ('radius' in options)) {
