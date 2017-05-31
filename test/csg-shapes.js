@@ -7,9 +7,9 @@ import {assertSameGeometry} from './helpers/asserts'
 // with previously human validated shapes. It would be trivially
 // rewriting the generation code to test it with code instead.
 
-function isValid (t, name, csg) {
-  var expected = OBJ.loadPrevious('csg-shapes.' + name, csg)
-  assertSameGeometry(t, csg, expected)
+function isValid (t, name, observed) {
+  const expected = OBJ.loadPrevious('csg-shapes.' + name, observed)
+  assertSameGeometry(t, observed, expected)
 }
 
 test('CSG.cube creates a cube', t => {
