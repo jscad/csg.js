@@ -132,6 +132,7 @@ CSG.Matrix4x4 = require('./src/math/Matrix4')
 CAG.Side = require('./src/math/Side')
 
 CSG.Connector = require('./src/connectors')
+CSG.Properties = require('./src/Properties')
 
 const {circle, ellipse, rectangle, roundedRectangle} = require('./src/primitives2d')
 const {sphere, cube, roundedCube, cylinder, roundedCylinder, cylinderElliptic, polyhedron} = require('./src/primitives3d')
