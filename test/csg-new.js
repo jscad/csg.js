@@ -199,7 +199,7 @@ test('New CSG should convert properly', t => {
 
   var polygons = csg.toTriangles()
   t.is(polygons.length, 0)
-  acsg = CSG.fromPolygons(null, polygons)
+  acsg = CSG.fromPolygons(polygons)
   t.deepEqual(acsg.polygons, polygons)
   t.deepEqual(acsg.isCanonicalized, false)
   t.deepEqual(acsg.isRetesselated, false)
