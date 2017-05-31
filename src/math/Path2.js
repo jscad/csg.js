@@ -1,11 +1,11 @@
-const Vector2D = require('./Vector3')
+const Vector2D = require('./Vector2')
 const {EPS, angleEPS} = require('../constants')
 const {parseOptionAs2DVector, parseOptionAsFloat, parseOptionAsInt, parseOptionAsBool} = require('../optionParsers')
 const {defaultResolution2D} = require('../constants')
 const Vertex = require('./Vertex2')
 const Side = require('./Side')
-const {fromSides, fromPoints} = require('../CAGMakers')
-// ////////////////////////////////////
+// const {fromSides, fromPoints} = require('../CAGMakers')
+
 // # Class Path2D
 const Path2D = function (points, closed) {
   closed = !!closed
@@ -135,6 +135,7 @@ Path2D.prototype = {
     // Expand the path to a CAG
     // This traces the path with a circle with radius pathradius
   expandToCAG: function (pathradius, resolution) {
+    const CAG = require('../CAG') // FIXME: cyclic dependencies CAG => PATH2 => CAG
     let sides = []
     let numpoints = this.points.length
     let startindex = 0
@@ -151,14 +152,15 @@ Path2D.prototype = {
       }
       prevvertex = vertex
     }
-    let shellcag = fromSides(sides)
+    let shellcag = CAG.fromSides(sides)
     let expanded = shellcag.expandedShell(pathradius, resolution)
     return expanded
   },
 
   innerToCAG: function () {
+    const CAG = require('../CAG') // FIXME: cyclic dependencies CAG => PATH2 => CAG
     if (!this.closed) throw new Error('The path should be closed!')
-    return fromPoints(this.points)
+    return CAG.fromPoints(this.points)
   },
 
   transform: function (matrix4x4) {

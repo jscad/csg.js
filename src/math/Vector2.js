@@ -1,5 +1,4 @@
 const {IsFloat} = require('../utils')
-const Vector3D = require('./Vector3')
 
 // /////////////////////////////////////////////////
 // # class Vector2D:
@@ -76,6 +75,7 @@ Vector2D.prototype = {
 
     // extend to a 3D vector by adding a z coordinate:
   toVector3D: function (z) {
+    const Vector3D = require('./Vector3') // FIXME: circular dependencies Vector2 => Vector3 => Vector2
     return new Vector3D(this._x, this._y, z)
   },
 

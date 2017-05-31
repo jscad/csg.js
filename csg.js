@@ -80,12 +80,42 @@ for solid CAD anyway.
 
 */
 
-
 const {addTransformationMethodsToPrototype, addCenteringToPrototype} = require('./src/mutators')
 let CSG = require('./src/CSG')
 let CAG = require('./src/CAG')
 
-console.log(CAG.fromPoints)
+// FIXME: how many are actual usefull to be exposed as API ?? looks like a code smell
+const { _CSGDEBUG,
+  defaultResolution2D,
+  defaultResolution3D,
+  EPS,
+  angleEPS,
+  areaEPS,
+  all,
+  top,
+  bottom,
+  left,
+  right,
+  front,
+  back,
+  staticTag,
+  getTag} = require('./src/constants')
+
+CSG._CSGDEBUG = _CSGDEBUG
+CSG.defaultResolution2D = defaultResolution2D
+CSG.defaultResolution3D = defaultResolution3D
+CSG.EPS = EPS
+CSG.angleEPS = angleEPS
+CSG.areaEPS = areaEPS
+CSG.all = all
+CSG.top = top
+CSG.bottom = bottom
+CSG.left = left
+CSG.right = right
+CSG.front = front
+CSG.back = back
+CSG.staticTag = staticTag
+CSG.getTag = getTag
 
 // eek ! all this is kept for backwards compatibility...for now
 CSG.Vector2D = require('./src/math/Vector2')
@@ -126,6 +156,10 @@ CSG.fromObject = fromObject
 CSG.fromSlices = fromSlices
 
 CSG.toPointCloud = require('./src/debugHelpers').toPointCloud
+
+const CAGMakers = require('./src/CAGMakers')
+CAG.fromObject = CAGMakers.fromObject
+CAG.fromPointsNoCheck = CAGMakers.fromPointsNoCheck
 
 // ////////////////////////////////////
 addTransformationMethodsToPrototype(CSG.prototype)
