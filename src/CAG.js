@@ -12,7 +12,7 @@ const Side = require('./math/Side')
 const {linesIntersect} = require('./math/lineUtils')
 const {parseOptionAs3DVector, parseOptionAsBool, parseOptionAsFloat, parseOptionAsInt} = require('./optionParsers')
 const {fromPolygons} = require('./CSGMakers')
-const FuzzyCAGFactory = require('./fuzzyFactory2d')
+const FuzzyCAGFactory = require('./FuzzyFactory2d')
 /**
  * Class CAG
  * Holds a solid area geometry like CSG but 2D.
