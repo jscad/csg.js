@@ -13,7 +13,7 @@ const OrthoNormalBasis = require('./math/OrthoNormalBasis')
 
 const CAG = require('./CAG') // FIXME: circular dependency !
 
-const Properties = require('./properties')
+const Properties = require('./Properties')
 const Connector = require('./connectors')
 //let {fromPolygons} = require('./CSGMakers') // FIXME: circular dependency !
 

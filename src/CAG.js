@@ -1,4 +1,3 @@
-const CSG = require('./CSG')
 const {EPS, angleEPS, areaEPS, defaultResolution3D} = require('./constants')
 const Connector = require('./connectors')
 const OrthoNormalBasis = require('./math/OrthoNormalBasis')
@@ -11,7 +10,6 @@ const Path2D = require('./math/Path2')
 const Side = require('./math/Side')
 const {linesIntersect} = require('./math/lineUtils')
 const {parseOptionAs3DVector, parseOptionAsBool, parseOptionAsFloat, parseOptionAsInt} = require('./optionParsers')
-const {fromPolygons} = require('./CSGMakers')
 const FuzzyCAGFactory = require('./FuzzyFactory2d')
 /**
  * Class CAG
@@ -33,6 +31,19 @@ CAG.fromSides = function (sides) {
   let cag = new CAG()
   cag.sides = sides
   return cag
+}
+
+
+// Converts a CSG to a  The CSG must consist of polygons with only z coordinates +1 and -1
+// as constructed by _toCSGWall(-1, 1). This is so we can use the 3D union(), intersect() etc
+CAG.fromFakeCSG = function (csg) {
+  let sides = csg.polygons.map(function (p) {
+    return Side._fromFakePolygon(p)
+  })
+        .filter(function (s) {
+          return s !== null
+        })
+  return CAG.fromSides(sides)
 }
 
 /** Construct a CAG from a list of points (a polygon).
@@ -70,6 +81,18 @@ CAG.fromPoints = function (points) {
   return result
 }
 
+const CAGFromCAGFuzzyFactory = function (factory, sourcecag) {
+  let _this = factory
+  let newsides = sourcecag.sides.map(function (side) {
+    return _this.getSide(side)
+  })
+      // remove bad sides (mostly a user input issue)
+      .filter(function (side) {
+        return side.length() > EPS
+      })
+  return CAG.fromSides(newsides)
+}
+
 CAG.prototype = {
   toString: function () {
     let result = 'CAG (' + this.sides.length + ' sides):\n'
@@ -80,10 +103,11 @@ CAG.prototype = {
   },
 
   _toCSGWall: function (z0, z1) {
+    const CSG = require('./CSG') // FIXME: circular dependencies CAG=>CSG=>CAG
     let polygons = this.sides.map(function (side) {
       return side.toPolygon3D(z0, z1)
     })
-    return fromPolygons(polygons)
+    return CSG.fromPolygons(null, polygons)
   },
 
   _toVector3DPairs: function (m) {
@@ -111,6 +135,7 @@ CAG.prototype = {
      * (toConnector has precedence over single arguments if provided)
      */
   _toPlanePolygons: function (options) {
+    const CSG = require('./CSG') // FIXME: circular dependencies CAG=>CSG=>CAG
     let flipped = options.flipped || false
         // reference connector for transformation
     let origin = [0, 0, 0]
@@ -124,14 +149,14 @@ CAG.prototype = {
         // will override above if options has toConnector
     let toConnector = options.toConnector ||
             new Connector(translation, axisVector, normalVector)
-        // resulting transform
+    // resulting transform
     let m = thisConnector.getTransformationTo(toConnector, false, 0)
-        // create plane as a (partial non-closed) CSG in XY plane
+    // create plane as a (partial non-closed) CSG in XY plane
     let bounds = this.getBounds()
     bounds[0] = bounds[0].minus(new Vector2D(1, 1))
     bounds[1] = bounds[1].plus(new Vector2D(1, 1))
     let csgshell = this._toCSGWall(-1, 1)
-    let csgplane = fromPolygons([new Polygon([
+    let csgplane = CSG.fromPolygons(null, [new Polygon([
       new Vertex3D(new Vector3D(bounds[0].x, bounds[0].y, 0)),
       new Vertex3D(new Vector3D(bounds[1].x, bounds[0].y, 0)),
       new Vertex3D(new Vector3D(bounds[1].x, bounds[1].y, 0)),
@@ -468,6 +493,7 @@ CAG.prototype = {
     // twiststeps determines the resolution of the twist (should be >= 1)
     // returns a CSG object
   extrude: function (options) {
+    const CSG = require('./CSG') // FIXME: circular dependencies CAG=>CSG=>CAG
     if (this.sides.length === 0) {
             // empty!
       return new CSG()
@@ -503,7 +529,7 @@ CAG.prototype = {
       polygons = polygons.concat(this._toWallPolygons({toConnector1: c1, toConnector2: c2}))
     }
 
-    return fromPolygons(polygons)
+    return CSG.fromPolygons(null, polygons)
   },
 
     /** Extrude to into a 3D solid by rotating the origin around the Y axis.
@@ -514,6 +540,7 @@ CAG.prototype = {
      * @returns {CSG} new 3D solid
      */
   rotateExtrude: function (options) { // FIXME options should be optional
+    const CSG = require('./CSG') // FIXME: circular dependencies CAG=>CSG=>CAG
     let alpha = parseOptionAsFloat(options, 'angle', 360)
     let resolution = parseOptionAsInt(options, 'resolution', defaultResolution3D)
 
@@ -542,7 +569,7 @@ CAG.prototype = {
                 {toConnector1: connT1, toConnector2: connT2}))
       connT1 = connT2
     }
-    return fromPolygons(polygons).reTesselated()
+    return CSG.fromPolygons(null, polygons).reTesselated()
   },
 
     // check if we are a valid CAG (for debugging)
@@ -586,7 +613,7 @@ CAG.prototype = {
       return this
     } else {
       let factory = new FuzzyCAGFactory()
-      let result = factory.getCAG(this)
+      let result = CAGFromCAGFuzzyFactory(factory, this)
       result.isCanonicalized = true
       return result
     }

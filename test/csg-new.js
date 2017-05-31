@@ -181,7 +181,7 @@ test('New CSG should return empty values', t => {
   // NOTE: CAG.union() is being called internally so compare accordingly
   t.deepEqual(acag, ucag)
 
-  var acsg = csg.toPointCloud()
+  var acsg = CSG.toPointCloud(csg)
   t.deepEqual(acsg, csg)
 })
 
@@ -199,7 +199,7 @@ test('New CSG should convert properly', t => {
 
   var polygons = csg.toTriangles()
   t.is(polygons.length, 0)
-  acsg = CSG.fromPolygons(polygons)
+  acsg = CSG.fromPolygons(null, polygons)
   t.deepEqual(acsg.polygons, polygons)
   t.deepEqual(acsg.isCanonicalized, false)
   t.deepEqual(acsg.isRetesselated, false)

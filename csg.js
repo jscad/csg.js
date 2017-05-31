@@ -97,6 +97,7 @@ CSG.Line2D = require('./src/math/Line2')
 CSG.Line3D = require('./src/math/Line3')
 CSG.Path2D = require('./src/math/Path2')
 CSG.OrthoNormalBasis = require('./src/math/OrthoNormalBasis')
+CSG.Matrix4x4 = require('./src/math/Matrix4')
 
 CAG.Side = require('./src/math/Side')
 
@@ -123,6 +124,8 @@ const {fromCompactBinary, fromObject, fromSlices} = require('./src/CSGMakers')
 CSG.fromCompactBinary = fromCompactBinary
 CSG.fromObject = fromObject
 CSG.fromSlices = fromSlices
+
+CSG.toPointCloud = require('./src/debugHelpers').toPointCloud
 
 // ////////////////////////////////////
 addTransformationMethodsToPrototype(CSG.prototype)

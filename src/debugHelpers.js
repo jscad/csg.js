@@ -1,7 +1,9 @@
 const CSG = require('./CSG')
 const {cube} = require('./primitives3d')
+
 // For debugging
 // Creates a new solid with a tiny cube at every vertex of the source solid
+// this is seperated from the CSG class itself because of the dependency on cube
 const toPointCloud = function (csg, cuberadius) {
   csg = csg.reTesselated()
 
@@ -18,11 +20,11 @@ const toPointCloud = function (csg, cuberadius) {
 
   for (let vertextag in vertexmap) {
     let pos = vertexmap[vertextag]
-    let cube = cube({
+    let _cube = cube({
       center: pos,
       radius: cuberadius
     })
-    result = result.unionSub(cube, false, false)
+    result = result.unionSub(_cube, false, false)
   }
   result = result.reTesselated()
   return result
