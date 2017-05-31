@@ -225,7 +225,7 @@ Polygon.prototype = {
      *  - loop {Boolean} no flats, only walls, it's used to generate solids like a tor
      */
   solidFromSlices: function (options) {
-    const {fromPolygons} = require('../CSGMakers')
+    const CSG = require('../CSG')
 
     let polygons = [],
       csg = null,
@@ -294,7 +294,7 @@ Polygon.prototype = {
       polygons.unshift(flipped ? bottom : bottom.flipped())
       polygons.push(flipped ? top.flipped() : top)
     }
-    return fromPolygons(null, polygons)
+    return CSG.fromPolygons(polygons)
   },
     /**
      *

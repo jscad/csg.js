@@ -1,14 +1,16 @@
 const Vector3D = require('./math/Vector3')
 const Vertex = require('./math/Vertex3')
 const Plane = require('./math/Plane')
-const Polygon = require('./math/Polygon3')
+const Polygon2D = require('./math/Polygon2')
+const Polygon3D = require('./math/Polygon3')
+
 /** Construct a CSG solid from a list of pre-generated slices.
  * See Polygon.prototype.solidFromSlices() for details.
  * @param {Object} options - options passed to solidFromSlices()
  * @returns {CSG} new CSG object
  */
 function fromSlices (options) {
-  return (new Polygon.createFromPoints([
+  return (new Polygon2D.createFromPoints([
         [0, 0, 0],
         [1, 0, 0],
         [1, 1, 0],
@@ -23,7 +25,7 @@ function fromSlices (options) {
 function fromObject (obj) {
   const CSG = require('./CSG')
   let polygons = obj.polygons.map(function (p) {
-    return Polygon.fromObject(p)
+    return Polygon3D.fromObject(p)
   })
   let csg = CSG.fromPolygons(polygons)
   csg.isCanonicalized = obj.isCanonicalized
@@ -70,7 +72,7 @@ function fromCompactBinary (bin) {
   }
 
   let shareds = bin.shared.map(function (shared) {
-    return Polygon.Shared.fromObject(shared)
+    return Polygon3D.Shared.fromObject(shared)
   })
 
   let polygons = []
@@ -92,7 +94,7 @@ function fromCompactBinary (bin) {
     }
     plane = planes[polygonPlaneIndexes[polygonindex]]
     shared = shareds[polygonSharedIndexes[polygonindex]]
-    polygon = new Polygon(polygonvertices, shared, plane)
+    polygon = new Polygon3D(polygonvertices, shared, plane)
     polygons.push(polygon)
   }
   let csg = CSG.fromPolygons(polygons)
