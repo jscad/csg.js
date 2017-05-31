@@ -1,17 +1,134 @@
 const {_CSGDEBUG, EPS} = require('./constants')
-  // # class PolygonTreeNode
-  // This class manages hierarchical splits of polygons
-  // At the top is a root node which doesn hold a polygon, only child PolygonTreeNodes
-  // Below that are zero or more 'top' nodes; each holds a polygon. The polygons can be in different planes
-  // splitByPlane() splits a node by a plane. If the plane intersects the polygon, two new child nodes
-  // are created holding the splitted polygon.
-  // getPolygons() retrieves the polygon from the tree. If for PolygonTreeNode the polygon is split but
-  // the two split parts (child nodes) are still intact, then the unsplit polygon is returned.
-  // This ensures that we can safely split a polygon into many fragments. If the fragments are untouched,
-  //  getPolygons() will return the original unsplit polygon instead of the fragments.
-  // remove() removes a polygon from the tree. Once a polygon is removed, the parent polygons are invalidated
-  // since they are no longer intact.
-  // constructor creates the root node:
+const Vertex = require('./math/Vertex3')
+const Polygon = require('./math/Polygon3')
+
+// Returns object:
+// .type:
+//   0: coplanar-front
+//   1: coplanar-back
+//   2: front
+//   3: back
+//   4: spanning
+// In case the polygon is spanning, returns:
+// .front: a Polygon of the front part
+// .back: a Polygon of the back part
+function splitPolygonByPlane (plane, polygon) {
+  let result = {
+    type: null,
+    front: null,
+    back: null
+  }
+      // cache in local lets (speedup):
+  let planenormal = plane.normal
+  let vertices = polygon.vertices
+  let numvertices = vertices.length
+  if (polygon.plane.equals(plane)) {
+    result.type = 0
+  } else {
+    let thisw = plane.w
+    let hasfront = false
+    let hasback = false
+    let vertexIsBack = []
+    let MINEPS = -EPS
+    for (let i = 0; i < numvertices; i++) {
+      let t = planenormal.dot(vertices[i].pos) - thisw
+      let isback = (t < 0)
+      vertexIsBack.push(isback)
+      if (t > EPS) hasfront = true
+      if (t < MINEPS) hasback = true
+    }
+    if ((!hasfront) && (!hasback)) {
+              // all points coplanar
+      let t = planenormal.dot(polygon.plane.normal)
+      result.type = (t >= 0) ? 0 : 1
+    } else if (!hasback) {
+      result.type = 2
+    } else if (!hasfront) {
+      result.type = 3
+    } else {
+              // spanning
+      result.type = 4
+      let frontvertices = []
+      let backvertices = []
+      let isback = vertexIsBack[0]
+      for (let vertexindex = 0; vertexindex < numvertices; vertexindex++) {
+        let vertex = vertices[vertexindex]
+        let nextvertexindex = vertexindex + 1
+        if (nextvertexindex >= numvertices) nextvertexindex = 0
+        let nextisback = vertexIsBack[nextvertexindex]
+        if (isback === nextisback) {
+                      // line segment is on one side of the plane:
+          if (isback) {
+            backvertices.push(vertex)
+          } else {
+            frontvertices.push(vertex)
+          }
+        } else {
+                      // line segment intersects plane:
+          let point = vertex.pos
+          let nextpoint = vertices[nextvertexindex].pos
+          let intersectionpoint = plane.splitLineBetweenPoints(point, nextpoint)
+          let intersectionvertex = new Vertex(intersectionpoint)
+          if (isback) {
+            backvertices.push(vertex)
+            backvertices.push(intersectionvertex)
+            frontvertices.push(intersectionvertex)
+          } else {
+            frontvertices.push(vertex)
+            frontvertices.push(intersectionvertex)
+            backvertices.push(intersectionvertex)
+          }
+        }
+        isback = nextisback
+      } // for vertexindex
+              // remove duplicate vertices:
+      let EPS_SQUARED = EPS * EPS
+      if (backvertices.length >= 3) {
+        let prevvertex = backvertices[backvertices.length - 1]
+        for (let vertexindex = 0; vertexindex < backvertices.length; vertexindex++) {
+          let vertex = backvertices[vertexindex]
+          if (vertex.pos.distanceToSquared(prevvertex.pos) < EPS_SQUARED) {
+            backvertices.splice(vertexindex, 1)
+            vertexindex--
+          }
+          prevvertex = vertex
+        }
+      }
+      if (frontvertices.length >= 3) {
+        let prevvertex = frontvertices[frontvertices.length - 1]
+        for (let vertexindex = 0; vertexindex < frontvertices.length; vertexindex++) {
+          let vertex = frontvertices[vertexindex]
+          if (vertex.pos.distanceToSquared(prevvertex.pos) < EPS_SQUARED) {
+            frontvertices.splice(vertexindex, 1)
+            vertexindex--
+          }
+          prevvertex = vertex
+        }
+      }
+      if (frontvertices.length >= 3) {
+        result.front = new Polygon(frontvertices, polygon.shared, polygon.plane)
+      }
+      if (backvertices.length >= 3) {
+        result.back = new Polygon(backvertices, polygon.shared, polygon.plane)
+      }
+    }
+  }
+  return result
+}
+
+// # class PolygonTreeNode
+// This class manages hierarchical splits of polygons
+// At the top is a root node which doesn hold a polygon, only child PolygonTreeNodes
+// Below that are zero or more 'top' nodes; each holds a polygon. The polygons can be in different planes
+// splitByPlane() splits a node by a plane. If the plane intersects the polygon, two new child nodes
+// are created holding the splitted polygon.
+// getPolygons() retrieves the polygon from the tree. If for PolygonTreeNode the polygon is split but
+// the two split parts (child nodes) are still intact, then the unsplit polygon is returned.
+// This ensures that we can safely split a polygon into many fragments. If the fragments are untouched,
+//  getPolygons() will return the original unsplit polygon instead of the fragments.
+// remove() removes a polygon from the tree. Once a polygon is removed, the parent polygons are invalidated
+// since they are no longer intact.
+// constructor creates the root node:
 const PolygonTreeNode = function () {
   this.parent = null
   this.children = []
@@ -138,7 +255,7 @@ PolygonTreeNode.prototype = {
       } else if (d < -sphereradius) {
         backnodes.push(this)
       } else {
-        let splitresult = plane.splitPolygon(polygon)
+        let splitresult = splitPolygonByPlane(plane, polygon)
         switch (splitresult.type) {
           case 0:
                         // coplanar front:

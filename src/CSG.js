@@ -12,25 +12,10 @@ const Matrix4x4 = require('./math/Matrix4')
 const OrthoNormalBasis = require('./math/OrthoNormalBasis')
 
 const CAG = require('./CAG') // FIXME: circular dependency !
-const {sphere} = require('./primitives2d') // FIXME: circular dependency !
 
 const Properties = require('./properties')
 const Connector = require('./connectors')
-let {fromPolygons} = require('./CSGMakers') // FIXME: circular dependency !
-
-
-const CSGFromCSGFuzzyFactory = function (factory, sourcecsg) {
-  let _this = factory
-  let newpolygons = []
-  sourcecsg.polygons.forEach(function (polygon) {
-    let newpolygon = _this.getPolygon(polygon)
-          // see getPolygon above: we may get a polygon with no vertices, discard it:
-    if (newpolygon.vertices.length >= 3) {
-      newpolygons.push(newpolygon)
-    }
-  })
-  return fromPolygons(CSG, newpolygons)
-}
+//let {fromPolygons} = require('./CSGMakers') // FIXME: circular dependency !
 
 /** Class CSG
  * Holds a binary space partition tree representing a 3D solid. Two solids can
@@ -96,7 +81,7 @@ CSG.prototype = {
       b.invert()
 
       let newpolygons = a.allPolygons().concat(b.allPolygons())
-      let result = fromPolygons(CSG, newpolygons)
+      let result = CSG.fromPolygons(CSG, newpolygons)
       result.properties = this.properties._merge(csg.properties)
       if (retesselate) result = result.reTesselated()
       if (canonicalize) result = result.canonicalized()
@@ -108,7 +93,7 @@ CSG.prototype = {
     // Do not use if you are not completely sure that the solids do not intersect!
   unionForNonIntersecting: function (csg) {
     let newpolygons = this.polygons.concat(csg.polygons)
-    let result = fromPolygons(CSG, newpolygons)
+    let result = CSG.fromPolygons(CSG, newpolygons)
     result.properties = this.properties._merge(csg.properties)
     result.isCanonicalized = this.isCanonicalized && csg.isCanonicalized
     result.isRetesselated = this.isRetesselated && csg.isRetesselated
@@ -152,7 +137,7 @@ CSG.prototype = {
     b.clipTo(a, true)
     a.addPolygons(b.allPolygons())
     a.invert()
-    let result = fromPolygons(CSG, a.allPolygons())
+    let result = CSG.fromPolygons(CSG, a.allPolygons())
     result.properties = this.properties._merge(csg.properties)
     if (retesselate) result = result.reTesselated()
     if (canonicalize) result = result.canonicalized()
@@ -198,7 +183,7 @@ CSG.prototype = {
     b.clipTo(a)
     a.addPolygons(b.allPolygons())
     a.invert()
-    let result = fromPolygons(CSG, a.allPolygons())
+    let result = CSG.fromPolygons(CSG, a.allPolygons())
     result.properties = this.properties._merge(csg.properties)
     if (retesselate) result = result.reTesselated()
     if (canonicalize) result = result.canonicalized()
@@ -211,7 +196,7 @@ CSG.prototype = {
     let flippedpolygons = this.polygons.map(function (p) {
       return p.flipped()
     })
-    return fromPolygons(CSG, flippedpolygons)
+    return CSG.fromPolygons(CSG, flippedpolygons)
         // TODO: flip properties?
   },
 
@@ -220,7 +205,7 @@ CSG.prototype = {
     let newpolygons = this.polygons.map(function (p) {
       return p.transform(matrix4x4)
     })
-    let result = fromPolygons(CSG, newpolygons)
+    let result = CSG.fromPolygons(CSG, newpolygons)
     result.properties = this.properties._transform(matrix4x4)
     result.isRetesselated = this.isRetesselated
     return result
@@ -254,7 +239,7 @@ CSG.prototype = {
       if (ismirror) newvertices.reverse()
       return new Polygon(newvertices, p.shared, newplane)
     })
-    let result = fromPolygons(CSG, newpolygons)
+    let result = CSG.fromPolygons(CSG, newpolygons)
     result.properties = this.properties._transform(matrix4x4)
     result.isRetesselated = this.isRetesselated
     result.isCanonicalized = this.isCanonicalized
@@ -308,6 +293,7 @@ CSG.prototype = {
     //   the result is a true expansion of the solid
     //   If false, returns only the shell
   expandedShell: function (radius, resolution, unionWithThis) {
+    const {sphere} = require('./primitives2d') // FIXME: circular dependency !
     let csg = this.reTesselated()
     let result
     if (unionWithThis) {
@@ -442,7 +428,7 @@ CSG.prototype = {
       endfacevertices.reverse()
       polygons.push(new Polygon(startfacevertices))
       polygons.push(new Polygon(endfacevertices))
-      let cylinder = fromPolygons(CSG, polygons)
+      let cylinder = CSG.fromPolygons(CSG, polygons)
       result = result.unionSub(cylinder, false, false)
     }
 
@@ -555,7 +541,7 @@ CSG.prototype = {
           destpolygons = destpolygons.concat(retesselayedpolygons)
         }
       }
-      let result = fromPolygons(CSG, destpolygons)
+      let result = CSG.fromPolygons(CSG, destpolygons)
       result.isRetesselated = true
             // result = result.canonicalized();
       result.properties = this.properties // keep original properties
@@ -660,7 +646,7 @@ CSG.prototype = {
     let polygons = this.polygons.map(function (p) {
       return new Polygon(p.vertices, shared, p.plane)
     })
-    let result = fromPolygons(CSG, polygons)
+    let result = CSG.fromPolygons(CSG, polygons)
     result.properties = this.properties // keep original properties
     result.isRetesselated = this.isRetesselated
     result.isCanonicalized = this.isCanonicalized
@@ -1176,7 +1162,7 @@ CSG.prototype = {
         }
         if (!donesomething) break
       }
-      let newcsg = fromPolygons(CSG, polygons)
+      let newcsg = CSG.fromPolygons(CSG, polygons)
       newcsg.properties = csg.properties
       newcsg.isCanonicalized = true
       newcsg.isRetesselated = true
@@ -1224,6 +1210,32 @@ CSG.prototype = {
             }, 0)
     return (result.length === 1) ? result[0] : result
   }
+}
+
+
+/** Construct a CSG solid from a list of `Polygon` instances.
+ * @param {Polygon[]} polygons - list of polygons
+ * @returns {CSG} new CSG object
+ */
+CSG.fromPolygons = function fromPolygons (BaseType, polygons) {
+  let csg = new CSG()//BaseType ? new BaseType() : new require('./CSG')() // CSG in disguise
+  csg.polygons = polygons
+  csg.isCanonicalized = false
+  csg.isRetesselated = false
+  return csg
+}
+
+const CSGFromCSGFuzzyFactory = function (factory, sourcecsg) {
+  let _this = factory
+  let newpolygons = []
+  sourcecsg.polygons.forEach(function (polygon) {
+    let newpolygon = _this.getPolygon(polygon)
+          // see getPolygon above: we may get a polygon with no vertices, discard it:
+    if (newpolygon.vertices.length >= 3) {
+      newpolygons.push(newpolygon)
+    }
+  })
+  return CSG.fromPolygons(CSG, newpolygons)
 }
 
 module.exports = CSG

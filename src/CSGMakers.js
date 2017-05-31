@@ -2,19 +2,6 @@ const Vector3D = require('./math/Vector3')
 const Vertex = require('./math/Vertex3')
 const Plane = require('./math/Plane')
 const Polygon = require('./math/Polygon3')
-
-/** Construct a CSG solid from a list of `Polygon` instances.
- * @param {Polygon[]} polygons - list of polygons
- * @returns {CSG} new CSG object
- */
-function fromPolygons (BaseType, polygons) {
-  let csg = BaseType ? new BaseType() : new require('./CSG')()// // CSG in disguise
-  csg.polygons = polygons
-  csg.isCanonicalized = false
-  csg.isRetesselated = false
-  return csg
-}
-
 /** Construct a CSG solid from a list of pre-generated slices.
  * See Polygon.prototype.solidFromSlices() for details.
  * @param {Object} options - options passed to solidFromSlices()
@@ -34,10 +21,11 @@ function fromSlices (options) {
  * @returns {CSG} new CSG object
  */
 function fromObject (obj) {
+  const CSG = require('./CSG')
   let polygons = obj.polygons.map(function (p) {
     return Polygon.fromObject(p)
   })
-  let csg = fromPolygons(polygons)
+  let csg = CSG.fromPolygons(polygons)
   csg.isCanonicalized = obj.isCanonicalized
   csg.isRetesselated = obj.isRetesselated
   return csg
@@ -48,6 +36,9 @@ function fromObject (obj) {
  * @returns {CSG} new CSG object
  */
 function fromCompactBinary (bin) {
+  const CSG = require('./CSG') // FIXME: circular dependency ??
+
+  console.log('polygon', Polygon.Shared)
   if (bin['class'] !== 'CSG') throw new Error('Not a CSG')
   let planes = []
   let planeData = bin.planeData
@@ -105,10 +96,15 @@ function fromCompactBinary (bin) {
     polygon = new Polygon(polygonvertices, shared, plane)
     polygons.push(polygon)
   }
-  let csg = fromPolygons(polygons)
+  let csg = CSG.fromPolygons(undefined, polygons)
   csg.isCanonicalized = true
   csg.isRetesselated = true
   return csg
 }
 
-module.exports = {fromPolygons, fromSlices, fromObject, fromCompactBinary}
+module.exports = {
+  //fromPolygons,
+  fromSlices,
+  fromObject,
+  fromCompactBinary
+}

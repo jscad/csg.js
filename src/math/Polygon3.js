@@ -2,7 +2,6 @@ const Vector3D = require('./Vector3')
 const Vertex = require('./Vertex3')
 const Matrix4x4 = require('./Matrix4')
 const {_CSGDEBUG, EPS, getTag, areaEPS} = require('../constants')
-const {fromPolygons} = require('../CSGMakers')
 const {fnSortByIndex} = require('../utils')
 
 // # class Polygon
@@ -18,7 +17,7 @@ const {fnSortByIndex} = require('../utils')
 // The plane of the polygon is calculated from the vertex coordinates
 // To avoid unnecessary recalculation, the plane can alternatively be
 // passed as the third argument
-const Polygon = function (vertices, shared, plane) {
+let Polygon = function (vertices, shared, plane) {
   this.vertices = vertices
   if (!shared) shared = Polygon.defaultShared
   this.shared = shared
@@ -100,6 +99,8 @@ Polygon.prototype = {
     // Extrude a polygon into the direction offsetvector
     // Returns a CSG object
   extrude: function (offsetvector) {
+    const {fromPolygons} = require('../CSGMakers') // because of circular dependencies
+
     let newpolygons = []
 
     let polygon1 = this
@@ -224,6 +225,8 @@ Polygon.prototype = {
      *  - loop {Boolean} no flats, only walls, it's used to generate solids like a tor
      */
   solidFromSlices: function (options) {
+    const {fromPolygons} = require('../CSGMakers')
+
     let polygons = [],
       csg = null,
       prev = null,
