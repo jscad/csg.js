@@ -1,4 +1,3 @@
-const {fromPoints} = require('../CAGMakers')
 const CAG = require('../CAG')
 
 /*
