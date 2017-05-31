@@ -25,7 +25,7 @@ function fromObject (obj) {
   let polygons = obj.polygons.map(function (p) {
     return Polygon.fromObject(p)
   })
-  let csg = CSG.fromPolygons(CSG, polygons)
+  let csg = CSG.fromPolygons(polygons)
   csg.isCanonicalized = obj.isCanonicalized
   csg.isRetesselated = obj.isRetesselated
   return csg
@@ -95,7 +95,7 @@ function fromCompactBinary (bin) {
     polygon = new Polygon(polygonvertices, shared, plane)
     polygons.push(polygon)
   }
-  let csg = CSG.fromPolygons(undefined, polygons)
+  let csg = CSG.fromPolygons(polygons)
   csg.isCanonicalized = true
   csg.isRetesselated = true
   return csg

@@ -38,7 +38,7 @@ const cube = function (options) {
     r = parseOptionAs3DVector(options, 'radius', [1, 1, 1])
   }
   r = r.abs() // negative radii make no sense
-  let result = CSG.fromPolygons(CSG, [
+  let result = CSG.fromPolygons([
     [
             [0, 4, 6, 2],
             [-1, 0, 0]
@@ -156,7 +156,7 @@ const sphere = function (options) {
     }
     prevcylinderpoint = cylinderpoint
   }
-  let result = CSG.fromPolygons(CSG, polygons)
+  let result = CSG.fromPolygons(polygons)
   result.properties.sphere = new Properties()
   result.properties.sphere.center = new Vector3D(center)
   result.properties.sphere.facepoint = center.plus(xvector)
@@ -238,7 +238,7 @@ const cylinder = function (options) {
       polygons.push(new Polygon([point(0, 1, rStart), point(1, 1, rEnd), end]))
     }
   }
-  let result = CSG.fromPolygons(CSG, polygons)
+  let result = CSG.fromPolygons(polygons)
   result.properties.cylinder = new Properties()
   result.properties.cylinder.start = new Connector(s, axisZ.negated(), axisX)
   result.properties.cylinder.end = new Connector(e, axisZ, axisX)
@@ -338,7 +338,7 @@ const roundedCylinder = function (options) {
     }
     prevcylinderpoint = cylinderpoint
   }
-  let result = CSG.fromPolygons(CSG, polygons)
+  let result = CSG.fromPolygons(polygons)
   let ray = zvector.unit()
   let axisX = xvector.unit()
   result.properties.roundedCylinder = new Properties()
@@ -418,7 +418,7 @@ const cylinderElliptic = function (options) {
       }
     }
   }
-  let result = CSG.fromPolygons(CSG, polygons)
+  let result = CSG.fromPolygons(polygons)
   result.properties.cylinder = new Properties()
   result.properties.cylinder.start = new Connector(s, axisZ.negated(), axisX)
   result.properties.cylinder.end = new Connector(e, axisZ, axisX)
@@ -534,7 +534,7 @@ const polyhedron = function (options) {
     // the re-tesselation here happens because it's so easy for a user to
     // create parametrized polyhedrons that end up with 1-2 dimensional polygons.
     // These will create infinite loops at CSG.Tree()
-  return CSG.fromPolygons(CSG, polygons).reTesselated()
+  return CSG.fromPolygons(polygons).reTesselated()
 }
 
 module.exports = {

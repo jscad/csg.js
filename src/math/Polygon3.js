@@ -123,7 +123,7 @@ Polygon.prototype = {
     }
     polygon2 = polygon2.flipped()
     newpolygons.push(polygon2)
-    return CSG.fromPolygons(null, newpolygons)
+    return CSG.fromPolygons(newpolygons)
   },
 
   translate: function (offset) {

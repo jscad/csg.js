@@ -81,7 +81,7 @@ CSG.prototype = {
       b.invert()
 
       let newpolygons = a.allPolygons().concat(b.allPolygons())
-      let result = CSG.fromPolygons(CSG, newpolygons)
+      let result = CSG.fromPolygons(newpolygons)
       result.properties = this.properties._merge(csg.properties)
       if (retesselate) result = result.reTesselated()
       if (canonicalize) result = result.canonicalized()
@@ -93,7 +93,7 @@ CSG.prototype = {
     // Do not use if you are not completely sure that the solids do not intersect!
   unionForNonIntersecting: function (csg) {
     let newpolygons = this.polygons.concat(csg.polygons)
-    let result = CSG.fromPolygons(CSG, newpolygons)
+    let result = CSG.fromPolygons(newpolygons)
     result.properties = this.properties._merge(csg.properties)
     result.isCanonicalized = this.isCanonicalized && csg.isCanonicalized
     result.isRetesselated = this.isRetesselated && csg.isRetesselated
@@ -137,7 +137,7 @@ CSG.prototype = {
     b.clipTo(a, true)
     a.addPolygons(b.allPolygons())
     a.invert()
-    let result = CSG.fromPolygons(CSG, a.allPolygons())
+    let result = CSG.fromPolygons(a.allPolygons())
     result.properties = this.properties._merge(csg.properties)
     if (retesselate) result = result.reTesselated()
     if (canonicalize) result = result.canonicalized()
@@ -183,7 +183,7 @@ CSG.prototype = {
     b.clipTo(a)
     a.addPolygons(b.allPolygons())
     a.invert()
-    let result = CSG.fromPolygons(CSG, a.allPolygons())
+    let result = CSG.fromPolygons(a.allPolygons())
     result.properties = this.properties._merge(csg.properties)
     if (retesselate) result = result.reTesselated()
     if (canonicalize) result = result.canonicalized()
@@ -196,7 +196,7 @@ CSG.prototype = {
     let flippedpolygons = this.polygons.map(function (p) {
       return p.flipped()
     })
-    return CSG.fromPolygons(CSG, flippedpolygons)
+    return CSG.fromPolygons(flippedpolygons)
         // TODO: flip properties?
   },
 
@@ -205,7 +205,7 @@ CSG.prototype = {
     let newpolygons = this.polygons.map(function (p) {
       return p.transform(matrix4x4)
     })
-    let result = CSG.fromPolygons(CSG, newpolygons)
+    let result = CSG.fromPolygons(newpolygons)
     result.properties = this.properties._transform(matrix4x4)
     result.isRetesselated = this.isRetesselated
     return result
@@ -239,7 +239,7 @@ CSG.prototype = {
       if (ismirror) newvertices.reverse()
       return new Polygon(newvertices, p.shared, newplane)
     })
-    let result = CSG.fromPolygons(CSG, newpolygons)
+    let result = CSG.fromPolygons(newpolygons)
     result.properties = this.properties._transform(matrix4x4)
     result.isRetesselated = this.isRetesselated
     result.isCanonicalized = this.isCanonicalized
@@ -428,7 +428,7 @@ CSG.prototype = {
       endfacevertices.reverse()
       polygons.push(new Polygon(startfacevertices))
       polygons.push(new Polygon(endfacevertices))
-      let cylinder = CSG.fromPolygons(CSG, polygons)
+      let cylinder = CSG.fromPolygons(polygons)
       result = result.unionSub(cylinder, false, false)
     }
 
@@ -541,7 +541,7 @@ CSG.prototype = {
           destpolygons = destpolygons.concat(retesselayedpolygons)
         }
       }
-      let result = CSG.fromPolygons(CSG, destpolygons)
+      let result = CSG.fromPolygons(destpolygons)
       result.isRetesselated = true
             // result = result.canonicalized();
       result.properties = this.properties // keep original properties
@@ -646,7 +646,7 @@ CSG.prototype = {
     let polygons = this.polygons.map(function (p) {
       return new Polygon(p.vertices, shared, p.plane)
     })
-    let result = CSG.fromPolygons(CSG, polygons)
+    let result = CSG.fromPolygons(polygons)
     result.properties = this.properties // keep original properties
     result.isRetesselated = this.isRetesselated
     result.isCanonicalized = this.isCanonicalized
@@ -1162,7 +1162,7 @@ CSG.prototype = {
         }
         if (!donesomething) break
       }
-      let newcsg = CSG.fromPolygons(CSG, polygons)
+      let newcsg = CSG.fromPolygons(polygons)
       newcsg.properties = csg.properties
       newcsg.isCanonicalized = true
       newcsg.isRetesselated = true
@@ -1217,8 +1217,8 @@ CSG.prototype = {
  * @param {Polygon[]} polygons - list of polygons
  * @returns {CSG} new CSG object
  */
-CSG.fromPolygons = function fromPolygons (BaseType, polygons) {
-  let csg = new CSG()//BaseType ? new BaseType() : new require('./CSG')() // CSG in disguise
+CSG.fromPolygons = function fromPolygons (polygons) {
+  let csg = new CSG()
   csg.polygons = polygons
   csg.isCanonicalized = false
   csg.isRetesselated = false
@@ -1235,7 +1235,7 @@ const CSGFromCSGFuzzyFactory = function (factory, sourcecsg) {
       newpolygons.push(newpolygon)
     }
   })
-  return CSG.fromPolygons(CSG, newpolygons)
+  return CSG.fromPolygons(newpolygons)
 }
 
 module.exports = CSG
