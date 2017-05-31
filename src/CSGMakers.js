@@ -25,7 +25,7 @@ function fromObject (obj) {
   let polygons = obj.polygons.map(function (p) {
     return Polygon.fromObject(p)
   })
-  let csg = CSG.fromPolygons(polygons)
+  let csg = CSG.fromPolygons(CSG, polygons)
   csg.isCanonicalized = obj.isCanonicalized
   csg.isRetesselated = obj.isRetesselated
   return csg
@@ -38,7 +38,6 @@ function fromObject (obj) {
 function fromCompactBinary (bin) {
   const CSG = require('./CSG') // FIXME: circular dependency ??
 
-  console.log('polygon', Polygon.Shared)
   if (bin['class'] !== 'CSG') throw new Error('Not a CSG')
   let planes = []
   let planeData = bin.planeData

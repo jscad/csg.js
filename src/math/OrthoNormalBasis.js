@@ -1,6 +1,5 @@
 const Vector2D = require('./Vector2')
 const Vector3D = require('./Vector3')
-const Matrix4x4 = require('./Matrix4')
 const Line2D = require('./Line2')
 const Line3D = require('./Line3')
 const Plane = require('./Plane')
@@ -145,6 +144,7 @@ OrthoNormalBasis.Z0Plane = function () {
 
 OrthoNormalBasis.prototype = {
   getProjectionMatrix: function () {
+    const Matrix4x4 = require('./Matrix4') // FIXME: circular dependencies Matrix=>OrthoNormalBasis => Matrix
     return new Matrix4x4([
       this.u.x, this.v.x, this.plane.normal.x, 0,
       this.u.y, this.v.y, this.plane.normal.y, 0,
@@ -154,6 +154,7 @@ OrthoNormalBasis.prototype = {
   },
 
   getInverseProjectionMatrix: function () {
+    const Matrix4x4 = require('./Matrix4') // FIXME: circular dependencies Matrix=>OrthoNormalBasis => Matrix
     let p = this.plane.normal.times(this.plane.w)
     return new Matrix4x4([
       this.u.x, this.u.y, this.u.z, 0,

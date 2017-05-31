@@ -99,7 +99,7 @@ Polygon.prototype = {
     // Extrude a polygon into the direction offsetvector
     // Returns a CSG object
   extrude: function (offsetvector) {
-    const {fromPolygons} = require('../CSGMakers') // because of circular dependencies
+    const CSG = require('../CSG') // because of circular dependencies
 
     let newpolygons = []
 
@@ -123,7 +123,7 @@ Polygon.prototype = {
     }
     polygon2 = polygon2.flipped()
     newpolygons.push(polygon2)
-    return fromPolygons(null, newpolygons)
+    return CSG.fromPolygons(null, newpolygons)
   },
 
   translate: function (offset) {

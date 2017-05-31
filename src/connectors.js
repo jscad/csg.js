@@ -3,7 +3,6 @@ const Line3D = require('./math/Line3')
 const Matrix4x4 = require('./math/Matrix4')
 const OrthoNormalBasis = require('./math/OrthoNormalBasis')
 const Plane = require('./math/Plane')
-const {fromPolygons} = require('./CSGMakers')
 
 // # class Connector
 // A connector allows to attach two objects at predefined positions
@@ -163,6 +162,8 @@ ConnectorList.prototype = {
      * TODO: consider an option "maySelfIntersect" to close & force union all single segments
      */
   followWith: function (cagish) {
+    const CSG = require('./CSG') // FIXME , circular dependency connectors => CSG => connectors
+
     this.verify()
     function getCag (cagish, connector) {
       if (typeof cagish === 'function') {
@@ -194,7 +195,7 @@ ConnectorList.prototype = {
       prevCag = currCag
       prevConnector = connector
     }, this)
-    return fromPolygons(polygons).reTesselated().canonicalized()
+    return CSG.fromPolygons(polygons).reTesselated().canonicalized()
   },
     /*
      * general idea behind these checks: connectors need to have smooth transition from one to another

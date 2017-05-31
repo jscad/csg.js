@@ -118,6 +118,12 @@ CAG.ellipse = ellipse
 CAG.rectangle = rectangle
 CAG.roundedRectangle = roundedRectangle
 
+//
+const {fromCompactBinary, fromObject, fromSlices} = require('./src/CSGMakers')
+CSG.fromCompactBinary = fromCompactBinary
+CSG.fromObject = fromObject
+CSG.fromSlices = fromSlices
+
 // ////////////////////////////////////
 addTransformationMethodsToPrototype(CSG.prototype)
 
