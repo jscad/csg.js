@@ -97,6 +97,4 @@ Line3D.prototype = {
   }
 }
 
-module.exports = {
-  Line3D
-}
+module.exports = Line3D

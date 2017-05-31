@@ -1,5 +1,5 @@
 const {IsFloat} = require('../utils')
-const Vector2D = require('./Vector2D')
+const Vector2D = require('./Vector2')
 
 /** Class Vector3D
  * Represents a 3D vector with X, Y, Z coordinates.

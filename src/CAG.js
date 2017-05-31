@@ -1,8 +1,18 @@
-const {EPS} = require('./constants')
-const Plane = require('./math/Plane')
+const CSG = require('./CSG')
+const {EPS, angleEPS, areaEPS, defaultResolution3D} = require('./constants')
+const Connector = require('./connectors')
+const OrthoNormalBasis = require('./math/OrthoNormalBasis')
+const Vertex2D = require('./math/Vertex2')
 const Vertex3D = require('./math/Vertex3')
 const Vector2D = require('./math/Vector2')
 const Vector3D = require('./math/Vector3')
+const Polygon = require('./math/Polygon3')
+const Path2D = require('./math/Path2')
+const Side = require('./math/Side')
+const {linesIntersect} = require('./math/lineUtils')
+const {parseOptionAs3DVector, parseOptionAsBool, parseOptionAsFloat, parseOptionAsInt} = require('./optionParsers')
+const {fromPolygons} = require('./CSGMakers')
+const FuzzyCAGFactory = require('./fuzzyFactory2d')
 /**
  * Class CAG
  * Holds a solid area geometry like CSG but 2D.
@@ -15,24 +25,49 @@ let CAG = function () {
   this.isCanonicalized = false
 }
 
-// see if the line between p0start and p0end intersects with the line between p1start and p1end
-// returns true if the lines strictly intersect, the end points are not counted!
-CAG.linesIntersect = function (p0start, p0end, p1start, p1end) {
-  if (p0end.equals(p1start) || p1end.equals(p0start)) {
-    let d = p1end.minus(p1start).unit().plus(p0end.minus(p0start).unit()).length()
-    if (d < EPS) {
-      return true
-    }
-  } else {
-    let d0 = p0end.minus(p0start)
-    let d1 = p1end.minus(p1start)
-        // FIXME These epsilons need review and testing
-    if (Math.abs(d0.cross(d1)) < 1e-9) return false // lines are parallel
-    let alphas = solve2Linear(-d0.x, d1.x, -d0.y, d1.y, p0start.x - p1start.x, p0start.y - p1start.y)
-    if ((alphas[0] > 1e-6) && (alphas[0] < 0.999999) && (alphas[1] > 1e-5) && (alphas[1] < 0.999999)) return true
-        //    if( (alphas[0] >= 0) && (alphas[0] <= 1) && (alphas[1] >= 0) && (alphas[1] <= 1) ) return true;
+/** Construct a CAG from a list of `Side` instances.
+ * @param {Side[]} sides - list of sides
+ * @returns {CAG} new CAG object
+ */
+CAG.fromSides = function (sides) {
+  let cag = new CAG()
+  cag.sides = sides
+  return cag
+}
+
+/** Construct a CAG from a list of points (a polygon).
+ * The rotation direction of the points is not relevant.
+ * The points can define a convex or a concave polygon.
+ * The polygon must not self intersect.
+ * @param {points[]} points - list of points in 2D space
+ * @returns {CAG} new CAG object
+ */
+CAG.fromPoints = function (points) {
+  let numpoints = points.length
+  if (numpoints < 3) throw new Error('CAG shape needs at least 3 points')
+  let sides = []
+  let prevpoint = new Vector2D(points[numpoints - 1])
+  let prevvertex = new Vertex2D(prevpoint)
+  points.map(function (p) {
+    let point = new Vector2D(p)
+    let vertex = new Vertex2D(point)
+    let side = new Side(prevvertex, vertex)
+    sides.push(side)
+    prevvertex = vertex
+  })
+  let result = CAG.fromSides(sides)
+  if (result.isSelfIntersecting()) {
+    throw new Error('Polygon is self intersecting!')
   }
-  return false
+  let area = result.area()
+  if (Math.abs(area) < areaEPS) {
+    throw new Error('Degenerate polygon!')
+  }
+  if (area < 0) {
+    result = result.flipped()
+  }
+  result = result.canonicalized()
+  return result
 }
 
 CAG.prototype = {
@@ -48,13 +83,14 @@ CAG.prototype = {
     let polygons = this.sides.map(function (side) {
       return side.toPolygon3D(z0, z1)
     })
-    return CSG.fromPolygons(polygons)
+    return fromPolygons(polygons)
   },
 
   _toVector3DPairs: function (m) {
         // transform m
     let pairs = this.sides.map(function (side) {
-      let p0 = side.vertex0.pos, p1 = side.vertex1.pos
+      let p0 = side.vertex0.pos
+      let p1 = side.vertex1.pos
       return [Vector3D.Create(p0.x, p0.y, 0),
         Vector3D.Create(p1.x, p1.y, 0)]
     })
@@ -77,7 +113,9 @@ CAG.prototype = {
   _toPlanePolygons: function (options) {
     let flipped = options.flipped || false
         // reference connector for transformation
-    let origin = [0, 0, 0], defaultAxis = [0, 0, 1], defaultNormal = [0, 1, 0]
+    let origin = [0, 0, 0]
+    let defaultAxis = [0, 0, 1]
+    let defaultNormal = [0, 1, 0]
     let thisConnector = new Connector(origin, defaultAxis, defaultNormal)
         // translated connector per options
     let translation = options.translation || origin
@@ -93,7 +131,7 @@ CAG.prototype = {
     bounds[0] = bounds[0].minus(new Vector2D(1, 1))
     bounds[1] = bounds[1].plus(new Vector2D(1, 1))
     let csgshell = this._toCSGWall(-1, 1)
-    let csgplane = CSG.fromPolygons([new CSG.Polygon([
+    let csgplane = fromPolygons([new Polygon([
       new Vertex3D(new Vector3D(bounds[0].x, bounds[0].y, 0)),
       new Vertex3D(new Vector3D(bounds[1].x, bounds[0].y, 0)),
       new Vertex3D(new Vector3D(bounds[1].x, bounds[1].y, 0)),
@@ -125,18 +163,20 @@ CAG.prototype = {
         // arguments: options.toConnector1, options.toConnector2, options.cag
         //     walls go from toConnector1 to toConnector2
         //     optionally, target cag to point to - cag needs to have same number of sides as this!
-    let origin = [0, 0, 0], defaultAxis = [0, 0, 1], defaultNormal = [0, 1, 0]
+    let origin = [0, 0, 0]
+    let defaultAxis = [0, 0, 1]
+    let defaultNormal = [0, 1, 0]
     let thisConnector = new Connector(origin, defaultAxis, defaultNormal)
         // arguments:
     let toConnector1 = options.toConnector1
         // let toConnector2 = new Connector([0, 0, -30], defaultAxis, defaultNormal);
     let toConnector2 = options.toConnector2
     if (!(toConnector1 instanceof Connector && toConnector2 instanceof Connector)) {
-      throw ('could not parse Connector arguments toConnector1 or toConnector2')
+      throw new Error('could not parse Connector arguments toConnector1 or toConnector2')
     }
     if (options.cag) {
-      if (options.cag.sides.length != this.sides.length) {
-        throw ('target cag needs same sides count as start cag')
+      if (options.cag.sides.length !== this.sides.length) {
+        throw new Error('target cag needs same sides count as start cag')
       }
     }
         // target cag is same as this unless specified
@@ -148,9 +188,9 @@ CAG.prototype = {
 
     let polygons = []
     vps1.forEach(function (vp1, i) {
-      polygons.push(new CSG.Polygon([
+      polygons.push(new Polygon([
         new Vertex3D(vps2[i][1]), new Vertex3D(vps2[i][0]), new Vertex3D(vp1[0])]))
-      polygons.push(new CSG.Polygon([
+      polygons.push(new Polygon([
         new Vertex3D(vps2[i][1]), new Vertex3D(vp1[0]), new Vertex3D(vp1[1])]))
     })
     return polygons
@@ -163,7 +203,7 @@ CAG.prototype = {
   toPoints: function () {
     let points = this.sides.map(function (side) {
       let v0 = side.vertex0
-      let v1 = side.vertex1
+      // let v1 = side.vertex1
       return v0.pos
     })
     // due to the logic of CAG.fromPoints()
@@ -260,7 +300,7 @@ CAG.prototype = {
   getBounds: function () {
     let minpoint
     if (this.sides.length === 0) {
-      minpoint = new CSG.Vector2D(0, 0)
+      minpoint = new Vector2D(0, 0)
     } else {
       minpoint = this.sides[0].vertex0.pos
     }
@@ -280,7 +320,7 @@ CAG.prototype = {
       let side0 = this.sides[i]
       for (let ii = i + 1; ii < numsides; ii++) {
         let side1 = this.sides[ii]
-        if (CAG.linesIntersect(side0.vertex0.pos, side0.vertex1.pos, side1.vertex0.pos, side1.vertex1.pos)) {
+        if (linesIntersect(side0.vertex0.pos, side0.vertex1.pos, side1.vertex0.pos, side1.vertex1.pos)) {
           if (debug) { console.log('side ' + i + ': ' + side0); console.log('side ' + ii + ': ' + side1) }
           return true
         }
@@ -298,7 +338,7 @@ CAG.prototype = {
     cag.sides.map(function (side) {
       let d = side.vertex1.pos.minus(side.vertex0.pos)
       let dl = d.length()
-      if (dl > CSG.EPS) {
+      if (dl > EPS) {
         d = d.times(1.0 / dl)
         let normal = d.normal().times(radius)
         let shellpoints = [
@@ -328,7 +368,7 @@ CAG.prototype = {
       let m = pointmap[tag]
       let angle1, angle2
       let pcenter = m[0].p1
-      if (m.length == 2) {
+      if (m.length === 2) {
         let end1 = m[0].p2
         let end2 = m[1].p2
         angle1 = end1.minus(pcenter).angleDegrees()
@@ -351,7 +391,7 @@ CAG.prototype = {
         angle1 = 0
         angle2 = 360
       }
-      if (angle2 > (angle1 + CSG.angleEPS)) {
+      if (angle2 > (angle1 + angleEPS)) {
         let points = []
         if (!fullcircle) {
           points.push(pcenter)
@@ -360,8 +400,8 @@ CAG.prototype = {
         if (numsteps < 1) numsteps = 1
         for (let step = 0; step <= numsteps; step++) {
           let angle = angle1 + step / numsteps * (angle2 - angle1)
-          if (step == numsteps) angle = angle2 // prevent rounding errors
-          let point = pcenter.plus(CSG.Vector2D.fromAngleDegrees(angle).times(radius))
+          if (step === numsteps) angle = angle2 // prevent rounding errors
+          let point = pcenter.plus(Vector2D.fromAngleDegrees(angle).times(radius))
           if ((!fullcircle) || (step > 0)) {
             points.push(point)
           }
@@ -388,7 +428,7 @@ CAG.prototype = {
     // extrude the CAG in a certain plane.
     // Giving just a plane is not enough, multiple different extrusions in the same plane would be possible
     // by rotating around the plane's origin. An additional right-hand vector should be specified as well,
-    // and this is exactly a CSG.OrthoNormalBasis.
+    // and this is exactly a OrthoNormalBasis.
     //
     // orthonormalbasis: characterizes the plane in which to extrude
     // depth: thickness of the extruded shape. Extrusion is done upwards from the plane
@@ -397,13 +437,13 @@ CAG.prototype = {
     //   {symmetrical: true}  // extrude symmetrically in two directions about the plane
   extrudeInOrthonormalBasis: function (orthonormalbasis, depth, options) {
         // first extrude in the regular Z plane:
-    if (!(orthonormalbasis instanceof CSG.OrthoNormalBasis)) {
-      throw new Error('extrudeInPlane: the first parameter should be a CSG.OrthoNormalBasis')
+    if (!(orthonormalbasis instanceof OrthoNormalBasis)) {
+      throw new Error('extrudeInPlane: the first parameter should be a OrthoNormalBasis')
     }
     let extruded = this.extrude({
       offset: [0, 0, depth]
     })
-    if (CSG.parseOptionAsBool(options, 'symmetrical', false)) {
+    if (parseOptionAsBool(options, 'symmetrical', false)) {
       extruded = extruded.translate([0, 0, -depth / 2])
     }
     let matrix = orthonormalbasis.getInverseProjectionMatrix()
@@ -414,89 +454,95 @@ CAG.prototype = {
     // Extrude in a standard cartesian plane, specified by two axis identifiers. Each identifier can be
     // one of ["X","Y","Z","-X","-Y","-Z"]
     // The 2d x axis will map to the first given 3D axis, the 2d y axis will map to the second.
-    // See CSG.OrthoNormalBasis.GetCartesian for details.
+    // See OrthoNormalBasis.GetCartesian for details.
     // options:
     //   {symmetrical: true}  // extrude symmetrically in two directions about the plane
   extrudeInPlane: function (axis1, axis2, depth, options) {
-    return this.extrudeInOrthonormalBasis(CSG.OrthoNormalBasis.GetCartesian(axis1, axis2), depth, options)
+    return this.extrudeInOrthonormalBasis(OrthoNormalBasis.GetCartesian(axis1, axis2), depth, options)
   },
 
     // extruded=cag.extrude({offset: [0,0,10], twistangle: 360, twiststeps: 100});
     // linear extrusion of 2D shape, with optional twist
-    // The 2d shape is placed in in z=0 plane and extruded into direction <offset> (a CSG.Vector3D)
+    // The 2d shape is placed in in z=0 plane and extruded into direction <offset> (a Vector3D)
     // The final face is rotated <twistangle> degrees. Rotation is done around the origin of the 2d shape (i.e. x=0, y=0)
     // twiststeps determines the resolution of the twist (should be >= 1)
     // returns a CSG object
   extrude: function (options) {
-    if (this.sides.length == 0) {
+    if (this.sides.length === 0) {
             // empty!
       return new CSG()
     }
-    let offsetVector = CSG.parseOptionAs3DVector(options, 'offset', [0, 0, 1])
-    let twistangle = CSG.parseOptionAsFloat(options, 'twistangle', 0)
-    let twiststeps = CSG.parseOptionAsInt(options, 'twiststeps', CSG.defaultResolution3D)
-    if (offsetVector.z == 0) {
-      throw ('offset cannot be orthogonal to Z axis')
+    let offsetVector = parseOptionAs3DVector(options, 'offset', [0, 0, 1])
+    let twistangle = parseOptionAsFloat(options, 'twistangle', 0)
+    let twiststeps = parseOptionAsInt(options, 'twiststeps', defaultResolution3D)
+    if (offsetVector.z === 0) {
+      throw new Error('offset cannot be orthogonal to Z axis')
     }
-    if (twistangle == 0 || twiststeps < 1) {
+    if (twistangle === 0 || twiststeps < 1) {
       twiststeps = 1
     }
-    let normalVector = CSG.Vector3D.Create(0, 1, 0)
+    let normalVector = Vector3D.Create(0, 1, 0)
 
     let polygons = []
         // bottom and top
-    polygons = polygons.concat(this._toPlanePolygons({translation: [0, 0, 0],
-      normalVector: normalVector, flipped: !(offsetVector.z < 0)}))
-    polygons = polygons.concat(this._toPlanePolygons({translation: offsetVector,
-      normalVector: normalVector.rotateZ(twistangle), flipped: offsetVector.z < 0}))
+    polygons = polygons.concat(this._toPlanePolygons({
+      translation: [0, 0, 0],
+      normalVector: normalVector,
+      flipped: !(offsetVector.z < 0)}
+    ))
+    polygons = polygons.concat(this._toPlanePolygons({
+      translation: offsetVector,
+      normalVector: normalVector.rotateZ(twistangle),
+      flipped: offsetVector.z < 0}))
         // walls
     for (let i = 0; i < twiststeps; i++) {
-      let c1 = new CSG.Connector(offsetVector.times(i / twiststeps), [0, 0, offsetVector.z],
+      let c1 = new Connector(offsetVector.times(i / twiststeps), [0, 0, offsetVector.z],
                 normalVector.rotateZ(i * twistangle / twiststeps))
-      let c2 = new CSG.Connector(offsetVector.times((i + 1) / twiststeps), [0, 0, offsetVector.z],
+      let c2 = new Connector(offsetVector.times((i + 1) / twiststeps), [0, 0, offsetVector.z],
                 normalVector.rotateZ((i + 1) * twistangle / twiststeps))
       polygons = polygons.concat(this._toWallPolygons({toConnector1: c1, toConnector2: c2}))
     }
 
-    return CSG.fromPolygons(polygons)
+    return fromPolygons(polygons)
   },
 
     /** Extrude to into a 3D solid by rotating the origin around the Y axis.
      * (and turning everything into XY plane)
      * @param {Object} options - options for construction
      * @param {Number} [options.angle=360] - angle of rotation
-     * @param {Number} [options.resolution=CSG.defaultResolution3D] - number of polygons per 360 degree revolution
+     * @param {Number} [options.resolution=defaultResolution3D] - number of polygons per 360 degree revolution
      * @returns {CSG} new 3D solid
      */
   rotateExtrude: function (options) { // FIXME options should be optional
-    let alpha = CSG.parseOptionAsFloat(options, 'angle', 360)
-    let resolution = CSG.parseOptionAsInt(options, 'resolution', CSG.defaultResolution3D)
+    let alpha = parseOptionAsFloat(options, 'angle', 360)
+    let resolution = parseOptionAsInt(options, 'resolution', defaultResolution3D)
 
     alpha = alpha > 360 ? alpha % 360 : alpha
     let origin = [0, 0, 0]
-    let axisV = CSG.Vector3D.Create(0, 1, 0)
+    let axisV = Vector3D.Create(0, 1, 0)
     let normalV = [0, 0, 1]
     let polygons = []
         // planes only needed if alpha > 0
-    let connS = new CSG.Connector(origin, axisV, normalV)
+    let connS = new Connector(origin, axisV, normalV)
     if (alpha > 0 && alpha < 360) {
             // we need to rotate negative to satisfy wall function condition of
             // building in the direction of axis vector
-      let connE = new CSG.Connector(origin, axisV.rotateZ(-alpha), normalV)
+      let connE = new Connector(origin, axisV.rotateZ(-alpha), normalV)
       polygons = polygons.concat(
                 this._toPlanePolygons({toConnector: connS, flipped: true}))
       polygons = polygons.concat(
                 this._toPlanePolygons({toConnector: connE}))
     }
-    let connT1 = connS, connT2
+    let connT1 = connS
+    let connT2
     let step = alpha / resolution
-    for (let a = step; a <= alpha + CSG.EPS; a += step) { // FIXME Should this be CSG.angelEPS?
-      connT2 = new CSG.Connector(origin, axisV.rotateZ(-a), normalV)
+    for (let a = step; a <= alpha + EPS; a += step) { // FIXME Should this be angelEPS?
+      connT2 = new Connector(origin, axisV.rotateZ(-a), normalV)
       polygons = polygons.concat(this._toWallPolygons(
                 {toConnector1: connT1, toConnector2: connT2}))
       connT1 = connT2
     }
-    return CSG.fromPolygons(polygons).reTesselated()
+    return fromPolygons(polygons).reTesselated()
   },
 
     // check if we are a valid CAG (for debugging)
@@ -523,7 +569,7 @@ CAG.prototype = {
       }
     }
     let area = this.area()
-    if (area < CSG.areaEPS) {
+    if (area < areaEPS) {
       errors.push('Area is ' + area)
     }
     if (errors.length > 0) {
@@ -539,17 +585,17 @@ CAG.prototype = {
     if (this.isCanonicalized) {
       return this
     } else {
-      let factory = new CAG.fuzzyCAGFactory()
+      let factory = new FuzzyCAGFactory()
       let result = factory.getCAG(this)
       result.isCanonicalized = true
       return result
     }
   },
 
-    /** Convert to compact binary form.
-     * See CAG.fromCompactBinary.
-     * @return {CompactBinary}
-     */
+  /** Convert to compact binary form.
+   * See CAG.fromCompactBinary.
+   * @return {CompactBinary}
+   */
   toCompactBinary: function () {
     let cag = this.canonicalized()
     let numsides = cag.sides.length
@@ -620,13 +666,13 @@ CAG.prototype = {
       while (true) {
         connectedVertexPoints.push(thisside.vertex0.pos)
         let nextvertextag = thisside.vertex1.getTag()
-        if (nextvertextag == startvertextag) break // we've closed the polygon
+        if (nextvertextag === startvertextag) break // we've closed the polygon
         if (!(nextvertextag in startVertexTagToSideTagMap)) {
           throw new Error('Area is not closed!')
         }
         let nextpossiblesidetags = startVertexTagToSideTagMap[nextvertextag]
         let nextsideindex = -1
-        if (nextpossiblesidetags.length == 1) {
+        if (nextpossiblesidetags.length === 1) {
           nextsideindex = 0
         } else {
                     // more than one side starting at the same vertex. This means we have
@@ -658,7 +704,7 @@ CAG.prototype = {
       if (connectedVertexPoints.length > 0) {
         connectedVertexPoints.push(connectedVertexPoints.shift())
       }
-      let path = new CSG.Path2D(connectedVertexPoints, true)
+      let path = new Path2D(connectedVertexPoints, true)
       paths.push(path)
     } // outer loop
     return paths
@@ -698,7 +744,7 @@ CAG.prototype = {
     let cutouts = []
     for (let pointtag in pointmap) {
       let pointobj = pointmap[pointtag]
-      if ((pointobj.from.length == 1) && (pointobj.to.length == 1)) {
+      if ((pointobj.from.length === 1) && (pointobj.to.length === 1)) {
                 // ok, 1 incoming side and 1 outgoing side:
         let fromcoord = pointobj.from[0]
         let pointcoord = pointobj.pos
@@ -728,7 +774,7 @@ CAG.prototype = {
           let points = [circlecenter]
           for (let i = 0; i <= numsteps; i++) {
             let angle = startangle + i / numsteps * deltaangle
-            let p = CSG.Vector2D.fromAngleRadians(angle).times(radiuscorrected).plus(circlecenter)
+            let p = Vector2D.fromAngleRadians(angle).times(radiuscorrected).plus(circlecenter)
             points.push(p)
           }
           cutouts.push(CAG.fromPoints(points))

@@ -1,7 +1,8 @@
-const {parseOptionAs3DVector, parseOptionAsFloat, parseOptionAsInt} = require('./optionParsers')
-const {defaultResolution3D, EPS} = require('./constants')
-const Vector3D = require('./math/Vector2')
-const Vertex = require('./math/Vertex2')
+const CSG = require('./CSG')
+const {parseOption, parseOptionAs3DVector, parseOptionAs2DVector, parseOptionAs3DVectorList, parseOptionAsFloat, parseOptionAsInt} = require('./optionParsers')
+const {defaultResolution3D, defaultResolution2D, EPS} = require('./constants')
+const Vector3D = require('./math/Vector3')
+const Vertex = require('./math/Vertex3')
 const Polygon = require('./math/Polygon3')
 const Connector = require('./connectors')
 const Properties = require('./Properties')
@@ -20,7 +21,10 @@ const {fromPolygons} = require('./CSGMakers')
  * });
  */
 const cube = function (options) {
-  let c, r, corner1, corner2
+  let c
+  let r
+  let corner1
+  let corner2
   options = options || {}
   if (('corner1' in options) || ('corner2' in options)) {
     if (('center' in options) || ('radius' in options)) {
@@ -35,7 +39,7 @@ const cube = function (options) {
     r = parseOptionAs3DVector(options, 'radius', [1, 1, 1])
   }
   r = r.abs() // negative radii make no sense
-  let result = fromPolygons([
+  let result = fromPolygons(CSG, [
     [
             [0, 4, 6, 2],
             [-1, 0, 0]
@@ -61,8 +65,6 @@ const cube = function (options) {
             [0, 0, +1]
     ]
   ].map(function (info) {
-        // let normal = new Vector3D(info[1]);
-        // let plane = new Plane(normal, 1);
     let vertices = info[0].map(function (i) {
       let pos = new Vector3D(
                 c.x + r.x * (2 * !!(i & 1) - 1), c.y + r.y * (2 * !!(i & 2) - 1), c.z + r.z * (2 * !!(i & 4) - 1))
@@ -70,6 +72,7 @@ const cube = function (options) {
     })
     return new Polygon(vertices, null /* , plane */)
   }))
+  console.log('result', result.properties)
   result.properties.cube = new Properties()
   result.properties.cube.center = new Vector3D(c)
     // add 6 connectors, at the centers of each face:
@@ -215,7 +218,7 @@ const cylinder = function (options) {
     for (let i = 0; i < slices; i++) {
       let t0 = i / slices,
         t1 = (i + 1) / slices
-      if (rEnd == rStart) {
+      if (rEnd === rStart) {
         polygons.push(new Polygon([start, point(0, t0, rEnd), point(0, t1, rEnd)]))
         polygons.push(new Polygon([point(0, t1, rEnd), point(0, t0, rEnd), point(1, t0, rEnd), point(1, t1, rEnd)]))
         polygons.push(new Polygon([end, point(1, t1, rEnd), point(1, t0, rEnd)]))
@@ -402,7 +405,7 @@ const cylinderElliptic = function (options) {
     let t0 = i / slices,
       t1 = (i + 1) / slices
 
-    if (rEnd._x == rStart._x && rEnd._y == rStart._y) {
+    if (rEnd._x === rStart._x && rEnd._y === rStart._y) {
       polygons.push(new Polygon([start, point(0, t0, rEnd), point(0, t1, rEnd)]))
       polygons.push(new Polygon([point(0, t1, rEnd), point(0, t0, rEnd), point(1, t0, rEnd), point(1, t1, rEnd)]))
       polygons.push(new Polygon([end, point(1, t1, rEnd), point(1, t0, rEnd)]))
@@ -460,13 +463,13 @@ const roundedCube = function (options) {
   cuberadius = cuberadius.abs() // negative radii make no sense
   let resolution = parseOptionAsInt(options, 'resolution', defaultResolution3D)
   if (resolution < 4) resolution = 4
-  if (resolution % 2 == 1 && resolution < 8) resolution = 8 // avoid ugly
+  if (resolution % 2 === 1 && resolution < 8) resolution = 8 // avoid ugly
   let roundradius = parseOptionAs3DVector(options, 'roundradius', [0.2, 0.2, 0.2])
     // slight hack for now - total radius stays ok
   roundradius = Vector3D.Create(Math.max(roundradius.x, minRR), Math.max(roundradius.y, minRR), Math.max(roundradius.z, minRR))
   let innerradius = cuberadius.minus(roundradius)
   if (innerradius.x < 0 || innerradius.y < 0 || innerradius.z < 0) {
-    throw ('roundradius <= radius!')
+    throw new Error('roundradius <= radius!')
   }
   let res = sphere({radius: 1, resolution: resolution})
   res = res.scale(roundradius)

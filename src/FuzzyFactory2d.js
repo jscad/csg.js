@@ -1,12 +1,12 @@
-const {fuzzyFactory} = require('./fuzzyCSGFactory')
+const FuzzyFactory = require('./FuzzyFactory')
 const {EPS} = require('./constants')
 const Side = require('./math/Side')
 
-const fuzzyCAGFactory = function () {
-  this.vertexfactory = new fuzzyFactory(2, EPS)
+const FuzzyCAGFactory = function () {
+  this.vertexfactory = new FuzzyFactory(2, EPS)
 }
 
-fuzzyCAGFactory.prototype = {
+FuzzyCAGFactory.prototype = {
   getVertex: function (sourcevertex) {
     let elements = [sourcevertex.pos._x, sourcevertex.pos._y]
     let result = this.vertexfactory.lookupOrCreate(elements, function (els) {
@@ -34,4 +34,4 @@ fuzzyCAGFactory.prototype = {
   }
 }
 
-module.exports = fuzzyCAGFactory
+module.exports = FuzzyCAGFactory

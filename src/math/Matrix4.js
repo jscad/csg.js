@@ -281,6 +281,4 @@ Matrix4x4.scaling = function (v) {
   return new Matrix4x4(els)
 }
 
-module.exports = {
-  Matrix4x4
-}
+module.exports = Matrix4x4

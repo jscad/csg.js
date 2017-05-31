@@ -1,7 +1,7 @@
 const Vector2D = require('./Vector2')
 const Vertex = require('./Vertex2')
 const Vertex3 = require('./Vertex3')
-const Polygon = require('./Polygon')
+const Polygon = require('./Polygon3')
 const {getTag} = require('../constants')
 
 const Side = function (vertex0, vertex1) {

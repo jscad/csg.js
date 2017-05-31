@@ -1,9 +1,9 @@
 const Vector2D = require('./Vector2')
 const Vector3D = require('./Vector3')
-const Plane = require('./Plane')
 const Matrix4x4 = require('./Matrix4')
 const Line2D = require('./Line2')
 const Line3D = require('./Line3')
+const Plane = require('./Plane')
 
 // # class OrthoNormalBasis
 // Reprojects points on a 3D plane onto a 2D plane

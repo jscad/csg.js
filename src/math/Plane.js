@@ -1,7 +1,7 @@
 const Vector3D = require('./Vector3')
 const Vertex = require('./Vertex3')
-const Polygon = require('./Polygon')
-const Line3D = require('./Line3D')
+const Polygon = require('./Polygon3')
+const Line3D = require('./Line3')
 const {EPS, getTag} = require('../constants')
 
 // # class Plane
@@ -10,6 +10,8 @@ const Plane = function (normal, w) {
   this.normal = normal
   this.w = w
 }
+
+module.exports = Plane
 
 // create from an untyped object with identical property names:
 Plane.fromObject = function (obj) {
@@ -252,5 +254,3 @@ Plane.prototype = {
     return mirrored
   }
 }
-
-module.exports = Plane

@@ -1,11 +1,8 @@
-const CAG = require('../CAG')
 const Vector3D = require('./Vector3')
 const Vertex = require('./Vertex3')
-const Plane = require('./Plane')
-const Matrix4x4 = require('./Matrix4x4')
+const Matrix4x4 = require('./Matrix4')
 const {_CSGDEBUG, EPS, getTag, areaEPS} = require('../constants')
 const {fromPolygons} = require('../CSGMakers')
-const {fromPointsNoCheck} = require('../CAGMakers')
 const {fnSortByIndex} = require('../utils')
 
 // # class Polygon
@@ -30,6 +27,7 @@ const Polygon = function (vertices, shared, plane) {
   if (arguments.length >= 3) {
     this.plane = plane
   } else {
+    const Plane = require('./Plane') // FIXME: circular dependencies
     this.plane = Plane.fromVector3Ds(vertices[0].pos, vertices[1].pos, vertices[2].pos)
   }
 
@@ -40,6 +38,7 @@ const Polygon = function (vertices, shared, plane) {
 
 // create from an untyped object with identical property names:
 Polygon.fromObject = function (obj) {
+  const Plane = require('./Plane') // FIXME: circular dependencies
   let vertices = obj.vertices.map(function (v) {
     return Vertex.fromObject(v)
   })
@@ -197,9 +196,12 @@ Polygon.prototype = {
 
     // project the 3D polygon onto a plane
   projectToOrthoNormalBasis: function (orthobasis) {
+    const CAG = require('../CAG')
+    const {fromPointsNoCheck} = require('../CAGMakers') // circular dependencies
     let points2d = this.vertices.map(function (vertex) {
       return orthobasis.to2D(vertex.pos)
     })
+
     let result = fromPointsNoCheck(points2d)
     let area = result.area()
     if (Math.abs(area) < areaEPS) {

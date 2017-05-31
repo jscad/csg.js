@@ -1,7 +1,8 @@
-const {fnNumberSort, reTesselateCoplanarPolygons} = require('./utils')
-const {fuzzyCSGFactory} = require('./FuzzyCSGFactory')
+const {fnNumberSort} = require('./utils')
+const FuzzyCSGFactory = require('./FuzzyFactory3d')
 const Tree = require('./trees')
 const {EPS} = require('./constants')
+const {reTesselateCoplanarPolygons} = require('./math/polygonUtils')
 const Polygon = require('./math/Polygon2')
 const Plane = require('./math/Plane')
 const Vertex = require('./math/Vertex3')
@@ -11,11 +12,12 @@ const Matrix4x4 = require('./math/Matrix4')
 const OrthoNormalBasis = require('./math/OrthoNormalBasis')
 
 const CAG = require('./CAG') // FIXME: circular dependency !
-const {fromPolygons} = require('./CSGMakers') // FIXME: circular dependency !
-const {sphere, cube} = require('./primitives2d') // FIXME: circular dependency !
+const {sphere} = require('./primitives2d') // FIXME: circular dependency !
 
 const Properties = require('./properties')
 const Connector = require('./connectors')
+let {fromPolygons} = require('./CSGMakers') // FIXME: circular dependency !
+
 
 /** Class CSG
  * Holds a binary space partition tree representing a 3D solid. Two solids can
@@ -82,7 +84,7 @@ CSG.prototype = {
       b.invert()
 
       let newpolygons = a.allPolygons().concat(b.allPolygons())
-      let result = fromPolygons(newpolygons)
+      let result = fromPolygons(CSG, newpolygons)
       result.properties = this.properties._merge(csg.properties)
       if (retesselate) result = result.reTesselated()
       if (canonicalize) result = result.canonicalized()
@@ -94,7 +96,7 @@ CSG.prototype = {
     // Do not use if you are not completely sure that the solids do not intersect!
   unionForNonIntersecting: function (csg) {
     let newpolygons = this.polygons.concat(csg.polygons)
-    let result = fromPolygons(newpolygons)
+    let result = fromPolygons(CSG, newpolygons)
     result.properties = this.properties._merge(csg.properties)
     result.isCanonicalized = this.isCanonicalized && csg.isCanonicalized
     result.isRetesselated = this.isRetesselated && csg.isRetesselated
@@ -138,7 +140,7 @@ CSG.prototype = {
     b.clipTo(a, true)
     a.addPolygons(b.allPolygons())
     a.invert()
-    let result = fromPolygons(a.allPolygons())
+    let result = fromPolygons(CSG, a.allPolygons())
     result.properties = this.properties._merge(csg.properties)
     if (retesselate) result = result.reTesselated()
     if (canonicalize) result = result.canonicalized()
@@ -184,7 +186,7 @@ CSG.prototype = {
     b.clipTo(a)
     a.addPolygons(b.allPolygons())
     a.invert()
-    let result = fromPolygons(a.allPolygons())
+    let result = fromPolygons(CSG, a.allPolygons())
     result.properties = this.properties._merge(csg.properties)
     if (retesselate) result = result.reTesselated()
     if (canonicalize) result = result.canonicalized()
@@ -197,7 +199,7 @@ CSG.prototype = {
     let flippedpolygons = this.polygons.map(function (p) {
       return p.flipped()
     })
-    return fromPolygons(flippedpolygons)
+    return fromPolygons(CSG, flippedpolygons)
         // TODO: flip properties?
   },
 
@@ -206,7 +208,7 @@ CSG.prototype = {
     let newpolygons = this.polygons.map(function (p) {
       return p.transform(matrix4x4)
     })
-    let result = fromPolygons(newpolygons)
+    let result = fromPolygons(CSG, newpolygons)
     result.properties = this.properties._transform(matrix4x4)
     result.isRetesselated = this.isRetesselated
     return result
@@ -240,7 +242,7 @@ CSG.prototype = {
       if (ismirror) newvertices.reverse()
       return new Polygon(newvertices, p.shared, newplane)
     })
-    let result = fromPolygons(newpolygons)
+    let result = fromPolygons(CSG, newpolygons)
     result.properties = this.properties._transform(matrix4x4)
     result.isRetesselated = this.isRetesselated
     result.isCanonicalized = this.isCanonicalized
@@ -428,7 +430,7 @@ CSG.prototype = {
       endfacevertices.reverse()
       polygons.push(new Polygon(startfacevertices))
       polygons.push(new Polygon(endfacevertices))
-      let cylinder = fromPolygons(polygons)
+      let cylinder = fromPolygons(CSG, polygons)
       result = result.unionSub(cylinder, false, false)
     }
 
@@ -494,7 +496,7 @@ CSG.prototype = {
     if (this.isCanonicalized) {
       return this
     } else {
-      let factory = new fuzzyCSGFactory()
+      let factory = new FuzzyCSGFactory()
       let result = factory.getCSG(this)
       result.isCanonicalized = true
       result.isRetesselated = this.isRetesselated
@@ -510,7 +512,7 @@ CSG.prototype = {
       let csg = this
       let polygonsPerPlane = {}
       let isCanonicalized = csg.isCanonicalized
-      let fuzzyfactory = new fuzzyCSGFactory()
+      let fuzzyfactory = new FuzzyCSGFactory()
       csg.polygons.map(function (polygon) {
         let plane = polygon.plane
         let shared = polygon.shared
@@ -538,7 +540,7 @@ CSG.prototype = {
           destpolygons = destpolygons.concat(retesselayedpolygons)
         }
       }
-      let result = fromPolygons(destpolygons)
+      let result = fromPolygons(CSG, destpolygons)
       result.isRetesselated = true
             // result = result.canonicalized();
       result.properties = this.properties // keep original properties
@@ -643,7 +645,7 @@ CSG.prototype = {
     let polygons = this.polygons.map(function (p) {
       return new Polygon(p.vertices, shared, p.plane)
     })
-    let result = fromPolygons(polygons)
+    let result = fromPolygons(CSG, polygons)
     result.properties = this.properties // keep original properties
     result.isRetesselated = this.isRetesselated
     result.isCanonicalized = this.isCanonicalized
@@ -748,34 +750,6 @@ CSG.prototype = {
       planeData: planeData,
       shared: shareds
     }
-    return result
-  },
-
-    // For debugging
-    // Creates a new solid with a tiny cube at every vertex of the source solid
-  toPointCloud: function (cuberadius) {
-    let csg = this.reTesselated()
-
-    let result = new CSG()
-
-        // make a list of all unique vertices
-        // For each vertex we also collect the list of normals of the planes touching the vertices
-    let vertexmap = {}
-    csg.polygons.map(function (polygon) {
-      polygon.vertices.map(function (vertex) {
-        vertexmap[vertex.getTag()] = vertex.pos
-      })
-    })
-
-    for (let vertextag in vertexmap) {
-      let pos = vertexmap[vertextag]
-      let cube = cube({
-        center: pos,
-        radius: cuberadius
-      })
-      result = result.unionSub(cube, false, false)
-    }
-    result = result.reTesselated()
     return result
   },
 
@@ -1187,7 +1161,7 @@ CSG.prototype = {
         }
         if (!donesomething) break
       }
-      let newcsg = fromPolygons(polygons)
+      let newcsg = fromPolygons(CSG, polygons)
       newcsg.properties = csg.properties
       newcsg.isCanonicalized = true
       newcsg.isRetesselated = true

@@ -87,6 +87,4 @@ Line2D.prototype = {
   }
 }
 
-module.exports = {
-  Line2D
-}
+module.exports = Line2D

@@ -80,22 +80,63 @@ for solid CAD anyway.
 
 */
 
-// ////////////////////////////////////
-CSG.addTransformationMethodsToPrototype(CSG.prototype)
-CSG.addTransformationMethodsToPrototype(CSG.Vector2D.prototype)
-CSG.addTransformationMethodsToPrototype(CSG.Vector3D.prototype)
-CSG.addTransformationMethodsToPrototype(CSG.Vertex.prototype)
-CSG.addTransformationMethodsToPrototype(CSG.Plane.prototype)
-CSG.addTransformationMethodsToPrototype(CSG.Polygon.prototype)
-CSG.addTransformationMethodsToPrototype(CSG.Line3D.prototype)
-CSG.addTransformationMethodsToPrototype(CSG.Connector.prototype)
-CSG.addTransformationMethodsToPrototype(CSG.Path2D.prototype)
-CSG.addTransformationMethodsToPrototype(CSG.Line2D.prototype)
-CSG.addTransformationMethodsToPrototype(CAG.prototype)
-CSG.addTransformationMethodsToPrototype(CAG.Side.prototype)
-CSG.addTransformationMethodsToPrototype(CSG.OrthoNormalBasis.prototype)
 
-CSG.addCenteringToPrototype(CSG.prototype, ['x', 'y', 'z'])
-CSG.addCenteringToPrototype(CAG.prototype, ['x', 'y'])
+const {addTransformationMethodsToPrototype, addCenteringToPrototype} = require('./src/mutators')
+let CSG = require('./src/CSG')
+let CAG = require('./src/CAG')
+
+console.log(CAG.fromPoints)
+
+// eek ! all this is kept for backwards compatibility...for now
+CSG.Vector2D = require('./src/math/Vector2')
+CSG.Vector3D = require('./src/math/Vector3')
+CSG.Vertex = require('./src/math/Vertex3')
+CSG.Plane = require('./src/math/Plane')
+CSG.Polygon = require('./src/math/Polygon3')
+CSG.Line2D = require('./src/math/Line2')
+CSG.Line3D = require('./src/math/Line3')
+CSG.Path2D = require('./src/math/Path2')
+CSG.OrthoNormalBasis = require('./src/math/OrthoNormalBasis')
+
+CAG.Side = require('./src/math/Side')
+
+CSG.Connector = require('./src/connectors')
+
+const {circle, ellipse, rectangle, roundedRectangle} = require('./src/primitives2d')
+const {sphere, cube, roundedCube, cylinder, roundedCylinder, cylinderElliptic, polyhedron} = require('./src/primitives3d')
+
+CSG.sphere = sphere
+CSG.cube = cube
+CSG.roundedCube = roundedCube
+CSG.cylinder = cylinder
+CSG.roundedCylinder = roundedCylinder
+CSG.cylinderElliptic = cylinderElliptic
+CSG.polyhedron = polyhedron
+
+CAG.circle = circle
+CAG.ellipse = ellipse
+CAG.rectangle = rectangle
+CAG.roundedRectangle = roundedRectangle
+
+// ////////////////////////////////////
+addTransformationMethodsToPrototype(CSG.prototype)
+
+addTransformationMethodsToPrototype(CSG.Vector2D.prototype)
+addTransformationMethodsToPrototype(CSG.Vector3D.prototype)
+addTransformationMethodsToPrototype(CSG.Vertex.prototype)
+addTransformationMethodsToPrototype(CSG.Plane.prototype)
+addTransformationMethodsToPrototype(CSG.Polygon.prototype)
+addTransformationMethodsToPrototype(CSG.Line2D.prototype)
+addTransformationMethodsToPrototype(CSG.Line3D.prototype)
+addTransformationMethodsToPrototype(CSG.Path2D.prototype)
+addTransformationMethodsToPrototype(CAG.Side.prototype)
+addTransformationMethodsToPrototype(CSG.OrthoNormalBasis.prototype)
+
+addTransformationMethodsToPrototype(CSG.Connector.prototype)
+
+addTransformationMethodsToPrototype(CAG.prototype)
+
+addCenteringToPrototype(CSG.prototype, ['x', 'y', 'z'])
+addCenteringToPrototype(CAG.prototype, ['x', 'y'])
 
 module.exports = {CSG, CAG}

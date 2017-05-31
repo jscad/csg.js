@@ -1,5 +1,5 @@
 const {IsFloat} = require('../utils')
-const Vector3D = require('./Vector3D')
+const Vector3D = require('./Vector3')
 
 // /////////////////////////////////////////////////
 // # class Vector2D:

@@ -1,4 +1,3 @@
-const CSG = require('./CSG')
 const Vector3D = require('./math/Vector3')
 const Vertex = require('./math/Vertex3')
 const Plane = require('./math/Plane')
@@ -8,8 +7,8 @@ const Polygon = require('./math/Polygon3')
  * @param {Polygon[]} polygons - list of polygons
  * @returns {CSG} new CSG object
  */
-function fromPolygons (polygons) {
-  let csg = new CSG()
+function fromPolygons (BaseType, polygons) {
+  let csg = new require('./CSG')//new BaseType() // CSG in disguise
   csg.polygons = polygons
   csg.isCanonicalized = false
   csg.isRetesselated = false

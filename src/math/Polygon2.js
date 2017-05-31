@@ -11,7 +11,7 @@ With many improvements (see documentation):
 But we'll keep CSG.Polygon2D as a stub for backwards compatibility
 */
 function Polygon2D (points) {
-  const cag = fromPoints(points)
+  const cag = CAG.fromPoints(points)
   this.sides = cag.sides
 }
 
