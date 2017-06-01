@@ -15,9 +15,16 @@ function compareCagSides (t, expected, observed, precision) {
   nearlyEqual(t, expected.pos[0][1], observed.pos[0][1], precision)
 }
 
-//
-// Test suite for CAG Common Transformations
-//
+function getSimplifiedVertexPosition (vertex) {
+  return '_z' in vertex.pos ? [vertex.pos._x, vertex.pos._y, vertex.pos._z] : [vertex.pos._x, vertex.pos._y]
+}
+
+test('CAG should be translated properly', t => {
+  const shape = CAG.rectangle({radius: 3})
+  const observed = shape.translate([2, 0, 0])
+  t.deepEqual(getSimplifiedVertexPosition(observed.sides[0].vertex0), [-1, 3])
+})
+
 test('CAG should union properly', t => {
   const op1 = CAG.circle({resolution: 5})
   const op2 = CAG.rectangle({center: [1, 1]})
@@ -29,7 +36,7 @@ test('CAG should union properly', t => {
   t.deepEqual(result.sides.length, 8)
   t.deepEqual(compactCagSide(firstSide), {pos: [[2, 0], [2, 2]]})
   compareCagSides(t, compactCagSide(lastSide), {pos: [[0, 0.8506508083520399], [-0.8090169943749475, 0.5877852522924732]]}, 0.000001)
-  //t.deepEqual(compactCagSide(lastSide), {pos: [[0, 0.8506508083520399], [-0.8090169943749475, 0.5877852522924732]]})
+  // t.deepEqual(compactCagSide(lastSide), {pos: [[0, 0.8506508083520399], [-0.8090169943749475, 0.5877852522924732]]})
 // conversion functions
 // assert.equal(cag.toString(), 'CAG (0 sides):\n')
 // assert.equal(area, 0)
