@@ -293,7 +293,7 @@ CSG.prototype = {
     //   the result is a true expansion of the solid
     //   If false, returns only the shell
   expandedShell: function (radius, resolution, unionWithThis) {
-    const {sphere} = require('./primitives2d') // FIXME: circular dependency !
+    const {sphere} = require('./primitives3d') // FIXME: circular dependency !
     let csg = this.reTesselated()
     let result
     if (unionWithThis) {
