@@ -1,6 +1,6 @@
 import test from 'ava'
 import { CAG } from '../csg'
-
+const {nearlyEqual} = require('./helpers/nearlyEqual')
 // helper function, gives a much more compact variant of the the side data
 // hint : this could also be used to streamline the cag implementation in the future
 function compactCagSide (cagSide) {
@@ -8,6 +8,11 @@ function compactCagSide (cagSide) {
       [cagSide.vertex0.pos._x, cagSide.vertex0.pos._y],
       [cagSide.vertex1.pos._x, cagSide.vertex1.pos._y]
   ]}
+}
+
+function compareCagSides (t, expected, observed, precision) {
+  nearlyEqual(t, expected.pos[0][0], observed.pos[0][0], precision)
+  nearlyEqual(t, expected.pos[0][1], observed.pos[0][1], precision)
 }
 
 //
@@ -23,7 +28,8 @@ test('CAG should union properly', t => {
 
   t.deepEqual(result.sides.length, 8)
   t.deepEqual(compactCagSide(firstSide), {pos: [[2, 0], [2, 2]]})
-  t.deepEqual(compactCagSide(lastSide), {pos: [[0, 0.8506508083520399], [-0.8090169943749475, 0.5877852522924732]]})
+  compareCagSides(t, compactCagSide(lastSide), {pos: [[0, 0.8506508083520399], [-0.8090169943749475, 0.5877852522924732]]}, 0.000001)
+  //t.deepEqual(compactCagSide(lastSide), {pos: [[0, 0.8506508083520399], [-0.8090169943749475, 0.5877852522924732]]})
 // conversion functions
 // assert.equal(cag.toString(), 'CAG (0 sides):\n')
 // assert.equal(area, 0)
@@ -59,7 +65,7 @@ test('CAG should intersect properly', t => {
   t.deepEqual(compactCagSide(lastSide), {pos: [[-0.8090169943749475, -0.587785252292473], [0.30901699437494723, -0.9510565162951536]]})
 })
 
-test.todo('CAG should transform properly');
-test.todo('CAG should flip properly');
-test.todo('CAG should expand properly');
-test.todo('CAG should contract properly');
+test.todo('CAG should transform properly')
+test.todo('CAG should flip properly')
+test.todo('CAG should expand properly')
+test.todo('CAG should contract properly')
