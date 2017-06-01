@@ -137,16 +137,16 @@ CAG.prototype = {
   _toPlanePolygons: function (options) {
     const CSG = require('./CSG') // FIXME: circular dependencies CAG=>CSG=>CAG
     let flipped = options.flipped || false
-        // reference connector for transformation
+    // reference connector for transformation
     let origin = [0, 0, 0]
     let defaultAxis = [0, 0, 1]
     let defaultNormal = [0, 1, 0]
     let thisConnector = new Connector(origin, defaultAxis, defaultNormal)
-        // translated connector per options
+    // translated connector per options
     let translation = options.translation || origin
     let axisVector = options.axisVector || defaultAxis
     let normalVector = options.normalVector || defaultNormal
-        // will override above if options has toConnector
+    // will override above if options has toConnector
     let toConnector = options.toConnector ||
             new Connector(translation, axisVector, normalVector)
     // resulting transform
@@ -165,13 +165,13 @@ CAG.prototype = {
     if (flipped) {
       csgplane = csgplane.invert()
     }
-        // intersectSub -> prevent premature retesselate/canonicalize
+    // intersectSub -> prevent premature retesselate/canonicalize
     csgplane = csgplane.intersectSub(csgshell)
-        // only keep the polygons in the z plane:
+    // only keep the polygons in the z plane:
     let polys = csgplane.polygons.filter(function (polygon) {
       return Math.abs(polygon.plane.normal.z) > 0.99
     })
-        // finally, position the plane per passed transformations
+    // finally, position the plane per passed transformations
     return polys.map(function (poly) {
       return poly.transform(m)
     })

@@ -3,7 +3,7 @@ const {parseOptionAs2DVector, parseOptionAsFloat, parseOptionAsInt} = require('.
 const {defaultResolution2D} = require('./constants')
 const Vector2D = require('./math/Vector2')
 const Path2D = require('./math/Path2')
-const {fromCompactBinary} = require('./CAGMakers')
+const {fromCompactBinary} = require('./CAGFactories')
 
 /** Construct a circle.
  * @param {Object} [options] - options for construction

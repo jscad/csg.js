@@ -1,8 +1,14 @@
 const {IsFloat} = require('../utils')
 
-// /////////////////////////////////////////////////
-// # class Vector2D:
-// Represents a 2 element vector
+/** Class Vector2D
+ * Represents a 2D vector with X, Y coordinates
+ * @constructor
+ *
+ * @example
+ * new CSG.Vector2D(1, 2);
+ * new CSG.Vector3D([1, 2]);
+ * new CSG.Vector3D({ x: 1, y: 2});
+ */
 const Vector2D = function (x, y) {
   if (arguments.length === 2) {
     this._x = parseFloat(x)
@@ -73,7 +79,7 @@ Vector2D.prototype = {
     throw new Error('Vector2D is immutable')
   },
 
-    // extend to a 3D vector by adding a z coordinate:
+  // extend to a 3D vector by adding a z coordinate:
   toVector3D: function (z) {
     const Vector3D = require('./Vector3') // FIXME: circular dependencies Vector2 => Vector3 => Vector2
     return new Vector3D(this._x, this._y, z)

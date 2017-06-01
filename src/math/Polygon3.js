@@ -215,6 +215,7 @@ Polygon.prototype = {
     return result
   },
 
+  //FIXME: WHY is this for 3D polygons and not for 2D shapes ?
     /**
      * Creates solid from slices (Polygon) by generating walls
      * @param {Object} options Solid generating options

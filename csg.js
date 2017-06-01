@@ -121,6 +121,7 @@ CSG.getTag = getTag
 CSG.Vector2D = require('./src/math/Vector2')
 CSG.Vector3D = require('./src/math/Vector3')
 CSG.Vertex = require('./src/math/Vertex3')
+CAG.Vertex = require('./src/math/Vertex2')
 CSG.Plane = require('./src/math/Plane')
 CSG.Polygon = require('./src/math/Polygon3')
 CSG.Polygon2D = require('./src/math/Polygon2')
@@ -152,20 +153,19 @@ CAG.rectangle = rectangle
 CAG.roundedRectangle = roundedRectangle
 
 //
-const {fromCompactBinary, fromObject, fromSlices} = require('./src/CSGMakers')
+const {fromCompactBinary, fromObject, fromSlices} = require('./src/CSGFactories')
 CSG.fromCompactBinary = fromCompactBinary
 CSG.fromObject = fromObject
 CSG.fromSlices = fromSlices
 
 CSG.toPointCloud = require('./src/debugHelpers').toPointCloud
 
-const CAGMakers = require('./src/CAGMakers')
+const CAGMakers = require('./src/CAGFactories')
 CAG.fromObject = CAGMakers.fromObject
 CAG.fromPointsNoCheck = CAGMakers.fromPointsNoCheck
 
 // ////////////////////////////////////
 addTransformationMethodsToPrototype(CSG.prototype)
-
 addTransformationMethodsToPrototype(CSG.Vector2D.prototype)
 addTransformationMethodsToPrototype(CSG.Vector3D.prototype)
 addTransformationMethodsToPrototype(CSG.Vertex.prototype)
@@ -174,12 +174,12 @@ addTransformationMethodsToPrototype(CSG.Polygon.prototype)
 addTransformationMethodsToPrototype(CSG.Line2D.prototype)
 addTransformationMethodsToPrototype(CSG.Line3D.prototype)
 addTransformationMethodsToPrototype(CSG.Path2D.prototype)
-addTransformationMethodsToPrototype(CAG.Side.prototype)
 addTransformationMethodsToPrototype(CSG.OrthoNormalBasis.prototype)
-
 addTransformationMethodsToPrototype(CSG.Connector.prototype)
 
 addTransformationMethodsToPrototype(CAG.prototype)
+addTransformationMethodsToPrototype(CAG.Side.prototype)
+addTransformationMethodsToPrototype(CAG.Vertex.prototype)
 
 addCenteringToPrototype(CSG.prototype, ['x', 'y', 'z'])
 addCenteringToPrototype(CAG.prototype, ['x', 'y'])

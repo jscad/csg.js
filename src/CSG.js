@@ -310,11 +310,11 @@ CSG.prototype = {
       result = result.unionSub(extrudedface, false, false)
     })
 
-        // Make a list of all unique vertex pairs (i.e. all sides of the solid)
-        // For each vertex pair we collect the following:
-        //   v1: first coordinate
-        //   v2: second coordinate
-        //   planenormals: array of normal vectors of all planes touching this side
+    // Make a list of all unique vertex pairs (i.e. all sides of the solid)
+    // For each vertex pair we collect the following:
+    //   v1: first coordinate
+    //   v2: second coordinate
+    //   planenormals: array of normal vectors of all planes touching this side
     let vertexpairs = {} // map of 'vertex pair tag' to {v1, v2, planenormals}
     csg.polygons.map(function (polygon) {
       let numvertices = polygon.vertices.length
@@ -490,9 +490,6 @@ CSG.prototype = {
     return result
   },
 
-
-
-
   canonicalized: function () {
     if (this.isCanonicalized) {
       return this
@@ -518,8 +515,8 @@ CSG.prototype = {
         let plane = polygon.plane
         let shared = polygon.shared
         if (!isCanonicalized) {
-                    // in order to identify to polygons having the same plane, we need to canonicalize the planes
-                    // We don't have to do a full canonizalization (including vertices), to save time only do the planes and the shared data:
+          // in order to identify to polygons having the same plane, we need to canonicalize the planes
+          // We don't have to do a full canonizalization (including vertices), to save time only do the planes and the shared data:
           plane = fuzzyfactory.getPlane(plane)
           shared = fuzzyfactory.getPolygonShared(shared)
         }

@@ -55,7 +55,8 @@ Side.prototype = {
   },
 
   toPolygon3D: function (z0, z1) {
-    var vertices = [
+    //console.log(this.vertex0.pos)
+    const vertices = [
       new Vertex3(this.vertex0.pos.toVector3D(z0)),
       new Vertex3(this.vertex1.pos.toVector3D(z0)),
       new Vertex3(this.vertex1.pos.toVector3D(z1)),

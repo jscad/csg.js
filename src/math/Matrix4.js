@@ -1,5 +1,5 @@
 const Vector3D = require('./Vector3')
-const Vector2D = require('./Vector3')
+const Vector2D = require('./Vector2')
 const OrthoNormalBasis = require('./OrthoNormalBasis')
 const Plane = require('./Plane')
 
