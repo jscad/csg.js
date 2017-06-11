@@ -1,4 +1,5 @@
 const test = require('ava')
+const { sideEquals } = require('./test-helpers')
 const { cube, sphere } = require('./primitives3d')
 const { square, circle } = require('./primitives2d')
 const { translate, rotate, scale, center, mirror, expand, contract, multmatrix, minkowski, hull, chain_hull } = require('./ops-transformations')
@@ -32,8 +33,8 @@ test('translate (multiple items, 2d)', t => {
   const op2 = circle()
   const obs = translate([0, 10, 0], op1, op2)
 
-  t.deepEqual(obs.sides[0], {vertex0: {pos: {_x: 2, _y: 11}}, vertex1: {pos: {_x: 1.9807852804032304, _y: 11.195090322016128}}})
-  t.deepEqual(obs.sides[obs.sides.length - 1], {vertex0: {pos: {_x: 0, _y: 10}}, vertex1: {pos: {_x: 0.9999999999999998, _y: 10}}})
+  sideEquals(t, obs.sides[0], [[1.9807852804032304, 10.804909677983872], [2, 11]])
+  sideEquals(t, obs.sides[obs.sides.length - 1], [[0, 10], [0.9999999999999998, 10]])
 })
 
 test('rotate (single item)', t => {
@@ -56,8 +57,8 @@ test('rotate (multiple items, 2d)', t => {
   const op2 = circle()
   const obs = rotate([0, 10, 0], op1, op2)
 
-  t.deepEqual(obs.sides[0], {vertex0: {pos: {_x: 1.969615506024416, _y: 1}}, vertex1: {pos: {_x: 1.9506927011935618, _y: 1.1950903220161282}}})
-  t.deepEqual(obs.sides[obs.sides.length - 1], {vertex0: {pos: {_x: 0, _y: 0}}, vertex1: {pos: {_x: 0.9848077530122078, _y: 0}}})
+  sideEquals(t, obs.sides[0], [[1.9506927011935618, 0.8049096779838713], [1.969615506024416, 1]])
+  sideEquals(t, obs.sides[obs.sides.length - 1], [[0, 0], [0.9848077530122078, 0]])
 })
 
 test('scale (single item)', t => {
@@ -81,8 +82,8 @@ test('scale (multiple items, 2d)', t => {
   const op2 = circle()
   const obs = scale([0, 10, 0], op1, op2)
 
-  t.deepEqual(obs.sides[0], {vertex0: {pos: {_x: 0, _y: 10}}, vertex1: {pos: {_x: 0, _y: 11.950903220161281}}})
-  t.deepEqual(obs.sides[obs.sides.length - 1], {vertex0: {pos: {_x: 0, _y: 0}}, vertex1: {pos: {_x: 0, _y: 0}}})
+  sideEquals(t, obs.sides[0], [[0, 8.049096779838713], [0, 10]])
+  sideEquals(t, obs.sides[obs.sides.length - 1], [[0, 0], [0, 0]])
 })
 
 test('center (single item)', t => {
@@ -104,8 +105,8 @@ test('center (multiple items, 2d)', t => {
   const op2 = circle()
   const obs = center(true, op1, op2)
 
-  t.deepEqual(obs.sides[0], {vertex0: {pos: {_x: 2, _y: 1}}, vertex1: {pos: {_x: 1.9807852804032304, _y: 1.1950903220161282}}})
-  t.deepEqual(obs.sides[obs.sides.length - 1], {vertex0: {pos: {_x: 0, _y: 0}}, vertex1: {pos: {_x: 0.9999999999999998, _y: 0}}})
+  sideEquals(t, obs.sides[0], [[1.9807852804032304, 0.8049096779838713], [2, 1]])
+  sideEquals(t, obs.sides[obs.sides.length - 1], [[0, 0], [0.9999999999999998, 0]])
 })
 
 test('mirror (single item)', t => {
@@ -155,7 +156,7 @@ test('expand (multiple items, 2d)', t => {
   t.deepEqual(obs.sides[obs.sides.length - 1], {vertex0: {pos: {_x: -1.8369701987210296e-15, _y: -10}}, vertex1: {pos: {_x: 0.9999999999999981, _y: -10}}})
 })
 
-//FIXME: I have NO idea why this one is failing, it is only a very thin wrapper over contract
+// FIXME: I have NO idea why this one is failing, it is only a very thin wrapper over contract
 // which means contract itself is likely broken
 // seems to work for 2d shapes?
 test.failing('contract (single item)', t => {

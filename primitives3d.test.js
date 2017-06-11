@@ -1,5 +1,6 @@
 const test = require('ava')
 const { cube, sphere, geodesicSphere, cylinder, torus, polyhedron } = require('./primitives3d')
+const { simplifiedPolygon} = require('./test-helpers.js')
 
 function almostEquals (t, observed, expected, precision) {
   t.is(Math.abs(expected - observed) < precision, true)
@@ -54,21 +55,19 @@ function comparePolygons (a, b, precision) {
     vs = b.vertices.slice(index).concat(b.vertices.slice(0, index))
   }
 
-
     // Compare now vertices one by one
   for (let i = 0; i < a.vertices.length; i++) {
     const vertex = a.vertices[i].pos
     const otherVertex = vs[i].pos
-    if(!compareVertices(vertex, otherVertex, precision)){
+    if (!compareVertices(vertex, otherVertex, precision)) {
       return false
     }
-    /*if (a.vertices[i]._x !== vs[i]._x ||
+    /* if (a.vertices[i]._x !== vs[i]._x ||
             a.vertices[i]._y !== vs[i]._y ||
-            a.vertices[i]._z !== vs[i]._z) { return false }*/
+            a.vertices[i]._z !== vs[i]._z) { return false } */
   }
   return true
 }
-
 
 /* FIXME : not entirely sure how to deal with this, but for now relies on inspecting
 output data structures: we should have higher level primitives ... */
@@ -452,53 +451,61 @@ test('cylinder (custom double diameter, rounded, start, end)', t => {
 
 test('torus (defaults)', t => {
   const obs = torus()
-  const expFirstPoly = {
-    vertices: [ { pos: { _x: 5, _y: 0, _z: 0 } },
-      { pos: { _x: 4.923879532511287, _y: 0, _z: 0.3826834323650898 } },
-      { pos: { _x: 4.829268567965809, _y: -0.96060124356625, _z: 0.3826834323650898 } },
-      { pos: { _x: 4.903926402016152, _y: -0.9754516100806412, _z: 0 } } ],
-    shared: { color: null, tag: 296 },
-    plane: { normal: { _x: 0.9762410328686745, _y: -0.09615134934208372, _z: 0.19418641498107 },
-      w: 4.881205164343372 } }
+  const expFirstPoly = { positions:
+  [ [ 4.923879532511286, 0, -0.3826834323650904 ],
+     [ 5, 0, 0 ],
+     [ 4.903926402016152, -0.9754516100806412, 0 ],
+     [ 4.8292685679658085, -0.9606012435662499, -0.3826834323650904 ] ],
+    plane:
+    { normal: [ 0.9762410328686741, -0.09615134934208333, -0.1941864149810719 ],
+      w: 4.8812051643433705 },
+    shared: { color: null, tag: 296 } }
 
-  const expLastPoly = { vertices: [
-      { pos: { _x: 4.8292685679658085, _y: 0.9606012435662521, _z: -0.3826834323650904 } },
-      { pos: { _x: 4.903926402016151, _y: 0.9754516100806436, _z: -2.4492935982947064e-16 } },
-      { pos: { _x: 5, _y: 1.2246467991473533e-15, _z: -2.4492935982947064e-16 } },
-      { pos: { _x: 4.923879532511286, _y: 1.2060026617754226e-15, _z: -0.3826834323650904 } } ],
-    shared: { color: null, tag: 296 },
-    plane: { normal: { _x: 0.9762410328686743, _y: 0.09615134934208412, _z: -0.19418641498107084 },
-      w: 4.881205164343371 } }
+  const expLastPoly = { positions:
+  [ [ 4.616661044273995, 0.9183109777059866, -0.7071067811865477 ],
+     [ 4.8292685679658085, 0.9606012435662521, -0.3826834323650904 ],
+    [ 4.923879532511286,
+      1.2060026617754226e-15,
+      -0.3826834323650904 ],
+     [ 4.707106781186547, 1.152908650564981e-15, -0.7071067811865477 ] ],
+    plane:
+    { normal: [ 0.8286954742331524, 0.08161938021295423, -0.5537166132229949 ],
+      w: 4.292294858367102 },
+    shared: { color: null, tag: 296 } }
 
   t.deepEqual(obs.polygons.length, 512)
-  t.deepEqual(obs.polygons[0], expFirstPoly)
-  t.deepEqual(obs.polygons[511], expLastPoly)
+  t.deepEqual(simplifiedPolygon(obs.polygons[0]), expFirstPoly)
+  t.deepEqual(simplifiedPolygon(obs.polygons[obs.polygons.length - 1]), expLastPoly)
 })
 
 test('torus (custom all)', t => {
-  const obs = torus({ro: 5, ri: 3, fni: 4, fno: 5, roti: 45 })
-  const expFirstPoly = {
-    vertices: [
-      { pos: { _x: 7.121320343559643, _y: 0, _z: 2.1213203435596424 } },
-      { pos: { _x: 2.8786796564403576, _y: 0, _z: 2.121320343559643 } },
-      { pos: { _x: 0.8895609352015057, _y: -2.7377870455838957, _z: 2.121320343559643 } },
-      { pos: { _x: 2.200609008547969, _y: -6.77277811736764, _z: 2.1213203435596424 } } ],
-    shared: { color: null, tag: 296 },
-    plane: { normal: { _x: 1.0467283057891832e-16, _y: -7.604926294228414e-17, _z: 1 },
-      w: 2.1213203435596433 } }
+  const obs = torus({ ro: 5, ri: 3, fni: 4, fno: 5, roti: 45 })
+  const expFirstPoly = { positions:
+  [ [ 7.121320343559642, 0, -2.1213203435596433 ],
+     [ 7.121320343559643, 0, 2.1213203435596424 ],
+     [ 2.200609008547969, -6.77277811736764, 2.1213203435596424 ],
+     [ 2.2006090085479686, -6.772778117367639, -2.1213203435596433 ] ],
+    plane:
+    { normal:
+    [ 0.8090169943749475,
+      -0.5877852522924731,
+      -1.693641975753492e-16 ],
+      w: 5.76126918032779 },
+    shared: { color: null, tag: 296 } }
 
-  const expLastPoly = { vertices: [
-      { pos: { _x: 2.2006090085479673, _y: 6.77277811736764, _z: -2.1213203435596433 } },
-      { pos: { _x: 2.2006090085479677, _y: 6.772778117367642, _z: 2.121320343559642 } },
-      { pos: { _x: 7.121320343559644, _y: 1.7442204328886494e-15, _z: 2.121320343559642 } },
-      { pos: { _x: 7.121320343559642, _y: 1.744220432888649e-15, _z: -2.1213203435596433 } } ],
-    shared: { color: null, tag: 296 },
-    plane: { normal: { _x: 0.8090169943749473, _y: 0.5877852522924731, _z: -3.307826833076618e-16 },
-      w: 5.76126918032779 } }
+  const expLastPoly = { positions:
+  [ [ 0.8895609352015047, 2.7377870455838953, -2.121320343559642 ],
+     [ 2.2006090085479673, 6.77277811736764, -2.1213203435596433 ],
+     [ 7.121320343559642, 1.744220432888649e-15, -2.1213203435596433 ],
+     [ 2.8786796564403567, 7.05073165406057e-16, -2.121320343559642 ] ],
+    plane:
+    { normal: [ -3.1401849173675493e-16, -2.2814778882685253e-16, -1 ],
+      w: 2.121320343559641 },
+    shared: { color: null, tag: 296 } }
 
   t.deepEqual(obs.polygons.length, 20)
-  t.deepEqual(obs.polygons[0], expFirstPoly)
-  t.deepEqual(obs.polygons[19], expLastPoly)
+  t.deepEqual(simplifiedPolygon(obs.polygons[0]), expFirstPoly)
+  t.deepEqual(simplifiedPolygon(obs.polygons[19]), expLastPoly)
 })
 
 test('polyhedron (points & triangles)', t => {
