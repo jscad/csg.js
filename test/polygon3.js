@@ -21,7 +21,7 @@ test('CSG.Polygon3 constructor creates a 3D polygon', t => {
     new Vertex3(new Vector3([0, 10, 0])),
     new Vertex3(new Vector3([0, 10, 10]))
   ]
-  var observed = new Polygon(vertices)
+  let observed = new Polygon(vertices)
 
   t.deepEqual(observed.vertices.length, 3)
   vertexEquals(t, observed.vertices[0], [0, 0, 0])
@@ -57,7 +57,7 @@ test('CSG.Polygon3 createsFromPoints a 3D polygon', t => {
     new Vector3([0, 10, 10])
   ]
 
-  var observed = Polygon.createFromPoints(points)
+  let observed = Polygon.createFromPoints(points)
 
   t.deepEqual(observed.vertices.length, 3)
   vertexEquals(t, observed.vertices[0], [0, 0, 0])
@@ -101,3 +101,54 @@ test('CSG.Polygon3 createsFromPoints a 3D polygon', t => {
 
 // CSG = extrude(offsetvector)
 // CSG = solidFromSlices(options)
+
+test('CSG.Polygon.Shared construction', t => {
+  let s1 = new CSG.Polygon.Shared( [1,2,3,4] )
+
+  t.deepEqual(s1.color,[1,2,3,4])
+
+  let o2 = {color: [4,3,2,1] }
+  let s2 = CSG.Polygon.Shared.fromObject(o2)
+
+  t.deepEqual(s2.color,[4,3,2,1])
+
+  let s3 = CSG.Polygon.Shared.fromColor(9,8,7,6)
+
+  t.deepEqual(s3.color,[9,8,7,6])
+
+  let s4 = CSG.Polygon.Shared.fromColor([6,7,8,9])
+
+  t.deepEqual(s4.color,[6,7,8,9])
+
+// check that generic objects are possible via JSON
+  let o5 = JSON.parse(JSON.stringify(s4))
+  let s5 = CSG.Polygon.Shared.fromObject(o5)
+
+  t.deepEqual(o5,JSON.parse(JSON.stringify(s5)))
+
+// check member functions
+  let h1 = s1.getHash()
+  let h2 = s2.getHash()
+  let h3 = s3.getHash()
+  let h4 = s4.getHash()
+
+  t.is(h1,'1/2/3/4')
+  t.is(h2,'4/3/2/1')
+  t.is(h3,'9/8/7/6')
+  t.is(h4,'6/7/8/9')
+
+  let t1 = s1.getTag()
+  let t2 = s2.getTag()
+  let t3 = s3.getTag()
+  let t4 = s4.getTag()
+
+  t.is(t1,1)
+  t.is(s1.tag,1)
+  t.is(s1.getTag(),1)
+
+  t.is(t4,4)
+  t.is(s4.tag,4)
+  t.is(s4.getTag(),4)
+
+})
+
