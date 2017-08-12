@@ -504,9 +504,14 @@ Polygon.isStrictlyConvexPoint = function (prevpoint, point, nextpoint, normal) {
   return (crossdotnormal >= EPS)
 }
 
-// # class Polygon.Shared
-// Holds the shared properties for each polygon (currently only color)
-// Constructor expects a 4 element array [r,g,b,a], values from 0 to 1, or null
+/** Class Polygon.Shared
+ * Holds the shared properties for each polygon (Currently only color).
+ * @constructor
+ * @param {Array[]} color - array containing RGBA values, or null
+ *
+ * @example
+ *   let shared = new CSG.Polygon.Shared([0, 0, 0, 1])
+ */
 Polygon.Shared = function (color) {
   if (color !== null) {
     if (color.length !== 4) {
@@ -520,9 +525,17 @@ Polygon.Shared.fromObject = function (obj) {
   return new Polygon.Shared(obj.color)
 }
 
-// Create Polygon.Shared from a color, can be called as follows:
-// let s = Polygon.Shared.fromColor(r,g,b [,a])
-// let s = Polygon.Shared.fromColor([r,g,b [,a]])
+/** Create Polygon.Shared from color values.
+ * @param {number} r - value of RED component
+ * @param {number} g - value of GREEN component
+ * @param {number} b - value of BLUE component
+ * @param {number} [a] - value of ALPHA component
+ * @param {Array[]} [color] - OR array containing RGB values (optional Alpha)
+ *
+ * @example
+ * let s1 = Polygon.Shared.fromColor(0,0,0)
+ * let s2 = Polygon.Shared.fromColor([0,0,0,1])
+ */
 Polygon.Shared.fromColor = function (args) {
   let color
   if (arguments.length === 1) {
