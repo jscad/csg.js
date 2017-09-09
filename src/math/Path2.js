@@ -4,9 +4,19 @@ const {parseOptionAs2DVector, parseOptionAsFloat, parseOptionAsInt, parseOptionA
 const {defaultResolution2D} = require('../constants')
 const Vertex = require('./Vertex2')
 const Side = require('./Side')
-// const {fromSides, fromPoints} = require('../CAGMakers')
 
-// # Class Path2D
+/** Class Path2D
+ * Represents a series of points, connected by infinitely thin lines.
+ * A path can be open or closed, i.e. additional line between first and last points. 
+ * The difference between Path2D and CAG is that a path is a 'thin' line, whereas a CAG is an enclosed area. 
+ * @constructor
+ * @param {Vector2D[]} [points=[]] - list of points
+ * @param {boolean} [closed=false] - closer of path
+ *
+ * @example
+ * new CSG.Path2D()
+ * new CSG.Path2D([[10,10], [-10,10], [-10,-10], [10,-10]], true) // closed
+ */
 const Path2D = function (points, closed) {
   closed = !!closed
   points = points || []
@@ -31,21 +41,26 @@ const Path2D = function (points, closed) {
   this.closed = closed
 }
 
-/*
-Construct a (part of a) circle. Parameters:
-  options.center: the center point of the arc (Vector2D or array [x,y])
-  options.radius: the circle radius (float)
-  options.startangle: the starting angle of the arc, in degrees
-    0 degrees corresponds to [1,0]
-    90 degrees to [0,1]
-    and so on
-  options.endangle: the ending angle of the arc, in degrees
-  options.resolution: number of points per 360 degree of rotation
-  options.maketangent: adds two extra tiny line segments at both ends of the circle
-    this ensures that the gradients at the edges are tangent to the circle
-Returns a Path2D. The path is not closed (even if it is a 360 degree arc).
-close() the resulting path if you want to create a true circle.
-*/
+/** Construct an arc.
+ * @param {Object} [options] - options for construction
+ * @param {Vector2D} [options.center=[0,0]] - center of circle
+ * @param {Number} [options.radius=1] - radius of circle
+ * @param {Number} [options.startangle=0] - starting angle of the arc, in degrees
+ * @param {Number} [options.endangle=360] - ending angle of the arc, in degrees
+ * @param {Number} [options.resolution=defaultResolution2D] - number of sides per 360 rotation
+ * @param {Boolean} [options.maketangent=false] - adds line segments at both ends of the arc to ensure that the gradients at the edges are tangent
+ * @returns {Path2D} new Path2D object (not closed)
+ *
+ * @example
+ * let a = CSG.Path2D.arc({
+ *   center: [5, 5],
+ *   radius: 10,
+ *   startangle: 90,
+ *   endangle: 180,
+ *   resolution: 36,
+ *   maketangent: true
+ * });
+ */
 Path2D.arc = function (options) {
   let center = parseOptionAs2DVector(options, 'center', 0)
   let radius = parseOptionAsFloat(options, 'radius', 1)
