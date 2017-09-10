@@ -52,7 +52,7 @@ const Path2D = function (points, closed) {
  * @returns {Path2D} new Path2D object (not closed)
  *
  * @example
- * let a = CSG.Path2D.arc({
+ * let path = CSG.Path2D.arc({
  *   center: [5, 5],
  *   radius: 10,
  *   startangle: 90,
@@ -111,7 +111,7 @@ Path2D.prototype = {
   },
 
   /**
-   * get the array of Vector2 points that make up the path
+   * Get the points that make up the path.
    * note that this is current internal list of points, not an immutable copy.
    * @returns {Vector2[]} array of points the make up the path
    */
@@ -119,6 +119,11 @@ Path2D.prototype = {
     return this.points;
   },
 
+  /**
+   * Append an point to the end of the path.
+   * @param {Vector2D} point - point to append
+   * @returns {Path2D} new Path2D object (not closed)
+   */
   appendPoint: function (point) {
     if (this.closed) {
       throw new Error('Path must not be closed')
@@ -128,6 +133,11 @@ Path2D.prototype = {
     return new Path2D(newpoints)
   },
 
+  /**
+   * Append a list of points to the end of the path.
+   * @param {Vector2D[]} points - points to append
+   * @returns {Path2D} new Path2D object (not closed)
+   */
   appendPoints: function (points) {
     if (this.closed) {
       throw new Error('Path must not be closed')
@@ -144,8 +154,8 @@ Path2D.prototype = {
   },
 
   /**
-   * Tell whether the path is a closed path or not
-   * @returns {boolean} true when the path is closed. false otherwise.
+   * Determine if the path is a closed or not.
+   * @returns {Boolean} true when the path is closed, otherwise false
    */
   isClosed: function() {
     return this.closed
@@ -316,21 +326,28 @@ Path2D.prototype = {
     return result
   },
 
-    /*
-     options:
-     .resolution // smoothness of the arc (number of segments per 360 degree of rotation)
-     // to create a circular arc:
-     .radius
-     // to create an elliptical arc:
-     .xradius
-     .yradius
-     .xaxisrotation  // the rotation (in degrees) of the x axis of the ellipse with respect to the x axis of our coordinate system
-     // this still leaves 4 possible arcs between the two given points. The following two flags select which one we draw:
-     .clockwise // = true | false (default is false). Two of the 4 solutions draw clockwise with respect to the center point, the other 2 counterclockwise
-     .large     // = true | false (default is false). Two of the 4 solutions are an arc longer than 180 degrees, the other two are <= 180 degrees
-     This implementation follows the SVG arc specs. For the details see
-     http://www.w3.org/TR/SVG/paths.html#PathDataEllipticalArcCommands
-     */
+
+  /**
+   * Append an arc to the end of the path.
+   * This implementation follows the SVG arc specs. For the details see
+   * http://www.w3.org/TR/SVG/paths.html#PathDataEllipticalArcCommands
+   * @param {Vector2D} endpoint - end point of arc
+   * @param {Object} [options] - options for construction
+   * @param {Number} [options.radius=0] - radius of arc (X and Y), see also xradius and yradius
+   * @param {Number} [options.xradius=0] - X radius of arc, see also radius
+   * @param {Number} [options.yradius=0] - Y radius of arc, see also radius
+   * @param {Number} [options.xaxisrotation=0] -  rotation (in degrees) of the X axis of the arc with respect to the X axis of the coordinate system
+   * @param {Number} [options.resolution=defaultResolution2D] - number of sides per 360 rotation
+   * @param {Boolean} [options.clockwise=false] - draw an arc clockwise with respect to the center point
+   * @param {Boolean} [options.large=false] - draw an arc longer than 180 degrees
+   * @returns {Path2D} new Path2D object (not closed)
+   *
+   * @example
+   * let p1 = new CSG.Path2D([[27.5,-22.96875]],false);
+   * p1 = p1.appendPoint([27.5,-3.28125]);
+   * p1 = p1.appendArc([12.5,-22.96875],{xradius: 15,yradius: -19.6875,xaxisrotation: 0,clockwise: false,large: false});
+   * p1 = p1.close();
+   */
   appendArc: function (endpoint, options) {
     let decimals = 100000
     if (arguments.length < 2) {
