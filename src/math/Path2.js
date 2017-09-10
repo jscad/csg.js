@@ -189,6 +189,12 @@ Path2D.prototype = {
     return expanded
   },
 
+  innerToCAG: function() {
+    const CAG = require('../CAG') // FIXME: cyclic dependencies CAG => PATH2 => CAG
+    if (!this.closed) throw new Error("The path should be closed!");
+    return CAG.fromPoints(this.points);
+  },
+
   transform: function (matrix4x4) {
     let newpoints = this.points.map(function (point) {
       return point.multiply4x4(matrix4x4)
