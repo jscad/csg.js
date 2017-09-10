@@ -212,6 +212,25 @@ Path2D.prototype = {
     return new Path2D(newpoints, this.closed)
   },
 
+  /**
+   * Append a Bezier curve to the end of the path, using the control points to transition the curve through start and end points.
+   * <br>
+   * The Bézier curve starts at the last point in the path,
+   * and ends at the last given control point. Other control points are intermediate control points.
+   * <br>
+   * The first control point may be null to ensure a smooth transition occurs. In this case,  
+   * the second to last control point of the path is mirrored into the control points of the Bezier curve.
+   * In other words, the trailing gradient of the path matches the new gradient of the curve. 
+   * @param {Vector2D[]} controlpoints - list of control points
+   * @param {Object} [options] - options for construction
+   * @param {Number} [options.resolution=defaultResolution2D] - number of sides per 360 rotation
+   * @returns {Path2D} new Path2D object (not closed)
+   *
+   * @example
+   * let p5 = new CSG.Path2D([[10,-20]],false);
+   * p5 = p5.appendBezier([[10,-10],[25,-10],[25,-20]]);
+   * p5 = p5.appendBezier([[25,-30],[40,-30],[40,-20]]);
+   */
   appendBezier: function (controlpoints, options) {
     if (arguments.length < 2) {
       options = {}
