@@ -110,4 +110,45 @@ test('CSG.Path2D.arc() creates correct paths', t => {
   t.deepEqual(p7[0],new CSG.Vector2D([10,0]))
 })
 
+test('CSG.Path2D creates CAG from paths', t => {
+  let p1 = new CSG.Path2D([[27.5,-22.96875]],false);
+  p1 = p1.appendPoint([27.5,-3.28125]);
+  p1 = p1.appendArc([12.5,-22.96875],{xradius: 15,yradius: -19.6875,xaxisrotation: 0,clockwise: false,large: false});
+  p1 = p1.close();
+
+  let cag01 = p1.innerToCAG();
+  t.is(typeof cag01, 'object')
+
+  let p2 = new CSG.Path2D([[27.5,-22.96875]],false);
+  p2 = p2.appendPoint([27.5,-3.28125]);
+  p2 = p2.appendArc([12.5,-22.96875],{xradius: 15,yradius: -19.6875,xaxisrotation: 0,clockwise: false,large: true});
+  p2 = p2.close();
+
+  let cag02 = p2.innerToCAG();
+  t.is(typeof cag02, 'object')
+
+  let p3 = new CSG.Path2D([[27.5,-22.96875]],false);
+  p3 = p3.appendPoint([27.5,-3.28125]);
+  p3 = p3.appendArc([12.5,-22.96875],{xradius: 15,yradius: -19.6875,xaxisrotation: 0,clockwise: true,large: true});
+  p3 = p3.close();
+
+  let cag03 = p3.innerToCAG();
+  t.is(typeof cag03, 'object')
+
+  let p4 = new CSG.Path2D([[27.5,-22.96875]],false);
+  p4 = p4.appendPoint([27.5,-3.28125]);
+  p4 = p4.appendArc([12.5,-22.96875],{xradius: 15,yradius: -19.6875,xaxisrotation: 0,clockwise: true,large: false});
+  p4 = p4.close();
+
+  let cag04 = p4.innerToCAG();
+  t.is(typeof cag04, 'object')
+
+  let p5 = new CSG.Path2D([[10,-20]],false);
+  p5 = p5.appendBezier([[10,-10],[25,-10],[25,-20]]);
+  p5 = p5.appendBezier([[25,-30],[40,-30],[40,-20]]);
+
+  let cag05 = p5.expandToCAG(0.05,CSG.defaultResolution2D);
+  t.is(typeof cag05, 'object')
+})
+
 
