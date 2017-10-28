@@ -4,3 +4,5 @@ objects
 doc
 .nyc_output
 coverage
+*.log
+package-lock.json
