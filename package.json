@@ -53,11 +53,10 @@
     "jscad"
   ],
   "license": "MIT",
-  "dependencies": {},
+  "dependencies": {
+  },
   "devDependencies": {
-    "ava": "^0.19.1",
-    "babel-preset-es2015": "^6.24.1",
-    "babel-register": "^6.24.1",
+    "ava": "^0.23.0",
     "conventional-changelog-cli": "^1.3.4",
     "jsdoc": "^3.4.3",
     "nyc": "^10.3.2"
