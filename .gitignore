@@ -1,6 +1,5 @@
 node_modules/
 objects
-docs
 coverage
 .DS_Store
 .nyc_output
