@@ -899,7 +899,7 @@ CSG.prototype = {
   },
 
   fixTJunctions: function () {
-    return fixTJunctions(this)
+    return fixTJunctions(CSG.fromPolygons, this)
   },
 
   toTriangles: function () {
