@@ -1,8 +1,14 @@
 import test from 'ava'
 import {CSG, CAG} from '../csg'
 
+test('CSG.fixTJunctions fixes ...tjunctions', t => {
+  const input = new CSG.cube().fixTJunctions()
+
+  t.is(input.isCanonicalized, true)
+})
+
 // yikes, horrible name
-test('CSG.fixTJunctions should work correctly', t => {
+test('CSG.fixTJunctions should work correctly even in corner cases', t => {
   const csgImage = CAG.fromPoints([ [ 25.183085182520657, -16.31346279512401 ],
     [ 25.399997999999997, -14.111109999999998 ],
     [ 25.18308518252066, -11.908757204875993 ],
