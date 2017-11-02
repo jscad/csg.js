@@ -1,4 +1,8 @@
-    /*
+const {EPS} = require('../constants')
+const Polygon = require('../math/Polygon3')
+const Plane = require('../math/Plane')
+
+/*
      fixTJunctions:
 
      Suppose we have two polygons ACDB and EDGF:
@@ -17,15 +21,17 @@
 
      Note that this can create polygons that are slightly non-convex (due to rounding errors). Therefore the result should
      not be used for further CSG operations!
-     */
-const fixTJunctions = function () {
-  let csg = this.canonicalized()
+*/
+const fixTJunctions = function (csg) {
+  csg = csg.canonicalized()
   let sidemap = {}
+
+  // STEP 1
   for (let polygonindex = 0; polygonindex < csg.polygons.length; polygonindex++) {
     let polygon = csg.polygons[polygonindex]
     let numvertices = polygon.vertices.length
-    if (numvertices >= 3) // should be true
-    {
+    // should be true
+    if (numvertices >= 3) {
       let vertex = polygon.vertices[0]
       let vertextag = vertex.getTag()
       for (let vertexindex = 0; vertexindex < numvertices; vertexindex++) {
@@ -59,8 +65,9 @@ const fixTJunctions = function () {
       }
     }
   }
-      // now sidemap contains 'unmatched' sides
-      // i.e. side AB in one polygon does not have a matching side BA in another polygon
+  // STEP 2
+  // now sidemap contains 'unmatched' sides
+  // i.e. side AB in one polygon does not have a matching side BA in another polygon
   let vertextag2sidestart = {}
   let vertextag2sideend = {}
   let sidestocheck = {}
@@ -85,7 +92,7 @@ const fixTJunctions = function () {
   }
 
   if (!sidemapisempty) {
-          // make a copy of the polygons array, since we are going to modify it:
+    // make a copy of the polygons array, since we are going to modify it:
     let polygons = csg.polygons.slice(0)
 
     function addSide (vertex0, vertex1, polygonindex) {
@@ -246,13 +253,13 @@ const fixTJunctions = function () {
 // FIX
                                          // calculate plane with differents point
                     if (isNaN(newpolygon.plane.w)) {
-                      let found = false,
-                        loop = function (callback) {
-                          newpolygon.vertices.forEach(function (item) {
-                            if (found) return
-                            callback(item)
-                          })
-                        }
+                      let found = false
+                      let loop = function (callback) {
+                        newpolygon.vertices.forEach(function (item) {
+                          if (found) return
+                          callback(item)
+                        })
+                      }
 
                       loop(function (a) {
                         loop(function (b) {
@@ -265,12 +272,9 @@ const fixTJunctions = function () {
                         })
                       })
                     }
-// FIX
-
                     polygons[polygonindex] = newpolygon
-
-                                          // remove the original sides from our maps:
-                                          // deleteSide(sideobj.vertex0, sideobj.vertex1, null);
+                    // remove the original sides from our maps
+                    // deleteSide(sideobj.vertex0, sideobj.vertex1, null)
                     deleteSide(matchingside.vertex0, matchingside.vertex1, polygonindex)
                     let newsidetag1 = addSide(matchingside.vertex0, endvertex, polygonindex)
                     let newsidetag2 = addSide(endvertex, matchingside.vertex1, polygonindex)

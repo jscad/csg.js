@@ -733,13 +733,13 @@ CSG.prototype = {
         shareds.push(p.shared)
       }
     })
-    let numVerticesPerPolygon = new Uint32Array(numpolygons),
-      polygonSharedIndexes = new Uint32Array(numpolygons),
-      polygonVertices = new Uint32Array(numpolygonvertices),
-      polygonPlaneIndexes = new Uint32Array(numpolygons),
-      vertexData = new Float64Array(numvertices * 3),
-      planeData = new Float64Array(numplanes * 4),
-      polygonVerticesIndex = 0
+    let numVerticesPerPolygon = new Uint32Array(numpolygons)
+    let polygonSharedIndexes = new Uint32Array(numpolygons)
+    let polygonVertices = new Uint32Array(numpolygonvertices)
+    let polygonPlaneIndexes = new Uint32Array(numpolygons)
+    let vertexData = new Float64Array(numvertices * 3)
+    let planeData = new Float64Array(numplanes * 4)
+    let polygonVerticesIndex = 0
     for (let polygonindex = 0; polygonindex < numpolygons; ++polygonindex) {
       let p = csg.polygons[polygonindex]
       numVerticesPerPolygon[polygonindex] = p.vertices.length
@@ -899,7 +899,7 @@ CSG.prototype = {
   },
 
   fixTJunctions: function () {
-    return fixTJunctions.bind(this)()
+    return fixTJunctions(this)
   },
 
   toTriangles: function () {
