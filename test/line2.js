@@ -68,7 +68,7 @@ test('CSG.Line2 transforms', t => {
   t.is(l1.w,10)
 
   let t1 = l1.reverse()
-  vector2Equals(t, t1.normal, [1, 0])
+  vector2Equals(t, t1.normal, [1, -0])
   t.is(t1.w,-10)
 
   let t2 = l1.transform(matrix)
