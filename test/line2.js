@@ -50,7 +50,7 @@ test('CSG.Line2 constructors creates valid lines', t => {
   t.is(l1.equals(l2),false)
 
   let o1 = l1.origin()
-  vector2Equals(t, o1, [10, 0])
+  vector2Equals(t, o1, [10, -0])
 
   let d1 = l1.direction()
   vector2Equals(t, d1, [0, 1])
