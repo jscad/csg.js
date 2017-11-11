@@ -61,7 +61,7 @@ test('CSG.Line2 transforms', t => {
   const Vector2 = CSG.Vector2D
 
   let matrix = CSG.Matrix4x4.rotationX(90)
-  matrix = matrix.multiply(CSG.Matrix4x4.translation(-10,0,-10))
+  matrix = matrix.multiply(CSG.Matrix4x4.translation([-10,0,-10]))
 
   let l1 = Line2.fromPoints([-10,-10],[-10,0])
   vector2Equals(t, l1.normal, [-1, 0])
