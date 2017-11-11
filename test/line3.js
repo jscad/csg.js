@@ -39,6 +39,6 @@ test('CSG.Line3 constructors creates valid lines', t => {
   let l3 = Line3.fromPlanes(p1,p2)
 
   vector3Equals(t,l3.point,[10,0,0])
-  vector3Equals(t,l3.direction,[0,1,0])
+  vector3Equals(t,l3.direction,[-0,1,0])
 })
 
