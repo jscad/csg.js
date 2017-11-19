@@ -33,16 +33,15 @@ CAG.fromSides = function (sides) {
   return cag
 }
 
-
 // Converts a CSG to a  The CSG must consist of polygons with only z coordinates +1 and -1
 // as constructed by _toCSGWall(-1, 1). This is so we can use the 3D union(), intersect() etc
 CAG.fromFakeCSG = function (csg) {
   let sides = csg.polygons.map(function (p) {
     return Side._fromFakePolygon(p)
   })
-        .filter(function (s) {
-          return s !== null
-        })
+  .filter(function (s) {
+    return s !== null
+  })
   return CAG.fromSides(sides)
 }
 
@@ -86,10 +85,10 @@ const CAGFromCAGFuzzyFactory = function (factory, sourcecag) {
   let newsides = sourcecag.sides.map(function (side) {
     return _this.getSide(side)
   })
-      // remove bad sides (mostly a user input issue)
-      .filter(function (side) {
-        return side.length() > EPS
-      })
+  // remove bad sides (mostly a user input issue)
+  .filter(function (side) {
+    return side.length() > EPS
+  })
   return CAG.fromSides(newsides)
 }
 
@@ -135,8 +134,12 @@ CAG.prototype = {
      * (toConnector has precedence over single arguments if provided)
      */
   _toPlanePolygons: function (options) {
+    const defaults = {
+      flipped: false
+    }
+    options = Object.assign({}, defaults, options)
+    let {flipped} = options
     const CSG = require('./CSG') // FIXME: circular dependencies CAG=>CSG=>CAG
-    let flipped = options.flipped || false
     // reference connector for transformation
     let origin = [0, 0, 0]
     let defaultAxis = [0, 0, 1]
