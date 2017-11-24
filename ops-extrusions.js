@@ -32,6 +32,7 @@ function linear_extrude (p, s) {
  * @param {Float} [options.angle=1] - angle of the extrusion, in degrees
  * @param {Float} [options.overflow='cap'] - what to do with points outside of bounds (+ / - x) :
  * defaults to capping those points to 0 (only supported behaviour for now)
+ * @param {CAG} baseShape input 2d shape
  * @returns {CSG} new extruded shape
  *
  * @example
