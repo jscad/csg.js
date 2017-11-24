@@ -38,11 +38,17 @@ function simplifiedPolygon (polygon) {
   return {positions: vertices, plane, shared: polygon.shared}
 }
 
+function simplifiedCSG (csg){
+  const polygonsData = csg.polygons.map(x=>simplifiedPolygon(x).positions)
+  return polygonsData
+}
+
 module.exports = {
   vertex2Equals,
   vertex3Equals,
   vector3Equals,
   sideEquals,
   shape2dToNestedArray,
-  simplifiedPolygon
+  simplifiedPolygon,
+  simplifiedCSG
 }

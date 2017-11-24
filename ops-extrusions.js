@@ -1,8 +1,8 @@
-const { CSG } = require('@jscad/csg')
-// -- 2D to 3D primitives (OpenSCAD like notion)
+const { CSG, CAG } = require('@jscad/csg')
+const {cagToPointsArray, clamp, rightMultiply1x3VectorToArray, polygonFromPoints} = require('./helpers')
+// -- 2D to 3D primitives
 
 function linear_extrude (p, s) {
-  // console.log("linear_extrude() not yet implemented")
   // return
   let h = 1
   let off = 0
@@ -25,53 +25,147 @@ function linear_extrude (p, s) {
   return o
 }
 
-function rotate_extrude (p, o) {
-  var fn = 32
-  if (arguments.length < 2) {
-    o = p // no switches, just an object
-  } else if (p !== undefined) {
-    fn = p.fn
+/** rotate extrude / revolve
+ * @param {Object} [options] - options for construction
+ * @param {Integer} [options.fn=1] - resolution/number of segments of the extrusion
+ * @param {Float} [options.startAngle=1] - start angle of the extrusion, in degrees
+ * @param {Float} [options.angle=1] - angle of the extrusion, in degrees
+ * @param {Float} [options.overflow='cap'] - what to do with points outside of bounds (+ / - x) :
+ * defaults to capping those points to 0 (only supported behaviour for now)
+ * @returns {CSG} new extruded shape
+ *
+ * @example
+ * let revolved = rotate_extrude({fn: 10}, square())
+ */
+function rotate_extrude (params, baseShape) {
+  // note, we should perhaps alias this to revolve() as well
+  const defaults = {
+    fn: 32,
+    startAngle: 0,
+    angle: 360,
+    overflow: 'cap'
   }
-  if (fn < 3) fn = 3
-  var ps = []
-  for (var i = 0; i < fn; i++) {
-    // o.{x,y} -> rotate([0,0,i:0..360], obj->{o.x,0,o.y})
-    for (var j = 0; j < o.sides.length; j++) {
-      // has o.sides[j].vertex{0,1}.pos (only x,y)
-      var p = []
-      var m
+  params = Object.assign({}, defaults, params)
+  let {fn, startAngle, angle, overflow} = params
+  if (overflow !== 'cap') {
+    throw new Error('only capping of overflowing points is supported !')
+  }
 
-      m = new CSG.Matrix4x4.rotationZ(i / fn * 360)
-      p[0] = new CSG.Vector3D(o.sides[j].vertex0.pos.x, 0, o.sides[j].vertex0.pos.y)
-      p[0] = m.rightMultiply1x3Vector(p[0])
+  if (arguments.length < 2) { // FIXME: what the hell ??? just put params second !
+    baseShape = params
+  }
+  // are we dealing with a positive or negative angle (for normals flipping)
+  const flipped = angle > 0
+  // limit actual angle between 0 & 360, regardless of direction
+  const totalAngle = flipped ? clamp((startAngle + angle), 0, 360) : clamp((startAngle + angle), -360, 0)
+  // adapt to the totalAngle : 1 extra segment per 45 degs if not 360 deg extrusion
+  // needs to be at least one and higher then the input resolution
+  const segments = Math.max(
+    Math.floor(Math.abs(totalAngle) / 45),
+    1,
+    fn
+  )
+  // maximum distance per axis between two points before considering them to be the same
+  const overlapTolerance = 0.00001
+  // convert baseshape to just an array of points, easier to deal with
+  let shapePoints = cagToPointsArray(baseShape)
 
-      p[1] = new CSG.Vector3D(o.sides[j].vertex1.pos.x, 0, o.sides[j].vertex1.pos.y)
-      p[1] = m.rightMultiply1x3Vector(p[1])
+  // determine if the rotate_extrude can be computed in the first place
+  // ie all the points have to be either x > 0 or x < 0
 
-      m = new CSG.Matrix4x4.rotationZ((i + 1) / fn * 360)
-      p[2] = new CSG.Vector3D(o.sides[j].vertex1.pos.x, 0, o.sides[j].vertex1.pos.y)
-      p[2] = m.rightMultiply1x3Vector(p[2])
+  // generic solution to always have a valid solid, even if points go beyond x/ -x
+  // 1. split points up between all those on the 'left' side of the axis (x<0) & those on the 'righ' (x>0)
+  // 2. for each set of points do the extrusion operation IN OPOSITE DIRECTIONS
+  // 3. union the two resulting solids
 
-      p[3] = new CSG.Vector3D(o.sides[j].vertex0.pos.x, 0, o.sides[j].vertex0.pos.y)
-      p[3] = m.rightMultiply1x3Vector(p[3])
+  // 1. alt : OR : just cap of points at the axis ?
 
-      var p1 = new CSG.Polygon([
-        new CSG.Vertex(p[0]),
-        new CSG.Vertex(p[1]),
-        new CSG.Vertex(p[2]),
-        new CSG.Vertex(p[3]) // we make a square polygon (instead of 2 triangles)
-      ])
-      // var p2 = new CSG.Polygon([
-      //   new CSG.Vertex(p[0]),
-      //   new CSG.Vertex(p[2]),
-      //   new CSG.Vertex(p[3]),
-      // ])
-      ps.push(p1)
-    // ps.push(p2)
-    // echo("i="+i,i/fn*360,"j="+j)
+  // console.log('shapePoints BEFORE', shapePoints, baseShape.sides)
+
+  const pointsWithNegativeX = shapePoints.filter(x => x[0] < 0)
+  const pointsWithPositiveX = shapePoints.filter(x => x[0] >= 0)
+  const arePointsWithNegAndPosX = pointsWithNegativeX.length > 0 && pointsWithPositiveX.length > 0
+
+  if (arePointsWithNegAndPosX && overflow === 'cap') {
+    if (pointsWithNegativeX.length > pointsWithPositiveX.length) {
+      shapePoints = shapePoints.map(function (point) {
+        return [Math.min(point[0], 0), point[1]]
+      })
+    } else if (pointsWithPositiveX.length >= pointsWithNegativeX.length) {
+      shapePoints = shapePoints.map(function (point) {
+        return [Math.max(point[0], 0), point[1]]
+      })
     }
   }
-  return CSG.fromPolygons(ps)
+
+  // console.log('negXs', pointsWithNegativeX, 'pointsWithPositiveX', pointsWithPositiveX, 'arePointsWithNegAndPosX', arePointsWithNegAndPosX)
+ //  console.log('shapePoints AFTER', shapePoints, baseShape.sides)
+
+  let polygons = []
+
+  // for each of the intermediary steps in the extrusion
+  for (let i = 1; i < segments + 1; i++) {
+    // for each side of the 2d shape
+    for (let j = 0; j < shapePoints.length - 1; j++) {
+      // 2 points of a side
+      const curPoint = shapePoints[j]
+      const nextPoint = shapePoints[j + 1]
+
+      // compute matrix for current and next segment angle
+      let prevMatrix = CSG.Matrix4x4.rotationZ((i - 1) / segments * angle + startAngle)
+      let curMatrix = CSG.Matrix4x4.rotationZ(i / segments * angle + startAngle)
+
+      const pointA = rightMultiply1x3VectorToArray(prevMatrix, [curPoint[0], 0, curPoint[1]])
+      const pointAP = rightMultiply1x3VectorToArray(curMatrix, [curPoint[0], 0, curPoint[1]])
+      const pointB = rightMultiply1x3VectorToArray(prevMatrix, [nextPoint[0], 0, nextPoint[1]])
+      const pointBP = rightMultiply1x3VectorToArray(curMatrix, [nextPoint[0], 0, nextPoint[1]])
+
+      // console.log(`point ${j} edge connecting ${j} to ${j + 1}`)
+      let overlappingPoints = false
+      if (Math.abs(pointA[0] - pointAP[0]) < overlapTolerance && Math.abs(pointB[1] - pointBP[1]) < overlapTolerance) {
+        // console.log('identical / overlapping points (from current angle and next one), what now ?')
+        overlappingPoints = true
+      }
+
+      // we do not generate a single quad because:
+      // 1. it does not allow eliminating unneeded triangles in case of overlapping points
+      // 2. the current cleanup routines of csg.js create degenerate shapes from those quads
+      // let polyPoints = [pointA, pointB, pointBP, pointAP]
+      // polygons.push(polygonFromPoints(polyPoints))
+
+      if (flipped) {
+        // CW
+        polygons.push(polygonFromPoints([pointA, pointB, pointBP]))
+        if (!overlappingPoints) {
+          polygons.push(polygonFromPoints([pointBP, pointAP, pointA]))
+        }
+      } else {
+        // CCW
+        if (!overlappingPoints) {
+          polygons.push(polygonFromPoints([pointA, pointAP, pointBP]))
+        }
+        polygons.push(polygonFromPoints([pointBP, pointB, pointA]))
+      }
+    }
+    // if we do not do a full extrusion, we want caps at both ends (closed volume)
+    if (Math.abs(angle) < 360) {
+      // we need to recreate the side with capped points where applicable
+      const sideShape = CAG.fromPoints(shapePoints)
+      const endMatrix = CSG.Matrix4x4.rotationX(90).multiply(
+        CSG.Matrix4x4.rotationZ(-startAngle)
+      )
+      const endCap = sideShape._toPlanePolygons({flipped: flipped})
+        .map(x => x.transform(endMatrix))
+
+      const startMatrix = CSG.Matrix4x4.rotationX(90).multiply(
+        CSG.Matrix4x4.rotationZ(-angle - startAngle)
+      )
+      const startCap = sideShape._toPlanePolygons({flipped: !flipped})
+        .map(x => x.transform(startMatrix))
+      polygons = polygons.concat(endCap).concat(startCap)
+    }
+  }
+  return CSG.fromPolygons(polygons).reTesselated().canonicalized()
 }
 
 function rectangular_extrude (pa, p) {

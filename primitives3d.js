@@ -2,6 +2,7 @@
 const { CSG } = require('@jscad/csg')
 const { circle } = require('./primitives2d')
 const { rotate_extrude } = require('./ops-extrusions')
+const { translate } = require('./ops-transformations')
 
 function cube (p) {
   var s = 1, v = null, off = [0, 0, 0], round = false, r = 0, fn = 8
@@ -10,7 +11,7 @@ function cube (p) {
   if (p && p.size && !p.size.length) s = p.size // { size: 1 }
   // if(p&&!p.size&&!p.length&&p.center===undefined&&!p.round&&!p.radius) s = p      // (2)
   if (p && (typeof p !== 'object')) s = p// (2)
-  if (p && p.round === true) { round = true, r = v && v.length ? (v[0] + v[1] + v[2]) / 30 : s / 10}
+  if (p && p.round === true) { round = true, r = v && v.length ? (v[0] + v[1] + v[2]) / 30 : s / 10 }
   if (p && p.radius) { round = true, r = p.radius }
   if (p && p.fn) fn = p.fn // applies in case of round: true
 
@@ -19,9 +20,9 @@ function cube (p) {
     x = v[0], y = v[1], z = v[2]
   }
   off = [x / 2, y / 2, z / 2] // center: false default
-  var o = round ?
-    CSG.roundedCube({radius: [x / 2, y / 2, z / 2], roundradius: r, resolution: fn}) :
-    CSG.cube({radius: [x / 2, y / 2, z / 2]})
+  var o = round
+    ? CSG.roundedCube({radius: [x / 2, y / 2, z / 2], roundradius: r, resolution: fn})
+    : CSG.cube({radius: [x / 2, y / 2, z / 2]})
   if (p && p.center && p.center.length) {
     off = [p.center[0] ? 0 : x / 2, p.center[1] ? 0 : y / 2, p.center[2] ? 0 : z / 2]
   } else if (p && p.center == true) {
@@ -49,10 +50,11 @@ function sphere (p) {
   off = [0, 0, 0] // center: false (default)
 
   var o
-  if (type === 'geodesic')
+  if (type === 'geodesic') {
     o = geodesicSphere(p)
-  else
+  } else {
     o = CSG.sphere({radius: r, resolution: fn})
+  }
 
   if (p && p.center && p.center.length) { // preparing individual x,y,z center
     off = [p.center[0] ? 0 : r, p.center[1] ? 0 : r, p.center[2] ? 0 : r]
@@ -209,13 +211,13 @@ function cylinder (p) {
   if (p && p.round === true) round = true
   var o
   if (p && (p.start && p.end)) {
-    o = round ?
-      CSG.roundedCylinder({start: p.start, end: p.end, radiusStart: r1, radiusEnd: r2, resolution: fn}) :
-      CSG.cylinder({start: p.start, end: p.end, radiusStart: r1, radiusEnd: r2, resolution: fn})
+    o = round
+      ? CSG.roundedCylinder({start: p.start, end: p.end, radiusStart: r1, radiusEnd: r2, resolution: fn})
+      : CSG.cylinder({start: p.start, end: p.end, radiusStart: r1, radiusEnd: r2, resolution: fn})
   } else {
-    o = round ?
-      CSG.roundedCylinder({start: [0, 0, 0], end: [0, 0, h], radiusStart: r1, radiusEnd: r2, resolution: fn}) :
-      CSG.cylinder({start: [0, 0, 0], end: [0, 0, h], radiusStart: r1, radiusEnd: r2, resolution: fn})
+    o = round
+      ? CSG.roundedCylinder({start: [0, 0, 0], end: [0, 0, h], radiusStart: r1, radiusEnd: r2, resolution: fn})
+      : CSG.cylinder({start: [0, 0, 0], end: [0, 0, h], radiusStart: r1, radiusEnd: r2, resolution: fn})
     var r = r1 > r2 ? r1 : r2
     if (p && p.center && p.center.length) { // preparing individual x,y,z center
       off = [p.center[0] ? 0 : r, p.center[1] ? 0 : r, p.center[2] ? -h / 2 : 0]
@@ -229,20 +231,46 @@ function cylinder (p) {
   return o
 }
 
-function torus (p) {
-  var ri = 1, ro = 4, fni = 16, fno = 32, roti = 0
-  if (p) {
-    if (p.ri) ri = p.ri
-    if (p.fni) fni = p.fni
-    if (p.roti) roti = p.roti
-    if (p.ro) ro = p.ro
-    if (p.fno) fno = p.fno
+/** Construct a torus
+ * @param {Object} [options] - options for construction
+ * @param {Float} [options.ri=1] - radius of base circle
+ * @param {Float} [options.ro=4] - radius offset
+ * @param {Integer} [options.fni=16] - segments of base circle (ie quality)
+ * @param {Integer} [options.fno=32] - segments of extrusion (ie quality)
+ * @param {Integer} [options.roti=0] - rotation angle of base circle
+ * @returns {CSG} new torus
+ *
+ * @example
+ * let torus1 = torus({
+ *   ri: 10
+ * })
+ */
+function torus (params) {
+  const defaults = {
+    ri: 1,
+    ro: 4,
+    fni: 16,
+    fno: 32,
+    roti: 0
   }
+  params = Object.assign({}, defaults, params)
+
+  const limits = {
+    fni: {min: 3},
+    fno: {min: 3}
+  }
+
+  let {ri, ro, fni, fno, roti} = params
+
   if (fni < 3) fni = 3
   if (fno < 3) fno = 3
-  var c = circle({r: ri, fn: fni, center: true})
-  if (roti) c = c.rotateZ(roti)
-  return rotate_extrude({fn: fno}, c.translate([ro, 0, 0]))
+
+  let baseCircle = circle({r: ri, fn: fni, center: true})
+
+  if (roti) baseCircle = baseCircle.rotateZ(roti)
+  let result = rotate_extrude({fn: fno}, translate([ro, 0, 0], baseCircle))
+  // result = result.union(result)
+  return result
 }
 
 function polyhedron (p) {
