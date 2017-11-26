@@ -213,10 +213,10 @@ CSG.prototype = {
       return p.flipped()
     })
     return CSG.fromPolygons(flippedpolygons)
-        // TODO: flip properties?
+    // TODO: flip properties?
   },
 
-    // Affine transformation of CSG object. Returns a new CSG object
+  // Affine transformation of CSG object. Returns a new CSG object
   transform1: function (matrix4x4) {
     let newpolygons = this.polygons.map(function (p) {
       return p.transform(matrix4x4)

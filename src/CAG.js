@@ -11,6 +11,7 @@ const Side = require('./math/Side')
 const {linesIntersect} = require('./math/lineUtils')
 const {parseOptionAs3DVector, parseOptionAsBool, parseOptionAsFloat, parseOptionAsInt} = require('./optionParsers')
 const FuzzyCAGFactory = require('./FuzzyFactory2d')
+const {fromPolygons} = require('./CSGFactories')
 /**
  * Class CAG
  * Holds a solid area geometry like CSG but 2D.
@@ -106,7 +107,7 @@ CAG.prototype = {
     let polygons = this.sides.map(function (side) {
       return side.toPolygon3D(z0, z1)
     })
-    return CSG.fromPolygons(polygons)
+    return fromPolygons(polygons)
   },
 
   _toVector3DPairs: function (m) {
@@ -159,7 +160,7 @@ CAG.prototype = {
     bounds[0] = bounds[0].minus(new Vector2D(1, 1))
     bounds[1] = bounds[1].plus(new Vector2D(1, 1))
     let csgshell = this._toCSGWall(-1, 1)
-    let csgplane = CSG.fromPolygons([new Polygon([
+    let csgplane = fromPolygons([new Polygon([
       new Vertex3D(new Vector3D(bounds[0].x, bounds[0].y, 0)),
       new Vertex3D(new Vector3D(bounds[1].x, bounds[0].y, 0)),
       new Vertex3D(new Vector3D(bounds[1].x, bounds[1].y, 0)),
@@ -532,7 +533,7 @@ CAG.prototype = {
       polygons = polygons.concat(this._toWallPolygons({toConnector1: c1, toConnector2: c2}))
     }
 
-    return CSG.fromPolygons(polygons)
+    return fromPolygons(polygons)
   },
 
     /** Extrude to into a 3D solid by rotating the origin around the Y axis.
@@ -572,7 +573,7 @@ CAG.prototype = {
                 {toConnector1: connT1, toConnector2: connT2}))
       connT1 = connT2
     }
-    return CSG.fromPolygons(polygons).reTesselated()
+    return fromPolygons(polygons).reTesselated()
   },
 
     // check if we are a valid CAG (for debugging)

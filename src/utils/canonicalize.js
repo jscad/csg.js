@@ -1,4 +1,4 @@
-const FuzzyCSGFactory = require('./FuzzyFactory3d')
+const FuzzyCSGFactory = require('../FuzzyFactory3d')
 
 /**
    * Returns a cannoicalized version of the input csg : ie every very close
