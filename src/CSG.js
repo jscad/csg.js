@@ -1,8 +1,6 @@
 const {fnNumberSort} = require('./utils')
-const FuzzyCSGFactory = require('./FuzzyFactory3d')
 const Tree = require('./trees')
 const {EPS} = require('./constants')
-const {reTesselateCoplanarPolygons} = require('./math/polygonUtils')
 const Polygon = require('./math/Polygon3')
 const Plane = require('./math/Plane')
 const Vertex = require('./math/Vertex3')
@@ -16,7 +14,10 @@ const CAG = require('./CAG') // FIXME: circular dependency !
 const Properties = require('./Properties')
 const {Connector} = require('./connectors')
 const fixTJunctions = require('./utils/fixTJunctions')
-// let {fromPolygons} = require('./CSGMakers') // FIXME: circular dependency !
+const {fromPolygons} = require('./CSGFActories') // FIXME: circular dependency !
+
+const canonicalize = require('./utils/canonicalize')
+const retesselate = require('./utils/retesellate')
 
 /** Class CSG
  * Holds a binary space partition tree representing a 3D solid. Two solids can
@@ -85,7 +86,7 @@ CSG.prototype = {
       b.invert()
 
       let newpolygons = a.allPolygons().concat(b.allPolygons())
-      let result = CSG.fromPolygons(newpolygons)
+      let result = fromPolygons(newpolygons)
       result.properties = this.properties._merge(csg.properties)
       if (retesselate) result = result.reTesselated()
       if (canonicalize) result = result.canonicalized()
@@ -517,59 +518,11 @@ CSG.prototype = {
   },
 
   canonicalized: function () {
-    if (this.isCanonicalized) {
-      return this
-    } else {
-      let factory = new FuzzyCSGFactory()
-      let result = CSGFromCSGFuzzyFactory(factory, this)
-      result.isCanonicalized = true
-      result.isRetesselated = this.isRetesselated
-      result.properties = this.properties // keep original properties
-      return result
-    }
+    return canonicalize(this)
   },
 
   reTesselated: function () {
-    if (this.isRetesselated) {
-      return this
-    } else {
-      let csg = this
-      let polygonsPerPlane = {}
-      let isCanonicalized = csg.isCanonicalized
-      let fuzzyfactory = new FuzzyCSGFactory()
-      csg.polygons.map(function (polygon) {
-        let plane = polygon.plane
-        let shared = polygon.shared
-        if (!isCanonicalized) {
-          // in order to identify to polygons having the same plane, we need to canonicalize the planes
-          // We don't have to do a full canonizalization (including vertices), to save time only do the planes and the shared data:
-          plane = fuzzyfactory.getPlane(plane)
-          shared = fuzzyfactory.getPolygonShared(shared)
-        }
-        let tag = plane.getTag() + '/' + shared.getTag()
-        if (!(tag in polygonsPerPlane)) {
-          polygonsPerPlane[tag] = [polygon]
-        } else {
-          polygonsPerPlane[tag].push(polygon)
-        }
-      })
-      let destpolygons = []
-      for (let planetag in polygonsPerPlane) {
-        let sourcepolygons = polygonsPerPlane[planetag]
-        if (sourcepolygons.length < 2) {
-          destpolygons = destpolygons.concat(sourcepolygons)
-        } else {
-          let retesselayedpolygons = []
-          reTesselateCoplanarPolygons(sourcepolygons, retesselayedpolygons)
-          destpolygons = destpolygons.concat(retesselayedpolygons)
-        }
-      }
-      let result = CSG.fromPolygons(destpolygons)
-      result.isRetesselated = true
-            // result = result.canonicalized();
-      result.properties = this.properties // keep original properties
-      return result
-    }
+    return retesselate(this)
   },
 
   /**
@@ -939,31 +892,6 @@ CSG.prototype = {
             }, 0)
     return (result.length === 1) ? result[0] : result
   }
-}
-
-/** Construct a CSG solid from a list of `Polygon` instances.
- * @param {Polygon[]} polygons - list of polygons
- * @returns {CSG} new CSG object
- */
-CSG.fromPolygons = function fromPolygons (polygons) {
-  let csg = new CSG()
-  csg.polygons = polygons
-  csg.isCanonicalized = false
-  csg.isRetesselated = false
-  return csg
-}
-
-const CSGFromCSGFuzzyFactory = function (factory, sourcecsg) {
-  let _this = factory
-  let newpolygons = []
-  sourcecsg.polygons.forEach(function (polygon) {
-    let newpolygon = _this.getPolygon(polygon)
-          // see getPolygon above: we may get a polygon with no vertices, discard it:
-    if (newpolygon.vertices.length >= 3) {
-      newpolygons.push(newpolygon)
-    }
-  })
-  return CSG.fromPolygons(newpolygons)
 }
 
 module.exports = CSG

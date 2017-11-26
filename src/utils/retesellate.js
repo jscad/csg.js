@@ -5,7 +5,6 @@ const reTesselate = function (csg) {
   if (csg.isRetesselated) {
     return csg
   } else {
-    let csg = this
     let polygonsPerPlane = {}
     let isCanonicalized = csg.isCanonicalized
     let fuzzyfactory = new FuzzyCSGFactory()

@@ -21,4 +21,17 @@ const canonicalize = function (csg, options) {
   }
 }
 
+const CSGFromCSGFuzzyFactory = function (factory, sourcecsg) {
+  let _this = factory
+  let newpolygons = []
+  sourcecsg.polygons.forEach(function (polygon) {
+    let newpolygon = _this.getPolygon(polygon)
+          // see getPolygon above: we may get a polygon with no vertices, discard it:
+    if (newpolygon.vertices.length >= 3) {
+      newpolygons.push(newpolygon)
+    }
+  })
+  return CSG.fromPolygons(newpolygons)
+}
+
 module.exports = canonicalize

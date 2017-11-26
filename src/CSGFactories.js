@@ -4,18 +4,31 @@ const Plane = require('./math/Plane')
 const Polygon2D = require('./math/Polygon2')
 const Polygon3D = require('./math/Polygon3')
 
+/** Construct a CSG solid from a list of `Polygon` instances.
+ * @param {Polygon[]} polygons - list of polygons
+ * @returns {CSG} new CSG object
+ */
+const fromPolygons = function (polygons) {
+  const CSG = require('./CSG')  
+  let csg = new CSG()
+  csg.polygons = polygons
+  csg.isCanonicalized = false
+  csg.isRetesselated = false
+  return csg
+}
+
 /** Construct a CSG solid from a list of pre-generated slices.
  * See Polygon.prototype.solidFromSlices() for details.
  * @param {Object} options - options passed to solidFromSlices()
  * @returns {CSG} new CSG object
  */
 function fromSlices (options) {
-  return (new Polygon2D.createFromPoints([
+  return Polygon2D.createFromPoints([
         [0, 0, 0],
         [1, 0, 0],
         [1, 1, 0],
         [0, 1, 0]
-  ])).solidFromSlices(options)
+  ]).solidFromSlices(options)
 }
 
 /** Reconstruct a CSG solid from an object with identical property names.
@@ -104,7 +117,7 @@ function fromCompactBinary (bin) {
 }
 
 module.exports = {
-  //fromPolygons,
+  fromPolygons,
   fromSlices,
   fromObject,
   fromCompactBinary
