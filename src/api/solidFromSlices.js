@@ -13,8 +13,6 @@ const {fnSortByIndex} = require('../utils')
  *  - loop {Boolean} no flats, only walls, it's used to generate solids like a tor
  */
 const solidFromSlices = function (polygon, options) {
-  const CSG = require('../../CSG')
-
   let polygons = []
   let csg = null
   let prev = null
