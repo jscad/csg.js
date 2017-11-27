@@ -98,7 +98,7 @@ CSG.prototype = {
     // Do not use if you are not completely sure that the solids do not intersect!
   unionForNonIntersecting: function (csg) {
     let newpolygons = this.polygons.concat(csg.polygons)
-    let result = CSG.fromPolygons(newpolygons)
+    let result = fromPolygons(newpolygons)
     result.properties = this.properties._merge(csg.properties)
     result.isCanonicalized = this.isCanonicalized && csg.isCanonicalized
     result.isRetesselated = this.isRetesselated && csg.isRetesselated
@@ -145,7 +145,7 @@ CSG.prototype = {
     b.clipTo(a, true)
     a.addPolygons(b.allPolygons())
     a.invert()
-    let result = CSG.fromPolygons(a.allPolygons())
+    let result = fromPolygons(a.allPolygons())
     result.properties = this.properties._merge(csg.properties)
     if (retesselate) result = result.reTesselated()
     if (canonicalize) result = result.canonicalized()
@@ -194,7 +194,7 @@ CSG.prototype = {
     b.clipTo(a)
     a.addPolygons(b.allPolygons())
     a.invert()
-    let result = CSG.fromPolygons(a.allPolygons())
+    let result = fromPolygons(a.allPolygons())
     result.properties = this.properties._merge(csg.properties)
     if (retesselate) result = result.reTesselated()
     if (canonicalize) result = result.canonicalized()
@@ -212,7 +212,7 @@ CSG.prototype = {
     let flippedpolygons = this.polygons.map(function (p) {
       return p.flipped()
     })
-    return CSG.fromPolygons(flippedpolygons)
+    return fromPolygons(flippedpolygons)
     // TODO: flip properties?
   },
 
@@ -221,7 +221,7 @@ CSG.prototype = {
     let newpolygons = this.polygons.map(function (p) {
       return p.transform(matrix4x4)
     })
-    let result = CSG.fromPolygons(newpolygons)
+    let result = fromPolygons(newpolygons)
     result.properties = this.properties._transform(matrix4x4)
     result.isRetesselated = this.isRetesselated
     return result
@@ -266,7 +266,7 @@ CSG.prototype = {
       if (ismirror) newvertices.reverse()
       return new Polygon(newvertices, p.shared, newplane)
     })
-    let result = CSG.fromPolygons(newpolygons)
+    let result = fromPolygons(newpolygons)
     result.properties = this.properties._transform(matrix4x4)
     result.isRetesselated = this.isRetesselated
     result.isCanonicalized = this.isCanonicalized
@@ -455,7 +455,7 @@ CSG.prototype = {
       endfacevertices.reverse()
       polygons.push(new Polygon(startfacevertices))
       polygons.push(new Polygon(endfacevertices))
-      let cylinder = CSG.fromPolygons(polygons)
+      let cylinder = fromPolygons(polygons)
       result = result.unionSub(cylinder, false, false)
     }
 
@@ -629,7 +629,7 @@ CSG.prototype = {
     let polygons = this.polygons.map(function (p) {
       return new Polygon(p.vertices, shared, p.plane)
     })
-    let result = CSG.fromPolygons(polygons)
+    let result = fromPolygons(polygons)
     result.properties = this.properties // keep original properties
     result.isRetesselated = this.isRetesselated
     result.isCanonicalized = this.isCanonicalized
@@ -852,7 +852,7 @@ CSG.prototype = {
   },
 
   fixTJunctions: function () {
-    return fixTJunctions(CSG.fromPolygons, this)
+    return fixTJunctions(fromPolygons, this)
   },
 
   toTriangles: function () {

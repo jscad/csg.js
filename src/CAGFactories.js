@@ -49,7 +49,6 @@ const fromPath2 = function (path) {
   return CAG.fromPoints(path.getPoints())
 }
 
-
 module.exports = {
   fromObject,
   fromPointsNoCheck,

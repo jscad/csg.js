@@ -153,11 +153,12 @@ CAG.ellipse = ellipse
 CAG.rectangle = rectangle
 CAG.roundedRectangle = roundedRectangle
 
-//
-const {fromCompactBinary, fromObject, fromSlices} = require('./src/CSGFactories')
+// injecting factories
+const {fromPolygons, fromCompactBinary, fromObject, fromSlices} = require('./src/CSGFactories')
 CSG.fromCompactBinary = fromCompactBinary
 CSG.fromObject = fromObject
 CSG.fromSlices = fromSlices
+CSG.fromPolygons = fromPolygons
 
 CSG.toPointCloud = require('./src/debugHelpers').toPointCloud
 

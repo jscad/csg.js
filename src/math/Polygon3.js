@@ -114,7 +114,7 @@ Polygon.prototype = {
     // Extrude a polygon into the direction offsetvector
     // Returns a CSG object
   extrude: function (offsetvector) {
-    const CSG = require('../CSG') // because of circular dependencies
+    //const CSG = require('../CSG') // because of circular dependencies
 
     let newpolygons = []
 

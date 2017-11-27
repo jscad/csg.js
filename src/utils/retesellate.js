@@ -1,5 +1,6 @@
 const FuzzyCSGFactory = require('../FuzzyFactory3d')
 const {reTesselateCoplanarPolygons} = require('../math/polygonUtils')
+const {fromPolygons} = require('../CSGFactories')
 
 const reTesselate = function (csg) {
   if (csg.isRetesselated) {
@@ -35,10 +36,10 @@ const reTesselate = function (csg) {
         destpolygons = destpolygons.concat(retesselayedpolygons)
       }
     }
-    let result = CSG.fromPolygons(destpolygons)
+    let result = fromPolygons(destpolygons)
     result.isRetesselated = true
     // result = result.canonicalized();
-    result.properties = this.properties // keep original properties
+    result.properties = csg.properties // keep original properties
     return result
   }
 }

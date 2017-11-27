@@ -103,7 +103,6 @@ CAG.prototype = {
   },
 
   _toCSGWall: function (z0, z1) {
-    const CSG = require('./CSG') // FIXME: circular dependencies CAG=>CSG=>CAG
     let polygons = this.sides.map(function (side) {
       return side.toPolygon3D(z0, z1)
     })

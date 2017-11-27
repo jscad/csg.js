@@ -1,4 +1,5 @@
 const FuzzyCSGFactory = require('../FuzzyFactory3d')
+const {fromPolygons} = require('../CSGFactories')
 
 /**
    * Returns a cannoicalized version of the input csg : ie every very close
@@ -31,7 +32,7 @@ const CSGFromCSGFuzzyFactory = function (factory, sourcecsg) {
       newpolygons.push(newpolygon)
     }
   })
-  return CSG.fromPolygons(newpolygons)
+  return fromPolygons(newpolygons)
 }
 
 module.exports = canonicalize

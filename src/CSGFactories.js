@@ -9,7 +9,7 @@ const Polygon3D = require('./math/Polygon3')
  * @returns {CSG} new CSG object
  */
 const fromPolygons = function (polygons) {
-  const CSG = require('./CSG')  
+  const CSG = require('./CSG')
   let csg = new CSG()
   csg.polygons = polygons
   csg.isCanonicalized = false
@@ -36,11 +36,10 @@ function fromSlices (options) {
  * @returns {CSG} new CSG object
  */
 function fromObject (obj) {
-  const CSG = require('./CSG')
   let polygons = obj.polygons.map(function (p) {
     return Polygon3D.fromObject(p)
   })
-  let csg = CSG.fromPolygons(polygons)
+  let csg = fromPolygons(polygons)
   csg.isCanonicalized = obj.isCanonicalized
   csg.isRetesselated = obj.isRetesselated
   return csg
@@ -51,8 +50,6 @@ function fromObject (obj) {
  * @returns {CSG} new CSG object
  */
 function fromCompactBinary (bin) {
-  const CSG = require('./CSG') // FIXME: circular dependency ??
-
   if (bin['class'] !== 'CSG') throw new Error('Not a CSG')
   let planes = []
   let planeData = bin.planeData
@@ -110,7 +107,7 @@ function fromCompactBinary (bin) {
     polygon = new Polygon3D(polygonvertices, shared, plane)
     polygons.push(polygon)
   }
-  let csg = CSG.fromPolygons(polygons)
+  let csg = fromPolygons(polygons)
   csg.isCanonicalized = true
   csg.isRetesselated = true
   return csg
