@@ -14,7 +14,7 @@ const CAG = require('./CAG') // FIXME: circular dependency !
 const Properties = require('./Properties')
 const {Connector} = require('./connectors')
 const fixTJunctions = require('./utils/fixTJunctions')
-const {fromPolygons} = require('./CSGFActories') // FIXME: circular dependency !
+const {fromPolygons} = require('./CSGFactories') // FIXME: circular dependency !
 
 const canonicalize = require('./utils/canonicalize')
 const retesselate = require('./utils/retesellate')
