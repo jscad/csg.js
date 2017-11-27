@@ -72,7 +72,6 @@ CAG.prototype = {
     }
     options = Object.assign({}, defaults, options)
     let {flipped} = options
-    const CSG = require('./CSG') // FIXME: circular dependencies CAG=>CSG=>CAG
     // reference connector for transformation
     let origin = [0, 0, 0]
     let defaultAxis = [0, 0, 1]
@@ -113,11 +112,11 @@ CAG.prototype = {
     })
   },
 
-    /*
-     * given 2 connectors, this returns all polygons of a "wall" between 2
-     * copies of this cag, positioned in 3d space as "bottom" and
-     * "top" plane per connectors toConnector1, and toConnector2, respectively
-     */
+  /*
+    * given 2 connectors, this returns all polygons of a "wall" between 2
+    * copies of this cag, positioned in 3d space as "bottom" and
+    * "top" plane per connectors toConnector1, and toConnector2, respectively
+    */
   _toWallPolygons: function (options) {
         // normals are going to be correct as long as toConn2.point - toConn1.point
         // points into cag normal direction (check in caller)
@@ -173,6 +172,47 @@ CAG.prototype = {
       points.push(points.shift())
     }
     return points
+  },
+
+    /** Convert to compact binary form.
+   * See fromCompactBinary.
+   * @return {CompactBinary}
+   */
+  toCompactBinary: function () {
+    let cag = this.canonicalized()
+    let numsides = cag.sides.length
+    let vertexmap = {}
+    let vertices = []
+    let numvertices = 0
+    let sideVertexIndices = new Uint32Array(2 * numsides)
+    let sidevertexindicesindex = 0
+    cag.sides.map(function (side) {
+      [side.vertex0, side.vertex1].map(function (v) {
+        let vertextag = v.getTag()
+        let vertexindex
+        if (!(vertextag in vertexmap)) {
+          vertexindex = numvertices++
+          vertexmap[vertextag] = vertexindex
+          vertices.push(v)
+        } else {
+          vertexindex = vertexmap[vertextag]
+        }
+        sideVertexIndices[sidevertexindicesindex++] = vertexindex
+      })
+    })
+    let vertexData = new Float64Array(numvertices * 2)
+    let verticesArrayIndex = 0
+    vertices.map(function (v) {
+      let pos = v.pos
+      vertexData[verticesArrayIndex++] = pos._x
+      vertexData[verticesArrayIndex++] = pos._y
+    })
+    let result = {
+      'class': 'CAG',
+      sideVertexIndices: sideVertexIndices,
+      vertexData: vertexData
+    }
+    return result
   },
 
   union: function (cag) {
@@ -468,15 +508,14 @@ CAG.prototype = {
     return fromPolygons(polygons)
   },
 
-    /** Extrude to into a 3D solid by rotating the origin around the Y axis.
-     * (and turning everything into XY plane)
-     * @param {Object} options - options for construction
-     * @param {Number} [options.angle=360] - angle of rotation
-     * @param {Number} [options.resolution=defaultResolution3D] - number of polygons per 360 degree revolution
-     * @returns {CSG} new 3D solid
-     */
+  /** Extrude to into a 3D solid by rotating the origin around the Y axis.
+   * (and turning everything into XY plane)
+   * @param {Object} options - options for construction
+   * @param {Number} [options.angle=360] - angle of rotation
+   * @param {Number} [options.resolution=defaultResolution3D] - number of polygons per 360 degree revolution
+   * @returns {CSG} new 3D solid
+   */
   rotateExtrude: function (options) { // FIXME options should be optional
-    const CSG = require('./CSG') // FIXME: circular dependencies CAG=>CSG=>CAG
     let alpha = parseOptionAsFloat(options, 'angle', 360)
     let resolution = parseOptionAsInt(options, 'resolution', defaultResolution3D)
 
@@ -485,7 +524,7 @@ CAG.prototype = {
     let axisV = Vector3D.Create(0, 1, 0)
     let normalV = [0, 0, 1]
     let polygons = []
-        // planes only needed if alpha > 0
+    // planes only needed if alpha > 0
     let connS = new Connector(origin, axisV, normalV)
     if (alpha > 0 && alpha < 360) {
             // we need to rotate negative to satisfy wall function condition of
@@ -508,8 +547,8 @@ CAG.prototype = {
     return fromPolygons(polygons).reTesselated()
   },
 
-    // check if we are a valid CAG (for debugging)
-    // NOTE(bebbi) uneven side count doesn't work because rounding with EPS isn't taken into account
+  // check if we are a valid CAG (for debugging)
+  // NOTE(bebbi) uneven side count doesn't work because rounding with EPS isn't taken into account
   check: function () {
     let errors = []
     if (this.isSelfIntersecting(true)) {
@@ -550,47 +589,6 @@ CAG.prototype = {
 
   reTesselated: function () {
     return retesselate(this)
-  },
-
-  /** Convert to compact binary form.
-   * See fromCompactBinary.
-   * @return {CompactBinary}
-   */
-  toCompactBinary: function () {
-    let cag = this.canonicalized()
-    let numsides = cag.sides.length
-    let vertexmap = {}
-    let vertices = []
-    let numvertices = 0
-    let sideVertexIndices = new Uint32Array(2 * numsides)
-    let sidevertexindicesindex = 0
-    cag.sides.map(function (side) {
-      [side.vertex0, side.vertex1].map(function (v) {
-        let vertextag = v.getTag()
-        let vertexindex
-        if (!(vertextag in vertexmap)) {
-          vertexindex = numvertices++
-          vertexmap[vertextag] = vertexindex
-          vertices.push(v)
-        } else {
-          vertexindex = vertexmap[vertextag]
-        }
-        sideVertexIndices[sidevertexindicesindex++] = vertexindex
-      })
-    })
-    let vertexData = new Float64Array(numvertices * 2)
-    let verticesArrayIndex = 0
-    vertices.map(function (v) {
-      let pos = v.pos
-      vertexData[verticesArrayIndex++] = pos._x
-      vertexData[verticesArrayIndex++] = pos._y
-    })
-    let result = {
-      'class': 'CAG',
-      sideVertexIndices: sideVertexIndices,
-      vertexData: vertexData
-    }
-    return result
   },
 
   getOutlinePaths: function () {

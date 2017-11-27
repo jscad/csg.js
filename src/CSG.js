@@ -32,11 +32,6 @@ let CSG = function () {
 }
 
 CSG.prototype = {
-  /** @return {Polygon[]} The list of polygons. */
-  toPolygons: function () {
-    return this.polygons
-  },
-
   /**
    * Return a new CSG solid representing the space in either this solid or
    * in the given solids. Neither this solid nor the given solids are modified.
@@ -94,8 +89,8 @@ CSG.prototype = {
     }
   },
 
-    // Like union, but when we know that the two solids are not intersecting
-    // Do not use if you are not completely sure that the solids do not intersect!
+  // Like union, but when we know that the two solids are not intersecting
+  // Do not use if you are not completely sure that the solids do not intersect!
   unionForNonIntersecting: function (csg) {
     let newpolygons = this.polygons.concat(csg.polygons)
     let result = fromPolygons(newpolygons)
@@ -273,16 +268,8 @@ CSG.prototype = {
     return result
   },
 
-  toString: function () {
-    let result = 'CSG solid:\n'
-    this.polygons.map(function (p) {
-      result += p.toString()
-    })
-    return result
-  },
-
-    // Expand the solid
-    // resolution: number of points per 360 degree for the rounded corners
+  // Expand the solid
+  // resolution: number of points per 360 degree for the rounded corners
   expand: function (radius, resolution) {
     let result = this.expandedShell(radius, resolution, true)
     result = result.reTesselated()
@@ -525,6 +512,10 @@ CSG.prototype = {
     return retesselate(this)
   },
 
+  fixTJunctions: function () {
+    return fixTJunctions(fromPolygons, this)
+  },
+
   /**
    * Returns an array of Vector3D, providing minimum coordinates and maximum coordinates
    * of this solid.
@@ -555,8 +546,8 @@ CSG.prototype = {
     return this.cachedBoundingBox
   },
 
-    // returns true if there is a possibility that the two solids overlap
-    // returns false if we can be sure that they do not overlap
+  // returns true if there is a possibility that the two solids overlap
+  // returns false if we can be sure that they do not overlap
   mayOverlap: function (csg) {
     if ((this.polygons.length === 0) || (csg.polygons.length === 0)) {
       return false
@@ -573,7 +564,7 @@ CSG.prototype = {
     }
   },
 
-    // Cut the solid by a plane. Returns the solid on the back side of the plane
+  // Cut the solid by a plane. Returns the solid on the back side of the plane
   cutByPlane: function (plane) {
     if (this.polygons.length === 0) {
       return new CSG()
@@ -639,6 +630,19 @@ CSG.prototype = {
   setColor: function (args) {
     let newshared = Polygon.Shared.fromColor.apply(this, arguments)
     return this.setShared(newshared)
+  },
+
+  /** @return {Polygon[]} The list of polygons. */
+  toPolygons: function () {
+    return this.polygons
+  },
+
+  toString: function () {
+    let result = 'CSG solid:\n'
+    this.polygons.map(function (p) {
+      result += p.toString()
+    })
+    return result
   },
 
   toCompactBinary: function () {
@@ -737,9 +741,23 @@ CSG.prototype = {
     return result
   },
 
-    // Get the transformation that transforms this CSG such that it is lying on the z=0 plane,
-    // as flat as possible (i.e. the least z-height).
-    // So that it is in an orientation suitable for CNC milling
+  toTriangles: function () {
+    let polygons = []
+    this.polygons.forEach(function (poly) {
+      let firstVertex = poly.vertices[0]
+      for (let i = poly.vertices.length - 3; i >= 0; i--) {
+        polygons.push(new Polygon([
+          firstVertex, poly.vertices[i + 1], poly.vertices[i + 2]
+        ],
+                    poly.shared, poly.plane))
+      }
+    })
+    return polygons
+  },
+
+  // Get the transformation that transforms this CSG such that it is lying on the z=0 plane,
+  // as flat as possible (i.e. the least z-height).
+  // So that it is in an orientation suitable for CNC milling
   getTransformationAndInverseTransformationToFlatLying: function () {
     if (this.polygons.length === 0) {
       let m = new Matrix4x4() // unity
@@ -822,9 +840,9 @@ CSG.prototype = {
     return this.transform(transformation)
   },
 
-    // project the 3D CSG onto a plane
-    // This returns a 2D CAG with the 'shadow' shape of the 3D solid when projected onto the
-    // plane represented by the orthonormal basis
+  // project the 3D CSG onto a plane
+  // This returns a 2D CAG with the 'shadow' shape of the 3D solid when projected onto the
+  // plane represented by the orthonormal basis
   projectToOrthoNormalBasis: function (orthobasis) {
     let cags = []
     this.polygons.filter(function (p) {
@@ -849,24 +867,6 @@ CSG.prototype = {
     let cut3d = this.cutByPlane(plane1)
     cut3d = cut3d.cutByPlane(plane2)
     return cut3d.projectToOrthoNormalBasis(orthobasis)
-  },
-
-  fixTJunctions: function () {
-    return fixTJunctions(fromPolygons, this)
-  },
-
-  toTriangles: function () {
-    let polygons = []
-    this.polygons.forEach(function (poly) {
-      let firstVertex = poly.vertices[0]
-      for (let i = poly.vertices.length - 3; i >= 0; i--) {
-        polygons.push(new Polygon([
-          firstVertex, poly.vertices[i + 1], poly.vertices[i + 2]
-        ],
-                    poly.shared, poly.plane))
-      }
-    })
-    return polygons
   },
 
   /**
