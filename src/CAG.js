@@ -1,17 +1,19 @@
 const {EPS, angleEPS, areaEPS, defaultResolution3D} = require('./constants')
 const {Connector} = require('./connectors')
 const OrthoNormalBasis = require('./math/OrthoNormalBasis')
-const Vertex2D = require('./math/Vertex2')
 const Vertex3D = require('./math/Vertex3')
 const Vector2D = require('./math/Vector2')
 const Vector3D = require('./math/Vector3')
 const Polygon = require('./math/Polygon3')
 const Path2D = require('./math/Path2')
-const Side = require('./math/Side')
 const {linesIntersect} = require('./math/lineUtils')
 const {parseOptionAs3DVector, parseOptionAsBool, parseOptionAsFloat, parseOptionAsInt} = require('./optionParsers')
-const FuzzyCAGFactory = require('./FuzzyFactory2d')
 const {fromPolygons} = require('./CSGFactories')
+const {fromSides, fromFakeCSG, fromPoints, fromPointsNoCheck} = require('./CAGFactories')
+
+const canonicalize = require('./utils/canonicalize')
+const retesselate = require('./utils/retesellate')
+
 /**
  * Class CAG
  * Holds a solid area geometry like CSG but 2D.
@@ -22,75 +24,6 @@ const {fromPolygons} = require('./CSGFactories')
 let CAG = function () {
   this.sides = []
   this.isCanonicalized = false
-}
-
-/** Construct a CAG from a list of `Side` instances.
- * @param {Side[]} sides - list of sides
- * @returns {CAG} new CAG object
- */
-CAG.fromSides = function (sides) {
-  let cag = new CAG()
-  cag.sides = sides
-  return cag
-}
-
-// Converts a CSG to a  The CSG must consist of polygons with only z coordinates +1 and -1
-// as constructed by _toCSGWall(-1, 1). This is so we can use the 3D union(), intersect() etc
-CAG.fromFakeCSG = function (csg) {
-  let sides = csg.polygons.map(function (p) {
-    return Side._fromFakePolygon(p)
-  })
-  .filter(function (s) {
-    return s !== null
-  })
-  return CAG.fromSides(sides)
-}
-
-/** Construct a CAG from a list of points (a polygon).
- * The rotation direction of the points is not relevant.
- * The points can define a convex or a concave polygon.
- * The polygon must not self intersect.
- * @param {points[]} points - list of points in 2D space
- * @returns {CAG} new CAG object
- */
-CAG.fromPoints = function (points) {
-  let numpoints = points.length
-  if (numpoints < 3) throw new Error('CAG shape needs at least 3 points')
-  let sides = []
-  let prevpoint = new Vector2D(points[numpoints - 1])
-  let prevvertex = new Vertex2D(prevpoint)
-  points.map(function (p) {
-    let point = new Vector2D(p)
-    let vertex = new Vertex2D(point)
-    let side = new Side(prevvertex, vertex)
-    sides.push(side)
-    prevvertex = vertex
-  })
-  let result = CAG.fromSides(sides)
-  if (result.isSelfIntersecting()) {
-    throw new Error('Polygon is self intersecting!')
-  }
-  let area = result.area()
-  if (Math.abs(area) < areaEPS) {
-    throw new Error('Degenerate polygon!')
-  }
-  if (area < 0) {
-    result = result.flipped()
-  }
-  result = result.canonicalized()
-  return result
-}
-
-const CAGFromCAGFuzzyFactory = function (factory, sourcecag) {
-  let _this = factory
-  let newsides = sourcecag.sides.map(function (side) {
-    return _this.getSide(side)
-  })
-  // remove bad sides (mostly a user input issue)
-  .filter(function (side) {
-    return side.length() > EPS
-  })
-  return CAG.fromSides(newsides)
 }
 
 CAG.prototype = {
@@ -234,7 +167,7 @@ CAG.prototype = {
       // let v1 = side.vertex1
       return v0.pos
     })
-    // due to the logic of CAG.fromPoints()
+    // due to the logic of fromPoints()
     // move the first point to the last
     if (points.length > 0) {
       points.push(points.shift())
@@ -254,7 +187,7 @@ CAG.prototype = {
             cags.map(function (cag) {
               return cag._toCSGWall(-1, 1).reTesselated()
             }), false, false)
-    return CAG.fromFakeCSG(r).canonicalized()
+    return fromFakeCSG(r).canonicalized()
   },
 
   subtract: function (cag) {
@@ -270,7 +203,7 @@ CAG.prototype = {
     })
     r = r.reTesselated()
     r = r.canonicalized()
-    r = CAG.fromFakeCSG(r)
+    r = fromFakeCSG(r)
     r = r.canonicalized()
     return r
   },
@@ -288,7 +221,7 @@ CAG.prototype = {
     })
     r = r.reTesselated()
     r = r.canonicalized()
-    r = CAG.fromFakeCSG(r)
+    r = fromFakeCSG(r)
     r = r.canonicalized()
     return r
   },
@@ -298,7 +231,7 @@ CAG.prototype = {
     let newsides = this.sides.map(function (side) {
       return side.transform(matrix4x4)
     })
-    let result = CAG.fromSides(newsides)
+    let result = fromSides(newsides)
     if (ismirror) {
       result = result.flipped()
     }
@@ -322,7 +255,7 @@ CAG.prototype = {
       return side.flipped()
     })
     newsides.reverse()
-    return CAG.fromSides(newsides)
+    return fromSides(newsides)
   },
 
   getBounds: function () {
@@ -375,8 +308,8 @@ CAG.prototype = {
           side.vertex0.pos.minus(normal),
           side.vertex0.pos.plus(normal)
         ]
-                //      let newcag = CAG.fromPointsNoCheck(shellpoints);
-        let newcag = CAG.fromPoints(shellpoints)
+        //      let newcag = fromPointsNoCheck(shellpoints);
+        let newcag = fromPoints(shellpoints)
         cags.push(newcag)
         for (let step = 0; step < 2; step++) {
           let p1 = (step === 0) ? side.vertex0.pos : side.vertex1.pos
@@ -434,7 +367,7 @@ CAG.prototype = {
             points.push(point)
           }
         }
-        let newcag = CAG.fromPointsNoCheck(points)
+        let newcag = fromPointsNoCheck(points)
         cags.push(newcag)
       }
     }
@@ -612,18 +545,15 @@ CAG.prototype = {
   },
 
   canonicalized: function () {
-    if (this.isCanonicalized) {
-      return this
-    } else {
-      let factory = new FuzzyCAGFactory()
-      let result = CAGFromCAGFuzzyFactory(factory, this)
-      result.isCanonicalized = true
-      return result
-    }
+    return canonicalize(this)
+  },
+
+  reTesselated: function () {
+    return retesselate(this)
   },
 
   /** Convert to compact binary form.
-   * See CAG.fromCompactBinary.
+   * See fromCompactBinary.
    * @return {CompactBinary}
    */
   toCompactBinary: function () {
@@ -729,7 +659,7 @@ CAG.prototype = {
         }
         thisside = sideTagToSideMap[nextsidetag]
       } // inner loop
-            // due to the logic of CAG.fromPoints()
+            // due to the logic of fromPoints()
             // move the first point to the last
       if (connectedVertexPoints.length > 0) {
         connectedVertexPoints.push(connectedVertexPoints.shift())
@@ -807,7 +737,7 @@ CAG.prototype = {
             let p = Vector2D.fromAngleRadians(angle).times(radiuscorrected).plus(circlecenter)
             points.push(p)
           }
-          cutouts.push(CAG.fromPoints(points))
+          cutouts.push(fromPoints(points))
         }
       }
     }

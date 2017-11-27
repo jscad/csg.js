@@ -163,9 +163,12 @@ CSG.fromPolygons = fromPolygons
 CSG.toPointCloud = require('./src/debugHelpers').toPointCloud
 
 const CAGMakers = require('./src/CAGFactories')
+CAG.fromSides = CAGMakers.fromSides
 CAG.fromObject = CAGMakers.fromObject
+CAG.fromPoints = CAGMakers.fromPoints
 CAG.fromPointsNoCheck = CAGMakers.fromPointsNoCheck
 CAG.fromPath2 = CAGMakers.fromPath2
+CAG.fromFakeCSG = CAGMakers.fromFakeCSG
 
 // ////////////////////////////////////
 addTransformationMethodsToPrototype(CSG.prototype)

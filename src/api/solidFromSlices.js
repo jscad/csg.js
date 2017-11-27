@@ -1,4 +1,5 @@
 const Polygon = require('../math/Polygon3')
+const {fromPolygons} = require('../CSGFactories')
 const {fnSortByIndex} = require('../utils')
 
 // FIXME: WHY is this for 3D polygons and not for 2D shapes ?
@@ -11,7 +12,7 @@ const {fnSortByIndex} = require('../utils')
  *          return: Polygon or null to skip
  *  - loop {Boolean} no flats, only walls, it's used to generate solids like a tor
  */
-const solidFromSlices = function (options) {
+const solidFromSlices = function (polygon, options) {
   const CSG = require('../../CSG')
 
   let polygons = []
@@ -45,7 +46,7 @@ const solidFromSlices = function (options) {
     }
   }
   for (let i = 0, iMax = numSlices - 1; i <= iMax; i++) {
-    csg = fnCallback.call(this, i / iMax, i)
+    csg = fnCallback.call(polygon, i / iMax, i)
     if (csg) {
       if (!(csg instanceof Polygon)) {
         throw new Error('Polygon.solidFromSlices callback error: Polygon expected')
@@ -81,7 +82,7 @@ const solidFromSlices = function (options) {
     polygons.unshift(flipped ? bottom : bottom.flipped())
     polygons.push(flipped ? top.flipped() : top)
   }
-  return CSG.fromPolygons(polygons)
+  return fromPolygons(polygons)
 }
 
         /**

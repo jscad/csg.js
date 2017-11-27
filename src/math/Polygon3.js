@@ -114,7 +114,7 @@ Polygon.prototype = {
     // Extrude a polygon into the direction offsetvector
     // Returns a CSG object
   extrude: function (offsetvector) {
-    //const CSG = require('../CSG') // because of circular dependencies
+    const {fromPolygons} = require('../CSGFactories') // because of circular dependencies
 
     let newpolygons = []
 
@@ -138,7 +138,7 @@ Polygon.prototype = {
     }
     polygon2 = polygon2.flipped()
     newpolygons.push(polygon2)
-    return CSG.fromPolygons(newpolygons)
+    return fromPolygons(newpolygons)
   },
 
   translate: function (offset) {
@@ -228,6 +228,12 @@ Polygon.prototype = {
       result = result.flipped()
     }
     return result
+  },
+
+  // ALIAS ONLY!!
+  solidFromSlices: function (options) {
+    const solidFromSlices = require('../api/solidFromSlices')
+    return solidFromSlices(this, options)
   }
 
 }
