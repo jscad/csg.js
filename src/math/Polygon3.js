@@ -221,8 +221,8 @@ Polygon.prototype = {
     let result = fromPointsNoCheck(points2d)
     let area = result.area()
     if (Math.abs(area) < areaEPS) {
-            // the polygon was perpendicular to the orthnormal plane. The resulting 2D polygon would be degenerate
-            // return an empty area instead:
+      // the polygon was perpendicular to the orthnormal plane. The resulting 2D polygon would be degenerate
+      // return an empty area instead:
       result = new CAG()
     } else if (area < 0) {
       result = result.flipped()

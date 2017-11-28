@@ -5,14 +5,11 @@ const Polygon = require('./math/Polygon3')
 const Plane = require('./math/Plane')
 const Vertex = require('./math/Vertex3')
 const Vector2D = require('./math/Vector2')
-const Vector3D = require('./math/Vector3')
-const Matrix4x4 = require('./math/Matrix4')
 const OrthoNormalBasis = require('./math/OrthoNormalBasis')
 
 const CAG = require('./CAG') // FIXME: for some weird reason if CAG is imported AFTER frompolygons, a lot of things break???
 
 const Properties = require('./Properties')
-const {Connector} = require('./connectors')
 const {fromPolygons} = require('./CSGFactories') // FIXME: circular dependency !
 
 const fixTJunctions = require('./utils/fixTJunctions')
@@ -20,6 +17,8 @@ const canonicalize = require('./utils/canonicalize')
 const retesselate = require('./utils/retesellate')
 const {bounds} = require('./utils/csgMeasurements')
 const {projectToOrthoNormalBasis} = require('./utils/csgProjections')
+
+const {lieFlat, getTransformationToFlatLying, getTransformationAndInverseTransformationToFlatLying} = require('./api/cnc/lieFlat')
 
 /** Class CSG
  * Holds a binary space partition tree representing a 3D solid. Two solids can
@@ -302,13 +301,18 @@ CSG.prototype = {
     return result
   },
 
-  // Create the expanded shell of the solid:
-  // All faces are extruded to get a thickness of 2*radius
-  // Cylinders are constructed around every side
-  // Spheres are placed on every vertex
-  // unionWithThis: if true, the resulting solid will be united with 'this' solid;
-  //   the result is a true expansion of the solid
-  //   If false, returns only the shell
+  /**
+   * Create the expanded shell of the solid:
+   * All faces are extruded to get a thickness of 2*radius
+   * Cylinders are constructed around every side
+   * Spheres are placed on every vertex
+   * unionWithThis: if true, the resulting solid will be united with 'this' solid;
+   * the result is a true expansion of the solid
+   * If false, returns only the shell
+   * @param  {Float} radius
+   * @param  {Integer} resolution
+   * @param  {Boolean} unionWithThis
+   */
   expandedShell: function (radius, resolution, unionWithThis) {
     // const {sphere} = require('./primitives3d') // FIXME: circular dependency !
     let csg = this.reTesselated()
@@ -523,8 +527,11 @@ CSG.prototype = {
     return bounds(this)
   },
 
-  // returns true if there is a possibility that the two solids overlap
-  // returns false if we can be sure that they do not overlap
+  /** returns true if there is a possibility that the two solids overlap
+   * returns false if we can be sure that they do not overlap
+   * NOTE: this is critical as it is used in UNIONs
+   * @param  {CSG} csg
+   */
   mayOverlap: function (csg) {
     if ((this.polygons.length === 0) || (csg.polygons.length === 0)) {
       return false
@@ -541,7 +548,10 @@ CSG.prototype = {
     }
   },
 
-  // Cut the solid by a plane. Returns the solid on the back side of the plane
+  /** Cut the solid by a plane. Returns the solid on the back side of the plane
+   * @param  {Plane} plane
+   * @returns {CSG} the solid on the back side of the plane
+   */
   cutByPlane: function (plane) {
     if (this.polygons.length === 0) {
       return new CSG()
@@ -568,31 +578,37 @@ CSG.prototype = {
     vertices.push(new Vertex(orthobasis.to3D(new Vector2D(-maxdistance, -maxdistance))))
     vertices.push(new Vertex(orthobasis.to3D(new Vector2D(-maxdistance, maxdistance))))
     vertices.push(new Vertex(orthobasis.to3D(new Vector2D(maxdistance, maxdistance))))
-    let polygon = new Polygon(vertices, null, plane.flipped())
+    const polygon = new Polygon(vertices, null, plane.flipped())
 
-        // and extrude the polygon into a cube, backwards of the plane:
-    let cube = polygon.extrude(plane.normal.times(-maxdistance))
+    // and extrude the polygon into a cube, backwards of the plane:
+    const cube = polygon.extrude(plane.normal.times(-maxdistance))
 
-        // Now we can do the intersection:
+    // Now we can do the intersection:
     let result = this.intersect(cube)
     result.properties = this.properties // keep original properties
     return result
   },
 
-    // Connect a solid to another solid, such that two Connectors become connected
-    //   myConnector: a Connector of this solid
-    //   otherConnector: a Connector to which myConnector should be connected
-    //   mirror: false: the 'axis' vectors of the connectors should point in the same direction
-    //           true: the 'axis' vectors of the connectors should point in opposite direction
-    //   normalrotation: degrees of rotation between the 'normal' vectors of the two
-    //                   connectors
+  /**
+   * Connect a solid to another solid, such that two Connectors become connected
+   * @param  {Connector} myConnector a Connector of this solid
+   * @param  {Connector} otherConnector a Connector to which myConnector should be connected
+   * @param  {Boolean} mirror false: the 'axis' vectors of the connectors should point in the same direction
+   * true: the 'axis' vectors of the connectors should point in opposite direction
+   * @param  {Float} normalrotation degrees of rotation between the 'normal' vectors of the two
+   * connectors
+   * @returns {CSG} this csg, tranformed accordingly
+   */
   connectTo: function (myConnector, otherConnector, mirror, normalrotation) {
     let matrix = myConnector.getTransformationTo(otherConnector, mirror, normalrotation)
     return this.transform(matrix)
   },
 
-    // set the .shared property of all polygons
-    // Returns a new CSG solid, the original is unmodified!
+  /**
+   * set the .shared property of all polygons
+   * @param  {Object} shared
+   * @returns {CSG} Returns a new CSG solid, the original is unmodified!
+   */
   setShared: function (shared) {
     let polygons = this.polygons.map(function (p) {
       return new Polygon(p.vertices, shared, p.plane)
@@ -604,6 +620,10 @@ CSG.prototype = {
     return result
   },
 
+  /** sets the color of this csg: non mutating, returns a new CSG
+   * @param  {Object} args
+   * @returns {CSG} a copy of this CSG, with the given color
+   */
   setColor: function (args) {
     let newshared = Polygon.Shared.fromColor.apply(this, arguments)
     return this.setShared(newshared)
@@ -622,6 +642,11 @@ CSG.prototype = {
     return result
   },
 
+  /** returns a compact binary representation of this csg
+   * usually used to transfer CSG objects to/from webworkes
+   * NOTE: very interesting compact format, with a lot of reusable ideas
+   * @returns {Object} compact binary representation of a CSG
+   */
   toCompactBinary: function () {
     let csg = this.canonicalized(),
       numpolygons = csg.polygons.length,
@@ -717,16 +742,22 @@ CSG.prototype = {
     }
     return result
   },
-
+  /** returns the triangles of this csg
+   * @returns {Polygons} triangulated polygons
+   */
   toTriangles: function () {
     let polygons = []
     this.polygons.forEach(function (poly) {
       let firstVertex = poly.vertices[0]
       for (let i = poly.vertices.length - 3; i >= 0; i--) {
-        polygons.push(new Polygon([
-          firstVertex, poly.vertices[i + 1], poly.vertices[i + 2]
-        ],
-                    poly.shared, poly.plane))
+        polygons.push(new Polygon(
+          [
+            firstVertex,
+            poly.vertices[i + 1],
+            poly.vertices[i + 2]
+          ],
+          poly.shared,
+          poly.plane))
       }
     })
     return polygons
@@ -736,85 +767,15 @@ CSG.prototype = {
   // as flat as possible (i.e. the least z-height).
   // So that it is in an orientation suitable for CNC milling
   getTransformationAndInverseTransformationToFlatLying: function () {
-    if (this.polygons.length === 0) {
-      let m = new Matrix4x4() // unity
-      return [m, m]
-    } else {
-            // get a list of unique planes in the CSG:
-      let csg = this.canonicalized()
-      let planemap = {}
-      csg.polygons.map(function (polygon) {
-        planemap[polygon.plane.getTag()] = polygon.plane
-      })
-            // try each plane in the CSG and find the plane that, when we align it flat onto z=0,
-            // gives the least height in z-direction.
-            // If two planes give the same height, pick the plane that originally had a normal closest
-            // to [0,0,-1].
-      let xvector = new Vector3D(1, 0, 0)
-      let yvector = new Vector3D(0, 1, 0)
-      let zvector = new Vector3D(0, 0, 1)
-      let z0connectorx = new Connector([0, 0, 0], [0, 0, -1], xvector)
-      let z0connectory = new Connector([0, 0, 0], [0, 0, -1], yvector)
-      let isfirst = true
-      let minheight = 0
-      let maxdotz = 0
-      let besttransformation, bestinversetransformation
-      for (let planetag in planemap) {
-        let plane = planemap[planetag]
-        let pointonplane = plane.normal.times(plane.w)
-        let transformation, inversetransformation
-                // We need a normal vecrtor for the transformation
-                // determine which is more perpendicular to the plane normal: x or y?
-                // we will align this as much as possible to the x or y axis vector
-        let xorthogonality = plane.normal.cross(xvector).length()
-        let yorthogonality = plane.normal.cross(yvector).length()
-        if (xorthogonality > yorthogonality) {
-                    // x is better:
-          let planeconnector = new Connector(pointonplane, plane.normal, xvector)
-          transformation = planeconnector.getTransformationTo(z0connectorx, false, 0)
-          inversetransformation = z0connectorx.getTransformationTo(planeconnector, false, 0)
-        } else {
-                    // y is better:
-          let planeconnector = new Connector(pointonplane, plane.normal, yvector)
-          transformation = planeconnector.getTransformationTo(z0connectory, false, 0)
-          inversetransformation = z0connectory.getTransformationTo(planeconnector, false, 0)
-        }
-        let transformedcsg = csg.transform(transformation)
-        let dotz = -plane.normal.dot(zvector)
-        let bounds = transformedcsg.getBounds()
-        let zheight = bounds[1].z - bounds[0].z
-        let isbetter = isfirst
-        if (!isbetter) {
-          if (zheight < minheight) {
-            isbetter = true
-          } else if (zheight === minheight) {
-            if (dotz > maxdotz) isbetter = true
-          }
-        }
-        if (isbetter) {
-                    // translate the transformation around the z-axis and onto the z plane:
-          let translation = new Vector3D([-0.5 * (bounds[1].x + bounds[0].x), -0.5 * (bounds[1].y + bounds[0].y), -bounds[0].z])
-          transformation = transformation.multiply(Matrix4x4.translation(translation))
-          inversetransformation = Matrix4x4.translation(translation.negated()).multiply(inversetransformation)
-          minheight = zheight
-          maxdotz = dotz
-          besttransformation = transformation
-          bestinversetransformation = inversetransformation
-        }
-        isfirst = false
-      }
-      return [besttransformation, bestinversetransformation]
-    }
+    return getTransformationAndInverseTransformationToFlatLying(this)
   },
 
   getTransformationToFlatLying: function () {
-    let result = this.getTransformationAndInverseTransformationToFlatLying()
-    return result[0]
+    return getTransformationToFlatLying(this)
   },
 
   lieFlat: function () {
-    let transformation = this.getTransformationToFlatLying()
-    return this.transform(transformation)
+    return lieFlat(this)
   },
 
   // project the 3D CSG onto a plane

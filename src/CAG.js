@@ -285,7 +285,7 @@ CAG.prototype = {
     let normalVector = Vector3D.Create(0, 1, 0)
 
     let polygons = []
-        // bottom and top
+    // bottom and top
     polygons = polygons.concat(this._toPlanePolygons({
       translation: [0, 0, 0],
       normalVector: normalVector,
