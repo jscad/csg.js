@@ -9,15 +9,17 @@ const Vector3D = require('./math/Vector3')
 const Matrix4x4 = require('./math/Matrix4')
 const OrthoNormalBasis = require('./math/OrthoNormalBasis')
 
-const CAG = require('./CAG') // FIXME: circular dependency !
+const CAG = require('./CAG') // FIXME: for some weird reason if CAG is imported AFTER frompolygons, a lot of things break???
 
 const Properties = require('./Properties')
 const {Connector} = require('./connectors')
-const fixTJunctions = require('./utils/fixTJunctions')
 const {fromPolygons} = require('./CSGFactories') // FIXME: circular dependency !
 
+const fixTJunctions = require('./utils/fixTJunctions')
 const canonicalize = require('./utils/canonicalize')
 const retesselate = require('./utils/retesellate')
+const {bounds} = require('./utils/csgMeasurements')
+const {projectToOrthoNormalBasis} = require('./utils/csgProjections')
 
 /** Class CSG
  * Holds a binary space partition tree representing a 3D solid. Two solids can
@@ -287,7 +289,8 @@ CSG.prototype = {
     return result
   },
 
-    // cut the solid at a plane, and stretch the cross-section found along plane normal
+  // cut the solid at a plane, and stretch the cross-section found along plane normal
+  // note: only used in roundedCube() internally
   stretchAtPlane: function (normal, point, length) {
     let plane = Plane.fromNormalAndPoint(normal, point)
     let onb = new OrthoNormalBasis(plane)
@@ -299,13 +302,13 @@ CSG.prototype = {
     return result
   },
 
-    // Create the expanded shell of the solid:
-    // All faces are extruded to get a thickness of 2*radius
-    // Cylinders are constructed around every side
-    // Spheres are placed on every vertex
-    // unionWithThis: if true, the resulting solid will be united with 'this' solid;
-    //   the result is a true expansion of the solid
-    //   If false, returns only the shell
+  // Create the expanded shell of the solid:
+  // All faces are extruded to get a thickness of 2*radius
+  // Cylinders are constructed around every side
+  // Spheres are placed on every vertex
+  // unionWithThis: if true, the resulting solid will be united with 'this' solid;
+  //   the result is a true expansion of the solid
+  //   If false, returns only the shell
   expandedShell: function (radius, resolution, unionWithThis) {
     // const {sphere} = require('./primitives3d') // FIXME: circular dependency !
     let csg = this.reTesselated()
@@ -516,34 +519,8 @@ CSG.prototype = {
     return fixTJunctions(fromPolygons, this)
   },
 
-  /**
-   * Returns an array of Vector3D, providing minimum coordinates and maximum coordinates
-   * of this solid.
-   * @returns {Vector3D[]}
-   * @example
-   * let bounds = A.getBounds()
-   * let minX = bounds[0].x
-   */
   getBounds: function () {
-    if (!this.cachedBoundingBox) {
-      let minpoint = new Vector3D(0, 0, 0)
-      let maxpoint = new Vector3D(0, 0, 0)
-      let polygons = this.polygons
-      let numpolygons = polygons.length
-      for (let i = 0; i < numpolygons; i++) {
-        let polygon = polygons[i]
-        let bounds = polygon.boundingBox()
-        if (i === 0) {
-          minpoint = bounds[0]
-          maxpoint = bounds[1]
-        } else {
-          minpoint = minpoint.min(bounds[0])
-          maxpoint = maxpoint.max(bounds[1])
-        }
-      }
-      this.cachedBoundingBox = [minpoint, maxpoint]
-    }
-    return this.cachedBoundingBox
+    return bounds(this)
   },
 
   // returns true if there is a possibility that the two solids overlap
@@ -844,19 +821,8 @@ CSG.prototype = {
   // This returns a 2D CAG with the 'shadow' shape of the 3D solid when projected onto the
   // plane represented by the orthonormal basis
   projectToOrthoNormalBasis: function (orthobasis) {
-    let cags = []
-    this.polygons.filter(function (p) {
-                // only return polys in plane, others may disturb result
-      return p.plane.normal.minus(orthobasis.plane.normal).lengthSquared() < (EPS * EPS)
-    })
-            .map(function (polygon) {
-              let cag = polygon.projectToOrthoNormalBasis(orthobasis)
-              if (cag.sides.length > 0) {
-                cags.push(cag)
-              }
-            })
-    let result = new CAG().union(cags)
-    return result
+    // FIXME:  DEPENDS ON CAG !!
+    return projectToOrthoNormalBasis(this, orthobasis)
   },
 
   sectionCut: function (orthobasis) {
@@ -885,11 +851,11 @@ CSG.prototype = {
     let result = this.toTriangles().map(function (triPoly) {
       return triPoly.getTetraFeatures(features)
     })
-            .reduce(function (pv, v) {
-              return v.map(function (feat, i) {
-                return feat + (pv === 0 ? 0 : pv[i])
-              })
-            }, 0)
+    .reduce(function (pv, v) {
+      return v.map(function (feat, i) {
+        return feat + (pv === 0 ? 0 : pv[i])
+      })
+    }, 0)
     return (result.length === 1) ? result[0] : result
   }
 }

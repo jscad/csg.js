@@ -1,4 +1,4 @@
-const {EPS, angleEPS, areaEPS, defaultResolution3D} = require('./constants')
+const {EPS, angleEPS, defaultResolution3D} = require('./constants')
 const {Connector} = require('./connectors')
 const OrthoNormalBasis = require('./math/OrthoNormalBasis')
 const Vertex3D = require('./math/Vertex3')
@@ -8,11 +8,14 @@ const Polygon = require('./math/Polygon3')
 const Path2D = require('./math/Path2')
 const {linesIntersect} = require('./math/lineUtils')
 const {parseOptionAs3DVector, parseOptionAsBool, parseOptionAsFloat, parseOptionAsInt} = require('./optionParsers')
+
 const {fromPolygons} = require('./CSGFactories')
 const {fromSides, fromFakeCSG, fromPoints, fromPointsNoCheck} = require('./CAGFactories')
 
 const canonicalize = require('./utils/canonicalize')
 const retesselate = require('./utils/retesellate')
+const isCAGValid = require('./utils/isCAGValid')
+const {area, getBounds} = require('./utils/cagMeasurements')
 
 const overCutInsideCorners = require('./api/cnc/overcutInsideCorner')
 
@@ -104,29 +107,11 @@ CAG.prototype = {
   // Area of the polygon. For a counter clockwise rotating polygon the area is positive, otherwise negative
   // Note(bebbi): this looks wrong. See polygon getArea()
   area: function () {
-    let polygonArea = 0
-    this.sides.map(function (side) {
-      polygonArea += side.vertex0.pos.cross(side.vertex1.pos)
-    })
-    polygonArea *= 0.5
-    return polygonArea
+    return area(this)
   },
 
   getBounds: function () {
-    let minpoint
-    if (this.sides.length === 0) {
-      minpoint = new Vector2D(0, 0)
-    } else {
-      minpoint = this.sides[0].vertex0.pos
-    }
-    let maxpoint = minpoint
-    this.sides.map(function (side) {
-      minpoint = minpoint.min(side.vertex0.pos)
-      minpoint = minpoint.min(side.vertex1.pos)
-      maxpoint = maxpoint.max(side.vertex0.pos)
-      maxpoint = maxpoint.max(side.vertex1.pos)
-    })
-    return [minpoint, maxpoint]
+    return getBounds(this)
   },
 
   isSelfIntersecting: function (debug) {
@@ -364,37 +349,7 @@ CAG.prototype = {
   // check if we are a valid CAG (for debugging)
   // NOTE(bebbi) uneven side count doesn't work because rounding with EPS isn't taken into account
   check: function () {
-    let errors = []
-    if (this.isSelfIntersecting(true)) {
-      errors.push('Self intersects')
-    }
-    let pointcount = {}
-    this.sides.map(function (side) {
-      function mappoint (p) {
-        let tag = p.x + ' ' + p.y
-        if (!(tag in pointcount)) pointcount[tag] = 0
-        pointcount[tag] ++
-      }
-      mappoint(side.vertex0.pos)
-      mappoint(side.vertex1.pos)
-    })
-    for (let tag in pointcount) {
-      let count = pointcount[tag]
-      if (count & 1) {
-        errors.push('Uneven number of sides (' + count + ') for point ' + tag)
-      }
-    }
-    let area = this.area()
-    if (area < areaEPS) {
-      errors.push('Area is ' + area)
-    }
-    if (errors.length > 0) {
-      let ertxt = ''
-      errors.map(function (err) {
-        ertxt += err + '\n'
-      })
-      throw new Error(ertxt)
-    }
+    return isCAGValid(this)
   },
 
   canonicalized: function () {

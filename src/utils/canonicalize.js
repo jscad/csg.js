@@ -16,9 +16,9 @@ const canonicalize = function (csgOrCAG, options) {
   if (csgOrCAG.isCanonicalized) {
     return csgOrCAG
   } else {
-    if('sides' in csgOrCAG){
+    if ('sides' in csgOrCAG) {
       return canonicalizeCAG(csgOrCAG, options)
-    }else{
+    } else {
       return canonicalizeCSG(csgOrCAG, options)
     }
   }
