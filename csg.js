@@ -170,6 +170,10 @@ CAG.fromPointsNoCheck = CAGMakers.fromPointsNoCheck
 CAG.fromPath2 = CAGMakers.fromPath2
 CAG.fromFakeCSG = CAGMakers.fromFakeCSG
 
+/// ////////////////////////////////////
+// option parsers
+const optionsParsers = require('./src/optionParsers')
+
 // ////////////////////////////////////
 addTransformationMethodsToPrototype(CSG.prototype)
 addTransformationMethodsToPrototype(CSG.Vector2D.prototype)
@@ -190,4 +194,4 @@ addTransformationMethodsToPrototype(CAG.Vertex.prototype)
 addCenteringToPrototype(CSG.prototype, ['x', 'y', 'z'])
 addCenteringToPrototype(CAG.prototype, ['x', 'y'])
 
-module.exports = {CSG, CAG}
+module.exports = Object.assign({}, {CSG, CAG}, optionsParsers)
