@@ -1,9 +1,9 @@
-const CAG = require('./CAG')
-const {parseOptionAs2DVector, parseOptionAsFloat, parseOptionAsInt} = require('./optionParsers')
-const {defaultResolution2D} = require('./constants')
-const Vector2D = require('./math/Vector2')
-const Path2D = require('./math/Path2')
-const {fromCompactBinary, fromPoints, fromPath2, fromSides} = require('./CAGFactories')
+const CAG = require('../core/CAG')
+const {parseOptionAs2DVector, parseOptionAsFloat, parseOptionAsInt} = require('../core/optionParsers')
+const {defaultResolution2D} = require('../core/constants')
+const Vector2D = require('../core/math/Vector2')
+const Path2D = require('../core/math/Path2')
+const {fromCompactBinary, fromPoints, fromPath2, fromSides} = require('../core/CAGFactories')
 
 /** Construct a circle.
  * @param {Object} [options] - options for construction

@@ -18,7 +18,7 @@ const retesselate = require('./utils/retesellate')
 const {bounds} = require('./utils/csgMeasurements')
 const {projectToOrthoNormalBasis} = require('./utils/csgProjections')
 
-const {lieFlat, getTransformationToFlatLying, getTransformationAndInverseTransformationToFlatLying} = require('./api/cnc/lieFlat')
+const {lieFlat, getTransformationToFlatLying, getTransformationAndInverseTransformationToFlatLying} = require('../api/cnc/lieFlat')
 
 /** Class CSG
  * Holds a binary space partition tree representing a 3D solid. Two solids can

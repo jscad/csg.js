@@ -232,7 +232,7 @@ Polygon.prototype = {
 
   // ALIAS ONLY!!
   solidFromSlices: function (options) {
-    const solidFromSlices = require('../api/solidFromSlices')
+    const solidFromSlices = require('../../api/solidFromSlices')
     return solidFromSlices(this, options)
   }
 

@@ -1,6 +1,6 @@
-const Polygon = require('../math/Polygon3')
-const {fromPolygons} = require('../CSGFactories')
-const {fnSortByIndex} = require('../utils')
+const Polygon = require('../core/math/Polygon3')
+const {fromPolygons} = require('../core/CSGFactories')
+const {fnSortByIndex} = require('../core/utils')
 
 // FIXME: WHY is this for 3D polygons and not for 2D shapes ?
 /**

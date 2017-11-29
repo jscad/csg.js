@@ -1,6 +1,6 @@
-  const Matrix4x4 = require('../../math/Matrix4.js')
-  const Vector3D = require('../../math/Vector3.js')
-  const {Connector} = require('../../connectors.js')
+  const Matrix4x4 = require('../../core/math/Matrix4.js')
+  const Vector3D = require('../../core/math/Vector3.js')
+  const {Connector} = require('../../core/connectors.js')
   
   // Get the transformation that transforms this CSG such that it is lying on the z=0 plane,
   // as flat as possible (i.e. the least z-height).

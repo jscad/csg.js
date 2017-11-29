@@ -1,11 +1,11 @@
-const {parseOption, parseOptionAs3DVector, parseOptionAs2DVector, parseOptionAs3DVectorList, parseOptionAsFloat, parseOptionAsInt} = require('./optionParsers')
-const {defaultResolution3D, defaultResolution2D, EPS} = require('./constants')
-const Vector3D = require('./math/Vector3')
-const Vertex = require('./math/Vertex3')
-const Polygon = require('./math/Polygon3')
-const {Connector} = require('./connectors')
-const Properties = require('./Properties')
-const {fromPolygons} = require('./CSGFactories')
+const {parseOption, parseOptionAs3DVector, parseOptionAs2DVector, parseOptionAs3DVectorList, parseOptionAsFloat, parseOptionAsInt} = require('../core/optionParsers')
+const {defaultResolution3D, defaultResolution2D, EPS} = require('../core/constants')
+const Vector3D = require('../core/math/Vector3')
+const Vertex = require('../core/math/Vertex3')
+const Polygon = require('../core/math/Polygon3')
+const {Connector} = require('../core/connectors')
+const Properties = require('../core/Properties')
+const {fromPolygons} = require('../core/CSGFactories')
 
 /** Construct an axis-aligned solid cuboid.
  * @param {Object} [options] - options for construction

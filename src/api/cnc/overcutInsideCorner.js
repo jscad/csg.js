@@ -1,5 +1,5 @@
-const {fromPoints} = require('../../CAGFactories')
-const Vector2D = require('../../math/Vector2')
+const {fromPoints} = require('../../core/CAGFactories')
+const Vector2D = require('../../core/math/Vector2')
 
 /** cag = cag.overCutInsideCorners(cutterradius);
  * Using a CNC router it's impossible to cut out a true sharp inside corner. The inside corner

@@ -1,8 +1,8 @@
 const test = require('ava')
-const Vertex = require('../src/math/Vertex3')
-const Vector3D = require('../src/math/Vector3')
-const Polygon = require('../src/math/Polygon3')
-const {fromPolygons, fromObject} = require('../src/CSGFactories')
+const Vertex = require('../src/core/math/Vertex3')
+const Vector3D = require('../src/core/math/Vector3')
+const Polygon = require('../src/core/math/Polygon3')
+const {fromPolygons, fromObject} = require('../src/core/CSGFactories')
 
 test('CSG can be created from polygons', t => {
   const vertices = [

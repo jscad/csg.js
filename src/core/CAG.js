@@ -17,7 +17,7 @@ const retesselate = require('./utils/retesellate')
 const isCAGValid = require('./utils/isCAGValid')
 const {area, getBounds} = require('./utils/cagMeasurements')
 
-const overCutInsideCorners = require('./api/cnc/overcutInsideCorner')
+const overCutInsideCorners = require('../api/cnc/overcutInsideCorner')
 
 /**
  * Class CAG

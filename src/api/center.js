@@ -1,4 +1,4 @@
-const toArray = require('../utils/toArray')
+const toArray = require('../core/utils/toArray')
 
 /**
  * centers the given object(s) on the given axis
