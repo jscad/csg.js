@@ -160,7 +160,7 @@ CSG.fromObject = fromObject
 CSG.fromSlices = fromSlices
 CSG.fromPolygons = fromPolygons
 
-CSG.toPointCloud = require('./src/core/utils/debugHelpers').toPointCloud
+CSG.toPointCloud = require('./src/api/debugHelpers').toPointCloud
 
 const CAGMakers = require('./src/core/CAGFactories')
 CAG.fromSides = CAGMakers.fromSides

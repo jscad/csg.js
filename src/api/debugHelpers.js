@@ -1,5 +1,5 @@
-const CSG = require('../CSG')
-const {cube} = require('../../api/primitives3d')
+const CSG = require('../core/CSG')
+const {cube} = require('./primitives3d')
 
 // For debugging
 // Creates a new solid with a tiny cube at every vertex of the source solid
