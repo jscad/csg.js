@@ -49,17 +49,6 @@ let Polygon = function (vertices, shared, plane) {
   }
 }
 
-// create from an untyped object with identical property names:
-Polygon.fromObject = function (obj) {
-  const Plane = require('./Plane') // FIXME: circular dependencies
-  let vertices = obj.vertices.map(function (v) {
-    return Vertex.fromObject(v)
-  })
-  let shared = Polygon.Shared.fromObject(obj.shared)
-  let plane = Plane.fromObject(obj.plane)
-  return new Polygon(vertices, shared, plane)
-}
-
 Polygon.prototype = {
   /** Check whether the polygon is convex. (it should be, otherwise we will get unexpected results)
    * @returns {boolean}
@@ -238,21 +227,15 @@ Polygon.prototype = {
 
 }
 
-Polygon.verticesConvex = function (vertices, planenormal) {
-  let numvertices = vertices.length
-  if (numvertices > 2) {
-    let prevprevpos = vertices[numvertices - 2].pos
-    let prevpos = vertices[numvertices - 1].pos
-    for (let i = 0; i < numvertices; i++) {
-      let pos = vertices[i].pos
-      if (!Polygon.isConvexPoint(prevprevpos, prevpos, pos, planenormal)) {
-        return false
-      }
-      prevprevpos = prevpos
-      prevpos = pos
-    }
-  }
-  return true
+// create from an untyped object with identical property names:
+Polygon.fromObject = function (obj) {
+  const Plane = require('./Plane') // FIXME: circular dependencies
+  let vertices = obj.vertices.map(function (v) {
+    return Vertex.fromObject(v)
+  })
+  let shared = Polygon.Shared.fromObject(obj.shared)
+  let plane = Plane.fromObject(obj.plane)
+  return new Polygon(vertices, shared, plane)
 }
 
 /** Create a polygon from the given points.
@@ -270,6 +253,9 @@ Polygon.verticesConvex = function (vertices, planenormal) {
  * let observed = CSG.Polygon.createFromPoints(points)
  */
 Polygon.createFromPoints = function (points, shared, plane) {
+  // FIXME : this circular dependency does not work !
+  // const {fromPoints} = require('./polygon3Factories')
+  // return fromPoints(points, shared, plane)
   let vertices = []
   points.map(function (p) {
     let vec = new Vector3D(p)
@@ -283,6 +269,23 @@ Polygon.createFromPoints = function (points, shared, plane) {
     polygon = new Polygon(vertices, shared, plane)
   }
   return polygon
+}
+
+Polygon.verticesConvex = function (vertices, planenormal) {
+  let numvertices = vertices.length
+  if (numvertices > 2) {
+    let prevprevpos = vertices[numvertices - 2].pos
+    let prevpos = vertices[numvertices - 1].pos
+    for (let i = 0; i < numvertices; i++) {
+      let pos = vertices[i].pos
+      if (!Polygon.isConvexPoint(prevprevpos, prevpos, pos, planenormal)) {
+        return false
+      }
+      prevprevpos = prevpos
+      prevpos = pos
+    }
+  }
+  return true
 }
 
 // calculate whether three points form a convex corner

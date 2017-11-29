@@ -1,5 +1,5 @@
 const FuzzyCSGFactory = require('../FuzzyFactory3d')
-const {reTesselateCoplanarPolygons} = require('../math/polygonUtils')
+const reTesselateCoplanarPolygons = require('../math/reTesselateCoplanarPolygons')
 const {fromPolygons} = require('../CSGFactories')
 
 const reTesselate = function (csg) {

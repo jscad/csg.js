@@ -651,7 +651,6 @@ CSG.prototype = {
     let csg = this.canonicalized()
     let numpolygons = csg.polygons.length
     let numpolygonvertices = 0
-    let polygonindex = 0
 
     let numvertices = 0
     let vertexmap = {}

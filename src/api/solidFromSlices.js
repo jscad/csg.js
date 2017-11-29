@@ -69,26 +69,25 @@ const solidFromSlices = function (polygon, options) {
                   bottom.vertices.every(function (v, index) {
                     return v.pos.equals(top.vertices[index].pos)
                   })
-              // if top and bottom are not the same -
-              // generate walls between them
+    // if top and bottom are not the same -
+    // generate walls between them
     if (!bSameTopBottom) {
       _addWalls(polygons, top, bottom, flipped)
     } // else - already generated
   } else {
-              // save top and bottom
-              // TODO: flip if necessary
+    // save top and bottom
+    // TODO: flip if necessary
     polygons.unshift(flipped ? bottom : bottom.flipped())
     polygons.push(flipped ? top.flipped() : top)
   }
   return fromPolygons(polygons)
 }
 
-        /**
-     *
-     * @param walls Array of wall polygons
-     * @param bottom Bottom polygon
-     * @param top Top polygon
-     */
+/**
+ * @param walls Array of wall polygons
+ * @param bottom Bottom polygon
+ * @param top Top polygon
+ */
 const _addWalls = function (walls, bottom, top, bFlipped) {
   let bottomPoints = bottom.vertices.slice(0) // make a copy
   let topPoints = top.vertices.slice(0) // make a copy
@@ -149,11 +148,11 @@ const _addWalls = function (walls, bottom, top, bFlipped) {
       } // for
     }
   } // if
-        // sort by index
+  // sort by index
   aMin.sort(fnSortByIndex)
   let getTriangle = function addWallsPutTriangle (pointA, pointB, pointC, color) {
     return new Polygon([pointA, pointB, pointC], color)
-            // return bFlipped ? triangle.flipped() : triangle;
+  // return bFlipped ? triangle.flipped() : triangle;
   }
 
   let bpoint = bottomPoints[0]
