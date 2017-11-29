@@ -648,19 +648,22 @@ CSG.prototype = {
    * @returns {Object} compact binary representation of a CSG
    */
   toCompactBinary: function () {
-    let csg = this.canonicalized(),
-      numpolygons = csg.polygons.length,
-      numpolygonvertices = 0,
-      numvertices = 0,
-      vertexmap = {},
-      vertices = [],
-      numplanes = 0,
-      planemap = {},
-      polygonindex = 0,
-      planes = [],
-      shareds = [],
-      sharedmap = {},
-      numshared = 0
+    let csg = this.canonicalized()
+    let numpolygons = csg.polygons.length
+    let numpolygonvertices = 0
+    let polygonindex = 0
+
+    let numvertices = 0
+    let vertexmap = {}
+    let vertices = []
+
+    let numplanes = 0
+    let planemap = {}
+    let planes = []
+
+    let shareds = []
+    let sharedmap = {}
+    let numshared = 0
         // for (let i = 0, iMax = csg.polygons.length; i < iMax; i++) {
         //  let p = csg.polygons[i];
         //  for (let j = 0, jMax = p.length; j < jMax; j++) {
@@ -671,27 +674,30 @@ CSG.prototype = {
         //          vertices.push(p[j]);
         //      }
         //  }
-    csg.polygons.map(function (p) {
-      p.vertices.map(function (v) {
+    csg.polygons.map(function (polygon) {
+      // FIXME: why use map if we do not return anything ?
+      // either for... or forEach
+      polygon.vertices.map(function (vertex) {
         ++numpolygonvertices
-        let vertextag = v.getTag()
+        let vertextag = vertex.getTag()
         if (!(vertextag in vertexmap)) {
           vertexmap[vertextag] = numvertices++
-          vertices.push(v)
+          vertices.push(vertex)
         }
       })
 
-      let planetag = p.plane.getTag()
+      let planetag = polygon.plane.getTag()
       if (!(planetag in planemap)) {
         planemap[planetag] = numplanes++
-        planes.push(p.plane)
+        planes.push(polygon.plane)
       }
-      let sharedtag = p.shared.getTag()
+      let sharedtag = polygon.shared.getTag()
       if (!(sharedtag in sharedmap)) {
         sharedmap[sharedtag] = numshared++
-        shareds.push(p.shared)
+        shareds.push(polygon.shared)
       }
     })
+
     let numVerticesPerPolygon = new Uint32Array(numpolygons)
     let polygonSharedIndexes = new Uint32Array(numpolygons)
     let polygonVertices = new Uint32Array(numpolygonvertices)
@@ -699,36 +705,40 @@ CSG.prototype = {
     let vertexData = new Float64Array(numvertices * 3)
     let planeData = new Float64Array(numplanes * 4)
     let polygonVerticesIndex = 0
+
+    // FIXME: doublecheck : why does it go through the whole polygons again?
+    // can we optimise that ? (perhap due to needing size to init buffers above)
     for (let polygonindex = 0; polygonindex < numpolygons; ++polygonindex) {
-      let p = csg.polygons[polygonindex]
-      numVerticesPerPolygon[polygonindex] = p.vertices.length
-      p.vertices.map(function (v) {
-        let vertextag = v.getTag()
+      let polygon = csg.polygons[polygonindex]
+      numVerticesPerPolygon[polygonindex] = polygon.vertices.length
+      polygon.vertices.map(function (vertex) {
+        let vertextag = vertex.getTag()
         let vertexindex = vertexmap[vertextag]
         polygonVertices[polygonVerticesIndex++] = vertexindex
       })
-      let planetag = p.plane.getTag()
+      let planetag = polygon.plane.getTag()
       let planeindex = planemap[planetag]
       polygonPlaneIndexes[polygonindex] = planeindex
-      let sharedtag = p.shared.getTag()
+      let sharedtag = polygon.shared.getTag()
       let sharedindex = sharedmap[sharedtag]
       polygonSharedIndexes[polygonindex] = sharedindex
     }
     let verticesArrayIndex = 0
-    vertices.map(function (v) {
-      let pos = v.pos
+    vertices.map(function (vertex) {
+      const pos = vertex.pos
       vertexData[verticesArrayIndex++] = pos._x
       vertexData[verticesArrayIndex++] = pos._y
       vertexData[verticesArrayIndex++] = pos._z
     })
     let planesArrayIndex = 0
-    planes.map(function (p) {
-      let normal = p.normal
+    planes.map(function (plane) {
+      const normal = plane.normal
       planeData[planesArrayIndex++] = normal._x
       planeData[planesArrayIndex++] = normal._y
       planeData[planesArrayIndex++] = normal._z
-      planeData[planesArrayIndex++] = p.w
+      planeData[planesArrayIndex++] = plane.w
     })
+
     let result = {
       'class': 'CSG',
       numPolygons: numpolygons,
@@ -742,6 +752,7 @@ CSG.prototype = {
     }
     return result
   },
+
   /** returns the triangles of this csg
    * @returns {Polygons} triangulated polygons
    */
