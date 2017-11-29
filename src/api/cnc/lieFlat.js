@@ -5,7 +5,7 @@
   // Get the transformation that transforms this CSG such that it is lying on the z=0 plane,
   // as flat as possible (i.e. the least z-height).
   // So that it is in an orientation suitable for CNC milling
-  const getTransformationAndInverseTransformationToFlatLying =  function (csg) {
+  const getTransformationAndInverseTransformationToFlatLying = function (csg) {
     if (csg.polygons.length === 0) {
       let m = new Matrix4x4() // unity
       return [m, m]
