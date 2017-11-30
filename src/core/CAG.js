@@ -1,13 +1,11 @@
-const {EPS, angleEPS, defaultResolution3D} = require('./constants')
+const {EPS, angleEPS} = require('./constants')
 const {Connector} = require('./connectors')
-const OrthoNormalBasis = require('./math/OrthoNormalBasis')
 const Vertex3D = require('./math/Vertex3')
 const Vector2D = require('./math/Vector2')
 const Vector3D = require('./math/Vector3')
 const Polygon = require('./math/Polygon3')
 const Path2D = require('./math/Path2')
 const {linesIntersect} = require('./math/lineUtils')
-const {parseOptionAs3DVector, parseOptionAsBool, parseOptionAsFloat, parseOptionAsInt} = require('./optionParsers')
 
 const {fromPolygons} = require('./CSGFactories')
 const {fromSides, fromFakeCSG, fromPoints, fromPointsNoCheck} = require('./CAGFactories')
@@ -18,6 +16,7 @@ const isCAGValid = require('./utils/isCAGValid')
 const {area, getBounds} = require('./utils/cagMeasurements')
 
 const overCutInsideCorners = require('../api/cnc/overcutInsideCorner')
+const {extrudeInOrthonormalBasis, extrudeInPlane, extrude, rotateExtrude} = require('../api/ops-extrusions')
 
 /**
  * Class CAG
@@ -103,13 +102,12 @@ CAG.prototype = {
     return fromSides(newsides)
   },
 
-  // see http://local.wasp.uwa.edu.au/~pbourke/geometry/polyarea/ :
-  // Area of the polygon. For a counter clockwise rotating polygon the area is positive, otherwise negative
-  // Note(bebbi): this looks wrong. See polygon getArea()
+  // ALIAS !
   area: function () {
     return area(this)
   },
 
+  // ALIAS !
   getBounds: function () {
     return getBounds(this)
   },
@@ -225,125 +223,20 @@ CAG.prototype = {
     return result
   },
 
-    // extrude the CAG in a certain plane.
-    // Giving just a plane is not enough, multiple different extrusions in the same plane would be possible
-    // by rotating around the plane's origin. An additional right-hand vector should be specified as well,
-    // and this is exactly a OrthoNormalBasis.
-    //
-    // orthonormalbasis: characterizes the plane in which to extrude
-    // depth: thickness of the extruded shape. Extrusion is done upwards from the plane
-    //        (unless symmetrical option is set, see below)
-    // options:
-    //   {symmetrical: true}  // extrude symmetrically in two directions about the plane
   extrudeInOrthonormalBasis: function (orthonormalbasis, depth, options) {
-        // first extrude in the regular Z plane:
-    if (!(orthonormalbasis instanceof OrthoNormalBasis)) {
-      throw new Error('extrudeInPlane: the first parameter should be a OrthoNormalBasis')
-    }
-    let extruded = this.extrude({
-      offset: [0, 0, depth]
-    })
-    if (parseOptionAsBool(options, 'symmetrical', false)) {
-      extruded = extruded.translate([0, 0, -depth / 2])
-    }
-    let matrix = orthonormalbasis.getInverseProjectionMatrix()
-    extruded = extruded.transform(matrix)
-    return extruded
+    return extrudeInOrthonormalBasis(this, orthonormalbasis, depth, options)
   },
 
-    // Extrude in a standard cartesian plane, specified by two axis identifiers. Each identifier can be
-    // one of ["X","Y","Z","-X","-Y","-Z"]
-    // The 2d x axis will map to the first given 3D axis, the 2d y axis will map to the second.
-    // See OrthoNormalBasis.GetCartesian for details.
-    // options:
-    //   {symmetrical: true}  // extrude symmetrically in two directions about the plane
   extrudeInPlane: function (axis1, axis2, depth, options) {
-    return this.extrudeInOrthonormalBasis(OrthoNormalBasis.GetCartesian(axis1, axis2), depth, options)
+    return extrudeInPlane(this, axis1, axis2, depth, options)
   },
 
-    // extruded=cag.extrude({offset: [0,0,10], twistangle: 360, twiststeps: 100});
-    // linear extrusion of 2D shape, with optional twist
-    // The 2d shape is placed in in z=0 plane and extruded into direction <offset> (a Vector3D)
-    // The final face is rotated <twistangle> degrees. Rotation is done around the origin of the 2d shape (i.e. x=0, y=0)
-    // twiststeps determines the resolution of the twist (should be >= 1)
-    // returns a CSG object
   extrude: function (options) {
-    const CSG = require('./CSG') // FIXME: circular dependencies CAG=>CSG=>CAG
-    if (this.sides.length === 0) {
-            // empty!
-      return new CSG()
-    }
-    let offsetVector = parseOptionAs3DVector(options, 'offset', [0, 0, 1])
-    let twistangle = parseOptionAsFloat(options, 'twistangle', 0)
-    let twiststeps = parseOptionAsInt(options, 'twiststeps', defaultResolution3D)
-    if (offsetVector.z === 0) {
-      throw new Error('offset cannot be orthogonal to Z axis')
-    }
-    if (twistangle === 0 || twiststeps < 1) {
-      twiststeps = 1
-    }
-    let normalVector = Vector3D.Create(0, 1, 0)
-
-    let polygons = []
-    // bottom and top
-    polygons = polygons.concat(this._toPlanePolygons({
-      translation: [0, 0, 0],
-      normalVector: normalVector,
-      flipped: !(offsetVector.z < 0)}
-    ))
-    polygons = polygons.concat(this._toPlanePolygons({
-      translation: offsetVector,
-      normalVector: normalVector.rotateZ(twistangle),
-      flipped: offsetVector.z < 0}))
-        // walls
-    for (let i = 0; i < twiststeps; i++) {
-      let c1 = new Connector(offsetVector.times(i / twiststeps), [0, 0, offsetVector.z],
-                normalVector.rotateZ(i * twistangle / twiststeps))
-      let c2 = new Connector(offsetVector.times((i + 1) / twiststeps), [0, 0, offsetVector.z],
-                normalVector.rotateZ((i + 1) * twistangle / twiststeps))
-      polygons = polygons.concat(this._toWallPolygons({toConnector1: c1, toConnector2: c2}))
-    }
-
-    return fromPolygons(polygons)
+    return extrude(this, options)
   },
 
-  /** Extrude to into a 3D solid by rotating the origin around the Y axis.
-   * (and turning everything into XY plane)
-   * @param {Object} options - options for construction
-   * @param {Number} [options.angle=360] - angle of rotation
-   * @param {Number} [options.resolution=defaultResolution3D] - number of polygons per 360 degree revolution
-   * @returns {CSG} new 3D solid
-   */
   rotateExtrude: function (options) { // FIXME options should be optional
-    let alpha = parseOptionAsFloat(options, 'angle', 360)
-    let resolution = parseOptionAsInt(options, 'resolution', defaultResolution3D)
-
-    alpha = alpha > 360 ? alpha % 360 : alpha
-    let origin = [0, 0, 0]
-    let axisV = Vector3D.Create(0, 1, 0)
-    let normalV = [0, 0, 1]
-    let polygons = []
-    // planes only needed if alpha > 0
-    let connS = new Connector(origin, axisV, normalV)
-    if (alpha > 0 && alpha < 360) {
-            // we need to rotate negative to satisfy wall function condition of
-            // building in the direction of axis vector
-      let connE = new Connector(origin, axisV.rotateZ(-alpha), normalV)
-      polygons = polygons.concat(
-                this._toPlanePolygons({toConnector: connS, flipped: true}))
-      polygons = polygons.concat(
-                this._toPlanePolygons({toConnector: connE}))
-    }
-    let connT1 = connS
-    let connT2
-    let step = alpha / resolution
-    for (let a = step; a <= alpha + EPS; a += step) { // FIXME Should this be angelEPS?
-      connT2 = new Connector(origin, axisV.rotateZ(-a), normalV)
-      polygons = polygons.concat(this._toWallPolygons(
-                {toConnector1: connT1, toConnector2: connT2}))
-      connT1 = connT2
-    }
-    return fromPolygons(polygons).reTesselated()
+    return rotateExtrude(this, options)
   },
 
   // check if we are a valid CAG (for debugging)
