@@ -172,7 +172,7 @@ CAG.fromFakeCSG = CAGMakers.fromFakeCSG
 
 /// ////////////////////////////////////
 // option parsers
-const optionsParsers = require('./src/core/optionParsers')
+const optionsParsers = require('./src/api/optionParsers')
 
 // ////////////////////////////////////
 addTransformationMethodsToPrototype(CSG.prototype)

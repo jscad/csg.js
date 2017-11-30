@@ -1,6 +1,6 @@
 const {EPS, defaultResolution3D} = require('../core/constants')
 const OrthoNormalBasis = require('../core/math/OrthoNormalBasis')
-const {parseOptionAs3DVector, parseOptionAsBool, parseOptionAsFloat, parseOptionAsInt} = require('../core/optionParsers')
+const {parseOptionAs3DVector, parseOptionAsBool, parseOptionAsFloat, parseOptionAsInt} = require('./optionParsers')
 const Vector3D = require('../core/math/Vector3')
 const {Connector} = require('../core/connectors')
 const {fromPolygons} = require('../core/CSGFactories')

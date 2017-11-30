@@ -1,5 +1,5 @@
 const CAG = require('../core/CAG')
-const {parseOptionAs2DVector, parseOptionAsFloat, parseOptionAsInt} = require('../core/optionParsers')
+const {parseOptionAs2DVector, parseOptionAsFloat, parseOptionAsInt} = require('./optionParsers')
 const {defaultResolution2D} = require('../core/constants')
 const Vector2D = require('../core/math/Vector2')
 const Path2D = require('../core/math/Path2')

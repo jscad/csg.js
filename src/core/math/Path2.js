@@ -1,6 +1,6 @@
 const Vector2D = require('./Vector2')
 const {EPS, angleEPS} = require('../constants')
-const {parseOptionAs2DVector, parseOptionAsFloat, parseOptionAsInt, parseOptionAsBool} = require('../optionParsers')
+const {parseOptionAs2DVector, parseOptionAsFloat, parseOptionAsInt, parseOptionAsBool} = require('../../api/optionParsers')
 const {defaultResolution2D} = require('../constants')
 const Vertex = require('./Vertex2')
 const Side = require('./Side')
