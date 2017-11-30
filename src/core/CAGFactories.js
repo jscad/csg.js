@@ -2,6 +2,7 @@ const Side = require('./math/Side')
 const Vector2D = require('./math/Vector2')
 const Vertex = require('./math/Vertex2')
 const {areaEPS} = require('./constants')
+const {isSelfIntersecting} = require('./utils/cagValidation')
 
 /** Construct a CAG from a list of `Side` instances.
  * @param {Side[]} sides - list of sides
@@ -47,7 +48,7 @@ const fromPoints = function (points) {
     prevvertex = vertex
   })
   let result = fromSides(sides)
-  if (result.isSelfIntersecting()) {
+  if (isSelfIntersecting(result)) {
     throw new Error('Polygon is self intersecting!')
   }
   let area = result.area()

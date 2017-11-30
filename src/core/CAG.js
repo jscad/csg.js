@@ -4,19 +4,19 @@ const Vertex3D = require('./math/Vertex3')
 const Vector2D = require('./math/Vector2')
 const Vector3D = require('./math/Vector3')
 const Polygon = require('./math/Polygon3')
-const Path2D = require('./math/Path2')
-const {linesIntersect} = require('./math/lineUtils')
 
 const {fromPolygons} = require('./CSGFactories')
 const {fromSides, fromFakeCSG, fromPoints, fromPointsNoCheck} = require('./CAGFactories')
 
 const canonicalize = require('./utils/canonicalize')
 const retesselate = require('./utils/retesellate')
-const isCAGValid = require('./utils/isCAGValid')
+const {isCAGValid, isSelfIntersecting} = require('./utils/cagValidation')
 const {area, getBounds} = require('./utils/cagMeasurements')
 
+// all of these are good candidates for elimination in this scope, since they are part of a functional api
 const overCutInsideCorners = require('../api/cnc/overcutInsideCorner')
 const {extrudeInOrthonormalBasis, extrudeInPlane, extrude, rotateExtrude} = require('../api/ops-extrusions')
+const cagoutlinePaths = require('../api/cagOutlinePaths')
 
 /**
  * Class CAG
@@ -100,31 +100,6 @@ CAG.prototype = {
     })
     newsides.reverse()
     return fromSides(newsides)
-  },
-
-  // ALIAS !
-  area: function () {
-    return area(this)
-  },
-
-  // ALIAS !
-  getBounds: function () {
-    return getBounds(this)
-  },
-
-  isSelfIntersecting: function (debug) {
-    let numsides = this.sides.length
-    for (let i = 0; i < numsides; i++) {
-      let side0 = this.sides[i]
-      for (let ii = i + 1; ii < numsides; ii++) {
-        let side1 = this.sides[ii]
-        if (linesIntersect(side0.vertex0.pos, side0.vertex1.pos, side1.vertex0.pos, side1.vertex1.pos)) {
-          if (debug) { console.log('side ' + i + ': ' + side0); console.log('side ' + ii + ': ' + side1) }
-          return true
-        }
-      }
-    }
-    return false
   },
 
   expandedShell: function (radius, resolution) {
@@ -223,113 +198,65 @@ CAG.prototype = {
     return result
   },
 
+  // ALIAS !
+  area: function () {
+    return area(this)
+  },
+
+  // ALIAS !
+  getBounds: function () {
+    return getBounds(this)
+  },
+  // ALIAS !
+  isSelfIntersecting: function (debug) {
+    return isSelfIntersecting(this, debug)
+  },
+  // extrusion: all aliases to simple functions
   extrudeInOrthonormalBasis: function (orthonormalbasis, depth, options) {
     return extrudeInOrthonormalBasis(this, orthonormalbasis, depth, options)
   },
 
+  // ALIAS !
   extrudeInPlane: function (axis1, axis2, depth, options) {
     return extrudeInPlane(this, axis1, axis2, depth, options)
   },
 
+  // ALIAS !
   extrude: function (options) {
     return extrude(this, options)
   },
 
+  // ALIAS !
   rotateExtrude: function (options) { // FIXME options should be optional
     return rotateExtrude(this, options)
   },
 
-  // check if we are a valid CAG (for debugging)
-  // NOTE(bebbi) uneven side count doesn't work because rounding with EPS isn't taken into account
+  // ALIAS !
   check: function () {
     return isCAGValid(this)
   },
 
+  // ALIAS !
   canonicalized: function () {
     return canonicalize(this)
   },
 
+  // ALIAS !
   reTesselated: function () {
     return retesselate(this)
   },
 
+  // ALIAS !
   getOutlinePaths: function () {
-    let cag = this.canonicalized()
-    let sideTagToSideMap = {}
-    let startVertexTagToSideTagMap = {}
-    cag.sides.map(function (side) {
-      let sidetag = side.getTag()
-      sideTagToSideMap[sidetag] = side
-      let startvertextag = side.vertex0.getTag()
-      if (!(startvertextag in startVertexTagToSideTagMap)) {
-        startVertexTagToSideTagMap[startvertextag] = []
-      }
-      startVertexTagToSideTagMap[startvertextag].push(sidetag)
-    })
-    let paths = []
-    while (true) {
-      let startsidetag = null
-      for (let aVertexTag in startVertexTagToSideTagMap) {
-        let sidesForThisVertex = startVertexTagToSideTagMap[aVertexTag]
-        startsidetag = sidesForThisVertex[0]
-        sidesForThisVertex.splice(0, 1)
-        if (sidesForThisVertex.length === 0) {
-          delete startVertexTagToSideTagMap[aVertexTag]
-        }
-        break
-      }
-      if (startsidetag === null) break // we've had all sides
-      let connectedVertexPoints = []
-      let sidetag = startsidetag
-      let thisside = sideTagToSideMap[sidetag]
-      let startvertextag = thisside.vertex0.getTag()
-      while (true) {
-        connectedVertexPoints.push(thisside.vertex0.pos)
-        let nextvertextag = thisside.vertex1.getTag()
-        if (nextvertextag === startvertextag) break // we've closed the polygon
-        if (!(nextvertextag in startVertexTagToSideTagMap)) {
-          throw new Error('Area is not closed!')
-        }
-        let nextpossiblesidetags = startVertexTagToSideTagMap[nextvertextag]
-        let nextsideindex = -1
-        if (nextpossiblesidetags.length === 1) {
-          nextsideindex = 0
-        } else {
-                    // more than one side starting at the same vertex. This means we have
-                    // two shapes touching at the same corner
-          let bestangle = null
-          let thisangle = thisside.direction().angleDegrees()
-          for (let sideindex = 0; sideindex < nextpossiblesidetags.length; sideindex++) {
-            let nextpossiblesidetag = nextpossiblesidetags[sideindex]
-            let possibleside = sideTagToSideMap[nextpossiblesidetag]
-            let angle = possibleside.direction().angleDegrees()
-            let angledif = angle - thisangle
-            if (angledif < -180) angledif += 360
-            if (angledif >= 180) angledif -= 360
-            if ((nextsideindex < 0) || (angledif > bestangle)) {
-              nextsideindex = sideindex
-              bestangle = angledif
-            }
-          }
-        }
-        let nextsidetag = nextpossiblesidetags[nextsideindex]
-        nextpossiblesidetags.splice(nextsideindex, 1)
-        if (nextpossiblesidetags.length === 0) {
-          delete startVertexTagToSideTagMap[nextvertextag]
-        }
-        thisside = sideTagToSideMap[nextsidetag]
-      } // inner loop
-            // due to the logic of fromPoints()
-            // move the first point to the last
-      if (connectedVertexPoints.length > 0) {
-        connectedVertexPoints.push(connectedVertexPoints.shift())
-      }
-      let path = new Path2D(connectedVertexPoints, true)
-      paths.push(path)
-    } // outer loop
-    return paths
+    return cagoutlinePaths(this)
   },
 
+  // ALIAS !
+  overCutInsideCorners: function (cutterradius) {
+    return overCutInsideCorners(this, cutterradius)
+  },
+
+  // All the toXXX functions
   toString: function () {
     let result = 'CAG (' + this.sides.length + ' sides):\n'
     this.sides.map(function (side) {
@@ -516,10 +443,6 @@ CAG.prototype = {
       vertexData: vertexData
     }
     return result
-  },
-
-  overCutInsideCorners: function (cutterradius) {
-    return overCutInsideCorners(this, cutterradius)
   }
 }
 
