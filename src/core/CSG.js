@@ -4,7 +4,6 @@ const {EPS} = require('./constants')
 const Polygon = require('./math/Polygon3')
 const Plane = require('./math/Plane')
 const Vertex = require('./math/Vertex3')
-const Vector2D = require('./math/Vector2')
 const OrthoNormalBasis = require('./math/OrthoNormalBasis')
 
 const CAG = require('./CAG') // FIXME: for some weird reason if CAG is imported AFTER frompolygons, a lot of things break???
@@ -19,6 +18,7 @@ const {bounds} = require('./utils/csgMeasurements')
 const {projectToOrthoNormalBasis} = require('./utils/csgProjections')
 
 const {lieFlat, getTransformationToFlatLying, getTransformationAndInverseTransformationToFlatLying} = require('../api/cnc/lieFlat')
+const {sectionCut, cutByPlane} = require('../api/ops-cuts')
 
 /** Class CSG
  * Holds a binary space partition tree representing a 3D solid. Two solids can
@@ -511,18 +511,22 @@ CSG.prototype = {
     return result
   },
 
+  // ALIAS !
   canonicalized: function () {
     return canonicalize(this)
   },
 
+  // ALIAS !
   reTesselated: function () {
     return retesselate(this)
   },
 
+  // ALIAS !
   fixTJunctions: function () {
     return fixTJunctions(fromPolygons, this)
   },
 
+  // ALIAS !
   getBounds: function () {
     return bounds(this)
   },
@@ -548,45 +552,9 @@ CSG.prototype = {
     }
   },
 
-  /** Cut the solid by a plane. Returns the solid on the back side of the plane
-   * @param  {Plane} plane
-   * @returns {CSG} the solid on the back side of the plane
-   */
+  // ALIAS !
   cutByPlane: function (plane) {
-    if (this.polygons.length === 0) {
-      return new CSG()
-    }
-        // Ideally we would like to do an intersection with a polygon of inifinite size
-        // but this is not supported by our implementation. As a workaround, we will create
-        // a cube, with one face on the plane, and a size larger enough so that the entire
-        // solid fits in the cube.
-        // find the max distance of any vertex to the center of the plane:
-    let planecenter = plane.normal.times(plane.w)
-    let maxdistance = 0
-    this.polygons.map(function (polygon) {
-      polygon.vertices.map(function (vertex) {
-        let distance = vertex.pos.distanceToSquared(planecenter)
-        if (distance > maxdistance) maxdistance = distance
-      })
-    })
-    maxdistance = Math.sqrt(maxdistance)
-    maxdistance *= 1.01 // make sure it's really larger
-        // Now build a polygon on the plane, at any point farther than maxdistance from the plane center:
-    let vertices = []
-    let orthobasis = new OrthoNormalBasis(plane)
-    vertices.push(new Vertex(orthobasis.to3D(new Vector2D(maxdistance, -maxdistance))))
-    vertices.push(new Vertex(orthobasis.to3D(new Vector2D(-maxdistance, -maxdistance))))
-    vertices.push(new Vertex(orthobasis.to3D(new Vector2D(-maxdistance, maxdistance))))
-    vertices.push(new Vertex(orthobasis.to3D(new Vector2D(maxdistance, maxdistance))))
-    const polygon = new Polygon(vertices, null, plane.flipped())
-
-    // and extrude the polygon into a cube, backwards of the plane:
-    const cube = polygon.extrude(plane.normal.times(-maxdistance))
-
-    // Now we can do the intersection:
-    let result = this.intersect(cube)
-    result.properties = this.properties // keep original properties
-    return result
+    return cutByPlane(this, plane)
   },
 
   /**
@@ -773,17 +741,17 @@ CSG.prototype = {
     return polygons
   },
 
-  // Get the transformation that transforms this CSG such that it is lying on the z=0 plane,
-  // as flat as possible (i.e. the least z-height).
-  // So that it is in an orientation suitable for CNC milling
+  // ALIAS !
   getTransformationAndInverseTransformationToFlatLying: function () {
     return getTransformationAndInverseTransformationToFlatLying(this)
   },
 
+  // ALIAS !
   getTransformationToFlatLying: function () {
     return getTransformationToFlatLying(this)
   },
 
+  // ALIAS !
   lieFlat: function () {
     return lieFlat(this)
   },
@@ -796,14 +764,9 @@ CSG.prototype = {
     return projectToOrthoNormalBasis(this, orthobasis)
   },
 
+  // FIXME: not finding any uses within our code ?
   sectionCut: function (orthobasis) {
-    let plane1 = orthobasis.plane
-    let plane2 = orthobasis.plane.flipped()
-    plane1 = new Plane(plane1.normal, plane1.w)
-    plane2 = new Plane(plane2.normal, plane2.w + (5 * EPS))
-    let cut3d = this.cutByPlane(plane1)
-    cut3d = cut3d.cutByPlane(plane2)
-    return cut3d.projectToOrthoNormalBasis(orthobasis)
+   return sectionCut(this, orthobasis)
   },
 
   /**
