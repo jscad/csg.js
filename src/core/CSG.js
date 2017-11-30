@@ -540,8 +540,8 @@ CSG.prototype = {
     if ((this.polygons.length === 0) || (csg.polygons.length === 0)) {
       return false
     } else {
-      let mybounds = this.getBounds()
-      let otherbounds = csg.getBounds()
+      let mybounds = bounds(this)
+      let otherbounds = bounds(csg)
       if (mybounds[1].x < otherbounds[0].x) return false
       if (mybounds[0].x > otherbounds[1].x) return false
       if (mybounds[1].y < otherbounds[0].y) return false
@@ -597,6 +597,57 @@ CSG.prototype = {
     return this.setShared(newshared)
   },
 
+  // ALIAS !
+  getTransformationAndInverseTransformationToFlatLying: function () {
+    return getTransformationAndInverseTransformationToFlatLying(this)
+  },
+
+  // ALIAS !
+  getTransformationToFlatLying: function () {
+    return getTransformationToFlatLying(this)
+  },
+
+  // ALIAS !
+  lieFlat: function () {
+    return lieFlat(this)
+  },
+
+  // project the 3D CSG onto a plane
+  // This returns a 2D CAG with the 'shadow' shape of the 3D solid when projected onto the
+  // plane represented by the orthonormal basis
+  projectToOrthoNormalBasis: function (orthobasis) {
+    // FIXME:  DEPENDS ON CAG !!
+    return projectToOrthoNormalBasis(this, orthobasis)
+  },
+
+  // FIXME: not finding any uses within our code ?
+  sectionCut: function (orthobasis) {
+    return sectionCut(this, orthobasis)
+  },
+
+  /**
+   * Returns an array of values for the requested features of this solid.
+   * Supported Features: 'volume', 'area'
+   * @param {String[]} features - list of features to calculate
+   * @returns {Float[]} values
+   * @example
+   * let volume = A.getFeatures('volume')
+   * let values = A.getFeatures('area','volume')
+   */
+  getFeatures: function (features) {
+    if (!(features instanceof Array)) {
+      features = [features]
+    }
+    let result = this.toTriangles().map(function (triPoly) {
+      return triPoly.getTetraFeatures(features)
+    })
+    .reduce(function (pv, v) {
+      return v.map(function (feat, i) {
+        return feat + (pv === 0 ? 0 : pv[i])
+      })
+    }, 0)
+    return (result.length === 1) ? result[0] : result
+  },
   /** @return {Polygon[]} The list of polygons. */
   toPolygons: function () {
     return this.polygons
@@ -739,58 +790,6 @@ CSG.prototype = {
       }
     })
     return polygons
-  },
-
-  // ALIAS !
-  getTransformationAndInverseTransformationToFlatLying: function () {
-    return getTransformationAndInverseTransformationToFlatLying(this)
-  },
-
-  // ALIAS !
-  getTransformationToFlatLying: function () {
-    return getTransformationToFlatLying(this)
-  },
-
-  // ALIAS !
-  lieFlat: function () {
-    return lieFlat(this)
-  },
-
-  // project the 3D CSG onto a plane
-  // This returns a 2D CAG with the 'shadow' shape of the 3D solid when projected onto the
-  // plane represented by the orthonormal basis
-  projectToOrthoNormalBasis: function (orthobasis) {
-    // FIXME:  DEPENDS ON CAG !!
-    return projectToOrthoNormalBasis(this, orthobasis)
-  },
-
-  // FIXME: not finding any uses within our code ?
-  sectionCut: function (orthobasis) {
-   return sectionCut(this, orthobasis)
-  },
-
-  /**
-   * Returns an array of values for the requested features of this solid.
-   * Supported Features: 'volume', 'area'
-   * @param {String[]} features - list of features to calculate
-   * @returns {Float[]} values
-   * @example
-   * let volume = A.getFeatures('volume')
-   * let values = A.getFeatures('area','volume')
-   */
-  getFeatures: function (features) {
-    if (!(features instanceof Array)) {
-      features = [features]
-    }
-    let result = this.toTriangles().map(function (triPoly) {
-      return triPoly.getTetraFeatures(features)
-    })
-    .reduce(function (pv, v) {
-      return v.map(function (feat, i) {
-        return feat + (pv === 0 ? 0 : pv[i])
-      })
-    }, 0)
-    return (result.length === 1) ? result[0] : result
   }
 }
 
