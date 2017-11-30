@@ -17,7 +17,7 @@ const retesselate = require('./utils/retesellate')
 const {bounds} = require('./utils/csgMeasurements')
 const {projectToOrthoNormalBasis} = require('./utils/csgProjections')
 
-const {lieFlat, getTransformationToFlatLying, getTransformationAndInverseTransformationToFlatLying} = require('../api/cnc/lieFlat')
+const {lieFlat, getTransformationToFlatLying, getTransformationAndInverseTransformationToFlatLying} = require('../api/ops-cnc')
 const {sectionCut, cutByPlane} = require('../api/ops-cuts')
 
 /** Class CSG

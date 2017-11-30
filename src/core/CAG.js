@@ -14,7 +14,7 @@ const {isCAGValid, isSelfIntersecting} = require('./utils/cagValidation')
 const {area, getBounds} = require('./utils/cagMeasurements')
 
 // all of these are good candidates for elimination in this scope, since they are part of a functional api
-const overCutInsideCorners = require('../api/cnc/overcutInsideCorner')
+const {overCutInsideCorners} = require('../api/ops-cnc')
 const {extrudeInOrthonormalBasis, extrudeInPlane, extrude, rotateExtrude} = require('../api/ops-extrusions')
 const cagoutlinePaths = require('../api/cagOutlinePaths')
 
