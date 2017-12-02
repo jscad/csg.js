@@ -1,5 +1,5 @@
 // color table from http://www.w3.org/TR/css3-color/
-var cssColors = {
+const cssColors = {
 // basic color keywords
   'black': [ 0 / 255, 0 / 255, 0 / 255 ],
   'silver': [ 192 / 255, 192 / 255, 192 / 255 ],
@@ -17,17 +17,17 @@ var cssColors = {
   'blue': [ 0 / 255, 0 / 255, 255 / 255 ],
   'teal': [ 0 / 255, 128 / 255, 128 / 255 ],
   'aqua': [ 0 / 255, 255 / 255, 255 / 255 ],
-// extended color keywords
+  // extended color keywords
   'aliceblue': [ 240 / 255, 248 / 255, 255 / 255 ],
   'antiquewhite': [ 250 / 255, 235 / 255, 215 / 255 ],
-  //'aqua': [ 0 / 255, 255 / 255, 255 / 255 ],
+  // 'aqua': [ 0 / 255, 255 / 255, 255 / 255 ],
   'aquamarine': [ 127 / 255, 255 / 255, 212 / 255 ],
   'azure': [ 240 / 255, 255 / 255, 255 / 255 ],
   'beige': [ 245 / 255, 245 / 255, 220 / 255 ],
   'bisque': [ 255 / 255, 228 / 255, 196 / 255 ],
-  //'black': [ 0 / 255, 0 / 255, 0 / 255 ],
+  // 'black': [ 0 / 255, 0 / 255, 0 / 255 ],
   'blanchedalmond': [ 255 / 255, 235 / 255, 205 / 255 ],
-  //'blue': [ 0 / 255, 0 / 255, 255 / 255 ],
+  // 'blue': [ 0 / 255, 0 / 255, 255 / 255 ],
   'blueviolet': [ 138 / 255, 43 / 255, 226 / 255 ],
   'brown': [ 165 / 255, 42 / 255, 42 / 255 ],
   'burlywood': [ 222 / 255, 184 / 255, 135 / 255 ],
@@ -66,13 +66,13 @@ var cssColors = {
   'firebrick': [ 178 / 255, 34 / 255, 34 / 255 ],
   'floralwhite': [ 255 / 255, 250 / 255, 240 / 255 ],
   'forestgreen': [ 34 / 255, 139 / 255, 34 / 255 ],
-  //'fuchsia': [ 255 / 255, 0 / 255, 255 / 255 ],
+  // 'fuchsia': [ 255 / 255, 0 / 255, 255 / 255 ],
   'gainsboro': [ 220 / 255, 220 / 255, 220 / 255 ],
   'ghostwhite': [ 248 / 255, 248 / 255, 255 / 255 ],
   'gold': [ 255 / 255, 215 / 255, 0 / 255 ],
   'goldenrod': [ 218 / 255, 165 / 255, 32 / 255 ],
-  //'gray': [ 128 / 255, 128 / 255, 128 / 255 ],
-  //'green': [ 0 / 255, 128 / 255, 0 / 255 ],
+  // 'gray': [ 128 / 255, 128 / 255, 128 / 255 ],
+  // 'green': [ 0 / 255, 128 / 255, 0 / 255 ],
   'greenyellow': [ 173 / 255, 255 / 255, 47 / 255 ],
   'grey': [ 128 / 255, 128 / 255, 128 / 255 ],
   'honeydew': [ 240 / 255, 255 / 255, 240 / 255 ],
@@ -100,11 +100,11 @@ var cssColors = {
   'lightslategrey': [ 119 / 255, 136 / 255, 153 / 255 ],
   'lightsteelblue': [ 176 / 255, 196 / 255, 222 / 255 ],
   'lightyellow': [ 255 / 255, 255 / 255, 224 / 255 ],
-  //'lime': [ 0 / 255, 255 / 255, 0 / 255 ],
+  // 'lime': [ 0 / 255, 255 / 255, 0 / 255 ],
   'limegreen': [ 50 / 255, 205 / 255, 50 / 255 ],
   'linen': [ 250 / 255, 240 / 255, 230 / 255 ],
   'magenta': [ 255 / 255, 0 / 255, 255 / 255 ],
-  //'maroon': [ 128 / 255, 0 / 255, 0 / 255 ],
+  // 'maroon': [ 128 / 255, 0 / 255, 0 / 255 ],
   'mediumaquamarine': [ 102 / 255, 205 / 255, 170 / 255 ],
   'mediumblue': [ 0 / 255, 0 / 255, 205 / 255 ],
   'mediumorchid': [ 186 / 255, 85 / 255, 211 / 255 ],
@@ -119,9 +119,9 @@ var cssColors = {
   'mistyrose': [ 255 / 255, 228 / 255, 225 / 255 ],
   'moccasin': [ 255 / 255, 228 / 255, 181 / 255 ],
   'navajowhite': [ 255 / 255, 222 / 255, 173 / 255 ],
-  //'navy': [ 0 / 255, 0 / 255, 128 / 255 ],
+  // 'navy': [ 0 / 255, 0 / 255, 128 / 255 ],
   'oldlace': [ 253 / 255, 245 / 255, 230 / 255 ],
-  //'olive': [ 128 / 255, 128 / 255, 0 / 255 ],
+  // 'olive': [ 128 / 255, 128 / 255, 0 / 255 ],
   'olivedrab': [ 107 / 255, 142 / 255, 35 / 255 ],
   'orange': [ 255 / 255, 165 / 255, 0 / 255 ],
   'orangered': [ 255 / 255, 69 / 255, 0 / 255 ],
@@ -136,8 +136,8 @@ var cssColors = {
   'pink': [ 255 / 255, 192 / 255, 203 / 255 ],
   'plum': [ 221 / 255, 160 / 255, 221 / 255 ],
   'powderblue': [ 176 / 255, 224 / 255, 230 / 255 ],
-  //'purple': [ 128 / 255, 0 / 255, 128 / 255 ],
-  //'red': [ 255 / 255, 0 / 255, 0 / 255 ],
+  // 'purple': [ 128 / 255, 0 / 255, 128 / 255 ],
+  // 'red': [ 255 / 255, 0 / 255, 0 / 255 ],
   'rosybrown': [ 188 / 255, 143 / 255, 143 / 255 ],
   'royalblue': [ 65 / 255, 105 / 255, 225 / 255 ],
   'saddlebrown': [ 139 / 255, 69 / 255, 19 / 255 ],
@@ -146,7 +146,7 @@ var cssColors = {
   'seagreen': [ 46 / 255, 139 / 255, 87 / 255 ],
   'seashell': [ 255 / 255, 245 / 255, 238 / 255 ],
   'sienna': [ 160 / 255, 82 / 255, 45 / 255 ],
-  //'silver': [ 192 / 255, 192 / 255, 192 / 255 ],
+  // 'silver': [ 192 / 255, 192 / 255, 192 / 255 ],
   'skyblue': [ 135 / 255, 206 / 255, 235 / 255 ],
   'slateblue': [ 106 / 255, 90 / 255, 205 / 255 ],
   'slategray': [ 112 / 255, 128 / 255, 144 / 255 ],
@@ -155,18 +155,17 @@ var cssColors = {
   'springgreen': [ 0 / 255, 255 / 255, 127 / 255 ],
   'steelblue': [ 70 / 255, 130 / 255, 180 / 255 ],
   'tan': [ 210 / 255, 180 / 255, 140 / 255 ],
-  //'teal': [ 0 / 255, 128 / 255, 128 / 255 ],
+  // 'teal': [ 0 / 255, 128 / 255, 128 / 255 ],
   'thistle': [ 216 / 255, 191 / 255, 216 / 255 ],
   'tomato': [ 255 / 255, 99 / 255, 71 / 255 ],
   'turquoise': [ 64 / 255, 224 / 255, 208 / 255 ],
   'violet': [ 238 / 255, 130 / 255, 238 / 255 ],
   'wheat': [ 245 / 255, 222 / 255, 179 / 255 ],
-  //'white': [ 255 / 255, 255 / 255, 255 / 255 ],
+  // 'white': [ 255 / 255, 255 / 255, 255 / 255 ],
   'whitesmoke': [ 245 / 255, 245 / 255, 245 / 255 ],
-  //'yellow': [ 255 / 255, 255 / 255, 0 / 255 ],
-  'yellowgreen': [ 154 / 255, 205 / 255, 50 / 255 ],
-};
-
+  // 'yellow': [ 255 / 255, 255 / 255, 0 / 255 ],
+  'yellowgreen': [ 154 / 255, 205 / 255, 50 / 255 ]
+}
 
 /**
  * Converts an CSS color name to RGB color.
@@ -174,30 +173,43 @@ var cssColors = {
  * @param   String  s       The CSS color name
  * @return  Array           The RGB representation, or [0,0,0] default
  */
-function css2rgb(s) {
+function css2rgb (s) {
   return cssColors[s.toLowerCase()]
 }
 
 // color( (array[r,g,b] | css-string) [,alpha] (,array[objects] | list of objects) )
-function color () {
-  var o, i = 1, a = arguments, c = a[0], alpha
+/** apply the given color to the input object(s)
+ * @param {Object} color - either an array or a hex string of color values
+ * @param {Object|Array} objects either a single or multiple CSG/CAG objects to color
+ * @returns {CSG} new CSG object , with the given color
+ *
+ * @example
+ * let redSphere = color([1,0,0,1], sphere())
+ */
+function color (color) {
+  let object
+  let i = 1
+  let a = arguments
 
   // assume first argument is RGB array
   // but check if first argument is CSS string
-  if (typeof c == 'string') {
-    c = css2rgb(c)
+  if (typeof color === 'string') {
+    color = css2rgb(color)
   }
   // check if second argument is alpha
   if (Number.isFinite(a[i])) {
-    c = c.concat(a[i])
+    color = color.concat(a[i])
     i++
   }
   // check if next argument is an an array
-  if (Array.isArray(a[i])) { a = a[i], i = 0; } // use this as the list of objects
-  for (o = a[i++]; i < a.length; i++) {
-    o = o.union(a[i])
+  if (Array.isArray(a[i])) {
+    a = a[i]
+    i = 0
+  } // use this as the list of objects
+  for (object = a[i++]; i < a.length; i++) {
+    object = object.union(a[i])
   }
-  return o.setColor(c)
+  return object.setColor(color)
 }
 
 // from http://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
@@ -213,14 +225,21 @@ function color () {
  * @return  Array           The HSL representation
  */
 function rgb2hsl (r, g, b) {
-  if (r.length) { b = r[2], g = r[1], r = r[0]; }
-  var max = Math.max(r, g, b), min = Math.min(r, g, b)
-  var h, s, l = (max + min) / 2
+  if (r.length) {
+    b = r[2]
+    g = r[1]
+    r = r[0]
+  }
+  let max = Math.max(r, g, b)
+  let min = Math.min(r, g, b)
+  let h
+  let s
+  let l = (max + min) / 2
 
-  if (max == min) {
+  if (max === min) {
     h = s = 0 // achromatic
   } else {
-    var d = max - min
+    let d = max - min
     s = l > 0.5 ? d / (2 - max - min) : d / (max + min)
     switch (max) {
       case r:
@@ -251,14 +270,20 @@ function rgb2hsl (r, g, b) {
  * @return  Array           The RGB representation
  */
 function hsl2rgb (h, s, l) {
-  if (h.length) { l = h[2], s = h[1], h = h[0]; }
-  var r, g, b
+  if (h.length) {
+    h = h[0]
+    s = h[1]
+    l = h[2]
+  }
+  let r
+  let g
+  let b
 
-  if (s == 0) {
+  if (s === 0) {
     r = g = b = l // achromatic
   } else {
-    var q = l < 0.5 ? l * (1 + s) : l + s - l * s
-    var p = 2 * l - q
+    let q = l < 0.5 ? l * (1 + s) : l + s - l * s
+    let p = 2 * l - q
     r = hue2rgb(p, q, h + 1 / 3)
     g = hue2rgb(p, q, h)
     b = hue2rgb(p, q, h - 1 / 3)
@@ -289,14 +314,21 @@ function hue2rgb (p, q, t) {
  */
 
 function rgb2hsv (r, g, b) {
-  if (r.length) { b = r[2], g = r[1], r = r[0]; }
-  var max = Math.max(r, g, b), min = Math.min(r, g, b)
-  var h, s, v = max
+  if (r.length) {
+    r = r[0]
+    g = r[1]
+    b = r[2]
+  }
+  let max = Math.max(r, g, b)
+  let min = Math.min(r, g, b)
+  let h
+  let s
+  let v = max
 
-  var d = max - min
-  s = max == 0 ? 0 : d / max
+  let d = max - min
+  s = max === 0 ? 0 : d / max
 
-  if (max == min) {
+  if (max === min) {
     h = 0 // achromatic
   } else {
     switch (max) {
@@ -328,14 +360,18 @@ function rgb2hsv (r, g, b) {
  * @return  Array           The RGB representation
  */
 function hsv2rgb (h, s, v) {
-  if (h.length) { v = h[2], s = h[1], h = h[0]; }
-  var r, g, b
+  if (h.length) {
+    h = h[0]
+    s = h[1]
+    v = h[2]
+  }
+  let r, g, b
 
-  var i = Math.floor(h * 6)
-  var f = h * 6 - i
-  var p = v * (1 - s)
-  var q = v * (1 - f * s)
-  var t = v * (1 - (1 - f) * s)
+  let i = Math.floor(h * 6)
+  let f = h * 6 - i
+  let p = v * (1 - s)
+  let q = v * (1 - f * s)
+  let t = v * (1 - (1 - f) * s)
 
   switch (i % 6) {
     case 0:
@@ -369,10 +405,10 @@ function hsv2rgb (h, s, v) {
  * - convert the HEX value into RGB values
  */
 function html2rgb (s) {
-  var r = 0
-  var g = 0
-  var b = 0
-  if (s.length == 7) {
+  let r = 0
+  let g = 0
+  let b = 0
+  if (s.length === 7) {
     r = parseInt('0x' + s.slice(1, 3)) / 255
     g = parseInt('0x' + s.slice(3, 5)) / 255
     b = parseInt('0x' + s.slice(5, 7)) / 255
@@ -387,19 +423,23 @@ function html2rgb (s) {
  * - return HTML formatted string "#RRGGBB"
  */
 function rgb2html (r, g, b) {
-  if (r.length) { b = r[2], g = r[1], r = r[0]; }
-  var s = '#' +
-  Number(0x1000000 + r * 255 * 0x10000 + g * 255 * 0x100 + b * 255).toString(16).substring(1,7)
+  if (r.length) {
+    r = r[0]
+    g = r[1]
+    b = r[2]
+  }
+  let s = '#' +
+  Number(0x1000000 + r * 255 * 0x10000 + g * 255 * 0x100 + b * 255).toString(16).substring(1, 7)
   return s
 }
 
- module.exports = {
-   css2rgb,
-   color,
-   rgb2hsl,
-   hsl2rgb,
-   rgb2hsv,
-   hsv2rgb,
-   html2rgb,
-   rgb2html
- }
+module.exports = {
+  css2rgb,
+  color,
+  rgb2hsl,
+  hsl2rgb,
+  rgb2hsv,
+  hsv2rgb,
+  html2rgb,
+  rgb2html
+}

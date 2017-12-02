@@ -1,14 +1,26 @@
 const { CAG } = require('@jscad/csg')
 
-// -- 3D operations (OpenSCAD like notion)
+// -- 3D boolean operations
+
 // FIXME should this be lazy ? in which case, how do we deal with 2D/3D combined
 // TODO we should have an option to set behaviour as first parameter
+/** union/ combine the given shapes
+ * @param {Object(s)|Array} objects - objects to combine : can be given
+ * - one by one: union(a,b,c) or
+ * - as an array: union([a,b,c])
+ * @returns {CSG} new CSG object, the union of all input shapes
+ *
+ * @example
+ * let unionOfSpherAndCube = union(sphere(), cube())
+ */
 function union () {
   let options = {}
   const defaults = {
     extrude2d: false
   }
-  var o, i = 0, a = arguments
+  let o
+  let i = 0
+  let a = arguments
   if (a[0].length) a = a[0]
   if ('extrude2d' in a[0]) { // first parameter is options
     options = Object.assign({}, defaults, a[0])
@@ -22,7 +34,7 @@ function union () {
     o = a[i].extrude({offset: [0, 0, 0.1]}) // -- convert a 2D shape to a thin solid, note: do not a[i] = a[i].extrude()
   }
   for (; i < a.length; i++) {
-    var obj = a[i]
+    let obj = a[i]
 
     if ((typeof (a[i]) === 'object') && a[i] instanceof CAG && options.extrude2d) {
       obj = a[i].extrude({offset: [0, 0, 0.1]}) // -- convert a 2D shape to a thin solid:
@@ -32,30 +44,55 @@ function union () {
   return o
 }
 
+/** difference/ subtraction of the given shapes ie:
+ * cut out C From B From A ie : a - b - c etc
+ * @param {Object(s)|Array} objects - objects to subtract
+ * can be given
+ * - one by one: difference(a,b,c) or
+ * - as an array: difference([a,b,c])
+ * @returns {CSG} new CSG object, the difference of all input shapes
+ *
+ * @example
+ * let differenceOfSpherAndCube = difference(sphere(), cube())
+ */
 function difference () {
-  var o, i = 0, a = arguments
+  let object
+  let i = 0
+  let a = arguments
   if (a[0].length) a = a[0]
-  for (o = a[i++]; i < a.length; i++) {
+  for (object = a[i++]; i < a.length; i++) {
     if (a[i] instanceof CAG) {
-      o = o.subtract(a[i])
+      object = object.subtract(a[i])
     } else {
-      o = o.subtract(a[i].setColor(1, 1, 0)) // -- color the cuts
+      object = object.subtract(a[i].setColor(1, 1, 0)) // -- color the cuts
     }
   }
-  return o
+  return object
 }
 
+/** intersection of the given shapes: ie keep only the common parts between the given shapes
+ * @param {Object(s)|Array} objects - objects to intersect
+ * can be given
+ * - one by one: intersection(a,b,c) or
+ * - as an array: intersection([a,b,c])
+ * @returns {CSG} new CSG object, the intersection of all input shapes
+ *
+ * @example
+ * let intersectionOfSpherAndCube = intersection(sphere(), cube())
+ */
 function intersection () {
-  var o, i = 0, a = arguments
+  let object
+  let i = 0
+  let a = arguments
   if (a[0].length) a = a[0]
-  for (o = a[i++]; i < a.length; i++) {
+  for (object = a[i++]; i < a.length; i++) {
     if (a[i] instanceof CAG) {
-      o = o.intersect(a[i])
+      object = object.intersect(a[i])
     } else {
-      o = o.intersect(a[i].setColor(1, 1, 0)) // -- color the cuts
+      object = object.intersect(a[i].setColor(1, 1, 0)) // -- color the cuts
     }
   }
-  return o
+  return object
 }
 
 module.exports = {

@@ -2,30 +2,42 @@ const { CSG, CAG } = require('@jscad/csg')
 const {cagToPointsArray, clamp, rightMultiply1x3VectorToArray, polygonFromPoints} = require('./helpers')
 // -- 2D to 3D primitives
 
-function linear_extrude (p, s) {
-  // return
-  let h = 1
-  let off = 0
-  let twist = 0
-  let slices = 10
-  /* convexity = 10, */
+// FIXME: right now linear & rotate extrude take params first, while rectangular_extrude
+// takes params second ! confusing and incoherent ! needs to be changed (BREAKING CHANGE !)
 
-  if (p.height) h = p.height
-  // if(p.convexity) convexity = p.convexity      // abandoned
-  if (p.twist) twist = p.twist
-  if (p.slices) slices = p.slices
-  var o = s.extrude({offset: [0, 0, h], twistangle: twist, twiststeps: slices})
-  if (p.center === true) {
-    var b = [ ]
-    b = o.getBounds() // b[0] = min, b[1] = max
-    off = b[1].plus(b[0])
-    off = off.times(-0.5)
-    o = o.translate(off)
+/** linear extrusion of the input 2d shape
+ * @param {Object} [options] - options for construction
+ * @param {Float} [options.height=1] - height of the extruded shape
+ * @param {Integer} [options.slices=10] - number of intermediary steps/slices
+ * @param {Integer} [options.twist=0] - angle (in degrees to twist the extusion by)
+ * @param {Boolean} [options.center=false] - whether to center extrusion or not
+ * @param {CAG} baseShape input 2d shape
+ * @returns {CSG} new extruded shape
+ *
+ * @example
+ * let revolved = linear_extrude({height: 10}, square())
+ */
+function linear_extrude (params, baseShape) {
+  const defaults = {
+    height: 1,
+    slices: 10,
+    twist: 0,
+    center: false
   }
-  return o
+  /* convexity = 10, */
+  const {height, twist, slices, center} = Object.assign({}, defaults, params)
+
+  // if(params.convexity) convexity = params.convexity      // abandoned
+  let output = baseShape.extrude({offset: [0, 0, height], twistangle: twist, twiststeps: slices})
+  if (center === true) {
+    const b = output.getBounds() // b[0] = min, b[1] = max
+    const offset = (b[1].plus(b[0])).times(-0.5)
+    output = output.translate(offset)
+  }
+  return output
 }
 
-/** rotate extrude / revolve
+/** rotate extrusion / revolve of the given 2d shape
  * @param {Object} [options] - options for construction
  * @param {Integer} [options.fn=1] - resolution/number of segments of the extrusion
  * @param {Float} [options.startAngle=1] - start angle of the extrusion, in degrees
@@ -169,20 +181,30 @@ function rotate_extrude (params, baseShape) {
   return CSG.fromPolygons(polygons).reTesselated().canonicalized()
 }
 
-function rectangular_extrude (pa, p) {
-  let w = 1
-  let h = 1
-  let fn = 8
-  let closed = false
-  let round = true
-  if (p) {
-    if (p.w) w = p.w
-    if (p.h) h = p.h
-    if (p.fn) fn = p.fn
-    if (p.closed !== undefined) closed = p.closed
-    if (p.round !== undefined) round = p.round
+/** rectangular extrusion of the given array of points
+ * @param {Array} basePoints array of points (nested) to extrude from
+ * layed out like [ [0,0], [10,0], [5,10], [0,10] ]
+ * @param {Object} [options] - options for construction
+ * @param {Float} [options.h=1] - height of the extruded shape
+ * @param {Float} [options.w=10] - width of the extruded shape
+ * @param {Integer} [options.fn=1] - resolution/number of segments of the extrusion
+ * @param {Boolean} [options.closed=false] - whether to close the input path for the extrusion or not
+ * @param {Boolean} [options.round=true] - whether to round the extrusion or not
+ * @returns {CSG} new extruded shape
+ *
+ * @example
+ * let revolved = rectangular_extrude({height: 10}, square())
+ */
+function rectangular_extrude (basePoints, params) {
+  const defaults = {
+    w: 1,
+    h: 1,
+    fn: 8,
+    closed: false,
+    round: true
   }
-  return new CSG.Path2D(pa, closed).rectangularExtrude(w, h, fn, round)
+  const {w, h, fn, closed, round} = Object.assign({}, defaults, params)
+  return new CSG.Path2D(basePoints, closed).rectangularExtrude(w, h, fn, round)
 }
 
 module.exports = {
