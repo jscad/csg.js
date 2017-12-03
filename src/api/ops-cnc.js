@@ -7,13 +7,13 @@ const Vector2D = require('../core/math/Vector2')
 // Get the transformation that transforms this CSG such that it is lying on the z=0 plane,
 // as flat as possible (i.e. the least z-height).
 // So that it is in an orientation suitable for CNC milling
-const getTransformationAndInverseTransformationToFlatLying = function (csg) {
-  if (csg.polygons.length === 0) {
+const getTransformationAndInverseTransformationToFlatLying = function (_csg) {
+  if (_csg.polygons.length === 0) {
     let m = new Matrix4x4() // unity
     return [m, m]
   } else {
           // get a list of unique planes in the CSG:
-    let csg = csg.canonicalized()
+    let csg = _csg.canonicalized()
     let planemap = {}
     csg.polygons.map(function (polygon) {
       planemap[polygon.plane.getTag()] = polygon.plane
@@ -79,7 +79,7 @@ const getTransformationAndInverseTransformationToFlatLying = function (csg) {
   }
 }
 
-const getTransformationToFlatLying =  function (csg) {
+const getTransformationToFlatLying = function (csg) {
   let result = csg.getTransformationAndInverseTransformationToFlatLying()
   return result[0]
 }
@@ -88,8 +88,6 @@ const lieFlat = function (csg) {
   let transformation = csg.getTransformationToFlatLying()
   return csg.transform(transformation)
 }
-
-
 
 /** cag = cag.overCutInsideCorners(cutterradius);
  * Using a CNC router it's impossible to cut out a true sharp inside corner. The inside corner
