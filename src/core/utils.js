@@ -69,7 +69,7 @@ function isCAG (object) {
   if (!('sides' in object)) {
     return false
   }
-  if (!object.sides.length) {
+  if (!('length' in object.sides)) {
     return false
   }
 
@@ -84,7 +84,7 @@ function isCSG (object) {
   if (!('polygons' in object)) {
     return false
   }
-  if (!object.polygons.length) {
+  if (!('length' in object.polygons)) {
     return false
   }
   return true

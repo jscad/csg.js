@@ -194,4 +194,16 @@ addTransformationMethodsToPrototype(CAG.Vertex.prototype)
 addCenteringToPrototype(CSG.prototype, ['x', 'y', 'z'])
 addCenteringToPrototype(CAG.prototype, ['x', 'y'])
 
-module.exports = Object.assign({}, {CSG, CAG}, optionsParsers)
+CSG.parseOptionAs2DVector = optionsParsers.parseOptionAs3DVector
+CSG.parseOptionAs3DVector = optionsParsers.parseOptionAs3DVector
+CSG.parseOptionAs3DVectorList = optionsParsers.parseOptionAs3DVectorList
+CSG.parseOptionAsBool = optionsParsers.parseOptionAsBool
+CSG.parseOptionAsFloat = optionsParsers.parseOptionAsFloat
+CSG.parseOptionAsInt = optionsParsers.parseOptionAsInt
+
+// utilities
+const {isCAG, isCSG} = require('./src/core/utils')
+
+const globalApi = Object.assign({}, {CSG, CAG}, optionsParsers, {isCAG, isCSG})
+
+module.exports = globalApi
