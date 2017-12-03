@@ -274,7 +274,7 @@ CSG.prototype = {
 
   // ALIAS !
   contract: function (radius, resolution) {
-    return contract(radius, resolution)
+    return contract(this, radius, resolution)
   },
 
   // ALIAS !
