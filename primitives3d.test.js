@@ -164,6 +164,46 @@ test('cube (standard size, rounded)', t => {
   t.deepEqual(obs.polygons[5], expPoly5)
 })
 
+test('cube (custom size, rounded)', t => {
+  const obs = cube({size: [69, 20, 3], round: true, radius: 0.5})
+
+  const expFirstPoly = {
+    vertices: [ { pos: { _x: 0.5, _y: 0, _z: 0.5 } },
+      { pos: { _x: 0.14644660940672338,
+        _y: 0.14644660940672694,
+        _z: 0.5 } },
+      { pos: { _x: 0.25,
+        _y: 0.25,
+        _z: 0.14644660940672627 } },
+      { pos: { _x: 0.5,
+        _y: 0.14644660940672694,
+        _z: 0.14644660940672627 } } ],
+    shared: { color: null, tag: 296 },
+    plane: { normal: { _x: -0.35740674433659303,
+      _y: -0.8628562094610174,
+      _z: -0.3574067443365919 },
+      w: -0.3574067443365845 }
+  }
+
+  const expPoly5 = { vertices: [ { pos: { _x: 68.5, _y: 0.5, _z: 0 } },
+    { pos: { _x: 68.50000000000003,
+      _y: 0.14644660940672694,
+      _z: 0.14644660940672627 } },
+    { pos: { _x: 0.5,
+      _y: 0.14644660940672694,
+      _z: 0.14644660940672627 } },
+      { pos: { _x: 0.5, _y: 0.5, _z: 0 } } ],
+    shared: { color: null, tag: 296 },
+    plane: { normal: { _x: -0, _y: -0.3826834323650899, _z: -0.9238795325112867 },
+      w: -0.19134171618254614 } }
+
+  t.deepEqual(obs.properties.sphere.center, {_x: 0.5, _y: 0.5, _z: 0.5})
+  t.deepEqual(obs.properties.roundedCube.center, {pos: {_x: 34.5, _y: 10, _z: 1.5}})
+  t.deepEqual(obs.polygons.length, 62)
+  t.deepEqual(obs.polygons[0], expFirstPoly)
+  t.deepEqual(obs.polygons[5], expPoly5)
+})
+
 test('sphere (defaults)', t => {
   const obs = sphere()
   const expFirstPoly = {

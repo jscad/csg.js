@@ -20,7 +20,7 @@ const { translate, scale } = require('./ops-transformations')
  *   fn: 20
  * })
  */
-function cube (params) {
+function cube(params) {
   const defaults = {
     size: 1,
     offset: [0, 0, 0],
@@ -29,25 +29,25 @@ function cube (params) {
     fn: 8
   }
 
-  let {round, radius, fn} = Object.assign({}, defaults, params)
+  let {round, radius, fn, size} = Object.assign({}, defaults, params)
   let offset = [0, 0, 0]
-  let s = 1
   let v = null
   if (params && params.length) v = params
   if (params && params.size && params.size.length) v = params.size // { size: [1,2,3] }
-  if (params && params.size && !params.size.length) s = params.size // { size: 1 }
-  if (params && (typeof params !== 'object')) s = params// (2)
+  if (params && params.size && !params.size.length) size = params.size // { size: 1 }
+  if (params && (typeof params !== 'object')) size = params// (2)
   if (params && params.round === true) {
     round = true
-    radius = v && v.length ? (v[0] + v[1] + v[2]) / 30 : s / 10
+    radius = v && v.length ? (v[0] + v[1] + v[2]) / 30 : size / 10
   }
   if (params && params.radius) {
     round = true
+    radius = params.radius
   }
 
-  let x = s
-  let y = s
-  let z = s
+  let x = size
+  let y = size
+  let z = size
   if (v && v.length) {
     [x, y, z] = v
   }
