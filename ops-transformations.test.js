@@ -2,7 +2,7 @@ const test = require('ava')
 const { sideEquals } = require('./test-helpers')
 const { cube, sphere } = require('./primitives3d')
 const { square, circle } = require('./primitives2d')
-const { translate, rotate, scale, center, mirror, expand, contract, multmatrix, minkowski, hull, chain_hull } = require('./ops-transformations')
+const { translate, rotate, scale, transform, center, mirror, expand, contract, minkowski, hull, chain_hull } = require('./ops-transformations')
 
 // TODO: since cube, sphere etc rely on some of the transformations, we should be creating csg objects 'from scratch' instead
 // of using those since it is not a very good independant test otherwise
@@ -31,7 +31,6 @@ test('translate (multiple items in array, 3d)', t => {
   t.deepEqual(obs.properties.cube.center, {_x: 0.5, _y: 10.5, _z: 0.5})
   t.deepEqual(obs.properties.sphere.center, {_x: 0, _y: 10, _z: 0})
 })
-
 
 test('translate (single item , 2d)', t => {
   const op1 = square()
@@ -124,6 +123,57 @@ test('scale (multiple items, 2d)', t => {
 
   sideEquals(t, obs.sides[0], [[0, 8.049096779838713], [0, 10]])
   sideEquals(t, obs.sides[obs.sides.length - 1], [[0, 0], [0, 0]])
+})
+
+test('transform (single item, translation)', t => {
+  const op1 = cube()
+  // translate by [10, -5, 0]
+  const obs = transform(
+    [1, 0, 0, 0,
+      0, 1, 0, 0,
+      0, 0, 1, 0,
+      10, -5, 0, 1], op1)
+
+  t.deepEqual(obs.properties.cube.center, {_x: 10.5, _y: -4.5, _z: 0.5})
+})
+
+test('transform (multiple items, translation)', t => {
+  const op1 = cube()
+  const op2 = sphere({center: false})
+  const obs = transform(
+    [1, 0, 0, 0,
+      0, 1, 0, 0,
+      0, 0, 1, 0,
+      10, -5, 0, 1], op1, op2)
+
+  t.deepEqual(obs.properties.cube.center, {_x: 10.5, _y: -4.5, _z: 0.5})
+  t.deepEqual(obs.properties.sphere.center, {_x: 11, _y: -4, _z: 1})
+})
+
+test('transform should fail if provided with anything but a flat array of numbers', t => {
+  t.throws(() => {
+    transform(['1', 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 10, -5, 0, 1], cube())
+  }, 'you can only use a flat array of valid, finite numbers (float and integers)')
+
+  t.throws(() => {
+    transform([[0, 0, 0, 0], [ 0, 1, 0, 0], [0, 0, 1, 0], [10, -5, 0, 1]], cube())
+  }, 'you can only use a flat array of valid, finite numbers (float and integers)')
+  /* const obs =
+  t.th
+  t.deepEqual(obs.properties.cube.center, {_x: 10.5, _y: -4.5, _z: 0.5}) */
+})
+
+test('transform (multiple items, 2d , translation)', t => {
+  const op1 = square()
+  const op2 = circle()
+  const obs = transform(
+    [1, 0, 0, 0,
+      0, 1, 0, 0,
+      0, 0, 1, 0,
+      10, -5, 0, 1], op1, op2)
+
+  sideEquals(t, obs.sides[0], [[11.98078528040323, -4.195090322016129], [12, -4]])
+  sideEquals(t, obs.sides[obs.sides.length - 1], [[10, -5], [11, -5]])
 })
 
 test('center (single item)', t => {
@@ -224,23 +274,6 @@ test.failing('contract (multiple items, 2d)', t => {
   // FIXME: these are fake values, but it does not work either way
   t.deepEqual(obs.sides[0], {vertex0: {pos: {_x: 11, _y: 0}}, vertex1: {pos: {_x: 11, _y: 1}}})
   t.deepEqual(obs.sides[obs.sides.length - 1], {vertex0: {pos: {_x: -1.8369701987210296e-15, _y: -10}}, vertex1: {pos: {_x: 0.9999999999999981, _y: -10}}})
-})
-
-// TODO: after this point these are all temp tests, implementation & tests need to be created
-test.failing('multmatrix (single item)', t => {
-  const op1 = cube()
-  const obs = multmatrix([1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1], op1)
-
-  t.deepEqual(obs.properties.cube.center, {_x: 0.5, _y: 10.5, _z: 0.5})
-})
-
-test.failing('multmatrix (multiple items)', t => {
-  const op1 = cube()
-  const op2 = sphere()
-  const obs = multmatrix([1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1], op1, op2)
-
-  t.deepEqual(obs.properties.cube.center, {_x: 0.5, _y: 10.5, _z: 0.5})
-  t.deepEqual(obs.properties.sphere.center, {_x: 0, _y: 10, _z: 0})
 })
 
 test.failing('minkowski (multiple items)', t => {
