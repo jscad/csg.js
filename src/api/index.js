@@ -1,4 +1,4 @@
-// this file contains all api functions for re-exporting
+// this file contains all api functions for re-exporting, NOT FINAL AND NOT even valid js at this stage
 const center = require('./center')
 const solidFromSlices = require('./solidFromSlices')
 // const {translate, rotate, scale, applyMatrix} = require('./ops-transforms')
@@ -13,6 +13,7 @@ const solidFromSlices = require('./solidFromSlices')
 // const color = require('./color)
 // const {rectangle, ellipse, polygon}
 
+// these are all FUNCTIONS, they do not mutate the inputs, but return new ones
 // 2D
 rectangle // encompasses both squares & rectangles since squares are a specific rectangle
 ellipse // encompases both circle & ellipses since circle are a specific ellipse
