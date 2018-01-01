@@ -24,7 +24,6 @@ const fromPoints = function (points, shared, plane) {
     let vertex = new Vertex(vec)
     vertices.push(vertex)
   })
-  console.log('FOOOF', Polygon3)
 
   let polygon
   if (arguments.length < 3) {
