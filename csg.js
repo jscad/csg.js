@@ -200,6 +200,8 @@ CSG.parseOptionAs3DVectorList = optionsParsers.parseOptionAs3DVectorList
 CSG.parseOptionAsBool = optionsParsers.parseOptionAsBool
 CSG.parseOptionAsFloat = optionsParsers.parseOptionAsFloat
 CSG.parseOptionAsInt = optionsParsers.parseOptionAsInt
+// this is needed for now, otherwise there are missing features in Polygon2D
+CSG.Polygon2D.prototype = CAG.prototype
 
 // utilities
 const {isCAG, isCSG} = require('./src/core/utils')
