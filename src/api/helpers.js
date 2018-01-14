@@ -36,7 +36,7 @@ function clamp (value, min, max) {
 
 const cagToPointsArray = input => {
   let points
-  if ('sides' in input) {//this is a cag
+  if ('sides' in input) { // this is a cag
     points = []
     input.sides.forEach(side => {
       points.push([side.vertex0.pos.x, side.vertex0.pos.y])
