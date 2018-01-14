@@ -1,5 +1,5 @@
 const test = require('ava')
-const { squareFn, circleFn, triangle, polygon } = require('./primitives2d')
+const { square, circle, triangle, polygon } = require('./primitives2d-api')
 const { sideEquals, shape2dToNestedArray } = require('./test-helpers')
 
 /* FIXME : not entirely sure how to deal with this, but for now relies on inspecting
@@ -44,7 +44,7 @@ test.failing('triangle (custom size)', t => {
 })
 
 test('square (defaults)', t => {
-  const obs = squareFn()
+  const obs = square()
 
   const expSides = [
     [[0, 1], [0, 0]],
@@ -57,7 +57,7 @@ test('square (defaults)', t => {
 })
 
 test('square (custom size, 2d array parameter)', t => {
-  const obs = squareFn([2, 3])
+  const obs = square([2, 3])
 
   const expSides = [
     [[0, 3], [0, 0]],
@@ -71,7 +71,7 @@ test('square (custom size, 2d array parameter)', t => {
 })
 
 test('square (custom size, size object parameter)', t => {
-  const obs = squareFn({size: [2, 3]})
+  const obs = square({size: [2, 3]})
 
   const expSides = [
     [[0, 3], [0, 0]],
@@ -85,7 +85,7 @@ test('square (custom size, size object parameter)', t => {
 })
 
 test('square (default size, centered)', t => {
-  const obs = squareFn({center: true})
+  const obs = square({center: true})
 
   const expSides = [
     [[-0.5, 0.5], [-0.5, -0.5]],
@@ -99,7 +99,7 @@ test('square (default size, centered)', t => {
 })
 
 test('square (custom size, centered)', t => {
-  const obs = squareFn({size: [2, 3], center: true})
+  const obs = square({size: [2, 3], center: true})
 
   const expSides = [ [ [ -1, 1.5 ], [ -1, -1.5 ] ],
   [ [ -1, -1.5 ], [ 1, -1.5 ] ],
@@ -111,7 +111,7 @@ test('square (custom size, centered)', t => {
 })
 
 test('circle (defaults)', t => {
-  const obs = circleFn()
+  const obs = circle()
 
   // points that make up our circle
   const expected = [ [ 1.9807852804032304, 0.8049096779838713, 2, 1 ],
@@ -224,7 +224,7 @@ test('circle (defaults)', t => {
 })
 
 test('circle (custom radius)', t => {
-  const obs = circleFn(10)
+  const obs = circle(10)
 
   // we just use a sample of points for simplicity
   t.deepEqual(obs.sides.length, 32)
@@ -233,7 +233,7 @@ test('circle (custom radius)', t => {
 })
 
 test('circle (custom radius, object as parameter)', t => {
-  const obs = circleFn({r: 10})
+  const obs = circle({r: 10})
 
   // we just use a sample of points for simplicity
   t.deepEqual(obs.sides.length, 32)
@@ -242,7 +242,7 @@ test('circle (custom radius, object as parameter)', t => {
 })
 
 test('circle (custom radius, custom resolution, object as parameter)', t => {
-  const obs = circleFn({r: 10, fn: 5})
+  const obs = circle({r: 10, fn: 5})
 
   // we just use a sample of points for simplicity
   t.deepEqual(obs.sides.length, 5)
@@ -251,7 +251,7 @@ test('circle (custom radius, custom resolution, object as parameter)', t => {
 })
 
 test('circle (custom radius, custom resolution, centered object as parameter)', t => {
-  const obs = circleFn({center: true, r: 10, fn: 5})
+  const obs = circle({center: true, r: 10, fn: 5})
 
   // we just use a sample of points for simplicity
   t.deepEqual(obs.sides.length, 5)
