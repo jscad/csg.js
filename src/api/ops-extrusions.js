@@ -2,9 +2,12 @@ const {EPS, defaultResolution3D} = require('../core/constants')
 const OrthoNormalBasis = require('../core/math/OrthoNormalBasis')
 const {parseOptionAs3DVector, parseOptionAsBool, parseOptionAsFloat, parseOptionAsInt} = require('./optionParsers')
 const Vector3D = require('../core/math/Vector3')
+const Matrix4 = require('../core/math/Matrix4')
+const Path2D = require('../core/math/Path2')
 const {Connector} = require('../core/connectors')
 const {fromPolygons} = require('../core/CSGFactories')
 const {cagToPointsArray, clamp, rightMultiply1x3VectorToArray, polygonFromPoints} = require('./helpers')
+const {fromPoints} = require('../core/CAGFactories')
 
 /** extrude the CAG in a certain plane.
  * Giving just a plane is not enough, multiple different extrusions in the same plane would be possible
@@ -262,8 +265,8 @@ function rotate_extrude (params, baseShape) {
       const nextPoint = shapePoints[j + 1]
 
       // compute matrix for current and next segment angle
-      let prevMatrix = CSG.Matrix4x4.rotationZ((i - 1) / segments * angle + startAngle)
-      let curMatrix = CSG.Matrix4x4.rotationZ(i / segments * angle + startAngle)
+      let prevMatrix = Matrix4.rotationZ((i - 1) / segments * angle + startAngle)
+      let curMatrix = Matrix4.rotationZ(i / segments * angle + startAngle)
 
       const pointA = rightMultiply1x3VectorToArray(prevMatrix, [curPoint[0], 0, curPoint[1]])
       const pointAP = rightMultiply1x3VectorToArray(curMatrix, [curPoint[0], 0, curPoint[1]])
@@ -300,22 +303,22 @@ function rotate_extrude (params, baseShape) {
     // if we do not do a full extrusion, we want caps at both ends (closed volume)
     if (Math.abs(angle) < 360) {
       // we need to recreate the side with capped points where applicable
-      const sideShape = CAG.fromPoints(shapePoints)
-      const endMatrix = CSG.Matrix4x4.rotationX(90).multiply(
-        CSG.Matrix4x4.rotationZ(-startAngle)
+      const sideShape = fromPoints(shapePoints)
+      const endMatrix = Matrix4.rotationX(90).multiply(
+        Matrix4.rotationZ(-startAngle)
       )
       const endCap = sideShape._toPlanePolygons({flipped: flipped})
         .map(x => x.transform(endMatrix))
 
-      const startMatrix = CSG.Matrix4x4.rotationX(90).multiply(
-        CSG.Matrix4x4.rotationZ(-angle - startAngle)
+      const startMatrix = Matrix4.rotationX(90).multiply(
+        Matrix4.rotationZ(-angle - startAngle)
       )
       const startCap = sideShape._toPlanePolygons({flipped: !flipped})
         .map(x => x.transform(startMatrix))
       polygons = polygons.concat(endCap).concat(startCap)
     }
   }
-  return CSG.fromPolygons(polygons).reTesselated().canonicalized()
+  return fromPolygons(polygons).reTesselated().canonicalized()
 }
 
 /** rectangular extrusion of the given array of points
@@ -341,7 +344,7 @@ function rectangular_extrude (basePoints, params) {
     round: true
   }
   const {w, h, fn, closed, round} = Object.assign({}, defaults, params)
-  return new CSG.Path2D(basePoints, closed).rectangularExtrude(w, h, fn, round)
+  return new Path2D(basePoints, closed).rectangularExtrude(w, h, fn, round)
 }
 
 module.exports = {

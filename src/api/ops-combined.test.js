@@ -1,6 +1,6 @@
 const test = require('ava')
-const { cube, torus } = require('./primitives3d')
-const { circle } = require('./primitives2d')
+const { cube, torus } = require('./primitives3d-api')
+const { circle } = require('./primitives2d-api')
 const { linear_extrude } = require('./ops-extrusions')
 const { union, intersection } = require('./ops-booleans')
 

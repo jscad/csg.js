@@ -2,7 +2,8 @@ const Matrix4 = require('../core/math/Matrix4')
 const Plane = require('../core/math/Plane')
 const Vector3 = require('../core/math/Vector3')
 const { union } = require('./ops-booleans')
-
+const { fromPoints } = require('../core/CAGFactories')
+const { isCAG } = require('../core/utils')
 // -- 3D transformations (OpenSCAD like notion)
 
 /** translate an object in 2D/3D space
@@ -209,7 +210,7 @@ function hull () {
 
   for (let i = 0; i < a.length; i++) {              // extract all points of the CAG in the argument list
     let cag = a[i]
-    if (!(cag instanceof CAG)) {
+    if (!isCAG(cag)) {
       throw new Error('ERROR: hull() accepts only 2D forms / CAG')
     }
     for (let j = 0; j < cag.sides.length; j++) {
@@ -361,7 +362,7 @@ function hull () {
     for (let i = 0; i < indices.length; i++) {
       ch.push(pts[indices[i]])
     }
-    return CAG.fromPoints(ch)
+    return fromPoints(ch)
   }
 }
 
