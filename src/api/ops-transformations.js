@@ -1,5 +1,8 @@
-const { CSG, CAG } = require('@jscad/csg')
+const Matrix4 = require('../core/math/Matrix4')
+const Plane = require('../core/math/Plane')
+const Vector3 = require('../core/math/Vector3')
 const { union } = require('./ops-booleans')
+
 // -- 3D transformations (OpenSCAD like notion)
 
 /** translate an object in 2D/3D space
@@ -110,7 +113,7 @@ function transform (matrix, ...objects) { // v, obj or array
       throw new Error('you can only use a flat array of valid, finite numbers (float and integers)')
     }
   })
-  transformationMatrix = new CSG.Matrix4x4(matrix)
+  transformationMatrix = new Matrix4(matrix)
   return object.transform(transformationMatrix)
 }
 
@@ -151,7 +154,7 @@ function mirror (vector, ...objects) {
       object = object.union(_objects[i])
     }
   }
-  const plane = new CSG.Plane(new CSG.Vector3D(vector[0], vector[1], vector[2]).unit(), 0)
+  const plane = new Plane(new Vector3(vector[0], vector[1], vector[2]).unit(), 0)
   return object.mirrored(plane)
 }
 

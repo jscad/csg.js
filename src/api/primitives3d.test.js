@@ -1,12 +1,12 @@
 const test = require('ava')
-const { cube, sphere, geodesicSphere, cylinder, torus, polyhedron } = require('./primitives3d')
+const { cubeFn, sphereFn, geodesicSphere, cylinderFn, torus, polyhedron } = require('./primitives3d')
 const { simplifiedPolygon, comparePolygons } = require('./test-helpers.js')
 
 /* FIXME : not entirely sure how to deal with this, but for now relies on inspecting
 output data structures: we should have higher level primitives ... */
 
 test('cube (defaults)', t => {
-  const obs = cube()
+  const obs = cubeFn()
   const expFirstPoly = {
     vertices: [ { pos: { _x: 0, _y: 0, _z: 0 } },
       { pos: { _x: 0, _y: 0, _z: 1 } },
@@ -30,7 +30,7 @@ test('cube (defaults)', t => {
 })
 
 test('cube (custom size, single parameter)', t => {
-  const obs = cube(2)
+  const obs = cubeFn(2)
   const expFirstPoly = {
     vertices: [ { pos: { _x: 0, _y: 0, _z: 0 } },
       { pos: { _x: 0, _y: 0, _z: 2 } },
@@ -54,7 +54,7 @@ test('cube (custom size, single parameter)', t => {
 })
 
 test('cube (custom size, single value, object parameter)', t => {
-  const obs = cube({size: 2})
+  const obs = cubeFn({size: 2})
   const expFirstPoly = {
     vertices: [ { pos: { _x: 0, _y: 0, _z: 0 } },
       { pos: { _x: 0, _y: 0, _z: 2 } },
@@ -78,7 +78,7 @@ test('cube (custom size, single value, object parameter)', t => {
 })
 
 test('cube (custom size, array value, object parameter)', t => {
-  const obs = cube({size: [2, 1, 3]})
+  const obs = cubeFn({size: [2, 1, 3]})
   const expFirstPoly = {
     vertices: [ { pos: { _x: 0, _y: 0, _z: 0 } },
       { pos: { _x: 0, _y: 0, _z: 3 } },
@@ -102,7 +102,7 @@ test('cube (custom size, array value, object parameter)', t => {
 })
 
 test('cube (standard size, custom center(booleans), object parameter)', t => {
-  const obs = cube({size: 1, center: [false, true, false]})
+  const obs = cubeFn({size: 1, center: [false, true, false]})
   const expFirstPoly = {
     vertices: [ { pos: { _x: 0, _y: -0.5, _z: 0 } },
       { pos: { _x: 0, _y: -0.5, _z: 1 } },
@@ -126,7 +126,7 @@ test('cube (standard size, custom center(booleans), object parameter)', t => {
 })
 
 test('cube (standard size, rounded)', t => {
-  const obs = cube({round: true})
+  const obs = cubeFn({round: true})
   const expFirstPoly = {
     vertices: [ { pos: { _x: 0.09999999999999998, _y: 0, _z: 0.09999999999999998 } },
       { pos: { _x: 0.029289321881345254,
@@ -165,7 +165,7 @@ test('cube (standard size, rounded)', t => {
 })
 
 test('cube (custom size, rounded)', t => {
-  const obs = cube({size: [69, 20, 3], round: true, radius: 0.5})
+  const obs = cubeFn({size: [69, 20, 3], round: true, radius: 0.5})
 
   const expFirstPoly = {
     vertices: [ { pos: { _x: 0.5, _y: 0, _z: 0.5 } },
@@ -205,7 +205,7 @@ test('cube (custom size, rounded)', t => {
 })
 
 test('sphere (defaults)', t => {
-  const obs = sphere()
+  const obs = sphereFn()
   const expFirstPoly = {
     vertices: [ { pos: { _x: 1, _y: 0, _z: 0 } },
       { pos: { _x: 0.9807852804032304, _y: -0.19509032201612825, _z: 0 } },
@@ -230,7 +230,7 @@ test('sphere (defaults)', t => {
 })
 
 test('sphere (geodesic)', t => {
-  const obs = sphere({type: 'geodesic'})
+  const obs = sphereFn({type: 'geodesic'})
   const expFirstPoly = {
     vertices: [
       { pos: { _x: 0.9376113117392494, _y: 0, _z: -0.3476852428542286 } },
@@ -254,7 +254,7 @@ test('sphere (geodesic)', t => {
 })
 
 test('sphere (custom radius , resolution, center)', t => {
-  const obs = sphere({r: 2, fn: 10, center: [true, true, false]})
+  const obs = sphereFn({r: 2, fn: 10, center: [true, true, false]})
   const expFirstPoly = {
     vertices: [ { pos: { _x: 2, _y: 0, _z: 2 } },
       { pos: { _x: 1.618033988749895, _y: -1.1755705045849463, _z: 2 } },
@@ -282,7 +282,7 @@ test('sphere (custom radius , resolution, center)', t => {
 })
 
 test('cylinder (defaults)', t => {
-  const obs = cylinder()
+  const obs = cylinderFn()
   const expFirstPoly = {
     vertices: [ { pos: { _x: 0, _y: 0, _z: 0 } },
       { pos: { _x: 1, _y: 0, _z: 0 } },
@@ -304,7 +304,7 @@ test('cylinder (defaults)', t => {
 })
 
 test('cylinder (defaults)', t => {
-  const obs = cylinder()
+  const obs = cylinderFn()
   const expFirstPoly = {
     vertices: [ { pos: { _x: 0, _y: 0, _z: 0 } },
       { pos: { _x: 1, _y: 0, _z: 0 } },
@@ -326,7 +326,7 @@ test('cylinder (defaults)', t => {
 })
 
 test('cylinder (custom radius, height, center, resolution)', t => {
-  const obs = cylinder({r: 2, h: 10, center: [true, true, false], fn: 10})
+  const obs = cylinderFn({r: 2, h: 10, center: [true, true, false], fn: 10})
   const expFirstPoly = {
     vertices: [ { pos: { _x: 0, _y: 0, _z: 0 } },
       { pos: { _x: 2, _y: 0, _z: 0 } },
@@ -348,7 +348,7 @@ test('cylinder (custom radius, height, center, resolution)', t => {
 })
 
 test('cylinder (custom double radius, rounded)', t => {
-  const obs = cylinder({r1: 2, r2: 3, round: true})
+  const obs = cylinderFn({r1: 2, r2: 3, round: true})
   const expFirstPoly = {
     vertices: [ { pos: { _x: 0.19509032201612825, _y: 0.9807852804032304, _z: 0 } },
       { pos: { _x: 0, _y: 1, _z: 0 } },
@@ -373,7 +373,7 @@ test('cylinder (custom double radius, rounded)', t => {
 })
 
 test('cylinder (custom double diameter, rounded)', t => {
-  const obs = cylinder({d1: 1, d2: 1.5, round: true})
+  const obs = cylinderFn({d1: 1, d2: 1.5, round: true})
   const expFirstPoly = {
     vertices: [ { pos: { _x: 0.19509032201612825, _y: 0.9807852804032304, _z: 0 } },
       { pos: { _x: 0, _y: 1, _z: 0 } },
@@ -398,7 +398,7 @@ test('cylinder (custom double diameter, rounded)', t => {
 })
 
 test('cylinder (custom double diameter, rounded, start, end)', t => {
-  const obs = cylinder({d1: 1, d2: 1.5, round: true, start: [0, 0, 0], end: [0, 0, 10]})
+  const obs = cylinderFn({d1: 1, d2: 1.5, round: true, start: [0, 0, 0], end: [0, 0, 10]})
   const expFirstPoly = {
     vertices: [ { pos: { _x: 0.19509032201612825, _y: 0.9807852804032304, _z: 0 } },
       { pos: { _x: 0, _y: 1, _z: 0 } },

@@ -1,6 +1,6 @@
 const test = require('ava')
-const { cube, sphere, cylinder } = require('./primitives3d')
-const { square, circle } = require('./primitives2d')
+const { cubeFn, sphereFn, cylinderFn } = require('./primitives3d')
+const { square, circleFn } = require('./primitives2d')
 const { color, rgb2hsl, hsl2rgb, rgb2hsv, hsv2rgb, html2rgb, rgb2html, css2rgb } = require('./color')
 
 test('css2rgb', t => {
@@ -58,7 +58,7 @@ test('rgb2html', t => {
 })
 
 test('color (rgb, on 3d objects)', t => {
-  const obs = color([1, 0, 0], cube(), sphere())
+  const obs = color([1, 0, 0], cubeFn(), sphereFn())
   const expColor = { color: [ 1, 0, 0, 1 ] }
 
   t.deepEqual(obs.polygons[0].shared, expColor)
@@ -66,7 +66,7 @@ test('color (rgb, on 3d objects)', t => {
 })
 
 test.failing('color (rgb, on 2d objects)', t => {
-  const obs = color([1, 0, 0], square(), circle())
+  const obs = color([1, 0, 0], square(), circleFn())
   const expColor = { color: [ 1, 0, 0, 1 ] }
 
   t.deepEqual(obs.sides[0].shared, expColor)
@@ -74,7 +74,7 @@ test.failing('color (rgb, on 2d objects)', t => {
 })
 
 test('color (rgba, on 3d objects)', t => {
-  const obs = color([1, 0, 0, 0.5], cube(), sphere())
+  const obs = color([1, 0, 0, 0.5], cubeFn(), sphereFn())
   const expColor = { color: [ 1, 0, 0, 0.5 ] }
 
   t.deepEqual(obs.polygons[0].shared, expColor)
@@ -82,7 +82,7 @@ test('color (rgba, on 3d objects)', t => {
 })
 
 test.failing('color (rgba, on 2d objects)', t => {
-  const obs = color([1, 0, 0, 0.5], square(), circle())
+  const obs = color([1, 0, 0, 0.5], square(), circleFn())
   const expColor = { color: [ 1, 0, 0, 0.5 ] }
 
   t.deepEqual(obs.sides[0].shared, expColor)
@@ -90,7 +90,7 @@ test.failing('color (rgba, on 2d objects)', t => {
 })
 
 test('color (rgba, on array of 3D objects)', t => {
-  const obs = color([1, 0, 0, 0.5], [cube(), sphere()])
+  const obs = color([1, 0, 0, 0.5], [cubeFn(), sphereFn()])
   const expColor = { color: [ 1, 0, 0, 0.5 ] }
 
   t.deepEqual(obs.polygons[0].shared, expColor)
@@ -98,7 +98,7 @@ test('color (rgba, on array of 3D objects)', t => {
 })
 
 test.failing('color (rgba, on array of 2d objects)', t => {
-  const obs = color([1, 0, 0, 0.5], [square(), circle()])
+  const obs = color([1, 0, 0, 0.5], [square(), circleFn()])
   const expColor = { color: [ 1, 0, 0, 0.5 ] }
 
   t.deepEqual(obs.sides[0].shared, expColor)
@@ -106,19 +106,19 @@ test.failing('color (rgba, on array of 2d objects)', t => {
 })
 
 test('color (by name, on 3d objects)', t => {
-  var obs = color('red', cube())
+  var obs = color('red', cubeFn())
   var expColor = { color: [ 1, 0, 0, 1 ] }
 
   t.deepEqual(obs.polygons[0].shared, expColor)
   t.deepEqual(obs.polygons[obs.polygons.length - 1].shared, expColor)
 
-  obs = color('green', cube(), sphere())
+  obs = color('green', cubeFn(), sphereFn())
   expColor = { color: [ 0, 128 / 255, 0, 1 ] }
 
   t.deepEqual(obs.polygons[0].shared, expColor)
   t.deepEqual(obs.polygons[obs.polygons.length - 1].shared, expColor)
 
-  obs = color('blue', cube(), sphere(), cylinder())
+  obs = color('blue', cubeFn(), sphereFn(), cylinderFn())
   expColor = { color: [ 0, 0, 1, 1 ] }
 
   t.deepEqual(obs.polygons[0].shared, expColor)
@@ -126,7 +126,7 @@ test('color (by name, on 3d objects)', t => {
 })
 
 test.failing('color (by name, on 2d objects)', t => {
-  const obs = color('red', square(), circle())
+  const obs = color('red', square(), circleFn())
   const expColor = { color: [ 1, 0, 0, 1 ] }
 
   t.deepEqual(obs.sides[0].shared, expColor)
@@ -134,19 +134,19 @@ test.failing('color (by name, on 2d objects)', t => {
 })
 
 test('color (by name and alpha, on 3d objects)', t => {
-  var obs = color('red', 0.5, cube())
+  var obs = color('red', 0.5, cubeFn())
   var expColor = { color: [ 1, 0, 0, 0.5 ] }
 
   t.deepEqual(obs.polygons[0].shared, expColor)
   t.deepEqual(obs.polygons[obs.polygons.length - 1].shared, expColor)
 
-  obs = color('green', 0.8, cube(), sphere())
+  obs = color('green', 0.8, cubeFn(), sphereFn())
   expColor = { color: [ 0, 128 / 255, 0, 0.8 ] }
 
   t.deepEqual(obs.polygons[0].shared, expColor)
   t.deepEqual(obs.polygons[obs.polygons.length - 1].shared, expColor)
 
-  obs = color('blue', 0.2, cube(), sphere(), cylinder())
+  obs = color('blue', 0.2, cubeFn(), sphereFn(), cylinderFn())
   expColor = { color: [ 0, 0, 1, 0.2 ] }
 
   t.deepEqual(obs.polygons[0].shared, expColor)
@@ -154,7 +154,7 @@ test('color (by name and alpha, on 3d objects)', t => {
 })
 
 test.failing('color (by name and alpha, on 2d objects)', t => {
-  const obs = color('red', 0.1, square(), circle())
+  const obs = color('red', 0.1, square(), circleFn())
   const expColor = { color: [ 1, 0, 0, 0.5 ] }
 
   t.deepEqual(obs.sides[0].shared, expColor)
@@ -162,7 +162,7 @@ test.failing('color (by name and alpha, on 2d objects)', t => {
 })
 
 test('color (by name and alpha, on array of 3d objects)', t => {
-  const obs = color('red', 0.7, [cube(), sphere()])
+  const obs = color('red', 0.7, [cubeFn(), sphereFn()])
   const expColor = { color: [ 1, 0, 0, 0.7 ] }
 
   t.deepEqual(obs.polygons[0].shared, expColor)
@@ -170,7 +170,7 @@ test('color (by name and alpha, on array of 3d objects)', t => {
 })
 
 test.failing('color (by name and alpha, on array of 2d objects)', t => {
-  const obs = color('red', 0.5, [square(), circle()])
+  const obs = color('red', 0.5, [square(), circleFn()])
   const expColor = { color: [ 1, 0, 0, 0.5 ] }
 
   t.deepEqual(obs.sides[0].shared, expColor)

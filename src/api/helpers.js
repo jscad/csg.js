@@ -1,14 +1,16 @@
-const { CSG } = require('@jscad/csg')
+const Vertex3 = require('../core/math/Vertex3')
+const Vector3 = require('../core/math/Vector3')
+const Polygon3 = require('../core/math/Polygon3')
 
 // FIXME: this is to have more readable/less extremely verbose code below
 const vertexFromVectorArray = array => {
-  return new CSG.Vertex(new CSG.Vector3D(array))
+  return new Vertex3(new Vector3(array))
 }
 
 const polygonFromPoints = points => {
   // EEK talk about wrapping wrappers !
-  const vertices = points.map(point => new CSG.Vertex(new CSG.Vector3D(point)))
-  return new CSG.Polygon(vertices)
+  const vertices = points.map(point => new Vertex3(new Vector3(point)))
+  return new Polygon3(vertices)
 }
 
 // Simplified, array vector rightMultiply1x3Vector
