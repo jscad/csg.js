@@ -101,7 +101,7 @@ const extrude = function (cag, options) {
   return fromPolygons(polygons)
 }
 
-// THIS IS AN OLD untested version of rotate extrude
+// THIS IS AN OLD untested !!! version of rotate extrude
 /** Extrude to into a 3D solid by rotating the origin around the Y axis.
  * (and turning everything into XY plane)
  * @param {Object} options - options for construction
@@ -109,7 +109,6 @@ const extrude = function (cag, options) {
  * @param {Number} [options.resolution=defaultResolution3D] - number of polygons per 360 degree revolution
  * @returns {CSG} new 3D solid
  */
-/*
 const rotateExtrude = function (cag, options) { // FIXME options should be optional
   let alpha = parseOptionAsFloat(options, 'angle', 360)
   let resolution = parseOptionAsInt(options, 'resolution', defaultResolution3D)
@@ -140,7 +139,7 @@ const rotateExtrude = function (cag, options) { // FIXME options should be optio
     connT1 = connT2
   }
   return fromPolygons(polygons).reTesselated()
-} */
+}
 
 // FIXME: right now linear & rotate extrude take params first, while rectangular_extrude
 // takes params second ! confusing and incoherent ! needs to be changed (BREAKING CHANGE !)
@@ -353,6 +352,6 @@ module.exports = {
   extrude,
   linear_extrude,
   rotate_extrude,
+  rotateExtrude,
   rectangular_extrude
-  // rotateExtrude,
 }
