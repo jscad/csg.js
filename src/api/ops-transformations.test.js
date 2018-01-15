@@ -225,7 +225,7 @@ test('expand (single item)', t => {
   const op1 = cube()
   const obs = expand(10, 5, op1)
 
-  t.deepEqual(obs.polygons[0].vertices[0], {pos: {_x: -10, _y: 0, _z: 0}})
+  t.deepEqual(obs.polygons[0].vertices[0], {pos: {_x: -10, _y: 0, _z: 0}, tag: 25909})
 })
 
 test.failing('expand (multiple items)', t => {

@@ -1,6 +1,6 @@
 
-const primitives3d = require('./primitives3d')
-const primitives2d = require('./primitives2d')
+const primitives3d = require('./primitives3d-api')
+const primitives2d = require('./primitives2d-api')
 const booleanOps = require('./ops-booleans')
 const transformations = require('./ops-transformations')
 const extrusions = require('./ops-extrusions')
