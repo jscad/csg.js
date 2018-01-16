@@ -1,4 +1,5 @@
 function log (txt) {
+  console.warn('log() will be deprecated in the near future: please use console.log/warn/error instead')
   var timeInMs = Date.now()
   var prevtime// OpenJsCad.log.prevLogTime
   if (!prevtime) prevtime = timeInMs
