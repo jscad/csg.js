@@ -1,12 +1,11 @@
 import test from 'ava'
-import {CSG} from '../csg'
 import {CAG} from '../csg'
 
 //
 // Test suite for CAG Conversions
 //
 
-test.failing('CAG should convert to and from binary', t => {
+test('CAG should convert to and from binary', t => {
   // test using simple default shapes
   // In the current form this test cannot be working, something comparing
   // sides one by one should be written as objects differs
