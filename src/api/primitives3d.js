@@ -195,7 +195,7 @@ const cylinder = function (options) {
     throw new Error('Either radiusStart or radiusEnd should be positive')
   }
 
-  let slices = parseOptionAsInt(options, 'resolution', defaultResolution2D) // FIXME is this 3D?
+  let slices = parseOptionAsInt(options, 'resolution', defaultResolution3D)
   let ray = e.minus(s)
   let axisZ = ray.unit() //, isY = (Math.abs(axisZ.y) > 0.5);
   let axisX = axisZ.randomNonParallelVector().unit()
@@ -216,20 +216,11 @@ const cylinder = function (options) {
     for (let i = 0; i < slices; i++) {
       let t0 = i / slices
       let t1 = (i + 1) / slices
-      if (rEnd === rStart) {
-        polygons.push(new Polygon3([start, point(0, t0, rEnd), point(0, t1, rEnd)]))
-        polygons.push(new Polygon3([point(0, t1, rEnd), point(0, t0, rEnd), point(1, t0, rEnd), point(1, t1, rEnd)]))
-        polygons.push(new Polygon3([end, point(1, t1, rEnd), point(1, t0, rEnd)]))
-      } else {
-        if (rStart > 0) {
-          polygons.push(new Polygon3([start, point(0, t0, rStart), point(0, t1, rStart)]))
-          polygons.push(new Polygon3([point(0, t0, rStart), point(1, t0, rEnd), point(0, t1, rStart)]))
-        }
-        if (rEnd > 0) {
-          polygons.push(new Polygon3([end, point(1, t1, rEnd), point(1, t0, rEnd)]))
-          polygons.push(new Polygon3([point(1, t0, rEnd), point(1, t1, rEnd), point(0, t1, rStart)]))
-        }
-      }
+
+      polygons.push(new Polygon3([point(0, t0, rStart), point(1, t0, rEnd), point(0, t1, rStart)]))
+      polygons.push(new Polygon3([point(1, t0, rEnd), point(1, t1, rEnd), point(0, t1, rStart)]))
+      polygons.push(new Polygon3([start, point(0, t0, rStart), point(0, t1, rStart)]))
+      polygons.push(new Polygon3([end, point(1, t1, rEnd), point(1, t0, rEnd)]))
     }
     if (alpha < 360) {
       polygons.push(new Polygon3([start, end, point(0, 0, rStart)]))
