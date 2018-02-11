@@ -284,21 +284,21 @@ test('sphere (custom radius , resolution, center)', t => {
 test('cylinder (defaults)', t => {
   const obs = cylinder()
   const expFirstPoly = {
-    vertices: [ { pos: { _x: 0, _y: 0, _z: 0 } },
-      { pos: { _x: 1, _y: 0, _z: 0 } },
+    vertices: [ { pos: { _x: 1, _y: 0, _z: 0 } },
+      { pos: { _x: 1, _y: 0, _z: 1 } },
       { pos: { _x: 0.9807852804032304, _y: -0.19509032201612825, _z: 0 } } ],
     shared: { color: null, tag: 296 },
-    plane: { normal: { _x: 0, _y: 0, _z: -1 }, w: 0 } }
+    plane: { normal: { _x: 0.9951847266721969, _y: -0.09801714032956071, _z: 0 }, w: 0.9951847266721969 } }
 
   const expPoly95 = { vertices: [ { pos: { _x: 0, _y: 0, _z: 1 } },
-      { pos: { _x: 1, _y: 2.4492935982947064e-16, _z: 1 } },
-      { pos: { _x: 0.9807852804032303, _y: 0.19509032201612872, _z: 1 } } ],
+      { pos: { _x: -1.8369701987210297e-16, _y: 1, _z: 1 } },
+      { pos: { _x: -0.19509032201612866, _y: 0.9807852804032303, _z: 1 } } ],
     shared: { color: null, tag: 296 },
     plane: { normal: { _x: 0, _y: 0, _z: 1 }, w: 1 } }
 
   t.deepEqual(obs.properties.cylinder.start, {point: {_x: 0, _y: 0, _z: 0}, axisvector: {_x: -0, _y: -0, _z: -1}, normalvector: {_x: 1, _y: 0, _z: 0}})
   t.deepEqual(obs.properties.cylinder.end, {point: {_x: 0, _y: 0, _z: 1}, axisvector: {_x: 0, _y: 0, _z: 1}, normalvector: {_x: 1, _y: 0, _z: 0}})
-  t.deepEqual(obs.polygons.length, 96)
+  t.deepEqual(obs.polygons.length, 128)
   t.deepEqual(obs.polygons[0], expFirstPoly)
   t.deepEqual(obs.polygons[95], expPoly95)
 })
@@ -306,21 +306,21 @@ test('cylinder (defaults)', t => {
 test('cylinder (defaults)', t => {
   const obs = cylinder()
   const expFirstPoly = {
-    vertices: [ { pos: { _x: 0, _y: 0, _z: 0 } },
-      { pos: { _x: 1, _y: 0, _z: 0 } },
+    vertices: [ { pos: { _x: 1, _y: 0, _z: 0 } },
+      { pos: { _x: 1, _y: 0, _z: 1 } },
       { pos: { _x: 0.9807852804032304, _y: -0.19509032201612825, _z: 0 } } ],
     shared: { color: null, tag: 296 },
-    plane: { normal: { _x: 0, _y: 0, _z: -1 }, w: 0 } }
+    plane: { normal: { _x: 0.9951847266721969, _y: -0.09801714032956071, _z: 0 }, w: 0.9951847266721969 } }
 
   const expPoly95 = { vertices: [ { pos: { _x: 0, _y: 0, _z: 1 } },
-      { pos: { _x: 1, _y: 2.4492935982947064e-16, _z: 1 } },
-      { pos: { _x: 0.9807852804032303, _y: 0.19509032201612872, _z: 1 } } ],
+      { pos: { _x: -1.8369701987210297e-16, _y: 1, _z: 1 } },
+      { pos: { _x: -0.19509032201612866, _y: 0.9807852804032303, _z: 1 } } ],
     shared: { color: null, tag: 296 },
     plane: { normal: { _x: 0, _y: 0, _z: 1 }, w: 1 } }
 
   t.deepEqual(obs.properties.cylinder.start, {point: {_x: 0, _y: 0, _z: 0}, axisvector: {_x: -0, _y: -0, _z: -1}, normalvector: {_x: 1, _y: 0, _z: 0}})
   t.deepEqual(obs.properties.cylinder.end, {point: {_x: 0, _y: 0, _z: 1}, axisvector: {_x: 0, _y: 0, _z: 1}, normalvector: {_x: 1, _y: 0, _z: 0}})
-  t.deepEqual(obs.polygons.length, 96)
+  t.deepEqual(obs.polygons.length, 128)
   t.deepEqual(obs.polygons[0], expFirstPoly)
   t.deepEqual(obs.polygons[95], expPoly95)
 })
@@ -328,13 +328,13 @@ test('cylinder (defaults)', t => {
 test('cylinder (custom radius, height, center, resolution)', t => {
   const obs = cylinder({r: 2, h: 10, center: [true, true, false], fn: 10})
   const expFirstPoly = {
-    vertices: [ { pos: { _x: 0, _y: 0, _z: 0 } },
-      { pos: { _x: 2, _y: 0, _z: 0 } },
+    vertices: [ { pos: { _x: 2, _y: 0, _z: 0 } },
+      { pos: { _x: 2, _y: 0, _z: 10 } },
       { pos: { _x: 1.618033988749895, _y: -1.1755705045849463, _z: 0 } } ],
     shared: { color: null, tag: 296 },
-    plane: { normal: { _x: 0, _y: 0, _z: -1 }, w: 0 } }
+    plane: { normal: { _x: 0.9510565162951535, _y: -0.30901699437494734, _z: 0 }, w: 1.902113032590307 } }
 
-  const expPoly29 = { vertices: [ { pos: { _x: 0, _y: 0, _z: 10 } },
+  const expPoly39 = { vertices: [ { pos: { _x: 0, _y: 0, _z: 10 } },
       { pos: { _x: 2, _y: 4.898587196589413e-16, _z: 10 } },
       { pos: { _x: 1.6180339887498945, _y: 1.1755705045849467, _z: 10 } } ],
     shared: { color: null, tag: 296 },
@@ -342,9 +342,9 @@ test('cylinder (custom radius, height, center, resolution)', t => {
 
   t.deepEqual(obs.properties.cylinder.start, {point: {_x: 0, _y: 0, _z: 0}, axisvector: {_x: -0, _y: -0, _z: -1}, normalvector: {_x: 1, _y: 0, _z: 0}})
   t.deepEqual(obs.properties.cylinder.end, {point: {_x: 0, _y: 0, _z: 10}, axisvector: {_x: 0, _y: 0, _z: 1}, normalvector: {_x: 1, _y: 0, _z: 0}})
-  t.deepEqual(obs.polygons.length, 30)
+  t.deepEqual(obs.polygons.length, 40)
   t.is(comparePolygons(obs.polygons[0], expFirstPoly, 0.000001), true)
-  t.is(comparePolygons(obs.polygons[29], expPoly29, 0.000001), true)
+  t.is(comparePolygons(obs.polygons[39], expPoly39, 0.000001), true)
 })
 
 test('cylinder (custom double radius, rounded)', t => {

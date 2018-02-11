@@ -41,7 +41,7 @@ test('CSG.cylinder creates a cylinder', t => {
   isValid(t, 'cy1', CSG.cylinder(/* start:[0,-1,0],end:[0,1,0],radius:1,resolution:CSG.defaultResolution2D,sectorAngle:360 */))
   isValid(t, 'cy2', CSG.cylinder({start: [-5, -5, -5], end: [5, 5, 5], radius: 5}))
   isValid(t, 'cy3', CSG.cylinder({radiusStart: 10, radiusEnd: 5, resolution: 36}))
-  isValid(t, 'cy4', CSG.cylinder({start: [0, 0, -50], end: [0, 0, 50], radius: 10, sectorAngle: 360}))
+  isValid(t, 'cy4', CSG.cylinder({start: [0, 0, -50], end: [0, 0, 50], radius: 10, sectorAngle: 180}))
 })
 
 test('CSG should produce proper rounded cylinders', t => {
