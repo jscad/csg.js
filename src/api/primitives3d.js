@@ -373,7 +373,7 @@ const cylinderElliptic = function (options) {
     throw new Error('Either radiusStart or radiusEnd should be positive')
   }
 
-  let slices = parseOptionAsInt(options, 'resolution', defaultResolution2D) // FIXME is this correct?
+  let slices = parseOptionAsInt(options, 'resolution', defaultResolution3D)
   let ray = e.minus(s)
   let axisZ = ray.unit() //, isY = (Math.abs(axisZ.y) > 0.5);
   let axisX = axisZ.randomNonParallelVector().unit()
@@ -394,20 +394,10 @@ const cylinderElliptic = function (options) {
     let t0 = i / slices
     let t1 = (i + 1) / slices
 
-    if (rEnd._x === rStart._x && rEnd._y === rStart._y) {
-      polygons.push(new Polygon3([start, point(0, t0, rEnd), point(0, t1, rEnd)]))
-      polygons.push(new Polygon3([point(0, t1, rEnd), point(0, t0, rEnd), point(1, t0, rEnd), point(1, t1, rEnd)]))
-      polygons.push(new Polygon3([end, point(1, t1, rEnd), point(1, t0, rEnd)]))
-    } else {
-      if (rStart._x > 0) {
-        polygons.push(new Polygon3([start, point(0, t0, rStart), point(0, t1, rStart)]))
-        polygons.push(new Polygon3([point(0, t0, rStart), point(1, t0, rEnd), point(0, t1, rStart)]))
-      }
-      if (rEnd._x > 0) {
-        polygons.push(new Polygon3([end, point(1, t1, rEnd), point(1, t0, rEnd)]))
-        polygons.push(new Polygon3([point(1, t0, rEnd), point(1, t1, rEnd), point(0, t1, rStart)]))
-      }
-    }
+    polygons.push(new Polygon([point(0, t0, rStart), point(1, t0, rEnd), point(0, t1, rStart)]))
+    polygons.push(new Polygon([point(1, t0, rEnd), point(1, t1, rEnd), point(0, t1, rStart)]))
+    polygons.push(new Polygon([start, point(0, t0, rStart), point(0, t1, rStart)]))
+    polygons.push(new Polygon([end, point(1, t1, rEnd), point(1, t0, rEnd)]))
   }
   let result = fromPolygons(polygons)
   result.properties.cylinder = new Properties()
