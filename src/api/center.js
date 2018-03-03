@@ -5,7 +5,7 @@ const toArray = require('../core/utils/toArray')
  * @param {Object|Array} object(s) the shapes to center
  * @param {Object} options
  */
-const center = function (objects, options) {
+const centerV2 = function (objects, options) {
   const defaults = {
     axes: [1, 1, 1]
   }
@@ -25,4 +25,4 @@ const center = function (objects, options) {
   return results.length === 1 ? results[0] : results
 }
 
-module.exports = center
+module.exports = centerV2
