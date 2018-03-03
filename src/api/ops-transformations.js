@@ -135,6 +135,9 @@ function center (axis, ...objects) { // v, obj or array
       object = object.union(_objects[i])
     }
   }
+  if (axis.constructor !== Array) {
+    axis = [axis,axis,axis]
+  }
   return object.center(axis)
 }
 
