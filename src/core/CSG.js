@@ -270,7 +270,7 @@ CSG.prototype = {
 
   // ALIAS !
   center: function (axes) {
-    return centerV2(this, {axes: axes})
+    return centerV2({axes: axes},[this])
   },
 
   // ALIAS !

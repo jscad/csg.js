@@ -104,8 +104,7 @@ CAG.prototype = {
 
   // ALIAS !
   center: function (axes) {
-    axes = [axes[0],axes[1],false] // just be sure
-    return centerV2(this, {axes: axes})
+    return centerV2({axes: axes}, [this])
   },
 
   // ALIAS !
