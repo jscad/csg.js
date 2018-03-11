@@ -1,18 +1,21 @@
 const toArray = require('../core/utils/toArray')
 
 /**
- * centers the given object(s) using the given options (if any)
+ * Centers the given object(s) using the given options (if any)
  * @param {Object} [options] - options for centering
  * @param {Array} [options.axes=[true,true,true]] - axis of which to center, true or false
  * @param {Array} [options.center=[0,0,0]] - point of which to center the object upon
  * @param {Object|Array} objects - the shape(s) to center
+ * @return {Object|Array} objects
  *
- * TODO : Add addition 'methods' of centering; midpoint, centeriod
+ * @example
+ * let csg = center({axes: [true,false,false]}, sphere()) // center about the X axis
  */
 const centerV2 = function (options, objects) {
   const defaults = {
     axes: [true, true, true],
     center: [0, 0, 0]
+  // TODO : Add addition 'methods' of centering; midpoint, centeriod
   }
   options = Object.assign({}, defaults, options)
   const {axes,center} = options
