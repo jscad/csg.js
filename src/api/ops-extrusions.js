@@ -9,102 +9,121 @@ const {fromPolygons} = require('../core/CSGFactories')
 const {cagToPointsArray, clamp, rightMultiply1x3VectorToArray, polygonFromPoints} = require('./helpers')
 const {fromPoints} = require('../core/CAGFactories')
 
+const Vertex3D = require('../math/Vertex3')
+const Vector2D = require('../math/Vector2')
+const Polygon3 = require('../math/Polygon3')
 /*
     * transform a cag into the polygons of a corresponding 3d plane, positioned per options
     * Accepts a connector for plane positioning, or optionally
     * single translation, axisVector, normalVector arguments
     * (toConnector has precedence over single arguments if provided)
     */
-   _toPlanePolygons: function (options) {
-    const defaults = {
-      flipped: false
-    }
-    options = Object.assign({}, defaults, options)
-    let {flipped} = options
+const _toPlanePolygons = function (_cag, options) {
+  const defaults = {
+    flipped: false
+  }
+  options = Object.assign({}, defaults, options)
+  let {flipped} = options
     // reference connector for transformation
-    let origin = [0, 0, 0]
-    let defaultAxis = [0, 0, 1]
-    let defaultNormal = [0, 1, 0]
-    let thisConnector = new Connector(origin, defaultAxis, defaultNormal)
+  let origin = [0, 0, 0]
+  let defaultAxis = [0, 0, 1]
+  let defaultNormal = [0, 1, 0]
+  let thisConnector = new Connector(origin, defaultAxis, defaultNormal)
     // translated connector per options
-    let translation = options.translation || origin
-    let axisVector = options.axisVector || defaultAxis
-    let normalVector = options.normalVector || defaultNormal
+  let translation = options.translation || origin
+  let axisVector = options.axisVector || defaultAxis
+  let normalVector = options.normalVector || defaultNormal
     // will override above if options has toConnector
-    let toConnector = options.toConnector ||
+  let toConnector = options.toConnector ||
             new Connector(translation, axisVector, normalVector)
     // resulting transform
-    let m = thisConnector.getTransformationTo(toConnector, false, 0)
+  let m = thisConnector.getTransformationTo(toConnector, false, 0)
     // create plane as a (partial non-closed) CSG in XY plane
-    let bounds = this.getBounds()
-    bounds[0] = bounds[0].minus(new Vector2D(1, 1))
-    bounds[1] = bounds[1].plus(new Vector2D(1, 1))
-    let csgshell = this._toCSGWall(-1, 1)
-    let csgplane = fromPolygons([new Polygon([
-      new Vertex3D(new Vector3D(bounds[0].x, bounds[0].y, 0)),
-      new Vertex3D(new Vector3D(bounds[1].x, bounds[0].y, 0)),
-      new Vertex3D(new Vector3D(bounds[1].x, bounds[1].y, 0)),
-      new Vertex3D(new Vector3D(bounds[0].x, bounds[1].y, 0))
-    ])])
-    if (flipped) {
-      csgplane = csgplane.invert()
-    }
-    // intersectSub -> prevent premature retesselate/canonicalize
-    csgplane = csgplane.intersectSub(csgshell)
-    // only keep the polygons in the z plane:
-    let polys = csgplane.polygons.filter(function (polygon) {
-      return Math.abs(polygon.plane.normal.z) > 0.99
-    })
-    // finally, position the plane per passed transformations
-    return polys.map(function (poly) {
-      return poly.transform(m)
-    })
-  },
-
-  /*
-    * given 2 connectors, this returns all polygons of a "wall" between 2
-    * copies of this cag, positioned in 3d space as "bottom" and
-    * "top" plane per connectors toConnector1, and toConnector2, respectively
-    */
-  _toWallPolygons: function (options) {
-        // normals are going to be correct as long as toConn2.point - toConn1.point
-        // points into cag normal direction (check in caller)
-        // arguments: options.toConnector1, options.toConnector2, options.cag
-        //     walls go from toConnector1 to toConnector2
-        //     optionally, target cag to point to - cag needs to have same number of sides as this!
-    let origin = [0, 0, 0]
-    let defaultAxis = [0, 0, 1]
-    let defaultNormal = [0, 1, 0]
-    let thisConnector = new Connector(origin, defaultAxis, defaultNormal)
-        // arguments:
-    let toConnector1 = options.toConnector1
-        // let toConnector2 = new Connector([0, 0, -30], defaultAxis, defaultNormal);
-    let toConnector2 = options.toConnector2
-    if (!(toConnector1 instanceof Connector && toConnector2 instanceof Connector)) {
-      throw new Error('could not parse Connector arguments toConnector1 or toConnector2')
-    }
-    if (options.cag) {
-      if (options.cag.sides.length !== this.sides.length) {
-        throw new Error('target cag needs same sides count as start cag')
-      }
-    }
-        // target cag is same as this unless specified
-    let toCag = options.cag || this
-    let m1 = thisConnector.getTransformationTo(toConnector1, false, 0)
-    let m2 = thisConnector.getTransformationTo(toConnector2, false, 0)
-    let vps1 = this._toVector3DPairs(m1)
-    let vps2 = toCag._toVector3DPairs(m2)
-
-    let polygons = []
-    vps1.forEach(function (vp1, i) {
-      polygons.push(new Polygon([
-        new Vertex3D(vps2[i][1]), new Vertex3D(vps2[i][0]), new Vertex3D(vp1[0])]))
-      polygons.push(new Polygon([
-        new Vertex3D(vps2[i][1]), new Vertex3D(vp1[0]), new Vertex3D(vp1[1])]))
-    })
-    return polygons
+  let bounds = _cag.getBounds()
+  bounds[0] = bounds[0].minus(new Vector2D(1, 1))
+  bounds[1] = bounds[1].plus(new Vector2D(1, 1))
+  let csgshell = _cag._toCSGWall(-1, 1)
+  let csgplane = fromPolygons([new Polygon3([
+    new Vertex3D(new Vector3D(bounds[0].x, bounds[0].y, 0)),
+    new Vertex3D(new Vector3D(bounds[1].x, bounds[0].y, 0)),
+    new Vertex3D(new Vector3D(bounds[1].x, bounds[1].y, 0)),
+    new Vertex3D(new Vector3D(bounds[0].x, bounds[1].y, 0))
+  ])])
+  if (flipped) {
+    csgplane = csgplane.invert()
   }
+    // intersectSub -> prevent premature retesselate/canonicalize
+  csgplane = csgplane.intersectSub(csgshell)
+    // only keep the polygons in the z plane:
+  let polys = csgplane.polygons.filter(function (polygon) {
+    return Math.abs(polygon.plane.normal.z) > 0.99
+  })
+    // finally, position the plane per passed transformations
+  return polys.map(function (poly) {
+    return poly.transform(m)
+  })
+}
+const _toVector3DPairs = function (cag, m) {
+    // transform m
+  let pairs = cag.sides.map(function (side) {
+    let p0 = side.vertex0.pos
+    let p1 = side.vertex1.pos
+    return [Vector3D.Create(p0.x, p0.y, 0),
+      Vector3D.Create(p1.x, p1.y, 0)]
+  })
+  if (typeof m !== 'undefined') {
+    pairs = pairs.map(function (pair) {
+      return pair.map(function (v) {
+        return v.transform(m)
+      })
+    })
+  }
+  return pairs
+}
 
+/*
+* given 2 connectors, this returns all polygons of a "wall" between 2
+* copies of this cag, positioned in 3d space as "bottom" and
+* "top" plane per connectors toConnector1, and toConnector2, respectively
+*/
+const _toWallPolygons = function (_cag, options) {
+  // normals are going to be correct as long as toConn2.point - toConn1.point
+  // points into cag normal direction (check in caller)
+  // arguments: options.toConnector1, options.toConnector2, options.cag
+  //     walls go from toConnector1 to toConnector2
+  //     optionally, target cag to point to - cag needs to have same number of sides as this!
+  let origin = [0, 0, 0]
+  let defaultAxis = [0, 0, 1]
+  let defaultNormal = [0, 1, 0]
+  let thisConnector = new Connector(origin, defaultAxis, defaultNormal)
+        // arguments:
+  let toConnector1 = options.toConnector1
+        // let toConnector2 = new Connector([0, 0, -30], defaultAxis, defaultNormal);
+  let toConnector2 = options.toConnector2
+  if (!(toConnector1 instanceof Connector && toConnector2 instanceof Connector)) {
+    throw new Error('could not parse Connector arguments toConnector1 or toConnector2')
+  }
+  if (options.cag) {
+    if (options.cag.sides.length !== this.sides.length) {
+      throw new Error('target cag needs same sides count as start cag')
+    }
+  }
+        // target cag is same as this unless specified
+  let toCag = options.cag || _cag
+  let m1 = thisConnector.getTransformationTo(toConnector1, false, 0)
+  let m2 = thisConnector.getTransformationTo(toConnector2, false, 0)
+  let vps1 = _toVector3DPairs(_cag, m1)
+  let vps2 = _toVector3DPairs(toCag, m2)
+
+  let polygons = []
+  vps1.forEach(function (vp1, i) {
+    polygons.push(new Polygon3([
+      new Vertex3D(vps2[i][1]), new Vertex3D(vps2[i][0]), new Vertex3D(vp1[0])]))
+    polygons.push(new Polygon3([
+      new Vertex3D(vps2[i][1]), new Vertex3D(vp1[0]), new Vertex3D(vp1[1])]))
+  })
+  return polygons
+}
 
 /** extrude the CAG in a certain plane.
  * Giving just a plane is not enough, multiple different extrusions in the same plane would be possible
@@ -177,12 +196,12 @@ const extrude = function (cag, options) {
 
   let polygons = []
   // bottom and top
-  polygons = polygons.concat(cag._toPlanePolygons({
+  polygons = polygons.concat(_toPlanePolygons(cag, {
     translation: [0, 0, 0],
     normalVector: normalVector,
     flipped: !(offsetVector.z < 0)}
   ))
-  polygons = polygons.concat(cag._toPlanePolygons({
+  polygons = polygons.concat(_toPlanePolygons(cag, {
     translation: offsetVector,
     normalVector: normalVector.rotateZ(twistangle),
     flipped: offsetVector.z < 0}))
@@ -192,7 +211,7 @@ const extrude = function (cag, options) {
               normalVector.rotateZ(i * twistangle / twiststeps))
     let c2 = new Connector(offsetVector.times((i + 1) / twiststeps), [0, 0, offsetVector.z],
               normalVector.rotateZ((i + 1) * twistangle / twiststeps))
-    polygons = polygons.concat(cag._toWallPolygons({toConnector1: c1, toConnector2: c2}))
+    polygons = polygons.concat(_toWallPolygons(cag, {toConnector1: c1, toConnector2: c2}))
   }
 
   return fromPolygons(polygons)
@@ -222,16 +241,16 @@ const rotateExtrude = function (cag, options) { // FIXME options should be optio
           // building in the direction of axis vector
     let connE = new Connector(origin, axisV.rotateZ(-alpha), normalV)
     polygons = polygons.concat(
-              cag._toPlanePolygons({toConnector: connS, flipped: true}))
+              _toPlanePolygons(cag, {toConnector: connS, flipped: true}))
     polygons = polygons.concat(
-              cag._toPlanePolygons({toConnector: connE}))
+              _toPlanePolygons(cag, {toConnector: connE}))
   }
   let connT1 = connS
   let connT2
   let step = alpha / resolution
   for (let a = step; a <= alpha + EPS; a += step) { // FIXME Should this be angelEPS?
     connT2 = new Connector(origin, axisV.rotateZ(-a), normalV)
-    polygons = polygons.concat(cag._toWallPolygons(
+    polygons = polygons.concat(_toWallPolygons(cag,
               {toConnector1: connT1, toConnector2: connT2}))
     connT1 = connT2
   }
@@ -403,13 +422,13 @@ function rotate_extrude (params, baseShape) {
       const endMatrix = Matrix4.rotationX(90).multiply(
         Matrix4.rotationZ(-startAngle)
       )
-      const endCap = sideShape._toPlanePolygons({flipped: flipped})
+      const endCap = _toPlanePolygons(sideShape, {flipped: flipped})
         .map(x => x.transform(endMatrix))
 
       const startMatrix = Matrix4.rotationX(90).multiply(
         Matrix4.rotationZ(-angle - startAngle)
       )
-      const startCap = sideShape._toPlanePolygons({flipped: !flipped})
+      const startCap = _toPlanePolygons(sideShape, {flipped: !flipped})
         .map(x => x.transform(startMatrix))
       polygons = polygons.concat(endCap).concat(startCap)
     }

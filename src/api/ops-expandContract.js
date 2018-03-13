@@ -31,7 +31,7 @@ const contract = function (shape, radius, resolution) {
 }
 
 const expandedShellOfCAG = function (_cag, radius, resolution) {
-  const CAG = require('../core/CAG') // FIXME, circular dependency !!
+  const CAG = require('../core/CAG')
   resolution = resolution || 8
   if (resolution < 4) resolution = 4
   let cags = []
@@ -130,7 +130,7 @@ const expandedShellOfCAG = function (_cag, radius, resolution) {
  * @param  {Boolean} unionWithThis
  */
 const expandedShellOfCCSG = function (_csg, radius, resolution, unionWithThis) {
-  const CSG = require('../core/CSG') // FIXME: circular dependency ! CSG => this => CSG
+  const CSG = require('../core/CSG')
   const {fromPolygons} = require('../core/CSGFactories') // FIXME: circular dependency !
   // const {sphere} = require('./primitives3d') // FIXME: circular dependency !
   let csg = _csg.reTesselated()

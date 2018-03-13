@@ -3,6 +3,7 @@ const Line3D = require('./math/Line3')
 const Matrix4x4 = require('./math/Matrix4')
 const OrthoNormalBasis = require('./math/OrthoNormalBasis')
 const Plane = require('./math/Plane')
+const {fromVector2} = require('./math/Vector3Factories')
 
 // # class Connector
 // A connector allows to attach two objects at predefined positions
@@ -116,8 +117,8 @@ ConnectorList._fromPath2DTangents = function (path2D, start, end) {
         start, ConnectorList.defaultNormal)])
     // middle points
   path2D.points.slice(1, pathLen - 1).forEach(function (p2, i) {
-    axis = path2D.points[i + 2].minus(path2D.points[i]).toVector3D(0)
-    result.appendConnector(new Connector(p2.toVector3D(0), axis,
+    axis = fromVector2(path2D.points[i + 2].minus(path2D.points[i]), 0)
+    result.appendConnector(new Connector(fromVector2(p2, 0), axis,
           ConnectorList.defaultNormal))
   }, this)
   result.appendConnector(new Connector(path2D.points[pathLen - 1], end,
@@ -138,7 +139,7 @@ ConnectorList._fromPath2DExplicit = function (path2D, angleIsh) {
   }
   let result = new ConnectorList(
         path2D.points.map(function (p2, i) {
-          return new Connector(p2.toVector3D(0),
+          return new Connector(fromVector2(p2, 0),
                 Vector3D.Create(1, 0, 0).rotateZ(getAngle(angleIsh, p2, i)),
                   ConnectorList.defaultNormal)
         }, this)

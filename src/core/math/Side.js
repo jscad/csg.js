@@ -3,6 +3,7 @@ const Vertex = require('./Vertex2')
 const Vertex3 = require('./Vertex3')
 const Polygon = require('./Polygon3')
 const {getTag} = require('../constants')
+const {fromVector2} = require('./Vector3Factories')
 
 const Side = function (vertex0, vertex1) {
   if (!(vertex0 instanceof Vertex)) throw new Error('Assertion failed')
@@ -57,10 +58,10 @@ Side.prototype = {
   toPolygon3D: function (z0, z1) {
     // console.log(this.vertex0.pos)
     const vertices = [
-      new Vertex3(this.vertex0.pos.toVector3D(z0)),
-      new Vertex3(this.vertex1.pos.toVector3D(z0)),
-      new Vertex3(this.vertex1.pos.toVector3D(z1)),
-      new Vertex3(this.vertex0.pos.toVector3D(z1))
+      new Vertex3(fromVector2(this.vertex0.pos, z0)),
+      new Vertex3(fromVector2(this.vertex1.pos, z0)),
+      new Vertex3(fromVector2(this.vertex1.pos, z1)),
+      new Vertex3(fromVector2(this.vertex0.pos, z1))
     ]
     return new Polygon(vertices)
   },

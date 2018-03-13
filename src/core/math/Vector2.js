@@ -79,12 +79,6 @@ Vector2D.prototype = {
     throw new Error('Vector2D is immutable')
   },
 
-  // extend to a 3D vector by adding a z coordinate:
-  toVector3D: function (z) {
-    const Vector3D = require('./Vector3') // FIXME: circular dependencies Vector2 => Vector3 => Vector2
-    return new Vector3D(this._x, this._y, z)
-  },
-
   equals: function (a) {
     return (this._x === a._x) && (this._y === a._y)
   },

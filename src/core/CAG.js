@@ -1,8 +1,3 @@
-const {Connector} = require('./connectors')
-const Vertex3D = require('./math/Vertex3')
-const Vector2D = require('./math/Vector2')
-const Vector3D = require('./math/Vector3')
-
 const {fromPolygons} = require('./CSGFactories')
 const {fromSides, fromFakeCSG} = require('./CAGFactories')
 
@@ -11,10 +6,6 @@ const retesselate = require('./utils/retesellate')
 const {isCAGValid, isSelfIntersecting} = require('./utils/cagValidation')
 const {area, getBounds} = require('./utils/cagMeasurements')
 
-// all of these are good candidates for elimination in this scope, since they are part of a functional api
-const {extrude, rotateExtrude} = require('../api/ops-extrusions')
-const center = require('../api/center')
-const {expand, contract, expandedShellOfCAG} = require('../api/ops-expandContract')
 /**
  * Class CAG
  * Holds a solid area geometry like CSG but 2D.
@@ -117,16 +108,6 @@ CAG.prototype = {
   },
 
   // ALIAS !
-  extrude: function (options) {
-    return extrude(this, options)
-  },
-
-  // ALIAS !
-  rotateExtrude: function (options) { // FIXME options should be optional
-    return rotateExtrude(this, options)
-  },
-
-  // ALIAS !
   check: function () {
     return isCAGValid(this)
   },
@@ -155,24 +136,6 @@ CAG.prototype = {
       return side.toPolygon3D(z0, z1)
     })
     return fromPolygons(polygons)
-  },
-
-  _toVector3DPairs: function (m) {
-        // transform m
-    let pairs = this.sides.map(function (side) {
-      let p0 = side.vertex0.pos
-      let p1 = side.vertex1.pos
-      return [Vector3D.Create(p0.x, p0.y, 0),
-        Vector3D.Create(p1.x, p1.y, 0)]
-    })
-    if (typeof m !== 'undefined') {
-      pairs = pairs.map(function (pair) {
-        return pair.map(function (v) {
-          return v.transform(m)
-        })
-      })
-    }
-    return pairs
   }
 }
 

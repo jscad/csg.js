@@ -1,4 +1,4 @@
-const CAG = require('../CAG') // FIXME: circular dependency !
+const CAG = require('../CAG')
 const {EPS} = require('../constants')
 
 // project the 3D CSG onto a plane

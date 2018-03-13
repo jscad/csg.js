@@ -27,7 +27,7 @@ const sectionCut = function (csg, orthobasis) {
  */
 const cutByPlane = function (csg, plane) {
   if (csg.polygons.length === 0) {
-    const CSG = require('../core/CSG') // FIXME: circular dependency ! CSG => cutByPlane => CSG
+    const CSG = require('../core/CSG')
     return new CSG()
   }
   // Ideally we would like to do an intersection with a polygon of inifinite size
