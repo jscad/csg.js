@@ -14,8 +14,6 @@ const retesselate = require('./utils/retesellate')
 const {bounds} = require('./utils/csgMeasurements')
 const {projectToOrthoNormalBasis} = require('./utils/csgProjections')
 
-const {lieFlat, getTransformationToFlatLying, getTransformationAndInverseTransformationToFlatLying} = require('../api/ops-cnc')
-const {sectionCut, cutByPlane} = require('../api/ops-cuts')
 const center = require('../api/center')
 const {expand, contract, expandedShellOfCCSG} = require('../api/ops-expandContract')
 
@@ -294,7 +292,7 @@ CSG.prototype = {
     let plane = Plane.fromNormalAndPoint(normal, point)
     let onb = new OrthoNormalBasis(plane)
     let crosssect = this.sectionCut(onb)
-    let midpiece = crosssect.extrudeInOrthonormalBasis(onb, length)
+    let midpiece = extrudeInOrthonormalBasis(crosssect, onb, length)
     let piece1 = this.cutByPlane(plane)
     let piece2 = this.cutByPlane(plane.flipped())
     let result = piece1.union([midpiece, piece2.translate(plane.normal.times(length))])
@@ -342,11 +340,6 @@ CSG.prototype = {
     }
   },
 
-  // ALIAS !
-  cutByPlane: function (plane) {
-    return cutByPlane(this, plane)
-  },
-
   /**
    * Connect a solid to another solid, such that two Connectors become connected
    * @param  {Connector} myConnector a Connector of this solid
@@ -392,27 +385,12 @@ CSG.prototype = {
     return getTransformationAndInverseTransformationToFlatLying(this)
   },
 
-  // ALIAS !
-  getTransformationToFlatLying: function () {
-    return getTransformationToFlatLying(this)
-  },
-
-  // ALIAS !
-  lieFlat: function () {
-    return lieFlat(this)
-  },
-
   // project the 3D CSG onto a plane
   // This returns a 2D CAG with the 'shadow' shape of the 3D solid when projected onto the
   // plane represented by the orthonormal basis
   projectToOrthoNormalBasis: function (orthobasis) {
     // FIXME:  DEPENDS ON CAG !!
     return projectToOrthoNormalBasis(this, orthobasis)
-  },
-
-  // FIXME: not finding any uses within our code ?
-  sectionCut: function (orthobasis) {
-    return sectionCut(this, orthobasis)
   },
 
   /**

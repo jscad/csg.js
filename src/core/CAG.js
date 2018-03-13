@@ -13,9 +13,7 @@ const {isCAGValid, isSelfIntersecting} = require('./utils/cagValidation')
 const {area, getBounds} = require('./utils/cagMeasurements')
 
 // all of these are good candidates for elimination in this scope, since they are part of a functional api
-const {overCutInsideCorners} = require('../api/ops-cnc')
-const {extrudeInOrthonormalBasis, extrudeInPlane, extrude, rotateExtrude} = require('../api/ops-extrusions')
-const cagoutlinePaths = require('../api/cagOutlinePaths')
+const {extrude, rotateExtrude} = require('../api/ops-extrusions')
 const center = require('../api/center')
 const {expand, contract, expandedShellOfCAG} = require('../api/ops-expandContract')
 /**
@@ -134,15 +132,6 @@ CAG.prototype = {
   isSelfIntersecting: function (debug) {
     return isSelfIntersecting(this, debug)
   },
-  // extrusion: all aliases to simple functions
-  extrudeInOrthonormalBasis: function (orthonormalbasis, depth, options) {
-    return extrudeInOrthonormalBasis(this, orthonormalbasis, depth, options)
-  },
-
-  // ALIAS !
-  extrudeInPlane: function (axis1, axis2, depth, options) {
-    return extrudeInPlane(this, axis1, axis2, depth, options)
-  },
 
   // ALIAS !
   extrude: function (options) {
@@ -167,16 +156,6 @@ CAG.prototype = {
   // ALIAS !
   reTesselated: function () {
     return retesselate(this)
-  },
-
-  // ALIAS !
-  getOutlinePaths: function () {
-    return cagoutlinePaths(this)
-  },
-
-  // ALIAS !
-  overCutInsideCorners: function (cutterradius) {
-    return overCutInsideCorners(this, cutterradius)
   },
 
   // All the toXXX functions
