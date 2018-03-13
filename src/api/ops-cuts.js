@@ -5,6 +5,8 @@ const Vertex3 = require('../core/math/Vertex3')
 const Polygon3 = require('../core/math/Polygon3')
 const OrthoNormalBasis = require('../core/math/OrthoNormalBasis')
 
+const {projectToOrthoNormalBasis} = require('../core/utils/csgProjections')
+
 /** cuts a csg along a orthobasis
  * @param  {CSG} csg the csg object to cut
  * @param  {Orthobasis} orthobasis the orthobasis to cut along
@@ -14,9 +16,9 @@ const sectionCut = function (csg, orthobasis) {
   let plane2 = orthobasis.plane.flipped()
   plane1 = new Plane(plane1.normal, plane1.w)
   plane2 = new Plane(plane2.normal, plane2.w + (5 * EPS))
-  let cut3d = csg.cutByPlane(plane1)
-  cut3d = cut3d.cutByPlane(plane2)
-  return cut3d.projectToOrthoNormalBasis(orthobasis)
+  let cut3d = cutByPlane(csg, plane1)
+  cut3d = cutByPlane(cut3d, plane2)
+  return projectToOrthoNormalBasis(cut3d, orthobasis)
 }
 
 /** Cut the solid by a plane. Returns the solid on the back side of the plane

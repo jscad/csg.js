@@ -1,7 +1,5 @@
 const Tree = require('./trees')
 const Polygon = require('./math/Polygon3')
-const Plane = require('./math/Plane')
-const OrthoNormalBasis = require('./math/OrthoNormalBasis')
 
 const CAG = require('./CAG') // FIXME: for some weird reason if CAG is imported AFTER frompolygons, a lot of things break???
 
@@ -12,10 +10,6 @@ const fixTJunctions = require('./utils/fixTJunctions')
 const canonicalize = require('./utils/canonicalize')
 const retesselate = require('./utils/retesellate')
 const {bounds} = require('./utils/csgMeasurements')
-const {projectToOrthoNormalBasis} = require('./utils/csgProjections')
-
-const center = require('../api/center')
-const {expand, contract, expandedShellOfCCSG} = require('../api/ops-expandContract')
 
 /** Class CSG
  * Holds a binary space partition tree representing a 3D solid. Two solids can
@@ -267,39 +261,6 @@ CSG.prototype = {
   },
 
   // ALIAS !
-  center: function (axes) {
-    return center({axes: axes},[this])
-  },
-
-  // ALIAS !
-  expand: function (radius, resolution) {
-    return expand(this, radius, resolution)
-  },
-
-  // ALIAS !
-  contract: function (radius, resolution) {
-    return contract(this, radius, resolution)
-  },
-
-  // ALIAS !
-  expandedShell: function (radius, resolution, unionWithThis) {
-    return expandedShellOfCCSG(this, radius, resolution, unionWithThis)
-  },
-
-  // cut the solid at a plane, and stretch the cross-section found along plane normal
-  // note: only used in roundedCube() internally
-  stretchAtPlane: function (normal, point, length) {
-    let plane = Plane.fromNormalAndPoint(normal, point)
-    let onb = new OrthoNormalBasis(plane)
-    let crosssect = this.sectionCut(onb)
-    let midpiece = extrudeInOrthonormalBasis(crosssect, onb, length)
-    let piece1 = this.cutByPlane(plane)
-    let piece2 = this.cutByPlane(plane.flipped())
-    let result = piece1.union([midpiece, piece2.translate(plane.normal.times(length))])
-    return result
-  },
-
-  // ALIAS !
   canonicalized: function () {
     return canonicalize(this)
   },
@@ -378,19 +339,6 @@ CSG.prototype = {
   setColor: function (args) {
     let newshared = Polygon.Shared.fromColor.apply(this, arguments)
     return this.setShared(newshared)
-  },
-
-  // ALIAS !
-  getTransformationAndInverseTransformationToFlatLying: function () {
-    return getTransformationAndInverseTransformationToFlatLying(this)
-  },
-
-  // project the 3D CSG onto a plane
-  // This returns a 2D CAG with the 'shadow' shape of the 3D solid when projected onto the
-  // plane represented by the orthonormal basis
-  projectToOrthoNormalBasis: function (orthobasis) {
-    // FIXME:  DEPENDS ON CAG !!
-    return projectToOrthoNormalBasis(this, orthobasis)
   },
 
   /**

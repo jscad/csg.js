@@ -2,7 +2,6 @@ const {Connector} = require('./connectors')
 const Vertex3D = require('./math/Vertex3')
 const Vector2D = require('./math/Vector2')
 const Vector3D = require('./math/Vector3')
-const Polygon = require('./math/Polygon3')
 
 const {fromPolygons} = require('./CSGFactories')
 const {fromSides, fromFakeCSG} = require('./CAGFactories')
@@ -104,22 +103,6 @@ CAG.prototype = {
   center: function (axes) {
     return center({axes: axes}, [this])
   },
-
-  // ALIAS !
-  expandedShell: function (radius, resolution) {
-    return expandedShellOfCAG(this, radius, resolution)
-  },
-
-  // ALIAS !
-  expand: function (radius, resolution) {
-    return expand(this, radius, resolution)
-  },
-
-  contract: function (radius, resolution) {
-    return contract(this, radius, resolution)
-  },
-
-  // ALIAS !
   area: function () {
     return area(this)
   },

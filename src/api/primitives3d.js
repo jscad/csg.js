@@ -7,6 +7,9 @@ const {Connector} = require('../core/connectors')
 const Properties = require('../core/Properties')
 const {fromPolygons} = require('../core/CSGFactories')
 
+const Plane = require('../core/math/Plane')
+const OrthoNormalBasis = require('../core/math/OrthoNormalBasis')
+
 /** Construct an axis-aligned solid cuboid.
  * @param {Object} [options] - options for construction
  * @param {Vector3} [options.center=[0,0,0]] - center of cube
@@ -426,6 +429,19 @@ const cylinderElliptic = function (options) {
   return result
 }
 
+// cut the solid at a plane, and stretch the cross-section found along plane normal
+// note: only used in roundedCube() internally
+const stretchAtPlane = function (csg, normal, point, length) {
+  let plane = Plane.fromNormalAndPoint(normal, point)
+  let onb = new OrthoNormalBasis(plane)
+  let crosssect = sectionCut(onb)
+  let midpiece = extrudeInOrthonormalBasis(crosssect, onb, length)
+  let piece1 = cutByPlane(csg, plane)
+  let piece2 = cutByPlane(csg, plane.flipped())
+  let result = piece1.union([midpiece, piece2.translate(plane.normal.times(length))])
+  return result
+}
+
 /** Construct an axis-aligned solid rounded cuboid.
  * @param {Object} [options] - options for construction
  * @param {Vector3} [options.center=[0,0,0]] - center of rounded cube
@@ -474,9 +490,9 @@ const roundedCube = function (options) {
   }
   let res = sphere({radius: 1, resolution: resolution})
   res = res.scale(roundradius)
-  innerradius.x > EPS && (res = res.stretchAtPlane([1, 0, 0], [0, 0, 0], 2 * innerradius.x))
-  innerradius.y > EPS && (res = res.stretchAtPlane([0, 1, 0], [0, 0, 0], 2 * innerradius.y))
-  innerradius.z > EPS && (res = res.stretchAtPlane([0, 0, 1], [0, 0, 0], 2 * innerradius.z))
+  innerradius.x > EPS && (res = stretchAtPlane(res, [1, 0, 0], [0, 0, 0], 2 * innerradius.x))
+  innerradius.y > EPS && (res = stretchAtPlane(res, [0, 1, 0], [0, 0, 0], 2 * innerradius.y))
+  innerradius.z > EPS && (res = stretchAtPlane(res, [0, 0, 1], [0, 0, 0], 2 * innerradius.z))
   res = res.translate([-innerradius.x + center.x, -innerradius.y + center.y, -innerradius.z + center.z])
   res = res.reTesselated()
   res.properties.roundedCube = new Properties()
