@@ -9,6 +9,103 @@ const {fromPolygons} = require('../core/CSGFactories')
 const {cagToPointsArray, clamp, rightMultiply1x3VectorToArray, polygonFromPoints} = require('./helpers')
 const {fromPoints} = require('../core/CAGFactories')
 
+/*
+    * transform a cag into the polygons of a corresponding 3d plane, positioned per options
+    * Accepts a connector for plane positioning, or optionally
+    * single translation, axisVector, normalVector arguments
+    * (toConnector has precedence over single arguments if provided)
+    */
+   _toPlanePolygons: function (options) {
+    const defaults = {
+      flipped: false
+    }
+    options = Object.assign({}, defaults, options)
+    let {flipped} = options
+    // reference connector for transformation
+    let origin = [0, 0, 0]
+    let defaultAxis = [0, 0, 1]
+    let defaultNormal = [0, 1, 0]
+    let thisConnector = new Connector(origin, defaultAxis, defaultNormal)
+    // translated connector per options
+    let translation = options.translation || origin
+    let axisVector = options.axisVector || defaultAxis
+    let normalVector = options.normalVector || defaultNormal
+    // will override above if options has toConnector
+    let toConnector = options.toConnector ||
+            new Connector(translation, axisVector, normalVector)
+    // resulting transform
+    let m = thisConnector.getTransformationTo(toConnector, false, 0)
+    // create plane as a (partial non-closed) CSG in XY plane
+    let bounds = this.getBounds()
+    bounds[0] = bounds[0].minus(new Vector2D(1, 1))
+    bounds[1] = bounds[1].plus(new Vector2D(1, 1))
+    let csgshell = this._toCSGWall(-1, 1)
+    let csgplane = fromPolygons([new Polygon([
+      new Vertex3D(new Vector3D(bounds[0].x, bounds[0].y, 0)),
+      new Vertex3D(new Vector3D(bounds[1].x, bounds[0].y, 0)),
+      new Vertex3D(new Vector3D(bounds[1].x, bounds[1].y, 0)),
+      new Vertex3D(new Vector3D(bounds[0].x, bounds[1].y, 0))
+    ])])
+    if (flipped) {
+      csgplane = csgplane.invert()
+    }
+    // intersectSub -> prevent premature retesselate/canonicalize
+    csgplane = csgplane.intersectSub(csgshell)
+    // only keep the polygons in the z plane:
+    let polys = csgplane.polygons.filter(function (polygon) {
+      return Math.abs(polygon.plane.normal.z) > 0.99
+    })
+    // finally, position the plane per passed transformations
+    return polys.map(function (poly) {
+      return poly.transform(m)
+    })
+  },
+
+  /*
+    * given 2 connectors, this returns all polygons of a "wall" between 2
+    * copies of this cag, positioned in 3d space as "bottom" and
+    * "top" plane per connectors toConnector1, and toConnector2, respectively
+    */
+  _toWallPolygons: function (options) {
+        // normals are going to be correct as long as toConn2.point - toConn1.point
+        // points into cag normal direction (check in caller)
+        // arguments: options.toConnector1, options.toConnector2, options.cag
+        //     walls go from toConnector1 to toConnector2
+        //     optionally, target cag to point to - cag needs to have same number of sides as this!
+    let origin = [0, 0, 0]
+    let defaultAxis = [0, 0, 1]
+    let defaultNormal = [0, 1, 0]
+    let thisConnector = new Connector(origin, defaultAxis, defaultNormal)
+        // arguments:
+    let toConnector1 = options.toConnector1
+        // let toConnector2 = new Connector([0, 0, -30], defaultAxis, defaultNormal);
+    let toConnector2 = options.toConnector2
+    if (!(toConnector1 instanceof Connector && toConnector2 instanceof Connector)) {
+      throw new Error('could not parse Connector arguments toConnector1 or toConnector2')
+    }
+    if (options.cag) {
+      if (options.cag.sides.length !== this.sides.length) {
+        throw new Error('target cag needs same sides count as start cag')
+      }
+    }
+        // target cag is same as this unless specified
+    let toCag = options.cag || this
+    let m1 = thisConnector.getTransformationTo(toConnector1, false, 0)
+    let m2 = thisConnector.getTransformationTo(toConnector2, false, 0)
+    let vps1 = this._toVector3DPairs(m1)
+    let vps2 = toCag._toVector3DPairs(m2)
+
+    let polygons = []
+    vps1.forEach(function (vp1, i) {
+      polygons.push(new Polygon([
+        new Vertex3D(vps2[i][1]), new Vertex3D(vps2[i][0]), new Vertex3D(vp1[0])]))
+      polygons.push(new Polygon([
+        new Vertex3D(vps2[i][1]), new Vertex3D(vp1[0]), new Vertex3D(vp1[1])]))
+    })
+    return polygons
+  }
+
+
 /** extrude the CAG in a certain plane.
  * Giving just a plane is not enough, multiple different extrusions in the same plane would be possible
  * by rotating around the plane's origin. An additional right-hand vector should be specified as well,
