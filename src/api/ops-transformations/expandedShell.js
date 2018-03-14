@@ -107,7 +107,7 @@ const expandedShellOfCAG = function (_cag, radius, resolution) {
  */
 const expandedShellOfCCSG = function (_csg, radius, resolution, unionWithThis) {
   const CSG = require('../core/CSG')
-  const {fromPolygons} = require('../core/CSGFactories') // FIXME: circular dependency !
+  const {fromPolygons} = require('../core/CSGFactories')
   // const {sphere} = require('./primitives3d') // FIXME: circular dependency !
   let csg = _csg.reTesselated()
   let result

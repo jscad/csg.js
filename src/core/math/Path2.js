@@ -162,46 +162,8 @@ Path2D.prototype = {
     return this.closed
   },
 
-    // Extrude the path by following it with a rectangle (upright, perpendicular to the path direction)
-    // Returns a CSG solid
-    //   width: width of the extrusion, in the z=0 plane
-    //   height: height of the extrusion in the z direction
-    //   resolution: number of segments per 360 degrees for the curve in a corner
-  rectangularExtrude: function (width, height, resolution) {
-    let cag = this.expandToCAG(width / 2, resolution)
-    let result = cag.extrude({
-      offset: [0, 0, height]
-    })
-    return result
-  },
-
-    // Expand the path to a CAG
-    // This traces the path with a circle with radius pathradius
-  expandToCAG: function (pathradius, resolution) {
-    const CAG = require('../CAG') // FIXME: cyclic dependencies CAG => PATH2 => CAG
-    let sides = []
-    let numpoints = this.points.length
-    let startindex = 0
-    if (this.closed && (numpoints > 2)) startindex = -1
-    let prevvertex
-    for (let i = startindex; i < numpoints; i++) {
-      let pointindex = i
-      if (pointindex < 0) pointindex = numpoints - 1
-      let point = this.points[pointindex]
-      let vertex = new Vertex(point)
-      if (i > startindex) {
-        let side = new Side(prevvertex, vertex)
-        sides.push(side)
-      }
-      prevvertex = vertex
-    }
-    let shellcag = CAG.fromSides(sides)
-    let expanded = expandedShell(shellcag, pathradius, resolution)
-    return expanded
-  },
-
   innerToCAG: function () {
-    const CAG = require('../CAG') // FIXME: cyclic dependencies CAG => PATH2 => CAG
+    const CAG = require('../CAG')
     if (!this.closed) throw new Error('The path should be closed!')
     return CAG.fromPoints(this.points)
   },
