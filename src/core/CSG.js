@@ -1,10 +1,9 @@
 const Tree = require('./trees')
 const Polygon = require('./math/Polygon3')
 
-const CAG = require('./CAG') // FIXME: for some weird reason if CAG is imported AFTER frompolygons, a lot of things break???
+// const CAG = require('./CAG') // FIXME: for some weird reason if CAG is imported AFTER frompolygons, a lot of things break???
 
 const Properties = require('./Properties')
-// const {fromPolygons} = require('./CSGFactories') // FIXME: circular dependency !
 const {toTriangles} = require('./CSGToOther')
 
 const fixTJunctions = require('./utils/fixTJunctions')
@@ -24,8 +23,8 @@ let CSG = function () {
   this.isRetesselated = true
 }
 
-// this is a method instead of an external file to avoid circular dependencies
-  // ie CSG needs fromPolygons internally which itself creates CSG objects
+// this is a method instead of an external function to avoid circular dependencies
+// ie CSG needs fromPolygons internally which itself creates CSG objects
 CSG.fromPolygons = (polygons) => {
   let csg = new CSG()
   csg.polygons = polygons

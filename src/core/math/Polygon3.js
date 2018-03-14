@@ -3,7 +3,7 @@ const Vertex = require('./Vertex3')
 const Matrix4x4 = require('./Matrix4')
 const {_CSGDEBUG, EPS, getTag, areaEPS} = require('../constants')
 
-/** Class Polygon
+/** Class Polygon3
  * Represents a convex polygon. The vertices used to initialize a polygon must
  *   be coplanar and form a convex loop. They do not have to be `Vertex`
  *   instances but they must behave similarly (duck typing can be used for
@@ -18,7 +18,7 @@ const {_CSGDEBUG, EPS, getTag, areaEPS} = require('../constants')
  *
  * @constructor
  * @param {Vertex[]} vertices - list of vertices
- * @param {Polygon.Shared} [shared=defaultShared] - shared property to apply
+ * @param {Polygon3.Shared} [shared=defaultShared] - shared property to apply
  * @param {Plane} [plane] - plane of the polygon
  *
  * @example
@@ -27,18 +27,18 @@ const {_CSGDEBUG, EPS, getTag, areaEPS} = require('../constants')
  *   new CSG.Vertex(new CSG.Vector3D([0, 10, 0])),
  *   new CSG.Vertex(new CSG.Vector3D([0, 10, 10]))
  * ]
- * let observed = new Polygon(vertices)
+ * let observed = new Polygon3(vertices)
  */
-let Polygon = function (vertices, shared, plane) {
+let Polygon3 = function (vertices, shared, plane) {
   this.vertices = vertices
-  if (!shared) shared = Polygon.defaultShared
+  if (!shared) shared = Polygon3.defaultShared
   this.shared = shared
     // let numvertices = vertices.length;
 
   if (arguments.length >= 3) {
     this.plane = plane
   } else {
-    const Plane = require('./Plane') // FIXME: circular dependencies
+    const Plane = require('./Plane') // FIXME: circular dependencies ???
     this.plane = Plane.fromVector3Ds(vertices[0].pos, vertices[1].pos, vertices[2].pos)
   }
 
@@ -49,18 +49,18 @@ let Polygon = function (vertices, shared, plane) {
   }
 }
 
-Polygon.prototype = {
+Polygon3.prototype = {
   /** Check whether the polygon is convex. (it should be, otherwise we will get unexpected results)
    * @returns {boolean}
    */
   checkIfConvex: function () {
-    return Polygon.verticesConvex(this.vertices, this.plane.normal)
+    return Polygon3.verticesConvex(this.vertices, this.plane.normal)
   },
 
   // FIXME what? why does this return this, and not a new polygon?
   // FIXME is this used?
   setColor: function (args) {
-    let newshared = Polygon.Shared.fromColor.apply(this, arguments)
+    let newshared = Polygon3.Shared.fromColor.apply(this, arguments)
     this.shared = newshared
     return this
   },
@@ -122,7 +122,7 @@ Polygon.prototype = {
       sidefacepoints.push(polygon2.vertices[i].pos)
       sidefacepoints.push(polygon2.vertices[nexti].pos)
       sidefacepoints.push(polygon1.vertices[nexti].pos)
-      let sidefacepolygon = Polygon.createFromPoints(sidefacepoints, this.shared)
+      let sidefacepolygon = Polygon3.createFromPoints(sidefacepoints, this.shared)
       newpolygons.push(sidefacepolygon)
     }
     polygon2 = polygon2.flipped()
@@ -174,10 +174,10 @@ Polygon.prototype = {
     })
     newvertices.reverse()
     let newplane = this.plane.flipped()
-    return new Polygon(newvertices, this.shared, newplane)
+    return new Polygon3(newvertices, this.shared, newplane)
   },
 
-    // Affine transformation of polygon. Returns a new Polygon
+    // Affine transformation of polygon. Returns a new Polygon3
   transform: function (matrix4x4) {
     let newvertices = this.vertices.map(function (v) {
       return v.transform(matrix4x4)
@@ -188,11 +188,11 @@ Polygon.prototype = {
             // in order to preserve the inside/outside orientation:
       newvertices.reverse()
     }
-    return new Polygon(newvertices, this.shared, newplane)
+    return new Polygon3(newvertices, this.shared, newplane)
   },
 
   toString: function () {
-    let result = 'Polygon plane: ' + this.plane.toString() + '\n'
+    let result = 'Polygon3 plane: ' + this.plane.toString() + '\n'
     this.vertices.map(function (vertex) {
       result += '  ' + vertex.toString() + '\n'
     })
@@ -228,20 +228,20 @@ Polygon.prototype = {
 }
 
 // create from an untyped object with identical property names:
-Polygon.fromObject = function (obj) {
+Polygon3.fromObject = function (obj) {
   const Plane = require('./Plane') // FIXME: circular dependencies
   let vertices = obj.vertices.map(function (v) {
     return Vertex.fromObject(v)
   })
-  let shared = Polygon.Shared.fromObject(obj.shared)
+  let shared = Polygon3.Shared.fromObject(obj.shared)
   let plane = Plane.fromObject(obj.plane)
-  return new Polygon(vertices, shared, plane)
+  return new Polygon3(vertices, shared, plane)
 }
 
 /** Create a polygon from the given points.
  *
  * @param {Array[]} points - list of points
- * @param {Polygon.Shared} [shared=defaultShared] - shared property to apply
+ * @param {Polygon3.Shared} [shared=defaultShared] - shared property to apply
  * @param {Plane} [plane] - plane of the polygon
  *
  * @example
@@ -250,9 +250,9 @@ Polygon.fromObject = function (obj) {
  *   [0, 10, 0],
  *   [0, 10, 10]
  * ]
- * let observed = CSG.Polygon.createFromPoints(points)
+ * let observed = CSG.Polygon3.createFromPoints(points)
  */
-Polygon.createFromPoints = function (points, shared, plane) {
+Polygon3.createFromPoints = function (points, shared, plane) {
   // FIXME : this circular dependency does not work !
   // const {fromPoints} = require('./polygon3Factories')
   // return fromPoints(points, shared, plane)
@@ -264,21 +264,21 @@ Polygon.createFromPoints = function (points, shared, plane) {
   })
   let polygon
   if (arguments.length < 3) {
-    polygon = new Polygon(vertices, shared)
+    polygon = new Polygon3(vertices, shared)
   } else {
-    polygon = new Polygon(vertices, shared, plane)
+    polygon = new Polygon3(vertices, shared, plane)
   }
   return polygon
 }
 
-Polygon.verticesConvex = function (vertices, planenormal) {
+Polygon3.verticesConvex = function (vertices, planenormal) {
   let numvertices = vertices.length
   if (numvertices > 2) {
     let prevprevpos = vertices[numvertices - 2].pos
     let prevpos = vertices[numvertices - 1].pos
     for (let i = 0; i < numvertices; i++) {
       let pos = vertices[i].pos
-      if (!Polygon.isConvexPoint(prevprevpos, prevpos, pos, planenormal)) {
+      if (!Polygon3.isConvexPoint(prevprevpos, prevpos, pos, planenormal)) {
         return false
       }
       prevprevpos = prevpos
@@ -291,27 +291,27 @@ Polygon.verticesConvex = function (vertices, planenormal) {
 // calculate whether three points form a convex corner
 //  prevpoint, point, nextpoint: the 3 coordinates (Vector3D instances)
 //  normal: the normal vector of the plane
-Polygon.isConvexPoint = function (prevpoint, point, nextpoint, normal) {
+Polygon3.isConvexPoint = function (prevpoint, point, nextpoint, normal) {
   let crossproduct = point.minus(prevpoint).cross(nextpoint.minus(point))
   let crossdotnormal = crossproduct.dot(normal)
   return (crossdotnormal >= 0)
 }
 
-Polygon.isStrictlyConvexPoint = function (prevpoint, point, nextpoint, normal) {
+Polygon3.isStrictlyConvexPoint = function (prevpoint, point, nextpoint, normal) {
   let crossproduct = point.minus(prevpoint).cross(nextpoint.minus(point))
   let crossdotnormal = crossproduct.dot(normal)
   return (crossdotnormal >= EPS)
 }
 
-/** Class Polygon.Shared
+/** Class Polygon3.Shared
  * Holds the shared properties for each polygon (Currently only color).
  * @constructor
  * @param {Array[]} color - array containing RGBA values, or null
  *
  * @example
- *   let shared = new CSG.Polygon.Shared([0, 0, 0, 1])
+ *   let shared = new CSG.Polygon3.Shared([0, 0, 0, 1])
  */
-Polygon.Shared = function (color) {
+Polygon3.Shared = function (color) {
   if (color !== null && color !== undefined) {
     if (color.length !== 4) {
       throw new Error('Expecting 4 element array')
@@ -320,11 +320,11 @@ Polygon.Shared = function (color) {
   this.color = color
 }
 
-Polygon.Shared.fromObject = function (obj) {
-  return new Polygon.Shared(obj.color)
+Polygon3.Shared.fromObject = function (obj) {
+  return new Polygon3.Shared(obj.color)
 }
 
-/** Create Polygon.Shared from color values.
+/** Create Polygon3.Shared from color values.
  * @param {number} r - value of RED component
  * @param {number} g - value of GREEN component
  * @param {number} b - value of BLUE component
@@ -332,10 +332,10 @@ Polygon.Shared.fromObject = function (obj) {
  * @param {Array[]} [color] - OR array containing RGB values (optional Alpha)
  *
  * @example
- * let s1 = Polygon.Shared.fromColor(0,0,0)
- * let s2 = Polygon.Shared.fromColor([0,0,0,1])
+ * let s1 = Polygon3.Shared.fromColor(0,0,0)
+ * let s2 = Polygon3.Shared.fromColor([0,0,0,1])
  */
-Polygon.Shared.fromColor = function (args) {
+Polygon3.Shared.fromColor = function (args) {
   let color
   if (arguments.length === 1) {
     color = arguments[0].slice() // make deep copy
@@ -350,10 +350,10 @@ Polygon.Shared.fromColor = function (args) {
   } else if (color.length !== 4) {
     throw new Error('setColor expects either an array with 3 or 4 elements, or 3 or 4 parameters.')
   }
-  return new Polygon.Shared(color)
+  return new Polygon3.Shared(color)
 }
 
-Polygon.Shared.prototype = {
+Polygon3.Shared.prototype = {
   getTag: function () {
     let result = this.tag
     if (!result) {
@@ -369,6 +369,6 @@ Polygon.Shared.prototype = {
   }
 }
 
-Polygon.defaultShared = new Polygon.Shared(null)
+Polygon3.defaultShared = new Polygon3.Shared(null)
 
-module.exports = Polygon
+module.exports = Polygon3

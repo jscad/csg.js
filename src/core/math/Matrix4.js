@@ -1,5 +1,5 @@
-const Vector3D = require('./Vector3')
-const Vector2D = require('./Vector2')
+const Vector3 = require('./Vector3')
+const Vector2 = require('./Vector2')
 const OrthoNormalBasis = require('./OrthoNormalBasis')
 const Plane = require('./Plane')
 
@@ -94,7 +94,7 @@ Matrix4x4.prototype = {
     return new Matrix4x4(elements)
   },
 
-    // Right multiply the matrix by a Vector3D (interpreted as 3 row, 1 column)
+    // Right multiply the matrix by a Vector3 (interpreted as 3 row, 1 column)
     // (result = M*v)
     // Fourth element is taken as 1
   rightMultiply1x3Vector: function (v) {
@@ -113,10 +113,10 @@ Matrix4x4.prototype = {
       y *= invw
       z *= invw
     }
-    return new Vector3D(x, y, z)
+    return new Vector3(x, y, z)
   },
 
-    // Multiply a Vector3D (interpreted as 3 column, 1 row) by this matrix
+    // Multiply a Vector3 (interpreted as 3 column, 1 row) by this matrix
     // (result = v*M)
     // Fourth element is taken as 1
   leftMultiply1x3Vector: function (v) {
@@ -135,10 +135,10 @@ Matrix4x4.prototype = {
       y *= invw
       z *= invw
     }
-    return new Vector3D(x, y, z)
+    return new Vector3(x, y, z)
   },
 
-    // Right multiply the matrix by a Vector2D (interpreted as 2 row, 1 column)
+    // Right multiply the matrix by a Vector2 (interpreted as 2 row, 1 column)
     // (result = M*v)
     // Fourth element is taken as 1
   rightMultiply1x2Vector: function (v) {
@@ -157,10 +157,10 @@ Matrix4x4.prototype = {
       y *= invw
       z *= invw
     }
-    return new Vector2D(x, y)
+    return new Vector2(x, y)
   },
 
-    // Multiply a Vector2D (interpreted as 2 column, 1 row) by this matrix
+    // Multiply a Vector2 (interpreted as 2 column, 1 row) by this matrix
     // (result = v*M)
     // Fourth element is taken as 1
   leftMultiply1x2Vector: function (v) {
@@ -179,14 +179,14 @@ Matrix4x4.prototype = {
       y *= invw
       z *= invw
     }
-    return new Vector2D(x, y)
+    return new Vector2(x, y)
   },
 
     // determine whether this matrix is a mirroring transformation
   isMirroring: function () {
-    var u = new Vector3D(this.elements[0], this.elements[4], this.elements[8])
-    var v = new Vector3D(this.elements[1], this.elements[5], this.elements[9])
-    var w = new Vector3D(this.elements[2], this.elements[6], this.elements[10])
+    var u = new Vector3(this.elements[0], this.elements[4], this.elements[8])
+    var v = new Vector3(this.elements[1], this.elements[5], this.elements[9])
+    var w = new Vector3(this.elements[2], this.elements[6], this.elements[10])
 
         // for a true orthogonal, non-mirrored base, u.cross(v) == w
         // If they have an opposite direction then we are mirroring
@@ -236,8 +236,8 @@ Matrix4x4.rotationZ = function (degrees) {
 
 // Matrix for rotation about arbitrary point and axis
 Matrix4x4.rotation = function (rotationCenter, rotationAxis, degrees) {
-  rotationCenter = new Vector3D(rotationCenter)
-  rotationAxis = new Vector3D(rotationAxis)
+  rotationCenter = new Vector3(rotationCenter)
+  rotationAxis = new Vector3(rotationAxis)
   var rotationPlane = Plane.fromNormalAndPoint(rotationAxis, rotationCenter)
   var orthobasis = new OrthoNormalBasis(rotationPlane)
   var transformation = Matrix4x4.translation(rotationCenter.negated())
@@ -250,8 +250,8 @@ Matrix4x4.rotation = function (rotationCenter, rotationAxis, degrees) {
 
 // Create an affine matrix for translation:
 Matrix4x4.translation = function (v) {
-    // parse as Vector3D, so we can pass an array or a Vector3D
-  var vec = new Vector3D(v)
+    // parse as Vector3, so we can pass an array or a Vector3
+  var vec = new Vector3(v)
   var els = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, vec.x, vec.y, vec.z, 1]
   return new Matrix4x4(els)
 }
@@ -273,8 +273,8 @@ Matrix4x4.mirroring = function (plane) {
 
 // Create an affine matrix for scaling:
 Matrix4x4.scaling = function (v) {
-    // parse as Vector3D, so we can pass an array or a Vector3D
-  var vec = new Vector3D(v)
+    // parse as Vector3, so we can pass an array or a Vector3
+  var vec = new Vector3(v)
   var els = [
     vec.x, 0, 0, 0, 0, vec.y, 0, 0, 0, 0, vec.z, 0, 0, 0, 0, 1
   ]

@@ -1,5 +1,5 @@
-const Vector3D = require('./Vector3')
-const Vertex = require('./Vertex3')
+const Vector3 = require('./Vector3')
+const Vertex3 = require('./Vertex3')
 const Polygon3 = require('./Polygon3')
 
 // FIXME : redundant code with Polygon3.createFromPoints , but unuseable due to circular dependencies
@@ -20,8 +20,8 @@ const Polygon3 = require('./Polygon3')
 const fromPoints = function (points, shared, plane) {
   let vertices = []
   points.map(function (p) {
-    let vec = new Vector3D(p)
-    let vertex = new Vertex(vec)
+    let vec = new Vector3(p)
+    let vertex = new Vertex3(vec)
     vertices.push(vertex)
   })
 
