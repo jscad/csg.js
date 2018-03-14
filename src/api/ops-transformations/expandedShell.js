@@ -1,34 +1,10 @@
 
-const {EPS, angleEPS} = require('../core/constants')
-const Vertex = require('../core/math/Vertex3')
-const Vector2D = require('../core/math/Vector2')
-const Polygon = require('../core/math/Polygon3')
-const {fnNumberSort, isCSG} = require('../core/utils')
-const {fromPoints, fromPointsNoCheck} = require('../core/CAGFactories')
-
-const expand = function (shape, radius, resolution) {
-  let result
-  if (isCSG(shape)) {
-    result = shape.union(expandedShellOfCCSG(shape, radius, resolution))
-    result = result.reTesselated()
-    result.properties = shape.properties // keep original properties
-  } else {
-    result = shape.union(expandedShellOfCAG(shape, radius, resolution))
-  }
-  return result
-}
-
-const contract = function (shape, radius, resolution) {
-  let result
-  if (isCSG(shape)) {
-    result = shape.subtract(expandedShellOfCCSG(shape, radius, resolution))
-    result = result.reTesselated()
-    result.properties = shape.properties // keep original properties
-  } else {
-    result = shape.subtract(expandedShellOfCAG(shape, radius, resolution))
-  }
-  return result
-}
+const {EPS, angleEPS} = require('../../core/constants')
+const Vertex = require('../../core/math/Vertex3')
+const Vector2D = require('../../core/math/Vector2')
+const Polygon = require('../../core/math/Polygon3')
+const {fnNumberSort} = require('../../core/utils')
+const {fromPoints, fromPointsNoCheck} = require('../../core/CAGFactories')
 
 const expandedShellOfCAG = function (_cag, radius, resolution) {
   const CAG = require('../core/CAG')
@@ -330,8 +306,6 @@ const expandedShellOfCCSG = function (_csg, radius, resolution, unionWithThis) {
 }
 
 module.exports = {
-  expand,
-  contract,
   expandedShellOfCAG,
   expandedShellOfCCSG
 }
