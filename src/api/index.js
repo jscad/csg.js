@@ -31,4 +31,7 @@ const exportedApi = {
   debug: {echo}
 }
 
+// easier to access
+// const flatApi = Object.assign({}, primitives2d, primitives3d, booleanOps, transformations, extrusions, color, text)
+
 module.exports = exportedApi

@@ -429,12 +429,14 @@ const cylinderElliptic = function (options) {
   return result
 }
 
+const {sectionCut, cutByPlane} = require('./ops-cuts')
+const {extrudeInOrthonormalBasis} = require('./ops-extrusions')
 // cut the solid at a plane, and stretch the cross-section found along plane normal
 // note: only used in roundedCube() internally
 const stretchAtPlane = function (csg, normal, point, length) {
   let plane = Plane.fromNormalAndPoint(normal, point)
   let onb = new OrthoNormalBasis(plane)
-  let crosssect = sectionCut(onb)
+  let crosssect = sectionCut(csg, onb)
   let midpiece = extrudeInOrthonormalBasis(crosssect, onb, length)
   let piece1 = cutByPlane(csg, plane)
   let piece2 = cutByPlane(csg, plane.flipped())

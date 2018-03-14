@@ -9,9 +9,9 @@ const {fromPolygons} = require('../core/CSGFactories')
 const {cagToPointsArray, clamp, rightMultiply1x3VectorToArray, polygonFromPoints} = require('./helpers')
 const {fromPoints} = require('../core/CAGFactories')
 
-const Vertex3D = require('../math/Vertex3')
-const Vector2D = require('../math/Vector2')
-const Polygon3 = require('../math/Polygon3')
+const Vertex3D = require('../core/math/Vertex3')
+const Vector2D = require('../core/math/Vector2')
+const Polygon3 = require('../core/math/Polygon3')
 /*
     * transform a cag into the polygons of a corresponding 3d plane, positioned per options
     * Accepts a connector for plane positioning, or optionally
@@ -141,7 +141,7 @@ const extrudeInOrthonormalBasis = function (cag, orthonormalbasis, depth, option
   if (!(orthonormalbasis instanceof OrthoNormalBasis)) {
     throw new Error('extrudeInPlane: the first parameter should be a OrthoNormalBasis')
   }
-  let extruded = cag.extrude({
+  let extruded = extrude(cag, {
     offset: [0, 0, depth]
   })
   if (parseOptionAsBool(options, 'symmetrical', false)) {
@@ -283,7 +283,7 @@ function linear_extrude (params, baseShape) {
   const {height, twist, slices, center} = Object.assign({}, defaults, params)
 
   // if(params.convexity) convexity = params.convexity      // abandoned
-  let output = baseShape.extrude({offset: [0, 0, height], twistangle: twist, twiststeps: slices})
+  let output = extrude(baseShape, {offset: [0, 0, height], twistangle: twist, twiststeps: slices})
   if (center === true) {
     const b = output.getBounds() // b[0] = min, b[1] = max
     const offset = (b[1].plus(b[0])).times(-0.5)

@@ -1,5 +1,5 @@
 const {fromPolygons} = require('./CSGFactories')
-const {fromSides, fromFakeCSG} = require('./CAGFactories')
+const {fromFakeCSG} = require('./CAGFactories')
 
 const canonicalize = require('./utils/canonicalize')
 const retesselate = require('./utils/retesellate')
@@ -16,6 +16,13 @@ const {area, getBounds} = require('./utils/cagMeasurements')
 let CAG = function () {
   this.sides = []
   this.isCanonicalized = false
+}
+
+// added here to avoid circular dependencies
+CAG.fromSides = function (sides) {
+  let cag = new CAG()
+  cag.sides = sides
+  return cag
 }
 
 CAG.prototype = {
@@ -75,7 +82,7 @@ CAG.prototype = {
     let newsides = this.sides.map(function (side) {
       return side.transform(matrix4x4)
     })
-    let result = fromSides(newsides)
+    let result = CAG.fromSides(newsides)
     if (ismirror) {
       result = result.flipped()
     }
@@ -87,7 +94,7 @@ CAG.prototype = {
       return side.flipped()
     })
     newsides.reverse()
-    return fromSides(newsides)
+    return CAG.fromSides(newsides)
   },
 
   // ALIAS !

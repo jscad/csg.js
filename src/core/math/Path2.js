@@ -4,6 +4,7 @@ const {parseOptionAs2DVector, parseOptionAsFloat, parseOptionAsInt, parseOptionA
 const {defaultResolution2D} = require('../constants')
 const Vertex = require('./Vertex2')
 const Side = require('./Side')
+const {expandedShell} = require('../../api/ops-expandContract')
 
 /** Class Path2D
  * Represents a series of points, connected by infinitely thin lines.
@@ -195,7 +196,7 @@ Path2D.prototype = {
       prevvertex = vertex
     }
     let shellcag = CAG.fromSides(sides)
-    let expanded = shellcag.expandedShell(pathradius, resolution)
+    let expanded = expandedShell(shellcag, pathradius, resolution)
     return expanded
   },
 

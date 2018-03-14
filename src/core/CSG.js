@@ -4,7 +4,8 @@ const Polygon = require('./math/Polygon3')
 const CAG = require('./CAG') // FIXME: for some weird reason if CAG is imported AFTER frompolygons, a lot of things break???
 
 const Properties = require('./Properties')
-const {fromPolygons} = require('./CSGFactories') // FIXME: circular dependency !
+// const {fromPolygons} = require('./CSGFactories') // FIXME: circular dependency !
+const {toTriangles} = require('./CSGToOther')
 
 const fixTJunctions = require('./utils/fixTJunctions')
 const canonicalize = require('./utils/canonicalize')
@@ -73,7 +74,7 @@ CSG.prototype = {
       b.invert()
 
       let newpolygons = a.allPolygons().concat(b.allPolygons())
-      let result = fromPolygons(newpolygons)
+      let result = this.fromPolygons(newpolygons)
       result.properties = this.properties._merge(csg.properties)
       if (retesselate) result = result.reTesselated()
       if (canonicalize) result = result.canonicalized()
@@ -85,7 +86,7 @@ CSG.prototype = {
   // Do not use if you are not completely sure that the solids do not intersect!
   unionForNonIntersecting: function (csg) {
     let newpolygons = this.polygons.concat(csg.polygons)
-    let result = fromPolygons(newpolygons)
+    let result = this.fromPolygons(newpolygons)
     result.properties = this.properties._merge(csg.properties)
     result.isCanonicalized = this.isCanonicalized && csg.isCanonicalized
     result.isRetesselated = this.isRetesselated && csg.isRetesselated
@@ -132,7 +133,7 @@ CSG.prototype = {
     b.clipTo(a, true)
     a.addPolygons(b.allPolygons())
     a.invert()
-    let result = fromPolygons(a.allPolygons())
+    let result = this.fromPolygons(a.allPolygons())
     result.properties = this.properties._merge(csg.properties)
     if (retesselate) result = result.reTesselated()
     if (canonicalize) result = result.canonicalized()
@@ -181,7 +182,7 @@ CSG.prototype = {
     b.clipTo(a)
     a.addPolygons(b.allPolygons())
     a.invert()
-    let result = fromPolygons(a.allPolygons())
+    let result = this.fromPolygons(a.allPolygons())
     result.properties = this.properties._merge(csg.properties)
     if (retesselate) result = result.reTesselated()
     if (canonicalize) result = result.canonicalized()
@@ -199,7 +200,7 @@ CSG.prototype = {
     let flippedpolygons = this.polygons.map(function (p) {
       return p.flipped()
     })
-    return fromPolygons(flippedpolygons)
+    return this.fromPolygons(flippedpolygons)
     // TODO: flip properties?
   },
 
@@ -208,7 +209,7 @@ CSG.prototype = {
     let newpolygons = this.polygons.map(function (p) {
       return p.transform(matrix4x4)
     })
-    let result = fromPolygons(newpolygons)
+    let result = this.fromPolygons(newpolygons)
     result.properties = this.properties._transform(matrix4x4)
     result.isRetesselated = this.isRetesselated
     return result
@@ -253,7 +254,7 @@ CSG.prototype = {
       if (ismirror) newvertices.reverse()
       return new Polygon(newvertices, p.shared, newplane)
     })
-    let result = fromPolygons(newpolygons)
+    let result = this.fromPolygons(newpolygons)
     result.properties = this.properties._transform(matrix4x4)
     result.isRetesselated = this.isRetesselated
     result.isCanonicalized = this.isCanonicalized
@@ -272,7 +273,7 @@ CSG.prototype = {
 
   // ALIAS !
   fixTJunctions: function () {
-    return fixTJunctions(fromPolygons, this)
+    return fixTJunctions(this.fromPolygons, this)
   },
 
   // ALIAS !
@@ -325,7 +326,7 @@ CSG.prototype = {
     let polygons = this.polygons.map(function (p) {
       return new Polygon(p.vertices, shared, p.plane)
     })
-    let result = fromPolygons(polygons)
+    let result = this.fromPolygons(polygons)
     result.properties = this.properties // keep original properties
     result.isRetesselated = this.isRetesselated
     result.isCanonicalized = this.isCanonicalized
@@ -354,7 +355,7 @@ CSG.prototype = {
     if (!(features instanceof Array)) {
       features = [features]
     }
-    let result = this.toTriangles().map(function (triPoly) {
+    let result = toTriangles(this).map(function (triPoly) {
       return triPoly.getTetraFeatures(features)
     })
     .reduce(function (pv, v) {
@@ -371,6 +372,16 @@ CSG.prototype = {
       result += p.toString()
     })
     return result
+  },
+
+  // this is a method instead of an external file to avoid circular dependencies
+  // ie CSG needs fromPolygons internally which itself creates CSG objects
+  fromPolygons: (polygons) => {
+    let csg = new CSG()
+    csg.polygons = polygons
+    csg.isCanonicalized = false
+    csg.isRetesselated = false
+    return csg
   }
 }
 
