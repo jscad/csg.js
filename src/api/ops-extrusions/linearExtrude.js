@@ -1,5 +1,4 @@
-const extrude = require('./extrusionUtils'
-)
+const {extrude} = require('./extrusionUtils')
 /** linear extrusion of the input 2d shape
  * @param {Object} [options] - options for construction
  * @param {Float} [options.height=1] - height of the extruded shape
@@ -10,9 +9,9 @@ const extrude = require('./extrusionUtils'
  * @returns {CSG} new extruded shape
  *
  * @example
- * let revolved = linear_extrude({height: 10}, square())
+ * let revolved = linearExtrude({height: 10}, square())
  */
-function linear_extrude (params, baseShape) {
+function linearExtrude (params, baseShape) {
   const defaults = {
     height: 1,
     slices: 10,
@@ -32,4 +31,4 @@ function linear_extrude (params, baseShape) {
   return output
 }
 
-module.exports = linear_extrude
+module.exports = linearExtrude

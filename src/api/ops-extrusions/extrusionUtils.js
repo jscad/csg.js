@@ -1,6 +1,8 @@
 const {EPS, defaultResolution3D} = require('../../core/constants')
 const OrthoNormalBasis = require('../../core/math/OrthoNormalBasis')
+
 const {parseOptionAs3DVector, parseOptionAsBool, parseOptionAsFloat, parseOptionAsInt} = require('../optionParsers')
+const CSG = require('../../core/CSG')
 const Vector3D = require('../../core/math/Vector3')
 const {Connector} = require('../../core/connectors')
 const {fromPolygons} = require('../../core/CSGFactories')
@@ -9,11 +11,11 @@ const Vertex3D = require('../../core/math/Vertex3')
 const Vector2D = require('../../core/math/Vector2')
 const Polygon3 = require('../../core/math/Polygon3')
 /*
-    * transform a cag into the polygons of a corresponding 3d plane, positioned per options
-    * Accepts a connector for plane positioning, or optionally
-    * single translation, axisVector, normalVector arguments
-    * (toConnector has precedence over single arguments if provided)
-    */
+* transform a cag into the polygons of a corresponding 3d plane, positioned per options
+* Accepts a connector for plane positioning, or optionally
+* single translation, axisVector, normalVector arguments
+* (toConnector has precedence over single arguments if provided)
+*/
 const _toPlanePolygons = function (_cag, options) {
   const defaults = {
     flipped: false
@@ -174,10 +176,8 @@ const extrudeInPlane = function (cag, axis1, axis2, depth, options) {
  * @example extruded=cag.extrude({offset: [0,0,10], twistangle: 360, twiststeps: 100});
 */
 const extrude = function (cag, options) {
-  const CSG = require('../core/CSG')
   if (cag.sides.length === 0) {
-    // empty! : FIXME: should this throw ?
-    return new CSG()
+    throw new Error('cannot extrude a 2D shape with no edges !!')
   }
   let offsetVector = parseOptionAs3DVector(options, 'offset', [0, 0, 1])
   let twistangle = parseOptionAsFloat(options, 'twistangle', 0)
