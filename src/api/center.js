@@ -11,7 +11,7 @@ const toArray = require('../core/utils/toArray')
  * @example
  * let csg = center({axes: [true,false,false]}, sphere()) // center about the X axis
  */
-const centerV2 = function (options, objects) {
+const center = function (options, objects) {
   const defaults = {
     axes: [true, true, true],
     center: [0, 0, 0]
@@ -33,4 +33,4 @@ const centerV2 = function (options, objects) {
   return results.length === 1 ? results[0] : results
 }
 
-module.exports = centerV2
+module.exports = center
