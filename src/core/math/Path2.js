@@ -2,9 +2,6 @@ const Vector2D = require('./Vector2')
 const {EPS, angleEPS} = require('../constants')
 const {parseOptionAs2DVector, parseOptionAsFloat, parseOptionAsInt, parseOptionAsBool} = require('../../api/optionParsers')
 const {defaultResolution2D} = require('../constants')
-const Vertex = require('./Vertex2')
-const Side = require('./Side')
-const {expandedShell} = require('../../api/ops-expandContract')
 
 /** Class Path2D
  * Represents a series of points, connected by infinitely thin lines.

@@ -1,7 +1,9 @@
 const Tree = require('./trees')
 const Polygon = require('./math/Polygon3')
 
-// const CAG = require('./CAG') // FIXME: for some weird reason if CAG is imported AFTER frompolygons, a lot of things break???
+const Matrix4x4 = require('./math/Matrix4')
+const Vector3 = require('./math/Vector3')
+const Plane = require('./math/Plane')
 
 const Properties = require('./Properties')
 const {toTriangles} = require('./CSGToOther')
@@ -268,6 +270,49 @@ CSG.prototype = {
     result.isRetesselated = this.isRetesselated
     result.isCanonicalized = this.isCanonicalized
     return result
+  },
+
+  translate: function (v) {
+    return this.transform(Matrix4x4.translation(v))
+  },
+
+  scale: function (f) {
+    return this.transform(Matrix4x4.scaling(f))
+  },
+
+  rotateX: function (deg) {
+    return this.transform(Matrix4x4.rotationX(deg))
+  },
+
+  rotateY: function (deg) {
+    return this.transform(Matrix4x4.rotationY(deg))
+  },
+
+  rotateZ: function (deg) {
+    return this.transform(Matrix4x4.rotationZ(deg))
+  },
+
+  rotate: function (rotationCenter, rotationAxis, degrees) {
+    return this.transform(Matrix4x4.rotation(rotationCenter, rotationAxis, degrees))
+  },
+
+  mirrored: function (plane) {
+    return this.transform(Matrix4x4.mirroring(plane))
+  },
+
+  mirroredX: function () {
+    let plane = new Plane(Vector3.Create(1, 0, 0), 0)
+    return this.mirrored(plane)
+  },
+
+  mirroredY: function () {
+    let plane = new Plane(Vector3.Create(0, 1, 0), 0)
+    return this.mirrored(plane)
+  },
+
+  mirroredZ: function () {
+    let plane = new Plane(Vector3.Create(0, 0, 1), 0)
+    return this.mirrored(plane)
   },
 
   // ALIAS !
