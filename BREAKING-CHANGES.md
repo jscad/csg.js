@@ -28,6 +28,9 @@
   ## Extrusions
 
     - rectangular_extrude (basePoints, params) => rectangularExtrude(params, basePoints)
+    - linear_extrude => linearExtrude
+    - rotate_extrude => rotateExtrude
+    - extrusions of 2d shapes with no edges (sides length === 0) will now throw an error
 
 
 # Things to fix:
