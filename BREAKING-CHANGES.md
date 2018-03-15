@@ -6,7 +6,9 @@
 # API
 
     - snake case methods are now camel case: ie chain_hull => chainHull
-    - 
+    - a SINGLE function per shape : no more CSG.sphere() vs sphere()
+      - unified functions keep the openscad shortcuts, but also add more explicit ones
+        - ie : h => height, fn => segments
 
   ## Transformations
 
@@ -16,7 +18,12 @@
 
   ## Primitives
 
-    - TODO: add shape changes
+    - square => rectangle
+    - circle => ellipse
+    - triangle => GONE
+
+    - cube => cuboid
+    - sphere => spheroid ? (not sure about this one)
 
   ## Extrusions
 
