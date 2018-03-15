@@ -1,7 +1,7 @@
-const Matrix4 = require('../core/math/Matrix4')
-const {cagToPointsArray, clamp, rightMultiply1x3VectorToArray, polygonFromPoints} = require('./helpers')
-const {fromPoints} = require('../core/CAGFactories')
-const {fromPolygons} = require('../core/CSGFactories')
+const Matrix4 = require('../../core/math/Matrix4')
+const {cagToPointsArray, clamp, rightMultiply1x3VectorToArray, polygonFromPoints} = require('../helpers')
+const {fromPoints} = require('../../core/CAGFactories')
+const {fromPolygons} = require('../../core/CSGFactories')
 const {_toPlanePolygons} = require('./extrusionUtils')
 
 /** rotate extrusion / revolve of the given 2d shape

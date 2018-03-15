@@ -1,6 +1,27 @@
 const {isCSG} = require('../../core/utils')
 const {expandedShellOfCAG, expandedShellOfCCSG} = require('./expandedShell')
 
+const contract = function (shape, radius, resolution) {
+  let result
+  if (isCSG(shape)) {
+    result = shape.subtract(expandedShellOfCCSG(shape, radius, resolution))
+    result = result.reTesselated()
+    result.properties = shape.properties // keep original properties
+  } else {
+    result = shape.subtract(expandedShellOfCAG(shape, radius, resolution))
+  }
+  return result
+}
+
+/** // FIXME: conflict between API & internal
+ * expand/contract an object in 2D/3D space
+ * @param {Object} shape a CSG/CAG objects to expand
+ * @param {float} radius - the radius to expand by
+ * @returns {CSG/CAG} new CSG/CAG object , expanded
+ *
+ * @example
+ * let expandedShape = expand(sphere(), [0.2,15,1])
+ */
 const expand = function (shape, radius, resolution) {
   let result
   if (isCSG(shape)) {
@@ -11,18 +32,6 @@ const expand = function (shape, radius, resolution) {
     result = shape.union(expandedShellOfCAG(shape, radius, resolution))
   }
   return result
-}
-// FIXME: conflict between API & internal
-/** expand an object in 2D/3D space
- * @param {float} radius - the radius to expand by
- * @param {Object} object a CSG/CAG objects to expand
- * @returns {CSG/CAG} new CSG/CAG object , expanded
- *
- * @example
- * let expanededShape = expand([0.2,15,1], sphere())
- */
-function _expand (radius, n, object) {
-  return expand(object, radius, n)
 }
 
 module.exports = expand

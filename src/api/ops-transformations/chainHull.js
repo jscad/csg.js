@@ -1,4 +1,4 @@
-const { union } = require('./ops-booleans')
+const union = require('../ops-booleans/union')
 const hull = require('./hull')
 
 /** create a chain hull of the given shapes

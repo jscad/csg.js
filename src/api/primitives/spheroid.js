@@ -1,19 +1,15 @@
-const {CSG} = require('../../csg')
-const { circle } = require('./primitives2d-api')
-const { translate, scale } = require('./ops-transformations')
-const Polygon3 = require('../core/math/Polygon3')
-const Vector3 = require('../core/math/Vector3')
-const Vertex3 = require('../core/math/Vertex3')
-
-const {parseOption, parseOptionAs3DVector, parseOptionAs2DVector, parseOptionAs3DVectorList, parseOptionAsFloat, parseOptionAsInt} = require('./optionParsers')
-const {defaultResolution3D, defaultResolution2D, EPS} = require('../../core/constants')
+const translate = require('../ops-transformations/translate')
+const scale = require('../ops-transformations/scale')
+const Polygon3 = require('../../core/math/Polygon3')
 const Vector3 = require('../../core/math/Vector3')
 const Vertex3 = require('../../core/math/Vertex3')
-const Polygon3 = require('../../core/math/Polygon3')
-const {Connector} = require('../../core/connectors')
+
+const {parseOptionAs3DVector, parseOptionAsFloat, parseOptionAsInt} = require('../optionParsers')
+const {defaultResolution3D} = require('../../core/constants')
 const Properties = require('../../core/Properties')
 const {fromPolygons} = require('../../core/CSGFactories')
 
+const polyhedron = require('./polyhedron')
 
 /** Construct a sphere
  * @param {Object} [options] - options for construction
@@ -43,7 +39,7 @@ function sphere (params) {
   }
   // let zoffset = 0 // sphere() in openscad has no center:true|false
 
-  let output = type === 'geodesic' ? geodesicSphere(params) : CSG.sphere({radius: r, resolution: fn})
+  let output = type === 'geodesic' ? geodesicSphere(params) : _sphere({radius: r, resolution: fn})
 
   // preparing individual x,y,z center
   if (params && params.center && params.center.length) {
@@ -72,7 +68,7 @@ function sphere (params) {
  *   resolution: 32,
  * });
 */
-const sphere = function (options) {
+const _sphere = function (options) {
   options = options || {}
   let center = parseOptionAs3DVector(options, 'center', [0, 0, 0])
   let radius = parseOptionAsFloat(options, 'radius', 1)
@@ -239,7 +235,7 @@ function geodesicSphere (params) {
   let offset = 0
 
   for (let i = 0; i < ti.length; i++) {
-    let g = geodesicSubDivide([ ci[ti[i][0]], ci[ti[i][1]], ci[ti[i][2]]], fn, offset)
+    let g = geodesicSubDivide([ ci[ti[i][0]], ci[ti[i][1]], ci[ti[i][2]] ], fn, offset)
     c = c.concat(g.points)
     f = f.concat(g.triangles)
     offset = g.offset

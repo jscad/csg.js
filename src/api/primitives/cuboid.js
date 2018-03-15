@@ -1,21 +1,19 @@
-const Vector3 = require('../core/math/Vector3')
-const Vertex3 = require('../core/math/Vertex3')
-const {sectionCut, cutByPlane} = require('./ops-cuts')
-const {extrudeInOrthonormalBasis} = require('./ops-extrusions')
-const { translate } = require('./ops-transformations')
-const Polygon3 = require('../core/math/Polygon3')
-const Plane = require('../core/math/Plane')
-const OrthoNormalBasis = require('../core/math/OrthoNormalBasis')
-
-const {parseOption, parseOptionAs3DVector, parseOptionAs2DVector, parseOptionAs3DVectorList, parseOptionAsFloat, parseOptionAsInt} = require('./optionParsers')
-const {defaultResolution3D, defaultResolution2D, EPS} = require('../../core/constants')
 const Vector3 = require('../../core/math/Vector3')
 const Vertex3 = require('../../core/math/Vertex3')
+const {sectionCut, cutByPlane} = require('../ops-cuts')
+const {extrudeInOrthonormalBasis} = require('../ops-extrusions/extrusionUtils')
+const translate = require('../ops-transformations/translate')
 const Polygon3 = require('../../core/math/Polygon3')
+const Plane = require('../../core/math/Plane')
+const OrthoNormalBasis = require('../../core/math/OrthoNormalBasis')
+
+const {parseOptionAs3DVector, parseOptionAsInt} = require('../optionParsers')
+const {defaultResolution3D, EPS} = require('../../core/constants')
 const {Connector} = require('../../core/connectors')
 const Properties = require('../../core/Properties')
 const {fromPolygons} = require('../../core/CSGFactories')
 
+const sphere = require('./spheroid')
 
 // cut the solid at a plane, and stretch the cross-section found along plane normal
 // note: only used in roundedCube() internally
@@ -29,7 +27,6 @@ const stretchAtPlane = function (csg, normal, point, length) {
   let result = piece1.union([midpiece, piece2.translate(plane.normal.times(length))])
   return result
 }
-
 
 /** Construct a cuboid
  * @param {Object} [options] - options for construction
@@ -170,7 +167,6 @@ const _cube = function (options) {
   return result
 }
 
-
 /** Construct an axis-aligned solid rounded cuboid.
  * @param {Object} [options] - options for construction
  * @param {Vector3} [options.center=[0,0,0]] - center of rounded cube
@@ -187,7 +183,7 @@ const _cube = function (options) {
  *   resolution: 36,
  * });
  */
-const roundedCube = function (options) {
+const _roundedCube = function (options) {
   let minRR = 1e-2 // minroundradius 1e-3 gives rounding errors already
   let center
   let cuberadius
@@ -222,7 +218,7 @@ const roundedCube = function (options) {
   innerradius.x > EPS && (res = stretchAtPlane(res, [1, 0, 0], [0, 0, 0], 2 * innerradius.x))
   innerradius.y > EPS && (res = stretchAtPlane(res, [0, 1, 0], [0, 0, 0], 2 * innerradius.y))
   innerradius.z > EPS && (res = stretchAtPlane(res, [0, 0, 1], [0, 0, 0], 2 * innerradius.z))
-  res = res.translate([-innerradius.x + center.x, -innerradius.y + center.y, -innerradius.z + center.z])
+  res = translate([-innerradius.x + center.x, -innerradius.y + center.y, -innerradius.z + center.z], res)
   res = res.reTesselated()
   res.properties.roundedCube = new Properties()
   res.properties.roundedCube.center = new Vertex3(center)

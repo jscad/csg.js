@@ -1,6 +1,9 @@
 const test = require('ava')
-const { cube, sphere, cylinder } = require('./primitives3d-api')
-const { square, circle } = require('./primitives2d-api')
+const cube = require('./primitives/cuboid')
+const sphere = require('./primitives/spheroid')
+const cylinder = require('./primitives/cylinder')
+const square = require('./primitives/rectangle')
+const circle = require('./primitives/circle')
 const { color, rgb2hsl, hsl2rgb, rgb2hsv, hsv2rgb, html2rgb, rgb2html, css2rgb } = require('./color')
 
 test('css2rgb', t => {

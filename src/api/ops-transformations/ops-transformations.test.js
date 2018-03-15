@@ -1,8 +1,20 @@
 const test = require('ava')
 const { sideEquals } = require('../test-helpers')
-const { cube, sphere } = require('../primitives3d-api')
-const { square, circle } = require('../primitives2d-api')
-const { translate, rotate, scale, transform, center, mirror, expand, contract, minkowski, hull, chain_hull } = require('./ops-transformations')
+const cube = require('../primitives/cuboid')
+const sphere = require('../primitives/spheroid')
+const circle = require('../primitives/circle')
+const rectangle = require('../primitives/rectangle')
+
+const translate = require('./translate')
+const rotate = require('./rotate')
+const scale = require('./scale')
+const transform = require('./transform')
+const center = require('./center')
+const mirror = require('./mirror')
+const expand = require('./expand')
+const minkowski = require('./minkowski')
+const hull = require('./hull')
+const chainHull = require('./chainHull')
 
 // TODO: since cube, sphere etc rely on some of the transformations, we should be creating csg objects 'from scratch' instead
 // of using those since it is not a very good independant test otherwise
@@ -33,7 +45,7 @@ test('translate (multiple items in array, 3d)', t => {
 })
 
 test('translate (single item , 2d)', t => {
-  const op1 = square()
+  const op1 = rectangle()
   const obs = translate([0, 10, 0], op1)
 
   t.deepEqual(obs.sides[0], { vertex0: { pos: { _x: 0, _y: 11 } }, vertex1: { pos: { _x: 0, _y: 10 } } })
@@ -41,7 +53,7 @@ test('translate (single item , 2d)', t => {
 })
 
 test('translate (multiple items, 2d)', t => {
-  const op1 = square()
+  const op1 = rectangle()
   const op2 = circle()
   const obs = translate([0, 10, 0], op1, op2)
 
@@ -50,7 +62,7 @@ test('translate (multiple items, 2d)', t => {
 })
 
 test('translate (multiple items in array, 2d)', t => {
-  const op1 = square()
+  const op1 = rectangle()
   const op2 = circle()
   const obs = translate([0, 10, 0], op1, op2)
 
@@ -89,7 +101,7 @@ test('rotate (single item angle axis style)', t => {
 })
 
 test('rotate (multiple items, 2d)', t => {
-  const op1 = square()
+  const op1 = rectangle()
   const op2 = circle()
   const obs = rotate([0, 10, 0], op1, op2)
 
@@ -123,7 +135,7 @@ test('scale (multiple items in array)', t => {
 })
 
 test('scale (multiple items, 2d)', t => {
-  const op1 = square()
+  const op1 = rectangle()
   const op2 = circle()
   const obs = scale([0, 10, 0], op1, op2)
 
@@ -170,7 +182,7 @@ test('transform should fail if provided with anything but a flat array of number
 })
 
 test('transform (multiple items, 2d , translation)', t => {
-  const op1 = square()
+  const op1 = rectangle()
   const op2 = circle()
   const obs = transform(
     [1, 0, 0, 0,
@@ -197,7 +209,7 @@ test('center (multiple item)', t => {
 })
 
 test('center (multiple items, 2d)', t => {
-  const op1 = square()
+  const op1 = rectangle()
   const op2 = circle()
   const obs = center(true, op1, op2)
 
@@ -220,7 +232,7 @@ test('mirror (multiple item)', t => {
 })
 
 test.failing('mirror (multiple items, 2d)', t => {
-  const op1 = square().translate([0, 5])
+  const op1 = rectangle().translate([0, 5])
   const op2 = circle().translate([5, 2])
   const obs = mirror(true, op1, op2)
 
@@ -244,7 +256,7 @@ test.failing('expand (multiple items)', t => {
 })
 
 test('expand (multiple items, 2d)', t => {
-  const op1 = square()
+  const op1 = rectangle()
   const op2 = circle()
   const obs = expand(10, 5, op1, op2)
 
@@ -257,7 +269,7 @@ test('expand (multiple items, 2d)', t => {
 // seems to work for 2d shapes?
 test.failing('contract (single item)', t => {
   const op1 = cube({size: 10})
-  const obs = contract(5, 1, op1)
+  const obs = expand(-5, 1, op1)
   console.log('obs', obs)
 
   t.deepEqual(obs.polygons[0].vertices[0], {pos: {_x: -10, _y: 0, _z: 0}})
@@ -266,16 +278,16 @@ test.failing('contract (single item)', t => {
 test.failing('contract (multiple items, 3d)', t => {
   const op1 = cube()
   const op2 = sphere()
-  const obs = contract(5, 1, op1, op2)
+  const obs = expand(-5, 1, op1, op2)
 
   t.deepEqual(obs.polygons[0].vertices[0], {pos: {_x: -10, _y: 0, _z: 0}})
   t.deepEqual(obs.properties.sphere.center, {_x: 0, _y: 0, _z: 0})
 })
 
 test.failing('contract (multiple items, 2d)', t => {
-  const op1 = square()
+  const op1 = rectangle()
   const op2 = circle()
-  const obs = contract(10, 5, op1, op2)
+  const obs = expand(-10, 5, op1, op2)
 
   // FIXME: these are fake values, but it does not work either way
   t.deepEqual(obs.sides[0], {vertex0: {pos: {_x: 11, _y: 0}}, vertex1: {pos: {_x: 11, _y: 1}}})
@@ -301,7 +313,7 @@ test.failing('hull (multiple items, 3d)', t => {
 })
 
 test('hull (multiple items, 2d)', t => {
-  const op1 = square()
+  const op1 = rectangle()
   const op2 = circle()
   const obs = hull(op1, op2)
 
@@ -309,19 +321,19 @@ test('hull (multiple items, 2d)', t => {
   t.deepEqual(obs.sides[obs.sides.length - 1], {vertex0: {pos: {_x: 0.01921471959676957, _y: 1.1950903220161286}}, vertex1: {pos: {_x: 0, _y: 1.0000000000000002}}})
 })
 
-test.failing('chain_hull (multiple items 3d)', t => {
+test.failing('chainHull (multiple items 3d)', t => {
   const op1 = cube()
   const op2 = sphere()
-  const obs = chain_hull(op1, op2)
+  const obs = chainHull(op1, op2)
 
   t.deepEqual(obs.properties.cube.center, {_x: 0.5, _y: 10.5, _z: 0.5})
   t.deepEqual(obs.properties.sphere.center, {_x: 0, _y: 10, _z: 0})
 })
 
-test('chain_hull (multiple items, 2d)', t => {
-  const op1 = square()
+test('chainHull (multiple items, 2d)', t => {
+  const op1 = rectangle()
   const op2 = circle()
-  const obs = chain_hull(op1, op2)
+  const obs = chainHull(op1, op2)
 
   t.deepEqual(obs.sides[0], {vertex0: {pos: {_x: 0, _y: 1.0000000000000002}}, vertex1: {pos: {_x: 0, _y: 0}}})
   t.deepEqual(obs.sides[obs.sides.length - 1], {vertex0: {pos: {_x: 0.01921471959676957, _y: 1.1950903220161286}}, vertex1: {pos: {_x: 0, _y: 1.0000000000000002}}})

@@ -1,19 +1,15 @@
-const {CSG} = require('../../csg')
-const { circle } = require('./primitives2d-api')
-const { translate, scale } = require('./ops-transformations')
-const Polygon3 = require('../core/math/Polygon3')
-const Vector3 = require('../core/math/Vector3')
-const Vertex3 = require('../core/math/Vertex3')
-
-const {parseOption, parseOptionAs3DVector, parseOptionAs2DVector, parseOptionAs3DVectorList, parseOptionAsFloat, parseOptionAsInt} = require('./optionParsers')
-const {defaultResolution3D, defaultResolution2D, EPS} = require('../../core/constants')
+const translate = require('../ops-transformations/translate')
+const Polygon3 = require('../../core/math/Polygon3')
 const Vector3 = require('../../core/math/Vector3')
 const Vertex3 = require('../../core/math/Vertex3')
-const Polygon3 = require('../../core/math/Polygon3')
+
+const {parseOptionAs3DVector, parseOptionAs2DVector, parseOptionAsFloat, parseOptionAsInt} = require('../optionParsers')
+const {defaultResolution3D, defaultResolution2D, EPS} = require('../../core/constants')
 const {Connector} = require('../../core/connectors')
 const Properties = require('../../core/Properties')
 const {fromPolygons} = require('../../core/CSGFactories')
 
+const sphere = require('./spheroid')
 
 /** Construct a cylinder // API
  * @param {Object} [options] - options for construction
@@ -75,12 +71,12 @@ function cylinder (params) {
   let object
   if (params && (params.start && params.end)) {
     object = round
-      ? CSG.roundedCylinder({start: params.start, end: params.end, radiusStart: r1, radiusEnd: r2, resolution: fn})
-      : CSG.cylinder({start: params.start, end: params.end, radiusStart: r1, radiusEnd: r2, resolution: fn})
+      ? _roundedCylinder({start: params.start, end: params.end, radiusStart: r1, radiusEnd: r2, resolution: fn})
+      : _cylinder({start: params.start, end: params.end, radiusStart: r1, radiusEnd: r2, resolution: fn})
   } else {
     object = round
-      ? CSG.roundedCylinder({start: [0, 0, 0], end: [0, 0, h], radiusStart: r1, radiusEnd: r2, resolution: fn})
-      : CSG.cylinder({start: [0, 0, 0], end: [0, 0, h], radiusStart: r1, radiusEnd: r2, resolution: fn})
+      ? _roundedCylinder({start: [0, 0, 0], end: [0, 0, h], radiusStart: r1, radiusEnd: r2, resolution: fn})
+      : _cylinder({start: [0, 0, 0], end: [0, 0, h], radiusStart: r1, radiusEnd: r2, resolution: fn})
     let r = r1 > r2 ? r1 : r2
     if (params && params.center && params.center.length) { // preparing individual x,y,z center
       offset = [params.center[0] ? 0 : r, params.center[1] ? 0 : r, params.center[2] ? -h / 2 : 0]
@@ -110,7 +106,7 @@ function cylinder (params) {
  *   resolution: 16
  * });
  */
-const cylinder = function (options) {
+const _cylinder = function (options) {
   let s = parseOptionAs3DVector(options, 'start', [0, -1, 0])
   let e = parseOptionAs3DVector(options, 'end', [0, 1, 0])
   let r = parseOptionAsFloat(options, 'radius', 1)
@@ -199,7 +195,7 @@ const cylinder = function (options) {
  *   resolution: 16
  * });
  */
-const roundedCylinder = function (options) {
+const _roundedCylinder = function (options) {
   let p1 = parseOptionAs3DVector(options, 'start', [0, -1, 0])
   let p2 = parseOptionAs3DVector(options, 'end', [0, 1, 0])
   let radius = parseOptionAsFloat(options, 'radius', 1)
@@ -299,7 +295,7 @@ const roundedCylinder = function (options) {
  *     });
  */
 
-const cylinderElliptic = function (options) {
+const _cylinderElliptic = function (options) {
   let s = parseOptionAs3DVector(options, 'start', [0, -1, 0])
   let e = parseOptionAs3DVector(options, 'end', [0, 1, 0])
   let r = parseOptionAs2DVector(options, 'radius', [1, 1])
@@ -356,3 +352,5 @@ const cylinderElliptic = function (options) {
   result.properties.cylinder.facepoint = s.plus(axisX.times(rStart))
   return result
 }
+
+module.exports = cylinder

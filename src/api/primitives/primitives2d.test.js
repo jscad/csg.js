@@ -1,6 +1,8 @@
 const test = require('ava')
-const { square, circle, triangle, polygon } = require('./primitives2d-api')
-const { sideEquals, shape2dToNestedArray } = require('./test-helpers')
+const square = require('./rectangle')
+const circle = require('./circle')
+const polygon = require('./polygon')
+const { sideEquals, shape2dToNestedArray } = require('../test-helpers')
 
 /* FIXME : not entirely sure how to deal with this, but for now relies on inspecting
 output data structures: we should have higher level primitives ... */
@@ -19,7 +21,7 @@ function comparePositonVertices (obs, exp) {
   return true
 }
 
-test.failing('triangle (defaults)', t => {
+/*test.failing('triangle (defaults)', t => {
   const obs = triangle()
 
   const expSides = [
@@ -41,7 +43,7 @@ test.failing('triangle (custom size)', t => {
   ]
   t.deepEqual(obs.sides.length, 3)
   t.truthy(comparePositonVertices(obs.sides, expSides))
-})
+})*/
 
 test('square (defaults)', t => {
   const obs = square()
