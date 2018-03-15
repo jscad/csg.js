@@ -5,7 +5,7 @@
  *
  * @example
  * let rotatedSphere = rotate([0.2,15,1], sphere())
- */
+ */// rotation, ...objects
 function rotate () {
   let o
   let i
