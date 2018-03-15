@@ -1,5 +1,6 @@
 const Vector2 = require('../../core/math/Vector2')
 const {parseOptionAs2DVector, parseOptionAsFloat, parseOptionAsInt} = require('../optionParsers')
+const {fromPoints} = require('../../core/CAGFactories')
 
 /** Construct a square/rectangle
  * @param {Object} [options] - options for construction
@@ -8,7 +9,7 @@ const {parseOptionAs2DVector, parseOptionAsFloat, parseOptionAsInt} = require('.
  * @returns {CAG} new square
  *
  * @example
- * let square1 = square({
+ * let rectangle1 = rectangle({
  *   size: 10
  * })
  */
