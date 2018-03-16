@@ -1,5 +1,5 @@
 const Tree = require('./trees')
-const Polygon = require('./math/Polygon3')
+const Polygon3 = require('./math/Polygon3')
 
 const Matrix4x4 = require('./math/Matrix4')
 const Vector3 = require('./math/Vector3')
@@ -263,7 +263,7 @@ CSG.prototype = {
         return newvertex
       })
       if (ismirror) newvertices.reverse()
-      return new Polygon(newvertices, p.shared, newplane)
+      return new Polygon3(newvertices, p.shared, newplane)
     })
     let result = CSG.fromPolygons(newpolygons)
     result.properties = this.properties._transform(matrix4x4)
@@ -378,7 +378,7 @@ CSG.prototype = {
    */
   setShared: function (shared) {
     let polygons = this.polygons.map(function (p) {
-      return new Polygon(p.vertices, shared, p.plane)
+      return new Polygon3(p.vertices, shared, p.plane)
     })
     let result = CSG.fromPolygons(polygons)
     result.properties = this.properties // keep original properties
@@ -392,7 +392,7 @@ CSG.prototype = {
    * @returns {CSG} a copy of this CSG, with the given color
    */
   setColor: function (args) {
-    let newshared = Polygon.Shared.fromColor.apply(this, arguments)
+    let newshared = Polygon3.Shared.fromColor.apply(this, arguments)
     return this.setShared(newshared)
   },
 

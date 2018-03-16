@@ -1,8 +1,9 @@
 const Side = require('./math/Side')
-const Vector2D = require('./math/Vector2')
+const Vector2 = require('./math/Vector2')
 const Vertex2 = require('./math/Vertex2')
 const {areaEPS} = require('./constants')
 const {isSelfIntersecting} = require('./utils/cagValidation')
+const {canonicalize} = require('./utils/canonicalize')
 
 /** Construct a CAG from a list of `Side` instances.
  * this is a duplicate of CAG's fromSides to avoid circular dependency CAG => fromSides => CAG
@@ -10,7 +11,7 @@ const {isSelfIntersecting} = require('./utils/cagValidation')
  * @returns {CAG} new CAG object
  */
 const fromSides = function (sides) {
-  const CAG = require('./CAG') 
+  const CAG = require('./CAG')
   let cag = new CAG()
   cag.sides = sides
   return cag
@@ -39,10 +40,10 @@ const fromPoints = function (points) {
   let numpoints = points.length
   if (numpoints < 3) throw new Error('CAG shape needs at least 3 points')
   let sides = []
-  let prevpoint = new Vector2D(points[numpoints - 1])
+  let prevpoint = new Vector2(points[numpoints - 1])
   let prevvertex = new Vertex2(prevpoint)
   points.map(function (p) {
-    let point = new Vector2D(p)
+    let point = new Vector2(p)
     let vertex = new Vertex2(point)
     let side = new Side(prevvertex, vertex)
     sides.push(side)
@@ -59,7 +60,7 @@ const fromPoints = function (points) {
   if (area < 0) {
     result = result.flipped()
   }
-  result = result.canonicalized()
+  result = canonicalize(result)
   return result
 }
 
@@ -86,10 +87,10 @@ const fromObject = function (obj) {
  */
 const fromPointsNoCheck = function (points) {
   let sides = []
-  let prevpoint = new Vector2D(points[points.length - 1])
+  let prevpoint = new Vector2(points[points.length - 1])
   let prevvertex = new Vertex2(prevpoint)
   points.map(function (p) {
-    let point = new Vector2D(p)
+    let point = new Vector2(p)
     let vertex = new Vertex2(point)
     let side = new Side(prevvertex, vertex)
     sides.push(side)
@@ -121,7 +122,7 @@ const fromCompactBinary = function (bin) {
   for (let vertexindex = 0; vertexindex < numvertices; vertexindex++) {
     let x = vertexData[arrayindex++]
     let y = vertexData[arrayindex++]
-    let pos = new Vector2D(x, y)
+    let pos = new Vector2(x, y)
     let vertex = new Vertex2(pos)
     vertices.push(vertex)
   }

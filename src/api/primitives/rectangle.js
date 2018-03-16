@@ -2,11 +2,11 @@ const Vector2 = require('../../core/math/Vector2')
 const {fromPoints} = require('../../core/CAGFactories')
 const {parseOptionAs2DVector, parseOptionAsFloat, parseOptionAsInt} = require('../optionParsers')
 
-/** Construct a square/rectangle
+/** Construct a rectangle/square
  * @param {Object} [options] - options for construction
  * @param {Float} [options.size=1] - size of the square, either as array or scalar
- * @param {Boolean} [options.center=true] - wether to center the square/rectangle or not
- * @returns {CAG} new square
+ * @param {Boolean} [options.center=true] - wether to center the rectangle/square or not
+ * @returns {CAG} new rectangle
  *
  * @example
  * let rectangle1 = rectangle({

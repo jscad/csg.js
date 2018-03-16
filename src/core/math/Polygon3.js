@@ -199,7 +199,7 @@ Polygon3.prototype = {
     return result
   },
 
-    // project the 3D polygon onto a plane
+  // project the 3D polygon onto a plane
   projectToOrthoNormalBasis: function (orthobasis) {
     const CAG = require('../CAG')
     const {fromPointsNoCheck} = require('../CAGFactories') // circular dependencies
@@ -217,12 +217,6 @@ Polygon3.prototype = {
       result = result.flipped()
     }
     return result
-  },
-
-  // ALIAS ONLY!!
-  solidFromSlices: function (options) {
-    const solidFromSlices = require('../../api/solidFromSlices')
-    return solidFromSlices(this, options)
   }
 
 }
