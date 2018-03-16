@@ -11,8 +11,9 @@ const {fnSortByIndex} = require('../core/utils')
  *          arguments: t = [0..1], slice = [0..numslices - 1]
  *          return: Polygon or null to skip
  *  - loop {Boolean} no flats, only walls, it's used to generate solids like a tor
+ *  @param {Polygon3} options base polygon
  */
-const solidFromSlices = function (polygon, options) {
+const solidFromSlices = function (options, polygon) {
   let polygons = []
   let csg = null
   let prev = null
@@ -47,7 +48,7 @@ const solidFromSlices = function (polygon, options) {
     csg = fnCallback.call(polygon, i / iMax, i)
     if (csg) {
       if (!(csg instanceof Polygon)) {
-        throw new Error('Polygon.solidFromSlices callback error: Polygon expected')
+        throw new Error('SolidFromSlices callback error: Polygon expected')
       }
       csg.checkIfConvex()
 
