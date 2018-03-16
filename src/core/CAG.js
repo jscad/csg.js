@@ -117,10 +117,6 @@ CAG.prototype = {
     return this.transform(Matrix4x4.rotation(rotationCenter, rotationAxis, degrees))
   },
 
-  rotate: function (rotationCenter, rotationAxis, degrees) {
-    return this.transform(Matrix4x4.rotation(rotationCenter, rotationAxis, degrees))
-  },
-
   mirrored: function (plane) {
     return this.transform(Matrix4x4.mirroring(plane))
   },
@@ -148,10 +144,6 @@ CAG.prototype = {
     return CAG.fromSides(newsides)
   },
 
-  // ALIAS !
-  center: function (axes) {
-    return center({axes: axes}, [this])
-  },
   area: function () {
     return area(this)
   },

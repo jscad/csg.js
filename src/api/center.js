@@ -18,12 +18,12 @@ const center = function (options, objects) {
   // TODO : Add addition 'methods' of centering; midpoint, centeriod
   }
   options = Object.assign({}, defaults, options)
-  const {axes,center} = options
+  const {axes, center} = options
   objects = toArray(objects)
 
   const results = objects.map(function (object) {
     let bounds = object.getBounds()
-    let offset = [0,0,0]
+    let offset = [0, 0, 0]
     if (axes[0]) offset[0] = center[0] - (bounds[0].x + ((bounds[1].x - bounds[0].x) / 2))
     if (axes[1]) offset[1] = center[1] - (bounds[0].y + ((bounds[1].y - bounds[0].y) / 2))
     if (axes[2]) offset[2] = center[2] - (bounds[0].z + ((bounds[1].y - bounds[0].y) / 2))
