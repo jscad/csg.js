@@ -13,8 +13,7 @@
   ## Transformations
 
     - expand/contract is now only expand, with negative values
-
-    - TODO: add extrusion changes
+    - rotate, translate, scale do NOT do implicit UNIONS anymore => array in, array out
 
   ## Primitives
 
@@ -31,6 +30,7 @@
     - linear_extrude => linearExtrude
     - rotate_extrude => rotateExtrude
     - extrusions of 2d shapes with no edges (sides length === 0) will now throw an error
+    - solidFromSlices(polygon, options) => solidFromSlices(options, polygon)
 
 
 # Things to fix:
