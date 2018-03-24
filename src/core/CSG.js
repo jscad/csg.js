@@ -30,7 +30,18 @@ CSG.fromPolygons = (polygons) => {
 }
 
 CSG.prototype = {
-
+  /**
+   * Helper function to chain operations on an object more easilly
+   * This solid is not modified.
+   * @returns {CSG} new CSG object
+   * @example
+   * let B = A
+   *  .pipe(translate([10,20,0]))
+   *  .pipe(union(C, D, E))
+   */
+  pipe: function (funtionToApply) {
+    return funtionToApply(this, params)
+  },
   /**
    * Return a new CSG solid with solid and empty space switched.
    * This solid is not modified.
