@@ -2,9 +2,18 @@
 # CSG/CAG Objects
     - removal of almost all methods
     TODO: list here 
-
+    - no more boolean operations on the prototypes of CSG/CAG Objects !!
+     ie this is valid const foo = union(a, b) 
+     but this is not const foo = a.union(b)
+    - CSG/CAG objects now have a .pipe() method
+    to be able to chain operations on them using functions:
+    ie benefit of functional approach while allowing chaining
+    this is also in preparation for the day browsers & Node.js will
+    support the > (pipe) operator 
+ 
 # API
 
+    
     - snake case methods are now camel case: ie chain_hull => chainHull
     - a SINGLE function per shape : no more CSG.sphere() vs sphere()
       - unified functions keep the openscad shortcuts, but also add more explicit ones
