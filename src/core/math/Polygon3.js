@@ -1,7 +1,7 @@
 const Vector3D = require('./Vector3')
 const Vertex = require('./Vertex3')
 const Matrix4x4 = require('./Matrix4')
-const {_CSGDEBUG, EPS, getTag, areaEPS} = require('../constants')
+const {_CSGDEBUG, EPS, getTag} = require('../constants')
 
 /** Class Polygon3
  * Represents a convex polygon. The vertices used to initialize a polygon must
@@ -100,36 +100,6 @@ Polygon3.prototype = {
     return result
   },
 
-    // Extrude a polygon into the direction offsetvector
-    // Returns a CSG object
-  extrude: function (offsetvector) {
-    const {fromPolygons} = require('../CSGFactories') // because of circular dependencies
-
-    let newpolygons = []
-
-    let polygon1 = this
-    let direction = polygon1.plane.normal.dot(offsetvector)
-    if (direction > 0) {
-      polygon1 = polygon1.flipped()
-    }
-    newpolygons.push(polygon1)
-    let polygon2 = polygon1.translate(offsetvector)
-    let numvertices = this.vertices.length
-    for (let i = 0; i < numvertices; i++) {
-      let sidefacepoints = []
-      let nexti = (i < (numvertices - 1)) ? i + 1 : 0
-      sidefacepoints.push(polygon1.vertices[i].pos)
-      sidefacepoints.push(polygon2.vertices[i].pos)
-      sidefacepoints.push(polygon2.vertices[nexti].pos)
-      sidefacepoints.push(polygon1.vertices[nexti].pos)
-      let sidefacepolygon = Polygon3.createFromPoints(sidefacepoints, this.shared)
-      newpolygons.push(sidefacepolygon)
-    }
-    polygon2 = polygon2.flipped()
-    newpolygons.push(polygon2)
-    return fromPolygons(newpolygons)
-  },
-
   translate: function (offset) {
     return this.transform(Matrix4x4.translation(offset))
   },
@@ -197,28 +167,7 @@ Polygon3.prototype = {
       result += '  ' + vertex.toString() + '\n'
     })
     return result
-  },
-
-  // project the 3D polygon onto a plane
-  projectToOrthoNormalBasis: function (orthobasis) {
-    const CAG = require('../CAG')
-    const {fromPointsNoCheck} = require('../CAGFactories') // circular dependencies
-    let points2d = this.vertices.map(function (vertex) {
-      return orthobasis.to2D(vertex.pos)
-    })
-
-    let result = fromPointsNoCheck(points2d)
-    let area = result.area()
-    if (Math.abs(area) < areaEPS) {
-      // the polygon was perpendicular to the orthnormal plane. The resulting 2D polygon would be degenerate
-      // return an empty area instead:
-      result = new CAG()
-    } else if (area < 0) {
-      result = result.flipped()
-    }
-    return result
   }
-
 }
 
 // create from an untyped object with identical property names:

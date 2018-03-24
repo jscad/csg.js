@@ -5,6 +5,7 @@ const Vector2D = require('../../core/math/Vector2')
 const Polygon = require('../../core/math/Polygon3')
 const {fnNumberSort} = require('../../core/utils')
 const {fromPoints, fromPointsNoCheck} = require('../../core/CAGFactories')
+const {extrudePolygon3} = require('../ops-extrusions/extrusionUtils')
 
 const expandedShellOfCAG = function (_cag, radius, resolution) {
   const CAG = require('../core/CAG')
@@ -121,7 +122,7 @@ const expandedShellOfCCSG = function (_csg, radius, resolution, unionWithThis) {
   csg.polygons.map(function (polygon) {
     let extrudevector = polygon.plane.normal.unit().times(2 * radius)
     let translatedpolygon = polygon.translate(extrudevector.times(-0.5))
-    let extrudedface = translatedpolygon.extrude(extrudevector)
+    let extrudedface = extrudePolygon3(translatedpolygon, extrudevector)
     result = result.unionSub(extrudedface, false, false)
   })
 

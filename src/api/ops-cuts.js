@@ -6,6 +6,7 @@ const Polygon3 = require('../core/math/Polygon3')
 const OrthoNormalBasis = require('../core/math/OrthoNormalBasis')
 
 const {projectToOrthoNormalBasis} = require('../core/utils/csgProjections')
+const {extrudePolygon3} = require('../ops-extrusions/extrusionUtils')
 
 /** cuts a csg along a orthobasis
  * @param  {CSG} csg the csg object to cut
@@ -55,7 +56,7 @@ const cutByPlane = function (csg, plane) {
   const polygon = new Polygon3(vertices, null, plane.flipped())
 
   // and extrude the polygon into a cube, backwards of the plane:
-  const cube = polygon.extrude(plane.normal.times(-maxdistance))
+  const cube = extrudePolygon3(polygon, plane.normal.times(-maxdistance))
 
   // Now we can do the intersection:
   let result = csg.intersect(cube)

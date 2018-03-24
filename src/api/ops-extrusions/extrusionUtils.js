@@ -253,6 +253,34 @@ const rotateExtrude = function (cag, options) { // FIXME options should be optio
   return fromPolygons(polygons).reTesselated()
 }
 
+// Extrude a polygon into the direction offsetvector
+// Returns a CSG object
+const extrudePolygon3 = function (offsetvector) {
+  let newpolygons = []
+
+  let polygon1 = this
+  let direction = polygon1.plane.normal.dot(offsetvector)
+  if (direction > 0) {
+    polygon1 = polygon1.flipped()
+  }
+  newpolygons.push(polygon1)
+  let polygon2 = polygon1.translate(offsetvector)
+  let numvertices = this.vertices.length
+  for (let i = 0; i < numvertices; i++) {
+    let sidefacepoints = []
+    let nexti = (i < (numvertices - 1)) ? i + 1 : 0
+    sidefacepoints.push(polygon1.vertices[i].pos)
+    sidefacepoints.push(polygon2.vertices[i].pos)
+    sidefacepoints.push(polygon2.vertices[nexti].pos)
+    sidefacepoints.push(polygon1.vertices[nexti].pos)
+    let sidefacepolygon = Polygon3.createFromPoints(sidefacepoints, this.shared)
+    newpolygons.push(sidefacepolygon)
+  }
+  polygon2 = polygon2.flipped()
+  newpolygons.push(polygon2)
+  return fromPolygons(newpolygons)
+}
+
 // FIXME: right now linear & rotate extrude take params first, while rectangular_extrude
 // takes params second ! confusing and incoherent ! needs to be changed (BREAKING CHANGE !)
 
@@ -261,5 +289,6 @@ module.exports = {
   extrudeInPlane,
   extrude,
   rotateExtrude,
-  _toPlanePolygons
+  _toPlanePolygons,
+  extrudePolygon3
 }
