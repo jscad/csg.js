@@ -8,7 +8,7 @@ const {fromFakeCSG} = require('./CAGFactories')
 const canonicalize = require('./utils/canonicalize')
 const retesselate = require('./utils/retesellate')
 const {isCAGValid, isSelfIntersecting} = require('./utils/cagValidation')
-const {area, getBounds} = require('./utils/cagMeasurements')
+const {getBounds} = require('./utils/cagMeasurements')
 
 /**
  * Class CAG
@@ -142,10 +142,6 @@ CAG.prototype = {
     })
     newsides.reverse()
     return CAG.fromSides(newsides)
-  },
-
-  area: function () {
-    return area(this)
   },
 
   // ALIAS !
