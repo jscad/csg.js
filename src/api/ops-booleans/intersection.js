@@ -4,6 +4,8 @@ const Tree = require('../../core/trees')
 
 const canonicalize = require('../../core/utils/canonicalize')
 const retesselate = require('../../core/utils/retesellate')
+const {fromFakeCSG} = require('../../core/CAGFactories')
+const {toCSGWall} = require('../../core/CAGToOther')
 
 /** intersection of the given shapes: ie keep only the common parts between the given shapes
  * @param {Object(s)|Array} objects - objects to intersect
@@ -24,7 +26,7 @@ function intersection () {
     if (isCAG(a[i])) {
       object = intersect(object, a[i])
     } else {
-      object = intersect(object, a[i])//.setColor(1, 1, 0)) // -- color the cuts
+      object = intersect(object, a[i])// .setColor(1, 1, 0)) // -- color the cuts
     }
   }
   return object
@@ -77,6 +79,24 @@ const intersectSub = function (ohterCsg, csg, doRetesselate, doCanonicalize) {
   if (doRetesselate) result = retesselate(result)
   if (doCanonicalize) result = canonicalize(result)
   return result
+}
+
+const intersect2d = function (otherCag, cag) {
+  let cags
+  if (cag instanceof Array) {
+    cags = cag
+  } else {
+    cags = [cag]
+  }
+  let r = toCSGWall(otherCag, -1, 1)
+  cags.map(function (cag) {
+    r = intersectSub(r, toCSGWall(cag, -1, 1), false, false)
+  })
+  r = retesselate(r)
+  r = canonicalize(r)
+  r = fromFakeCSG(r)
+  r = canonicalize(r)
+  return r
 }
 
 module.exports = intersection

@@ -4,6 +4,7 @@ const Vertex2 = require('./math/Vertex2')
 const {areaEPS} = require('./constants')
 const {isSelfIntersecting} = require('./utils/cagValidation')
 const {canonicalize} = require('./utils/canonicalize')
+const {area} = require('./utils/cagMeasurements')
 
 /** Construct a CAG from a list of `Side` instances.
  * this is a duplicate of CAG's fromSides to avoid circular dependency CAG => fromSides => CAG
@@ -53,11 +54,11 @@ const fromPoints = function (points) {
   if (isSelfIntersecting(result)) {
     throw new Error('Polygon is self intersecting!')
   }
-  let area = result.area()
-  if (Math.abs(area) < areaEPS) {
+  let resultArea = area(result)
+  if (Math.abs(resultArea) < areaEPS) {
     throw new Error('Degenerate polygon!')
   }
-  if (area < 0) {
+  if (resultArea < 0) {
     result = result.flipped()
   }
   result = canonicalize(result)

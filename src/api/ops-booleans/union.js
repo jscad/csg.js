@@ -6,6 +6,9 @@ const canonicalize = require('../../core/utils/canonicalize')
 const retesselate = require('../../core/utils/retesellate')
 const {bounds} = require('../../core/utils/csgMeasurements')
 
+const {fromFakeCSG} = require('../../core/CAGFactories')
+const {toCSGWall} = require('../../core/CAGToOther')
+
 // FIXME should this be lazy ? in which case, how do we deal with 2D/3D combined
 // TODO we should have an option to set behaviour as first parameter
 /** union/ combine the given shapes
@@ -81,7 +84,7 @@ const _union = function (csg) {
   return canonicalize(retesselate(csgs[i - 1]))
 }
 
-const unionSub = function (otherCsg, csg, retesselate, canonicalize) {
+const unionSub = function (otherCsg, csg, doRetesselate, doCanonicalize) {
   if (!mayOverlap(otherCsg, csg)) {
     return unionForNonIntersecting(otherCsg, csg)
   } else {
@@ -98,8 +101,8 @@ const unionSub = function (otherCsg, csg, retesselate, canonicalize) {
     let newpolygons = a.allPolygons().concat(b.allPolygons())
     let result = CSG.fromPolygons(newpolygons)
     result.properties = otherCsg.properties._merge(csg.properties)
-    if (retesselate) result = result.reTesselated()
-    if (canonicalize) result = result.canonicalized()
+    if (doRetesselate) result = result.reTesselated()
+    if (doCanonicalize) result = result.canonicalized()
     return result
   }
 }
@@ -134,6 +137,21 @@ const mayOverlap = function (otherCsg, csg) {
     if (mybounds[0].z > otherbounds[1].z) return false
     return true
   }
+}
+
+const union2d = function (otherCag, cag) {
+  let cags
+  if (cag instanceof Array) {
+    cags = cag
+  } else {
+    cags = [cag]
+  }
+  let r = toCSGWall(otherCag, -1, 1)
+  r = _union(r,
+    cags.map(function (cag) {
+      return retesselate(toCSGWall(cag, -1, 1))
+    }), false, false)
+  return canonicalize(fromFakeCSG(r))
 }
 
 module.exports = union

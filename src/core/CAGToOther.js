@@ -1,4 +1,5 @@
 const canonicalize = require('./utils/canonicalize')
+const {fromPolygons} = require('./CSGFactories')
 
   /**
    * Convert to a list of points.
@@ -59,4 +60,15 @@ const toCompactBinary = (_cag) => {
   return result
 }
 
-module.exports = {toPoints, toCompactBinary}
+/** convert a CAG to a CSG 'wall' of zero thickness
+ * @param  {} z0
+ * @param  {} z1
+ */
+const toCSGWall = function (z0, z1) {
+  let polygons = this.sides.map(function (side) {
+    return side.toPolygon3D(z0, z1)
+  })
+  return fromPolygons(polygons)
+}
+
+module.exports = {toPoints, toCompactBinary, toCSGWall}
