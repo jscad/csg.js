@@ -205,11 +205,12 @@ function color (color) {
   if (Array.isArray(a[i])) {
     a = a[i]
     i = 0
-  } // use this as the list of objects
-  for (object = a[i++]; i < a.length; i++) {
-    object = object.union(a[i])
   }
-  return object.setColor(color)
+  // use this as the list of objects
+  for (object = a[i++]; i < a.length; i++) {
+    object.setColor(color)
+  }
+  return object
 }
 
 // from http://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
