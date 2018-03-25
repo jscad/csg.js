@@ -1,8 +1,10 @@
 const {EPS} = require('../constants')
 const FuzzyCSGFactory = require('../FuzzyFactory3d')
 const FuzzyCAGFactory = require('../FuzzyFactory2d')
-const {fromPolygons} = require('../CSGFactories')
-const {fromSides} = require('../CAGFactories')
+// const {fromPolygons} = require('../CSGFactories')
+// const {fromSides} = require('../CAGFactories')
+const CAG = require('../CAG')
+const CSG = require('../CSG')
 
 /**
    * Returns a cannoicalized version of the input csg/cag : ie every very close
@@ -66,7 +68,7 @@ const CSGFromCSGFuzzyFactory = function (factory, sourcecsg) {
       newpolygons.push(newpolygon)
     }
   })
-  return fromPolygons(newpolygons)
+  return CSG.fromPolygons(newpolygons)
 }
 
 const CAGFromCAGFuzzyFactory = function (factory, sourcecag) {
@@ -78,7 +80,7 @@ const CAGFromCAGFuzzyFactory = function (factory, sourcecag) {
   .filter(function (side) {
     return side.length() > EPS
   })
-  return fromSides(newsides)
+  return CAG.fromSides(newsides)
 }
 
 module.exports = canonicalize

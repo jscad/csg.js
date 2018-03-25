@@ -5,7 +5,6 @@ const Vector3 = require('./math/Vector3')
 const Plane = require('./math/Plane')
 
 const Properties = require('./Properties')
-const {toTriangles} = require('./CSGToOther')
 
 /** Class CSG
  * Holds a binary space partition tree representing a 3D solid. Two solids can
@@ -195,30 +194,6 @@ CSG.prototype = {
   setColor: function (args) {
     let newshared = Polygon3.Shared.fromColor.apply(this, arguments)
     return this.setShared(newshared)
-  },
-
-  /**
-   * Returns an array of values for the requested features of this solid.
-   * Supported Features: 'volume', 'area'
-   * @param {String[]} features - list of features to calculate
-   * @returns {Float[]} values
-   * @example
-   * let volume = A.getFeatures('volume')
-   * let values = A.getFeatures('area','volume')
-   */
-  getFeatures: function (features) {
-    if (!(features instanceof Array)) {
-      features = [features]
-    }
-    let result = toTriangles(this).map(function (triPoly) {
-      return triPoly.getTetraFeatures(features)
-    })
-    .reduce(function (pv, v) {
-      return v.map(function (feat, i) {
-        return feat + (pv === 0 ? 0 : pv[i])
-      })
-    }, 0)
-    return (result.length === 1) ? result[0] : result
   },
 
   toString: function () {
