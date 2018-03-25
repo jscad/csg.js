@@ -6,7 +6,7 @@ const Polygon3 = require('../core/math/Polygon3')
 const OrthoNormalBasis = require('../core/math/OrthoNormalBasis')
 
 const {projectToOrthoNormalBasis} = require('../core/utils/csgProjections')
-const {extrudePolygon3} = require('../ops-extrusions/extrusionUtils')
+const {extrudePolygon3} = require('./ops-extrusions/extrusionUtils')
 
 /** cuts a csg along a orthobasis
  * @param  {CSG} csg the csg object to cut

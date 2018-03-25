@@ -8,6 +8,7 @@ const {bounds} = require('../../core/utils/csgMeasurements')
 
 const {fromFakeCSG} = require('../../core/CAGFactories')
 const {toCSGWall} = require('../../core/CAGToOther')
+const linearExtrude = require('../ops-extrusions/linearExtrude')
 
 // FIXME should this be lazy ? in which case, how do we deal with 2D/3D combined
 // TODO we should have an option to set behaviour as first parameter
@@ -55,13 +56,13 @@ function union () {
 
   // TODO: add option to be able to set this?
   if ((typeof (a[i]) === 'object') && isCAG(a[i]) && options.extrude2d) {
-    o = a[i].extrude({offset: [0, 0, 0.1]}) // -- convert a 2D shape to a thin solid, note: do not a[i] = a[i].extrude()
+    o = linearExtrude({height: 0.1}, a[i]) // -- convert a 2D shape to a thin solid, note: do not a[i] = a[i].extrude()
   }
   for (; i < a.length; i++) {
     let obj = a[i]
 
     if ((typeof (a[i]) === 'object') && isCAG(a[i]) && options.extrude2d) {
-      obj = a[i].extrude({offset: [0, 0, 0.1]}) // -- convert a 2D shape to a thin solid:
+      obj = linearExtrude({height: 0.1}, a[i]) // -- convert a 2D shape to a thin solid:
     }
     o = _union([o, obj])
   }
@@ -154,4 +155,5 @@ const union2d = function (otherCag, cag) {
   return canonicalize(fromFakeCSG(r))
 }
 
+union.unionSub = unionSub
 module.exports = union

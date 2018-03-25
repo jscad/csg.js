@@ -64,8 +64,8 @@ const toCompactBinary = (_cag) => {
  * @param  {} z0
  * @param  {} z1
  */
-const toCSGWall = function (z0, z1) {
-  let polygons = this.sides.map(function (side) {
+const toCSGWall = function (cag, z0, z1) {
+  let polygons = cag.sides.map(function (side) {
     return side.toPolygon3D(z0, z1)
   })
   return fromPolygons(polygons)

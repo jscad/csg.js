@@ -268,8 +268,8 @@ test('rotateExtrude (invalid overflow setting should throw an exception)', t => 
 
 test('rectangularExtrude ', t => {
   const op1 = square()
-  const obs = rectangularExtrude([ [10, 10], [-10, 10], [-20, 0], [-10, -10], [10, -10] ], // path is an array of 2d coords
-    {w: 1, h: 3, closed: true}, op1)
+  const obs = rectangularExtrude({w: 1, h: 3, closed: true}, [ [10, 10], [-10, 10], [-20, 0], [-10, -10], [10, -10] ], // path is an array of 2d coords
+     op1)
 
   const expFirstPoly = {
     vertices: [

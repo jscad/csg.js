@@ -3,6 +3,8 @@ const {cagToPointsArray, clamp, rightMultiply1x3VectorToArray, polygonFromPoints
 const {fromPoints} = require('../../core/CAGFactories')
 const {fromPolygons} = require('../../core/CSGFactories')
 const {_toPlanePolygons} = require('./extrusionUtils')
+const canonicalize = require('../../core/utils/canonicalize')
+const retesellate = require('../../core/utils/retesellate')
 
 /** rotate extrusion / revolve of the given 2d shape
  * @param {Object} [options] - options for construction
@@ -145,7 +147,7 @@ function rotateExtrude (params, baseShape) {
       polygons = polygons.concat(endCap).concat(startCap)
     }
   }
-  return fromPolygons(polygons).reTesselated().canonicalized()
+  return canonicalize(retesellate(fromPolygons(polygons)))
 }
 
 module.exports = rotateExtrude

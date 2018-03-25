@@ -6,14 +6,19 @@ const Polygon = require('../../core/math/Polygon3')
 const {fnNumberSort} = require('../../core/utils')
 const {fromPoints, fromPointsNoCheck} = require('../../core/CAGFactories')
 const {extrudePolygon3} = require('../ops-extrusions/extrusionUtils')
+const {isCAG} = require('../../core/utils')
+const {unionSub} = require('../ops-booleans/union')
+const canonicalize = require('../../core/utils/canonicalize')
+const retesselate = require('../../core/utils/retesellate')
+const union = require('../ops-booleans/union')
 
 const expandedShellOfCAG = function (_cag, radius, resolution) {
-  const CAG = require('../core/CAG')
+  const CAG = require('../../core/CAG')
   resolution = resolution || 8
   if (resolution < 4) resolution = 4
   let cags = []
   let pointmap = {}
-  let cag = _cag.canonicalized()
+  let cag = canonicalize(_cag)
   cag.sides.map(function (side) {
     let d = side.vertex1.pos.minus(side.vertex0.pos)
     let dl = d.length()
@@ -90,7 +95,7 @@ const expandedShellOfCAG = function (_cag, radius, resolution) {
     }
   }
   let result = new CAG()
-  result = result.union(cags)
+  result = union(result, cags)
   return result
 }
 
@@ -110,7 +115,7 @@ const expandedShellOfCCSG = function (_csg, radius, resolution, unionWithThis) {
   const CSG = require('../core/CSG')
   const {fromPolygons} = require('../core/CSGFactories')
   // const {sphere} = require('./primitives3d') // FIXME: circular dependency !
-  let csg = _csg.reTesselated()
+  let csg = retesselate(_csg)
   let result
   if (unionWithThis) {
     result = csg
@@ -123,7 +128,7 @@ const expandedShellOfCCSG = function (_csg, radius, resolution, unionWithThis) {
     let extrudevector = polygon.plane.normal.unit().times(2 * radius)
     let translatedpolygon = polygon.translate(extrudevector.times(-0.5))
     let extrudedface = extrudePolygon3(translatedpolygon, extrudevector)
-    result = result.unionSub(extrudedface, false, false)
+    result = unionSub(result, extrudedface, false, false)
   })
 
     // Make a list of all unique vertex pairs (i.e. all sides of the solid)
@@ -245,7 +250,7 @@ const expandedShellOfCCSG = function (_csg, radius, resolution, unionWithThis) {
     polygons.push(new Polygon(startfacevertices))
     polygons.push(new Polygon(endfacevertices))
     let cylinder = fromPolygons(polygons)
-    result = result.unionSub(cylinder, false, false)
+    result = unionSub(result, cylinder, false, false)
   }
 
         // make a list of all unique vertices
@@ -300,13 +305,18 @@ const expandedShellOfCCSG = function (_csg, radius, resolution, unionWithThis) {
       resolution: resolution,
       axes: [xaxis, yaxis, zaxis]
     })
-    result = result.unionSub(_sphere, false, false)
+    result = unionSub(result, _sphere, false, false)
   }
 
   return result
 }
 
+const expandedShell = (input, radius, resolution, unionWithThis) => {
+  return isCAG ? expandedShellOfCAG(input, radius, resolution) : expandedShellOfCCSG(input, radius, resolution, unionWithThis)
+}
+
 module.exports = {
   expandedShellOfCAG,
-  expandedShellOfCCSG
+  expandedShellOfCCSG,
+  expandedShell
 }

@@ -3,7 +3,7 @@ const Vertex2 = require('../../core/math/Vertex2')
 const Side = require('../../core/math/Side')
 const {fromSides} = require('../../core/CAGFactories')
 const {extrude} = require('./extrusionUtils')
-const expandedShell = require('../ops-transformations/expandedShell')
+const {expandedShell} = require('../ops-transformations/expandedShell')
 
 /** rectangular extrusion of the given array of points
  * Extrude the path by following it with a rectangle (upright, perpendicular to the path direction)

@@ -3,7 +3,7 @@ const Vector2 = require('./math/Vector2')
 const Vertex2 = require('./math/Vertex2')
 const {areaEPS} = require('./constants')
 const {isSelfIntersecting} = require('./utils/cagValidation')
-const {canonicalize} = require('./utils/canonicalize')
+const canonicalize = require('./utils/canonicalize')
 const {area} = require('./utils/cagMeasurements')
 
 /** Construct a CAG from a list of `Side` instances.

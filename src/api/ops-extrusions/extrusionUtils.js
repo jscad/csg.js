@@ -2,7 +2,6 @@ const {EPS, defaultResolution3D} = require('../../core/constants')
 const OrthoNormalBasis = require('../../core/math/OrthoNormalBasis')
 
 const {parseOptionAs3DVector, parseOptionAsBool, parseOptionAsFloat, parseOptionAsInt} = require('../optionParsers')
-const CSG = require('../../core/CSG')
 const Vector3D = require('../../core/math/Vector3')
 const {Connector} = require('../../core/connectors')
 const {fromPolygons} = require('../../core/CSGFactories')
@@ -10,6 +9,10 @@ const {fromPolygons} = require('../../core/CSGFactories')
 const Vertex3D = require('../../core/math/Vertex3')
 const Vector2D = require('../../core/math/Vector2')
 const Polygon3 = require('../../core/math/Polygon3')
+
+const {toCSGWall} = require('../../core/CAGToOther')
+const {intersectSub} = require('../ops-booleans/intersection')
+
 /*
 * transform a cag into the polygons of a corresponding 3d plane, positioned per options
 * Accepts a connector for plane positioning, or optionally
@@ -40,7 +43,7 @@ const _toPlanePolygons = function (_cag, options) {
   let bounds = _cag.getBounds()
   bounds[0] = bounds[0].minus(new Vector2D(1, 1))
   bounds[1] = bounds[1].plus(new Vector2D(1, 1))
-  let csgshell = _cag._toCSGWall(-1, 1)
+  let csgshell = toCSGWall(_cag, -1, 1)
   let csgplane = fromPolygons([new Polygon3([
     new Vertex3D(new Vector3D(bounds[0].x, bounds[0].y, 0)),
     new Vertex3D(new Vector3D(bounds[1].x, bounds[0].y, 0)),
@@ -51,7 +54,7 @@ const _toPlanePolygons = function (_cag, options) {
     csgplane = csgplane.invert()
   }
     // intersectSub -> prevent premature retesselate/canonicalize
-  csgplane = csgplane.intersectSub(csgshell)
+  csgplane = intersectSub(csgplane, csgshell)
     // only keep the polygons in the z plane:
   let polys = csgplane.polygons.filter(function (polygon) {
     return Math.abs(polygon.plane.normal.z) > 0.99

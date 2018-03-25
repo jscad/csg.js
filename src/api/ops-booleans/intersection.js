@@ -24,7 +24,7 @@ function intersection () {
   if (a[0].length) a = a[0]
   for (object = a[i++]; i < a.length; i++) {
     if (isCAG(a[i])) {
-      object = intersect(object, a[i])
+      object = intersect2d(object, a[i])
     } else {
       object = intersect(object, a[i])// .setColor(1, 1, 0)) // -- color the cuts
     }
@@ -49,14 +49,14 @@ function intersection () {
    *      |       |
    *      +-------+
    */
-const intersect = function (csg) {
+const intersect = function (otherCsg, csg) {
   let csgs
   if (csg instanceof Array) {
     csgs = csg
   } else {
     csgs = [csg]
   }
-  let result = this
+  let result = otherCsg
   for (let i = 0; i < csgs.length; i++) {
     let islast = (i === (csgs.length - 1))
     result = intersectSub(result, csgs[i], islast, islast)
@@ -100,3 +100,5 @@ const intersect2d = function (otherCag, cag) {
 }
 
 module.exports = intersection
+//FIXME: sort of a hack for extrusionUtils => _toPlanePolygons
+intersection.intersectSub = intersectSub

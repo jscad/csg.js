@@ -30,7 +30,7 @@ test('union (complex)', t => {
   const obs = union(
         difference(
            cuboid({size: 3, center: true}),
-           sphere({r:2, center: true})
+           sphere({r: 2, center: true})
         ),
         intersection(
             sphere({r: 1.3, center: true}),

@@ -25,6 +25,18 @@ CAG.fromSides = function (sides) {
 }
 
 CAG.prototype = {
+  /**
+   * Helper function to chain operations on an object more easilly
+   * This solid is not modified.
+   * @returns {CSG} new CSG object
+   * @example
+   * let B = A
+   *  .pipe(translate([10,20,0]))
+   *  .pipe(union(C, D, E))
+   */
+  pipe: function (funtionToApply) {
+    return funtionToApply(this, params)
+  },
 
   transform: function (matrix4x4) {
     let ismirror = matrix4x4.isMirroring()
