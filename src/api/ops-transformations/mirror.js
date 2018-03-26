@@ -1,5 +1,7 @@
 const Plane = require('../../core/math/Plane')
 const Vector3 = require('../../core/math/Vector3')
+const toArray = require('../../core/utils/toArray')
+const {flatten} = require('../../core/utils')
 
 /** mirror an object in 2D/3D space
  * @param {Array} vector - the axes to mirror the object(s) by
@@ -10,16 +12,16 @@ const Vector3 = require('../../core/math/Vector3')
  * let rotatedSphere = mirror([0.2,15,1], sphere())
  */
 function mirror (vector, ...objects) {
-  const _objects = (objects.length >= 1 && objects[0].length) ? objects[0] : objects
-  let object = _objects[0]
+  const shapes = flatten(toArray(objects))
 
-  if (_objects.length > 1) {
-    for (let i = 1; i < _objects.length; i++) { // FIXME/ why is union really needed ??
-      object = object.union(_objects[i])
-    }
-  }
+  const _objects = (shapes.length >= 1 && shapes[0].length) ? shapes[0] : shapes
   const plane = new Plane(new Vector3(vector[0], vector[1], vector[2]).unit(), 0)
-  return object.mirrored(plane)
+
+  const results = _objects.map(function (object) {
+    object.mirrored(plane)
+  })
+
+  return results.length === 1 ? results[0] : results
 }
 
 module.exports = mirror

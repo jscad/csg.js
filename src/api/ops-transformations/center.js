@@ -1,21 +1,45 @@
-/** center an object in 2D/3D space
- * @param {Boolean|Array} axis - either an array or single boolean to indicate which axis you want to center on
- * @param {Object(s)|Array} objects either a single or multiple CSG/CAG objects to translate
- * @returns {CSG} new CSG object , translated by the given amount
+const bounds = require('../ops-measurements/bounds')
+const translate = require('./translate')
+
+const toArray = require('../../core/utils/toArray')
+const {flatten, isArray, isBoolean} = require('../../core/utils')
+
+/**
+ * Centers the given object(s) using the given options (if any)
+ * @param {Object} [options] - options for centering
+ * @param {Array} [options.axes=[true,true,true]] - axis of which to center, true or false
+ * @param {Array} [options.center=[0,0,0]] - point of which to center the object upon
+ * @param {Object|Array} objects - the shape(s) to center
+ * @return {Object|Array} objects
  *
  * @example
- * let movedSphere = center(false, sphere())
+ * let csg = center({axes: [true,false,false]}, sphere()) // center about the X axis
  */
-function center (axis, ...objects) { // v, obj or array
-  const _objects = (objects.length >= 1 && objects[0].length) ? objects[0] : objects
-  let object = _objects[0]
-
-  if (_objects.length > 1) {
-    for (let i = 1; i < _objects.length; i++) { // FIXME/ why is union really needed ??
-      object = object.union(_objects[i])
-    }
+const center = function (options, ...objects) {
+  const defaults = {
+    axes: [true, true, true],
+    center: [0, 0, 0]
+  // TODO : Add addition 'methods' of centering; midpoint, centeriod
   }
-  return object.center(axis)
+  if (isBoolean(options)) {
+    options.axes = [options, options, options]
+  }
+  if (isArray(options)) {
+    options.axes = options
+  }
+  const {axes, center} = Object.assign({}, defaults, options)
+  objects = flatten(toArray(objects))
+
+  const results = objects.map(function (object) {
+    let objectBounds = bounds(object)
+    let offset = [0, 0, 0]
+    if (axes[0]) offset[0] = center[0] - (objectBounds[0].x + ((objectBounds[1].x - objectBounds[0].x) / 2))
+    if (axes[1]) offset[1] = center[1] - (objectBounds[0].y + ((objectBounds[1].y - objectBounds[0].y) / 2))
+    if (axes[2]) offset[2] = center[2] - (objectBounds[0].z + ((objectBounds[1].y - objectBounds[0].y) / 2))
+    return translate(offset, object)
+  })
+  // if there is more than one result, return them all , otherwise a single one
+  return results.length === 1 ? results[0] : results
 }
 
 module.exports = center

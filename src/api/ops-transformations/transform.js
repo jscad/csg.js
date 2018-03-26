@@ -1,4 +1,6 @@
 const Matrix4 = require('../../core/math/Matrix4')
+const toArray = require('../../core/utils/toArray')
+const {flatten, isArray} = require('../../core/utils')
 
 /** apply the given matrix transform to the given objects
  * @param {Array} matrix - the 4x4 matrix to apply, as a simple 1d array of 16 elements
@@ -15,14 +17,8 @@ const Matrix4 = require('../../core/math/Matrix4')
  * ], sphere())
  */
 function transform (matrix, ...objects) { // v, obj or array
-  const _objects = (objects.length >= 1 && objects[0].length) ? objects[0] : objects
-  let object = _objects[0]
-
-  if (_objects.length > 1) {
-    for (let i = 1; i < _objects.length; i++) { // FIXME/ why is union really needed ??
-      object = object.union(_objects[i])
-    }
-  }
+  const shapes = flatten(toArray(objects))
+  const _objects = (shapes.length >= 1 && shapes[0].length) ? shapes[0] : shapes
 
   let transformationMatrix
   if (!Array.isArray(matrix)) {
@@ -34,7 +30,10 @@ function transform (matrix, ...objects) { // v, obj or array
     }
   })
   transformationMatrix = new Matrix4(matrix)
-  return object.transform(transformationMatrix)
+  const results = _objects.map(function (object) {
+    return object.transform(transformationMatrix)
+  })
+  return results.length === 1 ? results[0] : results
 }
 
 module.exports = transform

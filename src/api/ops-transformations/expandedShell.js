@@ -11,9 +11,9 @@ const {unionSub} = require('../ops-booleans/union')
 const canonicalize = require('../../core/utils/canonicalize')
 const retesselate = require('../../core/utils/retesellate')
 const union = require('../ops-booleans/union')
+const CAG = require('../../core/CAG')
 
 const expandedShellOfCAG = function (_cag, radius, resolution) {
-  const CAG = require('../../core/CAG')
   resolution = resolution || 8
   if (resolution < 4) resolution = 4
   let cags = []
@@ -95,7 +95,7 @@ const expandedShellOfCAG = function (_cag, radius, resolution) {
     }
   }
   let result = new CAG()
-  result = union(result, cags)
+  result = union(result, cags)// FIXME: Not quite sure how to deal with this: union(cags.concat([result])) ?
   return result
 }
 

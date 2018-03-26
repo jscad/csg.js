@@ -1,4 +1,7 @@
 
+const toArray = require('../../core/utils/toArray')
+const {flatten} = require('../../core/utils')
+
 /** translate an object in 2D/3D space
  * @param {Object} vector - 3D vector to translate the given object(s) by
  * @param {Object(s)|Array} objects either a single or multiple CSG/CAG objects to translate
@@ -8,9 +11,13 @@
  * let movedSphere = translate([10,2,0], sphere())
  */
 function translate (vector, ...objects) {      // v, obj or array
-  // workaround needed to determine if we are dealing with an array of objects
-  const _objects = (objects.length >= 1 && objects[0].length) ? objects[0] : objects
-  return _objects.map(object => object.translate(vector))
+  const shapes = flatten(toArray(objects))
+  const _objects = (shapes.length >= 1 && shapes[0].length) ? shapes[0] : shapes
+
+  const results = _objects.map(function (object) {
+    return object.translate(vector)
+  })
+  return results.length === 1 ? results[0] : results
 }
 
 module.exports = translate
