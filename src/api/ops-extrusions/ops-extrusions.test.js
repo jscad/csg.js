@@ -1,12 +1,12 @@
 const test = require('ava')
-const square = require('../primitives/rectangle')
+const rectangle = require('../primitives/rectangle')
 const linearExtrude = require('./linearExtrude')
 const rotateExtrude = require('./rotateExtrude')
 const rectangularExtrude = require('./rectangularExtrude')
 const { simplifiedPolygon } = require('../test-helpers')
 
 test('linearExtrude (height)', t => {
-  const op1 = square()
+  const op1 = rectangle()
   const obs = linearExtrude({ height: 10 }, op1)
 
   const expFirstPoly = {
@@ -32,7 +32,7 @@ test('linearExtrude (height)', t => {
 })
 
 test('linearExtrude (height, twist, slices, center)', t => {
-  const op1 = square()
+  const op1 = rectangle()
   const obs = linearExtrude({ height: 10, twist: 360, slices: 50, center: true }, op1)
 
   const expFirstPoly = {
@@ -59,7 +59,7 @@ test('linearExtrude (height, twist, slices, center)', t => {
 })
 
 test('rotateExtrude (defaults)', t => {
-  const op1 = square()
+  const op1 = rectangle()
   const obs = rotateExtrude(op1.translate([4, 0, 0]))
 
   const expFirstPoly = { positions:
@@ -88,7 +88,7 @@ test('rotateExtrude (defaults)', t => {
 })
 
 test('rotateExtrude (custom resolution)', t => {
-  const op1 = square()
+  const op1 = rectangle()
   const obs = rotateExtrude({fn: 4}, op1.translate([4, 0, 0]))
 
   const expFirstPoly = { positions:
@@ -117,7 +117,7 @@ test('rotateExtrude (custom resolution)', t => {
 })
 
 test('rotateExtrude (custom angle)', t => {
-  const op1 = square()
+  const op1 = rectangle()
   const obs = rotateExtrude({angle: 20}, op1.translate([4, 0, 0]))
 
   const expFirstPoly = { positions:
@@ -145,7 +145,7 @@ test('rotateExtrude (custom angle)', t => {
 })
 
 test('rotateExtrude (custom negative angle)', t => {
-  const op1 = square()
+  const op1 = rectangle()
   const obs = rotateExtrude({angle: -20}, op1.translate([4, 0, 0]))
 
   const expFirstPoly = { positions:
@@ -173,7 +173,7 @@ test('rotateExtrude (custom negative angle)', t => {
 })
 
 test('rotateExtrude (custom negative angle, custom start angle)', t => {
-  const op1 = square()
+  const op1 = rectangle()
   const obs = rotateExtrude({angle: -20, startAngle: 27}, op1.translate([4, 0, 0]))
 
   const expFirstPoly = { positions:
@@ -201,7 +201,7 @@ test('rotateExtrude (custom negative angle, custom start angle)', t => {
 })
 
 test('rotateExtrude (custom negative angle, custom start angle, capped points)', t => {
-  const op1 = square().translate([-0.5, 0, 0])
+  const op1 = rectangle().translate([-0.5, 0, 0])
   const obs = rotateExtrude({angle: -20, startAngle: 27}, op1)
 
   const expFirstPoly = { positions:
@@ -260,16 +260,17 @@ test('rotateExtrude (custom negative angle, custom start angle, capped points)',
 })
 
 test('rotateExtrude (invalid overflow setting should throw an exception)', t => {
-  const op1 = square().translate([-0.5, 0, 0])
+  const op1 = rectangle().translate([-0.5, 0, 0])
   t.throws(() => {
     rotateExtrude({angle: -20, startAngle: 27, overflow: undefined}, op1)
   }, 'only capping of overflowing points is supported !')
 })
 
-test('rectangularExtrude ', t => {
-  const op1 = square()
-  const obs = rectangularExtrude({w: 1, h: 3, closed: true}, [ [10, 10], [-10, 10], [-20, 0], [-10, -10], [10, -10] ], // path is an array of 2d coords
-     op1)
+test('rectangularExtrude (from points)', t => {
+  // const op1 = rectangle()
+  // path is an array of 2d coords)
+  const points = [ [10, 10], [-10, 10], [-20, 0], [-10, -10], [10, -10] ]
+  const obs = rectangularExtrude({w: 1, h: 3, closed: true}, points)
 
   const expFirstPoly = {
     vertices: [
@@ -290,10 +291,6 @@ test('rectangularExtrude ', t => {
     shared: { color: null, tag: 1612 },
     plane: { normal: { _x: 0.7071067811865476, _y: -0.7071067811865476, _z: 0 }, w: -13.642135623730951 }
   }
-  /* console.log(obs.polygons[0])
-  console.log(obs.polygons[0].vertices)
-  console.log(obs.polygons[obs.polygons.length - 1])
-  console.log(obs.polygons[obs.polygons.length - 1].vertices) */
   t.deepEqual(obs.polygons.length, 46)
   t.deepEqual(obs.polygons[0], expFirstPoly)
   t.deepEqual(obs.polygons[obs.polygons.length - 1], expLastPoly)

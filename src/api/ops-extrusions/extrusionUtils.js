@@ -2,12 +2,12 @@ const {EPS, defaultResolution3D} = require('../../core/constants')
 const OrthoNormalBasis = require('../../core/math/OrthoNormalBasis')
 
 const {parseOptionAs3DVector, parseOptionAsBool, parseOptionAsFloat, parseOptionAsInt} = require('../optionParsers')
-const Vector3D = require('../../core/math/Vector3')
 const {Connector} = require('../../core/connectors')
 const {fromPolygons} = require('../../core/CSGFactories')
 
 const Vertex3D = require('../../core/math/Vertex3')
 const Vector2D = require('../../core/math/Vector2')
+const Vector3D = require('../../core/math/Vector3')
 const Polygon3 = require('../../core/math/Polygon3')
 
 const {toCSGWall} = require('../../core/CAGToOther')
@@ -192,7 +192,6 @@ const extrude = function (cag, options) {
     twiststeps = 1
   }
   let normalVector = Vector3D.Create(0, 1, 0)
-
   let polygons = []
   // bottom and top
   polygons = polygons.concat(_toPlanePolygons(cag, {

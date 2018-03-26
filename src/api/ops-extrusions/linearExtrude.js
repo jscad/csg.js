@@ -1,4 +1,7 @@
 const {extrude} = require('./extrusionUtils')
+const translate = require('../ops-transformations/translate')
+const bounds = require('../ops-measurements/bounds')
+
 /** linear extrusion of the input 2d shape
  * @param {Object} [options] - options for construction
  * @param {Float} [options.height=1] - height of the extruded shape
@@ -9,7 +12,7 @@ const {extrude} = require('./extrusionUtils')
  * @returns {CSG} new extruded shape
  *
  * @example
- * let revolved = linearExtrude({height: 10}, square())
+ * let revolved = linearExtrude({height: 10}, rectangle())
  */
 function linearExtrude (params, baseShape) {
   const defaults = {
@@ -24,9 +27,9 @@ function linearExtrude (params, baseShape) {
   // if(params.convexity) convexity = params.convexity      // abandoned
   let output = extrude(baseShape, {offset: [0, 0, height], twistangle: twist, twiststeps: slices})
   if (center === true) {
-    const b = output.getBounds() // b[0] = min, b[1] = max
-    const offset = (b[1].plus(b[0])).times(-0.5)
-    output = output.translate(offset)
+    const outputBounds = bounds(output) // b[0] = min, b[1] = max
+    const offset = (outputBounds[1].plus(outputBounds[0])).times(-0.5)
+    output = translate(offset, output)
   }
   return output
 }
