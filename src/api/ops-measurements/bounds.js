@@ -3,8 +3,8 @@ const csgMeasurements = require('../../core/utils/csgMeasurements')
 
 const {isCAG} = require('../../core/utils')
 
-const area = input => {
-  return isCAG(input) ? cagMeasurements.area(input) : csgMeasurements.area(input)
+const bounds = input => {
+  return isCAG(input) ? cagMeasurements.getBounds(input) : csgMeasurements.bounds(input)
 }
 
-module.exports = area
+module.exports = bounds
