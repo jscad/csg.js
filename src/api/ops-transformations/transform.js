@@ -1,6 +1,6 @@
 const Matrix4 = require('../../core/math/Matrix4')
 const toArray = require('../../core/utils/toArray')
-const {flatten, isArray} = require('../../core/utils')
+const {flatten} = require('../../core/utils')
 
 /** apply the given matrix transform to the given objects
  * @param {Array} matrix - the 4x4 matrix to apply, as a simple 1d array of 16 elements
