@@ -59,23 +59,6 @@ const addTransformationMethodsToPrototype = function (prot) {
   }
 }
 
-// TODO: consider generalization and adding to addTransformationMethodsToPrototype
-const addCenteringToPrototype = function (prot, axes) {
-  prot.center = function (cAxes) {
-    cAxes = Array.prototype.map.call(arguments, function (a) {
-      return a // .toLowerCase();
-    })
-        // no args: center on all axes
-    if (!cAxes.length) {
-      cAxes = axes.slice()
-    }
-    let b = this.getBounds()
-    return this.translate(axes.map(function (a) {
-      return cAxes.indexOf(a) > -1 ? -(b[0][a] + b[1][a]) / 2 : 0
-    }))
-  }
-}
 module.exports = {
-  addTransformationMethodsToPrototype,
-  addCenteringToPrototype
+  addTransformationMethodsToPrototype
 }
