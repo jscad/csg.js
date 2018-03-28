@@ -207,6 +207,33 @@ Vector3D.prototype = {
   max: function (p) {
     return Vector3D.Create(
             Math.max(this._x, p._x), Math.max(this._y, p._y), Math.max(this._z, p._z))
+  },
+  // temporary
+  rotateZ: function (c) {
+    const out = Vector3D.Create(0, 0, 0)
+    const a = this
+    // a => this
+    // c => angle
+    // b => origin
+    const b = Vector3D.Create(0, 0, 0)
+    let p = Vector3D.Create(0, 0, 0)
+    var r = Vector3D.Create(0, 0, 0)
+    // Translate point to the origin
+    p._x = a._x - b._x
+    p._y = a._y - b._y
+    p._z = a._z - b._z
+
+    // perform rotation
+    r._x = p._x * Math.cos(c) - p._y * Math.sin(c)
+    r._y = p._x * Math.sin(c) + p._y * Math.cos(c)
+    r._z = p._z
+
+    // translate to correct position
+    out._x = r._x + b._x
+    out._y = r._y + b._y
+    out._z = r._z + b._z
+
+    return out
   }
 }
 
