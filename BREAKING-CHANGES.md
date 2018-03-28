@@ -18,11 +18,13 @@
     - a SINGLE function per shape : no more CSG.sphere() vs sphere()
       - unified functions keep the openscad shortcuts, but also add more explicit ones
         - ie : h => height, fn => segments
+    - no more implicit extrusions : ie union(2dShape, 3dShape) will not work anymore : you need to explicitely
+    convert shapes before applying operations : ie extrude 2d shapes, or project/flatten 3d shapes
 
   ## Transformations
 
     - expand/contract is now only expand, with negative values
-    - rotate, translate, scale do NOT do implicit UNIONS anymore => array in, array out
+    - rotate, translate, scale etc do NOT do implicit UNIONS anymore => array in, array out, single item item in, single item out
 
   ## Primitives
 
