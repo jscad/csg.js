@@ -100,5 +100,5 @@ const intersect2d = function (otherCag, cag) {
 }
 
 module.exports = intersection
-//FIXME: sort of a hack for extrusionUtils => _toPlanePolygons
+// FIXME: sort of a hack for extrusionUtils => _toPlanePolygons
 intersection.intersectSub = intersectSub

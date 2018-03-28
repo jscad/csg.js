@@ -92,7 +92,7 @@ test('intersection (more than 2 operands)', t => {
   const op2 = cuboid({size: [1, 1, 10]})
   const op3 = cuboid({size: [3, 3, 10]})
 
-  const obs = intersection(op1, op2)
+  const obs = intersection(op1, op2, op3)
 
   t.deepEqual(obs.polygons.length, 6)
 })
