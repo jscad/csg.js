@@ -90,6 +90,11 @@ function isCSG (object) {
   return true
 }
 
+const isArray = val => Array.isArray(val)
+const isNumber = value => typeof value === 'number' && isFinite(value)
+const flatten = arr => Array.prototype.concat(...arr)
+const isBoolean = val => typeof val === 'boolean'
+
 module.exports = {
   fnNumberSort,
   fnSortByIndex,
@@ -98,5 +103,10 @@ module.exports = {
   insertSorted,
   interpolateBetween2DPointsForY,
   isCAG,
-  isCSG
+  isCSG,
+
+  isArray,
+  isNumber,
+  isBoolean,
+  flatten
 }
