@@ -1,64 +1,86 @@
 const Vector2 = require('../../core/math/Vector2')
 const {fromPoints} = require('../../core/CAGFactories')
 const {parseOptionAs2DVector, parseOptionAsFloat, parseOptionAsInt} = require('../optionParsers')
+const {isArray, isBoolean, isNumber} = require('../../core/utils')
 
-/** Construct a rectangle/square
+const getCenterFromOptionsAndSize = (center = [0.5, 0.5], options, size) => {
+  if (options && !options.center) {
+    center = [size[0] * 0.5, size[1] * 0.5]
+  }
+  if (options && options.center && isBoolean(options.center) && options.center === true) {
+    center = [0, 0]
+  }
+  if (options && options.center && isArray(options.center) && options.center.length > 1) {
+    if (isBoolean(options.center[0])) {
+      center[0] = options.center[0] === true ? 0 : size[0] * 0.5
+    }
+    if (isBoolean(options.center[1])) {
+      center[1] = options.center[1] === true ? 0 : size[1] * 0.5
+    }
+    if (isNumber(options.center[0])) {
+      center[0] = options.center[0]
+    }
+    if (isNumber(options.center[1])) {
+      center[1] = options.center[1]
+    }
+  }
+  return center
+}
+
+/** Construct a rectangle
  * @param {Object} [options] - options for construction
  * @param {Float} [options.size=1] - size of the square, either as array or scalar
- * @param {Boolean} [options.center=true] - wether to center the rectangle/square or not
+ * @param {Boolean|Array} [options.center=false] - wether to center the rectangle/square or not: can
+ * either be a single boolean, array of booleans, or array of floats
  * @returns {CAG} new rectangle
- *
  * @example
  * let rectangle1 = rectangle({
  *   size: 10
  * })
  */
-const rectangle = () => {
-  let v = [1, 1]
-  let off
-  let a = arguments
-  let params = a[0]
-
-  if (params && Number.isFinite(params)) v = [params, params]
-  if (params && params.length) {
-    v = a[0]
-    params = a[1]
+const rectangle = function (options) {
+  const defaults = {
+    size: [1, 1],
+    center: [0.5, 0.5]
   }
-  if (params && params.size && params.size.length) v = params.size
+  let params = {}
+  if (isArray(options)) {
+    params.size = options
+  }
+  if (isNumber(options)) {
+    params.size = [options, options]
+  }
 
-  off = [v[0] / 2, v[1] / 2]
-  if (params && params.center === true) off = [0, 0]
+  let {size, center} = Object.assign({}, defaults, options, params)
 
-  return _rectangle({center: off, radius: [v[0] / 2, v[1] / 2]})
-}
-
-/** Construct a rectangle. NON API !!!!
- * @param {Object} [options] - options for construction
- * @param {Vector2} [options.center=[0,0]] - center of rectangle
- * @param {Vector2} [options.radius=[1,1]] - radius of rectangle, width and height
- * @param {Vector2} [options.corner1=[0,0]] - bottom left corner of rectangle (alternate)
- * @param {Vector2} [options.corner2=[0,0]] - upper right corner of rectangle (alternate)
- * @returns {CAG} new CAG object
- */
-const _rectangle = function (options) {
-  options = options || {}
-  let c, r
-  if (('corner1' in options) || ('corner2' in options)) {
-    if (('center' in options) || ('radius' in options)) {
-      throw new Error('rectangle: should either give a radius and center parameter, or a corner1 and corner2 parameter')
+  if (options && !options.center) {
+    center = [size[0] * 0.5, size[1] * 0.5]
+  }
+  if (options && options.center && isBoolean(options.center) && options.center === true) {
+    center = [0, 0]
+  }
+  if (options && options.center && isArray(options.center) && options.center.length > 1) {
+    if (isBoolean(options.center[0])) {
+      center[0] = options.center[0] === true ? 0 : size[0] * 0.5
     }
-    let corner1 = parseOptionAs2DVector(options, 'corner1', [0, 0])
-    let corner2 = parseOptionAs2DVector(options, 'corner2', [1, 1])
-    c = corner1.plus(corner2).times(0.5)
-    r = corner2.minus(corner1).times(0.5)
-  } else {
-    c = parseOptionAs2DVector(options, 'center', [0, 0])
-    r = parseOptionAs2DVector(options, 'radius', [1, 1])
+    if (isBoolean(options.center[1])) {
+      center[1] = options.center[1] === true ? 0 : size[1] * 0.5
+    }
+    if (isNumber(options.center[0])) {
+      center[0] = options.center[0]
+    }
+    if (isNumber(options.center[1])) {
+      center[1] = options.center[1]
+    }
   }
-  r = r.abs() // negative radii make no sense
-  let rswap = new Vector2(r.x, -r.y)
-  let points = [
-    c.plus(r), c.plus(rswap), c.minus(r), c.minus(rswap)
+
+  const halfWidth = size[0] * 0.5
+  const halfLength = size[1] * 0.5
+  const points = [
+    [center[0] - halfWidth, center[1] - halfLength],
+    [center[0] + halfWidth, center[1] - halfLength],
+    [center[0] + halfWidth, center[1] + halfLength],
+    [center[0] - halfWidth, center[1] + halfLength]
   ]
   return fromPoints(points)
 }
