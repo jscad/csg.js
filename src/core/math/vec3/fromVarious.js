@@ -78,3 +78,4 @@ function fromVarious (...params) {
   }
 }
 
+module.exports = fromVarious

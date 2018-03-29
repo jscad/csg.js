@@ -1,5 +1,5 @@
 module.exports = equals
 
 function equals (a, b) {
-  return (a._x === b._x) && (a._y === b._y) && (a._z === b._z)
+  return (a[0] === b[0]) && (a[1] === b[1]) && (a[2] === b[2])
 }
