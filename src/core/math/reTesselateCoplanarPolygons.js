@@ -7,7 +7,7 @@ const Line2D = require('./Line2')
 const Polygon = require('./Polygon3')
 
 // Retesselation function for a set of coplanar polygons. See the introduction at the top of
-// this file.
+// the main csg.js file.
 const reTesselateCoplanarPolygons = function (sourcepolygons, destpolygons) {
   let numpolygons = sourcepolygons.length
   if (numpolygons > 0) {
