@@ -1,4 +1,3 @@
-const {isCAG} = require('../../core/utils')
 const CSG = require('../../core/CSG')
 const Tree = require('../../core/trees')
 
@@ -8,7 +7,10 @@ const {bounds} = require('../../core/utils/csgMeasurements')
 
 const {fromFakeCSG} = require('../../core/CAGFactories')
 const {toCSGWall} = require('../../core/CAGToOther')
-const linearExtrude = require('../ops-extrusions/linearExtrude')
+const {isCSG} = require('../../core/utils')
+
+const toArray = require('../../core/utils/toArray')
+const {flatten, areAllShapesTheSameType} = require('../../core/utils')
 
 // FIXME should this be lazy ? in which case, how do we deal with 2D/3D combined
 // TODO we should have an option to set behaviour as first parameter
@@ -38,51 +40,39 @@ const linearExtrude = require('../ops-extrusions/linearExtrude')
    *      |       |            |       |
    *      +-------+            +-------+
 */
-function union () {
-  let options = {}
-  const defaults = {
-    extrude2d: false
+function union (...inputs) {
+  const shapes = flatten(toArray(inputs))
+  const allIdenticalType = areAllShapesTheSameType(shapes)
+  if (!allIdenticalType) {
+    throw new Error('you cannot do unions of 2d & 3d shapes, please extrude the 2d shapes or flatten the 3d shapes')
   }
-  let o
-  let i = 0
-  let a = arguments
-  if (a[0].length) a = a[0]
-  if ('extrude2d' in a[0]) { // first parameter is options
-    options = Object.assign({}, defaults, a[0])
-    o = a[i++]
-  }
-
-  o = a[i++]
-
-  // TODO: add option to be able to set this?
-  if ((typeof (a[i]) === 'object') && isCAG(a[i]) && options.extrude2d) {
-    o = linearExtrude({height: 0.1}, a[i]) // -- convert a 2D shape to a thin solid, note: do not a[i] = a[i].extrude()
-  }
-  for (; i < a.length; i++) {
-    let obj = a[i]
-
-    if ((typeof (a[i]) === 'object') && isCAG(a[i]) && options.extrude2d) {
-      obj = linearExtrude({height: 0.1}, a[i]) // -- convert a 2D shape to a thin solid:
-    }
-    o = _union([o, obj])
-  }
-  return o
+  const is3d = isCSG(shapes[0])
+  const unionFn = is3d ? union3d : union2d
+  return shapes.length > 1 ? unionFn(shapes) : shapes[0]
 }
 
-const _union = function (csg) {
-  let csgs
-  if (csg instanceof Array) {
-    csgs = csg.slice(0)
-  } else {
-    csgs = [csg]
-  }
-
+const union3d = function (solids) {
+  let csgs = solids
   let i
   // combine csg pairs in a way that forms a balanced binary tree pattern
   for (i = 1; i < csgs.length; i += 2) {
     csgs.push(unionSub(csgs[i - 1], csgs[i]))
   }
   return canonicalize(retesselate(csgs[i - 1]))
+}
+
+// FIXME: double check this algorithm
+const union2d = function (solids) {
+  let cags = solids
+  let i
+  cags[0] = retesselate(toCSGWall(cags[0], -1, 1))
+  // combine csg pairs in a way that forms a balanced binary tree pattern
+  for (i = 1; i < cags.length; i += 2) {
+    const current = retesselate(toCSGWall(cags[i], -1, 1))
+    const previous = cags[i - 1]
+    cags.push(unionSub(previous, current, false, false))
+  }
+  return canonicalize(fromFakeCSG(cags[i - 1]))
 }
 
 const unionSub = function (otherCsg, csg, doRetesselate, doCanonicalize) {
@@ -102,8 +92,8 @@ const unionSub = function (otherCsg, csg, doRetesselate, doCanonicalize) {
     let newpolygons = a.allPolygons().concat(b.allPolygons())
     let result = CSG.fromPolygons(newpolygons)
     result.properties = otherCsg.properties._merge(csg.properties)
-    if (doRetesselate) result = result.reTesselated()
-    if (doCanonicalize) result = result.canonicalized()
+    if (doRetesselate) result = retesselate(result)
+    if (doCanonicalize) result = canonicalize(result)
     return result
   }
 }
@@ -138,21 +128,6 @@ const mayOverlap = function (otherCsg, csg) {
     if (mybounds[0].z > otherbounds[1].z) return false
     return true
   }
-}
-
-const union2d = function (otherCag, cag) {
-  let cags
-  if (cag instanceof Array) {
-    cags = cag
-  } else {
-    cags = [cag]
-  }
-  let r = toCSGWall(otherCag, -1, 1)
-  r = _union(r,
-    cags.map(function (cag) {
-      return retesselate(toCSGWall(cag, -1, 1))
-    }), false, false)
-  return canonicalize(fromFakeCSG(r))
 }
 
 union.unionSub = unionSub

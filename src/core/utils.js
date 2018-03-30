@@ -90,6 +90,21 @@ function isCSG (object) {
   return true
 }
 
+const areAllShapesTheSameType = shapes => {
+  let previousType
+  for (let i = 0; i < shapes.length; i++) {
+    const shape = shapes[i]
+    let currentType = isCAG(shape) ? '2d' : '3d'
+    if (previousType) {
+      if (currentType !== previousType) {
+        return false
+      }
+    }
+    previousType = currentType
+  }
+  return true
+}
+
 const isArray = val => Array.isArray(val)
 const isNumber = value => typeof value === 'number' && isFinite(value)
 const flatten = arr => Array.prototype.concat(...arr)
@@ -104,7 +119,7 @@ module.exports = {
   interpolateBetween2DPointsForY,
   isCAG,
   isCSG,
-
+  areAllShapesTheSameType,
   isArray,
   isNumber,
   isBoolean,

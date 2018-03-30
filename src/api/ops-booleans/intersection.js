@@ -1,4 +1,4 @@
-const {isCAG} = require('../../core/utils')
+const {isCSG} = require('../../core/utils')
 const CSG = require('../../core/CSG')
 const Tree = require('../../core/trees')
 
@@ -6,6 +6,8 @@ const canonicalize = require('../../core/utils/canonicalize')
 const retesselate = require('../../core/utils/retesellate')
 const {fromFakeCSG} = require('../../core/CAGFactories')
 const {toCSGWall} = require('../../core/CAGToOther')
+const toArray = require('../../core/utils/toArray')
+const {flatten, areAllShapesTheSameType} = require('../../core/utils')
 
 /** intersection of the given shapes: ie keep only the common parts between the given shapes
  * @param {Object(s)|Array} objects - objects to intersect
@@ -17,19 +19,15 @@ const {toCSGWall} = require('../../core/CAGToOther')
  * @example
  * let intersectionOfSpherAndCube = intersection(sphere(), cube())
  */
-function intersection () {
-  let object
-  let i = 0
-  let a = arguments
-  if (a[0].length) a = a[0]
-  for (object = a[i++]; i < a.length; i++) {
-    if (isCAG(a[i])) {
-      object = intersect2d(object, a[i])
-    } else {
-      object = intersect(object, a[i])// .setColor(1, 1, 0)) // -- color the cuts
-    }
+function intersection (...inputs) {
+  const shapes = flatten(toArray(inputs))
+  const allIdenticalType = areAllShapesTheSameType(shapes)
+  if (!allIdenticalType) {
+    throw new Error('you cannot do intersections of 2d & 3d shapes, please extrude the 2d shapes or flatten the 3d shapes')
   }
-  return object
+  const is3d = isCSG(shapes[0])
+  const intersectFn = is3d ? intersect3d : intersect2d
+  return shapes.length > 1 ? intersectFn(shapes[0], shapes.slice(1)) : shapes[0]
 }
 
   /**
@@ -49,7 +47,7 @@ function intersection () {
    *      |       |
    *      +-------+
    */
-const intersect = function (otherCsg, csg) {
+const intersect3d = function (otherCsg, csg) {
   let csgs
   if (csg instanceof Array) {
     csgs = csg
@@ -61,23 +59,6 @@ const intersect = function (otherCsg, csg) {
     let islast = (i === (csgs.length - 1))
     result = intersectSub(result, csgs[i], islast, islast)
   }
-  return result
-}
-
-const intersectSub = function (ohterCsg, csg, doRetesselate, doCanonicalize) {
-  let a = new Tree(ohterCsg.polygons)
-  let b = new Tree(csg.polygons)
-  a.invert()
-  b.clipTo(a)
-  b.invert()
-  a.clipTo(b)
-  b.clipTo(a)
-  a.addPolygons(b.allPolygons())
-  a.invert()
-  let result = CSG.fromPolygons(a.allPolygons())
-  result.properties = ohterCsg.properties._merge(csg.properties)
-  if (doRetesselate) result = retesselate(result)
-  if (doCanonicalize) result = canonicalize(result)
   return result
 }
 
@@ -98,6 +79,25 @@ const intersect2d = function (otherCag, cag) {
   r = canonicalize(r)
   return r
 }
+
+const intersectSub = function (ohterCsg, csg, doRetesselate, doCanonicalize) {
+  let a = new Tree(ohterCsg.polygons)
+  let b = new Tree(csg.polygons)
+  a.invert()
+  b.clipTo(a)
+  b.invert()
+  a.clipTo(b)
+  b.clipTo(a)
+  a.addPolygons(b.allPolygons())
+  a.invert()
+  let result = CSG.fromPolygons(a.allPolygons())
+  result.properties = ohterCsg.properties._merge(csg.properties)
+  if (doRetesselate) result = retesselate(result)
+  if (doCanonicalize) result = canonicalize(result)
+  return result
+}
+
+
 
 module.exports = intersection
 // FIXME: sort of a hack for extrusionUtils => _toPlanePolygons

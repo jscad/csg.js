@@ -7,7 +7,7 @@ const union = require('./union')
 const difference = require('./difference')
 const intersection = require('./intersection')
 
-test('union (defaults)', t => {
+test('union (3d)', t => {
   const op1 = cuboid()
   const op2 = cuboid({size: 10})
 
@@ -16,7 +16,7 @@ test('union (defaults)', t => {
   t.deepEqual(obs.polygons.length, 6)
 })
 
-test('union (more than 2 operands)', t => {
+test('union (more than 2 operands, 3d)', t => {
   const op1 = cuboid()
   const op2 = cuboid()
   const op3 = cuboid({size: 10})
@@ -26,7 +26,7 @@ test('union (more than 2 operands)', t => {
   t.deepEqual(obs.polygons.length, 6)
 })
 
-test('union (complex)', t => {
+test('mixed boolean operations (complex, 3d)', t => {
   const obs = union(
         difference(
            cuboid({size: 3, center: true}),
@@ -41,16 +41,24 @@ test('union (complex)', t => {
   t.deepEqual(obs.polygons.length, 610)
 })
 
-test('union (2d & 3d shapes)', t => {
-  const op1 = cuboid()
-  const op2 = rectangle([10, 2])
+test('union (2d)', t => {
+  const op1 = rectangle([10, 2])
+  const op2 = rectangle([2, 10])
 
-  const obs = union({extrude2d: true}, op1, op2)
+  const obs = union(op1, op2)
 
-  t.deepEqual(obs.polygons.length, 6)
+  t.deepEqual(obs.sides.length, 7)
 })
 
-test('difference (defaults)', t => {
+test('union (2d & 3d shapes) should fail', t => {
+  const op1 = cuboid()
+  const op2 = rectangle([10, 2])
+  t.throws(() => {
+    union(op1, op2)
+  }, 'you cannot do unions of 2d & 3d shapes, please extrude the 2d shapes or flatten the 3d shapes')
+})
+
+test('difference (3d)', t => {
   const op1 = cuboid({size: [10, 10, 1]})
   const op2 = cuboid({size: [1, 1, 10]})
 
@@ -59,7 +67,7 @@ test('difference (defaults)', t => {
   t.deepEqual(obs.polygons.length, 10)
 })
 
-test('difference (more than 2 operands)', t => {
+test('difference (more than 2 operands, 3d)', t => {
   const op1 = cuboid({size: [10, 10, 1]})
   const op2 = cuboid({size: [1, 1, 10]})
   const op3 = cuboid({size: [3, 3, 10]})
@@ -69,16 +77,25 @@ test('difference (more than 2 operands)', t => {
   t.deepEqual(obs.polygons.length, 10)
 })
 
+test('difference (2d)', t => {
+  const op1 = rectangle([10, 2])
+  const op2 = rectangle([2, 10])
+
+  const obs = difference(op1, op2)
+
+  t.deepEqual(obs.sides.length, 4)
+})
+
 test('difference (2d & 3d shapes)', t => {
   const op1 = cuboid({size: [10, 10, 1]})
   const op2 = rectangle([10, 2])
 
-  const obs = difference(op1, op2)
-
-  t.deepEqual(obs.polygons.length, 6)
+  t.throws(() => {
+    difference(op1, op2)
+  }, 'you cannot do subtractions of 2d & 3d shapes, please extrude the 2d shapes or flatten the 3d shapes')
 })
 
-test('intersection (defaults)', t => {
+test('intersection (3d)', t => {
   const op1 = cuboid({size: [10, 10, 1]})
   const op2 = cuboid({size: [1, 1, 10]})
 
@@ -87,7 +104,7 @@ test('intersection (defaults)', t => {
   t.deepEqual(obs.polygons.length, 10)
 })
 
-test('intersection (more than 2 operands)', t => {
+test('intersection (more than 2 operands, 3d)', t => {
   const op1 = cuboid({size: [10, 10, 1]})
   const op2 = cuboid({size: [1, 1, 10]})
   const op3 = cuboid({size: [3, 3, 10]})
@@ -97,11 +114,20 @@ test('intersection (more than 2 operands)', t => {
   t.deepEqual(obs.polygons.length, 6)
 })
 
-test('intersection (2d & 3d shapes)', t => {
-  const op1 = cuboid({size: [10, 10, 1]})
-  const op2 = cuboid({size: [1, 1, 10]})
+test('intersection (2d)', t => {
+  const op1 = rectangle([10, 2])
+  const op2 = rectangle([2, 10])
 
   const obs = intersection(op1, op2)
 
-  t.deepEqual(obs.polygons.length, 6)
+  t.deepEqual(obs.sides.length, 4)
+})
+
+test('intersection (2d & 3d shapes)', t => {
+  const op1 = cuboid({size: [10, 10, 1]})
+  const op2 = rectangle([1, 10])
+
+  t.throws(() => {
+    intersection(op1, op2)
+  }, 'you cannot do intersections of 2d & 3d shapes, please extrude the 2d shapes or flatten the 3d shapes')
 })
