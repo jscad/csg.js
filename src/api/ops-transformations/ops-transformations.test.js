@@ -1,5 +1,5 @@
 const test = require('ava')
-const { sideEquals } = require('../test-helpers')
+const { sideEquals, shape2dToOptimisedPoints } = require('../test-helpers')
 const cube = require('../primitives/cuboid')
 const sphere = require('../primitives/spheroid')
 const circle = require('../primitives/circle')
@@ -54,20 +54,40 @@ test('translate (single item , 2d)', t => {
 
 test('translate (multiple items, 2d)', t => {
   const op1 = rectangle()
-  const op2 = circle()
+  const op2 = circle({fn: 5})
   const obs = translate([0, 10, 0], op1, op2)
 
-  sideEquals(t, obs[0].sides[0], [[1.9807852804032304, 10.804909677983872], [2, 11]])
-  sideEquals(t, obs[1].sides[obs.sides.length - 1], [[0, 10], [0.9999999999999998, 10]])
+  const expTranslatedRectData = [ [ 0, 11 ], [ 0, 10 ], [ 1, 10 ], [ 1, 11 ] ]
+  const obsTranslatedRectData = shape2dToOptimisedPoints(obs[0])
+
+  const expTranslatedCircleData = [ [ 1.3090169943749472, 10.048943483704846 ],
+  [ 2, 11 ],
+  [ 1.3090169943749475, 11.951056516295154 ],
+  [ 0.19098300562505266, 11.587785252292473 ],
+  [ 0.19098300562505255, 10.412214747707527 ] ]
+  const obsTranslatedCircleData = shape2dToOptimisedPoints(obs[1])
+
+  t.deepEqual(expTranslatedRectData, obsTranslatedRectData)
+  t.deepEqual(expTranslatedCircleData, obsTranslatedCircleData)
 })
 
 test('translate (multiple items in array, 2d)', t => {
   const op1 = rectangle()
-  const op2 = circle()
-  const obs = translate([0, 10, 0], op1, op2)
+  const op2 = circle({fn: 5})
+  const obs = translate([0, 10, 0], [op1, op2])
 
-  sideEquals(t, obs[0].sides[0], [[1.9807852804032304, 10.804909677983872], [2, 11]])
-  sideEquals(t, obs[1].sides[obs.sides.length - 1], [[0, 10], [0.9999999999999998, 10]])
+  const expTranslatedRectData = [ [ 0, 11 ], [ 0, 10 ], [ 1, 10 ], [ 1, 11 ] ]
+  const obsTranslatedRectData = shape2dToOptimisedPoints(obs[0])
+
+  const expTranslatedCircleData = [ [ 1.3090169943749472, 10.048943483704846 ],
+  [ 2, 11 ],
+  [ 1.3090169943749475, 11.951056516295154 ],
+  [ 0.19098300562505266, 11.587785252292473 ],
+  [ 0.19098300562505255, 10.412214747707527 ] ]
+  const obsTranslatedCircleData = shape2dToOptimisedPoints(obs[1])
+
+  t.deepEqual(expTranslatedRectData, obsTranslatedRectData)
+  t.deepEqual(expTranslatedCircleData, obsTranslatedCircleData)
 })
 
 test('rotate (single item)', t => {
@@ -102,11 +122,46 @@ test('rotate (single item angle axis style)', t => {
 
 test('rotate (multiple items, 2d)', t => {
   const op1 = rectangle()
-  const op2 = circle()
+  const op2 = circle({fn: 5})
   const obs = rotate([0, 10, 0], op1, op2)
 
-  sideEquals(t, obs[0].sides[0], [[1.9506927011935618, 0.8049096779838713], [1.969615506024416, 1]])
-  sideEquals(t, obs[1].sides[obs.sides.length - 1], [[0, 0], [0.9848077530122078, 0]])
+  const expTranslatedRectData = [ [ 0, 1 ],
+  [ 0, 0 ],
+  [ 0.984807753012208, 0 ],
+  [ 0.984807753012208, 1 ] ]
+  const obsTranslatedRectData = shape2dToOptimisedPoints(obs[0])
+
+  const expTranslatedCircleData = [ [ 1.2891300848851859, 0.04894348370484636 ],
+  [ 1.969615506024416, 1 ],
+  [ 1.289130084885186, 1.9510565162951536 ],
+  [ 0.18808154463312599, 1.5877852522924734 ],
+  [ 0.18808154463312587, 0.412214747707527 ] ]
+  const obsTranslatedCircleData = shape2dToOptimisedPoints(obs[1])
+
+  t.deepEqual(expTranslatedRectData, obsTranslatedRectData)
+  t.deepEqual(expTranslatedCircleData, obsTranslatedCircleData)
+})
+
+test('rotate (multiple items, 2d, in array)', t => {
+  const op1 = rectangle()
+  const op2 = circle({fn: 5})
+  const obs = rotate([0, 10, 0], [op1, op2])
+
+  const expTranslatedRectData = [ [ 0, 1 ],
+  [ 0, 0 ],
+  [ 0.984807753012208, 0 ],
+  [ 0.984807753012208, 1 ] ]
+  const obsTranslatedRectData = shape2dToOptimisedPoints(obs[0])
+
+  const expTranslatedCircleData = [ [ 1.2891300848851859, 0.04894348370484636 ],
+  [ 1.969615506024416, 1 ],
+  [ 1.289130084885186, 1.9510565162951536 ],
+  [ 0.18808154463312599, 1.5877852522924734 ],
+  [ 0.18808154463312587, 0.412214747707527 ] ]
+  const obsTranslatedCircleData = shape2dToOptimisedPoints(obs[1])
+
+  t.deepEqual(expTranslatedRectData, obsTranslatedRectData)
+  t.deepEqual(expTranslatedCircleData, obsTranslatedCircleData)
 })
 
 test('scale (single item)', t => {
@@ -136,11 +191,21 @@ test('scale (multiple items in array)', t => {
 
 test('scale (multiple items, 2d)', t => {
   const op1 = rectangle()
-  const op2 = circle()
+  const op2 = circle({fn: 5})
   const obs = scale([0, 10, 0], op1, op2)
 
-  sideEquals(t, obs[0].sides[0], [[0, 8.049096779838713], [0, 10]])
-  sideEquals(t, obs[1].sides[obs.sides.length - 1], [[0, 0], [0, 0]])
+  const expTranslatedRectData = [ [ 0, 10 ], [ 0, 0 ], [ 0, 10 ] ]
+  const obsTranslatedRectData = shape2dToOptimisedPoints(obs[0])
+
+  const expTranslatedCircleData = [ [ 0, 0.4894348370484636 ],
+  [ 0, 10 ],
+  [ 0, 19.510565162951536 ],
+  [ 0, 15.877852522924734 ],
+  [ 0, 4.12214747707527 ] ]
+  const obsTranslatedCircleData = shape2dToOptimisedPoints(obs[1])
+
+  t.deepEqual(expTranslatedRectData, obsTranslatedRectData)
+  t.deepEqual(expTranslatedCircleData, obsTranslatedCircleData)
 })
 
 test('transform (single item, translation)', t => {
