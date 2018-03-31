@@ -10,14 +10,23 @@
     ie benefit of functional approach while allowing chaining
     this is also in preparation for the day browsers & Node.js will
     support the > (pipe) operator 
- 
+
+## Math utilities & data structures:
+ * vector3/3D is deprecated and replaced by vec3
+  * not a class anymore, but a set of helper functions, that are also compatible with the stack.gl ecosystem
+ * vector2/2D is deprecated and replaced by vec3
+  * not a class anymore, but a set of helper functions, that are also compatible with the stack.gl ecosystem
+ * matrix4 is deprecated and replaced by mat4
+  * not a class anymore, but a set of helper functions, that are also compatible with the stack.gl ecosystem
 # API
 
-    
     - snake case methods are now camel case: ie chain_hull => chainHull
     - a SINGLE function per shape : no more CSG.sphere() vs sphere()
       - unified functions keep the openscad shortcuts, but also add more explicit ones
         - ie : h => height, fn => segments
+
+  ## Booleans
+
     - no more implicit extrusions : ie union(2dShape, 3dShape) will not work anymore : you need to explicitely
     convert shapes before applying operations : ie extrude 2d shapes, or project/flatten 3d shapes
 
@@ -34,6 +43,14 @@
 
     - cube => cuboid
     - sphere => spheroid ? (not sure about this one)
+
+    - rectangle: now accepts either :
+      * a size named parameter
+      * a single numeric value (creates a square)
+      * an array of numeric values 
+
+      * center can be either a single boolean, a 2d array of booleans, or a 2d array of numeric values
+      (for direct positioning)
 
   ## Extrusions
 
