@@ -97,8 +97,6 @@ const intersectSub = function (ohterCsg, csg, doRetesselate, doCanonicalize) {
   return result
 }
 
-
-
 module.exports = intersection
 // FIXME: sort of a hack for extrusionUtils => _toPlanePolygons
 intersection.intersectSub = intersectSub
