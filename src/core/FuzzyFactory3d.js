@@ -43,9 +43,9 @@ FuzzyCSGFactory.prototype = {
     let newvertices = sourcepolygon.vertices.map(function (vertex) {
       return _this.getVertex(vertex)
     })
-        // two vertices that were originally very close may now have become
-        // truly identical (referring to the same Vertex object).
-        // Remove duplicate vertices:
+    // two vertices that were originally very close may now have become
+    // truly identical (referring to the same Vertex object).
+    // Remove duplicate vertices:
     let newverticesDedup = []
     if (newvertices.length > 0) {
       let prevvertextag = newvertices[newvertices.length - 1].getTag()
