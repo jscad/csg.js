@@ -1,5 +1,5 @@
 const test = require('ava')
-const cube = require('./cuboid')
+const cuboid = require('./cuboid')
 const sphere = require('./spheroid')
 const cylinder = require('./cylinder')
 const torus = require('./torus')
@@ -9,8 +9,8 @@ const { simplifiedPolygon, comparePolygons } = require('../test-helpers.js')
 /* FIXME : not entirely sure how to deal with this, but for now relies on inspecting
 output data structures: we should have higher level primitives ... */
 
-test('cube (defaults)', t => {
-  const obs = cube()
+test('cuboid (defaults)', t => {
+  const obs = cuboid()
   const expFirstPoly = {
     vertices: [ { pos: { _x: 0, _y: 0, _z: 0 } },
       { pos: { _x: 0, _y: 0, _z: 1 } },
@@ -33,8 +33,8 @@ test('cube (defaults)', t => {
   t.deepEqual(obs.polygons[5], expPoly5)
 })
 
-test('cube (custom size, single parameter)', t => {
-  const obs = cube(2)
+test('cuboid (custom size, single parameter)', t => {
+  const obs = cuboid(2)
   const expFirstPoly = {
     vertices: [ { pos: { _x: 0, _y: 0, _z: 0 } },
       { pos: { _x: 0, _y: 0, _z: 2 } },
@@ -57,8 +57,8 @@ test('cube (custom size, single parameter)', t => {
   t.deepEqual(obs.polygons[5], expPoly5)
 })
 
-test('cube (custom size, single value, object parameter)', t => {
-  const obs = cube({size: 2})
+test('cuboid (custom size, single value, object parameter)', t => {
+  const obs = cuboid({size: 2})
   const expFirstPoly = {
     vertices: [ { pos: { _x: 0, _y: 0, _z: 0 } },
       { pos: { _x: 0, _y: 0, _z: 2 } },
@@ -81,8 +81,8 @@ test('cube (custom size, single value, object parameter)', t => {
   t.deepEqual(obs.polygons[5], expPoly5)
 })
 
-test('cube (custom size, array value, object parameter)', t => {
-  const obs = cube({size: [2, 1, 3]})
+test('cuboid (custom size, array value, object parameter)', t => {
+  const obs = cuboid({size: [2, 1, 3]})
   const expFirstPoly = {
     vertices: [ { pos: { _x: 0, _y: 0, _z: 0 } },
       { pos: { _x: 0, _y: 0, _z: 3 } },
@@ -105,8 +105,8 @@ test('cube (custom size, array value, object parameter)', t => {
   t.deepEqual(obs.polygons[5], expPoly5)
 })
 
-test('cube (standard size, custom center(booleans), object parameter)', t => {
-  const obs = cube({size: 1, center: [false, true, false]})
+test('cuboid (standard size, custom center(booleans), object parameter)', t => {
+  const obs = cuboid({size: 1, center: [false, true, false]})
   const expFirstPoly = {
     vertices: [ { pos: { _x: 0, _y: -0.5, _z: 0 } },
       { pos: { _x: 0, _y: -0.5, _z: 1 } },
@@ -129,8 +129,8 @@ test('cube (standard size, custom center(booleans), object parameter)', t => {
   t.deepEqual(obs.polygons[5], expPoly5)
 })
 
-test('cube (standard size, rounded)', t => {
-  const obs = cube({round: true})
+test('cuboid (standard size, rounded)', t => {
+  const obs = cuboid({round: true})
   const expFirstPoly = {
     vertices: [ { pos: { _x: 0.09999999999999998, _y: 0, _z: 0.09999999999999998 } },
       { pos: { _x: 0.029289321881345254,
@@ -168,8 +168,8 @@ test('cube (standard size, rounded)', t => {
   t.deepEqual(obs.polygons[5], expPoly5)
 })
 
-test('cube (custom size, rounded)', t => {
-  const obs = cube({size: [69, 20, 3], round: true, radius: 0.5})
+test('cuboid (custom size, rounded)', t => {
+  const obs = cuboid({size: [69, 20, 3], round: true, radius: 0.5})
 
   const expFirstPoly = {
     vertices: [ { pos: { _x: 0.5, _y: 0, _z: 0.5 } },

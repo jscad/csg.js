@@ -1,8 +1,8 @@
 const test = require('ava')
-const square = require('./rectangle')
+const rectangle = require('./rectangle')
 const circle = require('./circle')
 const polygon = require('./polygon')
-const { sideEquals, shape2dToNestedArray } = require('../test-helpers')
+const { sideEquals, shape2dToNestedArray, shape2dToOptimisedPoints } = require('../test-helpers')
 
 /* FIXME : not entirely sure how to deal with this, but for now relies on inspecting
 output data structures: we should have higher level primitives ... */
@@ -11,8 +11,8 @@ output data structures: we should have higher level primitives ... */
 function comparePositonVertices (obs, exp) {
   for (let index = 0; index < obs.length; index++) {
     let side = obs[index]
-    const same = side.vertex0.pos._x === exp[index][0][0] && side.vertex0.pos._y === exp[index][0][1]
-      && side.vertex1.pos._x === exp[index][1][0] && side.vertex1.pos._y === exp[index][1][1]
+    const same = side.vertex0.pos._x === exp[index][0][0] && side.vertex0.pos._y === exp[index][0][1] &&
+      side.vertex1.pos._x === exp[index][1][0] && side.vertex1.pos._y === exp[index][1][1]
     // console.log('side', side.vertex0.pos, same)
     if (!same) {
       return false
@@ -21,95 +21,73 @@ function comparePositonVertices (obs, exp) {
   return true
 }
 
-/*test.failing('triangle (defaults)', t => {
-  const obs = triangle()
-
-  const expSides = [
-    [[0, 1], [0, 0]],
-    [[0, 0], [1, 0]],
-    [[1, 0], [1, 1]]
-  ]
-  t.deepEqual(obs.sides.length, 3)
-  t.truthy(comparePositonVertices(obs.sides, expSides))
-})
-
-test.failing('triangle (custom size)', t => {
-  const obs = triangle(5)
-
-  const expSides = [
-    [[0, 1], [0, 0]],
-    [[0, 0], [1, 0]],
-    [[1, 0], [1, 1]]
-  ]
-  t.deepEqual(obs.sides.length, 3)
-  t.truthy(comparePositonVertices(obs.sides, expSides))
-})*/
-
-test('square (defaults)', t => {
-  const obs = square()
-
-  const expSides = [
-    [[0, 1], [0, 0]],
-    [[0, 0], [1, 0]],
-    [[1, 0], [1, 1]],
-    [[1, 1], [0, 1]]
-  ]
-  t.deepEqual(obs.sides.length, 4)
-  t.truthy(comparePositonVertices(obs.sides, expSides))
-})
-
-test('square (custom size, 2d array parameter)', t => {
-  const obs = square([2, 3])
-
-  const expSides = [
-    [[0, 3], [0, 0]],
-    [[0, 0], [2, 0]],
-    [[2, 0], [2, 3]],
-    [[2, 3], [0, 3]]
-  ]
+test('rectangle (defaults)', t => {
+  const obs = rectangle()
+  const expSides = [ [ 0, 1 ], [ 0, 0 ], [ 1, 0 ], [ 1, 1 ] ]
+  const obsSides = shape2dToOptimisedPoints(obs)
 
   t.deepEqual(obs.sides.length, 4)
-  t.truthy(comparePositonVertices(obs.sides, expSides))
+  t.deepEqual(obsSides, expSides)
 })
 
-test('square (custom size, size object parameter)', t => {
-  const obs = square({size: [2, 3]})
+test('rectangle (custom size, 2d array parameter)', t => {
+  const obs = rectangle([2, 3])
 
-  const expSides = [
-    [[0, 3], [0, 0]],
-    [[0, 0], [2, 0]],
-    [[2, 0], [2, 3]],
-    [[2, 3], [0, 3]]
-  ]
+  const expSides = [ [0, 3], [0, 0], [2, 0], [2, 3] ]
+  const obsSides = shape2dToOptimisedPoints(obs)
 
   t.deepEqual(obs.sides.length, 4)
-  t.truthy(comparePositonVertices(obs.sides, expSides))
+  t.deepEqual(obsSides, expSides)
 })
 
-test('square (default size, centered)', t => {
-  const obs = square({center: true})
+test('rectangle (custom size, size object parameter)', t => {
+  const obs = rectangle({size: [2, 3]})
 
-  const expSides = [
-    [[-0.5, 0.5], [-0.5, -0.5]],
-    [[-0.5, -0.5], [0.5, -0.5]],
-    [[0.5, -0.5], [0.5, 0.5]],
-    [[0.5, 0.5], [-0.5, 0.5]]
-  ]
+  const expSides = [ [0, 3], [0, 0], [2, 0], [2, 3] ]
+  const obsSides = shape2dToOptimisedPoints(obs)
 
   t.deepEqual(obs.sides.length, 4)
-  t.truthy(comparePositonVertices(obs.sides, expSides))
+  t.deepEqual(obsSides, expSides)
 })
 
-test('square (custom size, centered)', t => {
-  const obs = square({size: [2, 3], center: true})
+test('rectangle (default size, centered)', t => {
+  const obs = rectangle({center: true})
 
-  const expSides = [ [ [ -1, 1.5 ], [ -1, -1.5 ] ],
-  [ [ -1, -1.5 ], [ 1, -1.5 ] ],
-  [ [ 1, -1.5 ], [ 1, 1.5 ] ],
-  [ [ 1, 1.5 ], [ -1, 1.5 ] ] ]
+  const expSides = [ [-0.5, 0.5], [-0.5, -0.5], [0.5, -0.5], [0.5, 0.5] ]
+
+  const obsSides = shape2dToOptimisedPoints(obs)
 
   t.deepEqual(obs.sides.length, 4)
-  t.truthy(comparePositonVertices(obs.sides, expSides))
+  t.deepEqual(obsSides, expSides)
+})
+
+test('rectangle (custom size, centered, boolean)', t => {
+  const obs = rectangle({size: [2, 3], center: true})
+
+  const expSides = [ [ -1, 1.5 ], [ -1, -1.5 ], [ 1, -1.5 ], [ 1, 1.5 ] ]
+  const obsSides = shape2dToOptimisedPoints(obs)
+
+  t.deepEqual(obs.sides.length, 4)
+  t.deepEqual(obsSides, expSides)
+})
+
+test('rectangle (custom size, centered on one axis, boolean)', t => {
+  const obs = rectangle({size: [2, 3], center: [true, false]})
+
+  const expSides = [ [ -1, 3 ], [ -1, 0 ], [ 1, 0 ], [ 1, 3 ] ]
+  const obsSides = shape2dToOptimisedPoints(obs)
+
+  t.deepEqual(obs.sides.length, 4)
+  t.deepEqual(obsSides, expSides)
+})
+
+test('rectangle (custom size, centered, position)', t => {
+  const obs = rectangle({size: [2, 3], center: [-1, 2]})
+
+  const expSides = [ [ -2, 3.5 ], [ -2, 0.5 ], [ 0, 0.5 ], [ 0, 3.5 ] ]
+  const obsSides = shape2dToOptimisedPoints(obs)
+  t.deepEqual(obs.sides.length, 4)
+  t.deepEqual(obsSides, expSides)
 })
 
 test('circle (defaults)', t => {
@@ -220,6 +198,8 @@ test('circle (defaults)', t => {
       0.6173165676349096,
       1.9807852804032304,
       0.8049096779838713 ] ]
+
+  // console.log('foo', obsSides)
 
   t.deepEqual(obs.sides.length, 32)
   t.deepEqual(shape2dToNestedArray(obs), expected)
