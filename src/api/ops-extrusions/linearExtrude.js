@@ -21,13 +21,11 @@ function linearExtrude (params, baseShape) {
     twist: 0,
     center: false
   }
-  /* convexity = 10, */
   const {height, twist, slices, center} = Object.assign({}, defaults, params)
 
-  // if(params.convexity) convexity = params.convexity      // abandoned
   let output = extrude(baseShape, {offset: [0, 0, height], twistangle: twist, twiststeps: slices})
   if (center === true) {
-    const outputBounds = bounds(output) // b[0] = min, b[1] = max
+    const outputBounds = bounds(output)
     const offset = (outputBounds[1].plus(outputBounds[0])).times(-0.5)
     output = translate(offset, output)
   }
