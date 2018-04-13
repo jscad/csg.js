@@ -12,10 +12,6 @@ const { echo } = require('./debug')
 // these are 'external' to this api and we basically just re-export for old api compatibility
 // ...needs to be reviewed
 const { CAG, CSG } = require('../../csg')
-const { log } = require('./log') // FIXME: this is a duplicate of the one in openjscad itself,*/
-
-// mostly likely needs to be removed since it is in the OpenJsCad namespace anyway, leaving here
-// for now
 
 const exportedApi = {
   csg: {CAG, CSG},
@@ -27,7 +23,6 @@ const exportedApi = {
   color,
   maths,
   text,
-  OpenJsCad: {OpenJsCad: {log}},
   debug: {echo}
 }
 
