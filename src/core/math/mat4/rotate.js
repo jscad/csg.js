@@ -4,26 +4,26 @@ const create = require('./create')
  * Rotates a mat4 by the given angle
  *
  * @param {mat4} out the receiving matrix
- * @param {mat4} a the matrix to rotate
  * @param {Number} rad the angle to rotate the matrix by
  * @param {vec3} axis the axis to rotate around
+ * @param {mat4} matrix the matrix to rotate
  * @returns {mat4} out
  */
 function rotate (...params) {
   let out
-  let a
+  let matrix
   let rad
   let axis
   if (params.length === 3) {
     out = create()
-    a = params[0]
-    rad = params[1]
-    axis = params[2]
+    rad = params[0]
+    axis = params[1]
+    matrix = params[2]
   } else {
     out = params[0]
-    a = params[1]
-    rad = params[2]
-    axis = params[3]
+    rad = params[1]
+    axis = params[2]
+    matrix = params[3]
   }
 
   let [x, y, z] = axis
@@ -64,9 +64,9 @@ function rotate (...params) {
   c = Math.cos(rad)
   t = 1 - c
 
-  a00 = a[0]; a01 = a[1]; a02 = a[2]; a03 = a[3]
-  a10 = a[4]; a11 = a[5]; a12 = a[6]; a13 = a[7]
-  a20 = a[8]; a21 = a[9]; a22 = a[10]; a23 = a[11]
+  a00 = matrix[0]; a01 = matrix[1]; a02 = matrix[2]; a03 = matrix[3]
+  a10 = matrix[4]; a11 = matrix[5]; a12 = matrix[6]; a13 = matrix[7]
+  a20 = matrix[8]; a21 = matrix[9]; a22 = matrix[10]; a23 = matrix[11]
 
     // Construct the elements of the rotation matrix
   b00 = x * x * t + c; b01 = y * x * t + z * s; b02 = z * x * t - y * s
@@ -87,11 +87,11 @@ function rotate (...params) {
   out[10] = a02 * b20 + a12 * b21 + a22 * b22
   out[11] = a03 * b20 + a13 * b21 + a23 * b22
 
-  if (a !== out) { // If the source and destination differ, copy the unchanged last row
-    out[12] = a[12]
-    out[13] = a[13]
-    out[14] = a[14]
-    out[15] = a[15]
+  if (matrix !== out) { // If the source and destination differ, copy the unchanged last row
+    out[12] = matrix[12]
+    out[13] = matrix[13]
+    out[14] = matrix[14]
+    out[15] = matrix[15]
   }
   return out
 }

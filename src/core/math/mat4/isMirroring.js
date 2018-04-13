@@ -1,7 +1,12 @@
 const cross = require('../vec3/cross')
 const dot = require('../vec3/dot')
 
-// determine whether this matrix is a mirroring transformation
+/**
+ * determine whether the input matrix is a mirroring transformation
+ *
+ * @param {mat4} mat the input matrix
+ * @returns {boolean} output
+ */
 function isMirroring (mat) {
   const u = [mat[0], mat[4], mat[8]]
   const v = [mat[1], mat[5], mat[9]]

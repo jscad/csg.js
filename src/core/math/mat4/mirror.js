@@ -5,7 +5,6 @@ const fromValues = require('./fromValues')
 /**
  * m the mat4 by the dimensions in the given vec3
  * create an affine matrix for mirroring into an arbitrary plane:
-
  *
  * @param {mat4} out the receiving matrix
  * @param {mat4} a the matrix to scale

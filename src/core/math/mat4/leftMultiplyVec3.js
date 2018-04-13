@@ -1,9 +1,14 @@
 const fromValues = require('../vec3/fromValues')
 
-// Multiply a Vector3 (interpreted as 3 column, 1 row) by this matrix
-// (result = v*M)
-// Fourth element is taken as 1
-const lefttMultiplyVec3 = (matrix, vector) => {
+/**
+ * Multiply the input matrix by a Vector3 (interpreted as 3 column, 1 row)
+ * (result = v*M)
+ * Fourth element is set to 1
+ * @param {vec3} vector the input vector
+ * @param {mat4} matrix the input matrix
+ * @returns {mat4} output
+ */
+const lefttMultiplyVec3 = (vector, matrix) => {
   const [v0, v1, v2] = vector
   const v3 = 1
   let x = v0 * matrix[0] + v1 * matrix[4] + v2 * matrix[8] + v3 * matrix[12]

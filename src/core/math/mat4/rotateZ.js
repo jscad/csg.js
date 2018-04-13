@@ -1,34 +1,47 @@
 module.exports = rotateZ
+const create = require('./create')
 
 /**
- * Rotates a matrix by the given angle around the Z axis
+ * Rotates a matrix by the given angle around the Y axis
  *
  * @param {mat4} out the receiving matrix
- * @param {mat4} a the matrix to rotate
- * @param {Number} rad the angle to rotate the matrix by
+ * @param {Number} angle the angle to rotate the matrix by (in radian)
+ * @param {mat4} matrix the matrix to rotate
  * @returns {mat4} out
  */
-function rotateZ (out, a, rad) {
-  var s = Math.sin(rad),
-    c = Math.cos(rad),
-    a00 = a[0],
-    a01 = a[1],
-    a02 = a[2],
-    a03 = a[3],
-    a10 = a[4],
-    a11 = a[5],
-    a12 = a[6],
-    a13 = a[7]
+function rotateZ (...params) {
+  let out
+  let angle
+  let matrix
+  if (params.length === 2) {
+    out = create()
+    angle = params[0]
+    matrix = params[1]
+  } else {
+    out = params[0]
+    angle = params[1]
+    matrix = params[2]
+  }
+  let s = Math.sin(angle)
+  let c = Math.cos(angle)
+  let a00 = matrix[0]
+  let a01 = matrix[1]
+  let a02 = matrix[2]
+  let a03 = matrix[3]
+  let a10 = matrix[4]
+  let a11 = matrix[5]
+  let a12 = matrix[6]
+  let a13 = matrix[7]
 
-  if (a !== out) { // If the source and destination differ, copy the unchanged last row
-    out[8] = a[8]
-    out[9] = a[9]
-    out[10] = a[10]
-    out[11] = a[11]
-    out[12] = a[12]
-    out[13] = a[13]
-    out[14] = a[14]
-    out[15] = a[15]
+  if (matrix !== out) { // If the source and destination differ, copy the unchanged last row
+    out[8] = matrix[8]
+    out[9] = matrix[9]
+    out[10] = matrix[10]
+    out[11] = matrix[11]
+    out[12] = matrix[12]
+    out[13] = matrix[13]
+    out[14] = matrix[14]
+    out[15] = matrix[15]
   }
 
     // Perform axis-specific matrix multiplication

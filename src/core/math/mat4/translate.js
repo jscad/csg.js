@@ -2,29 +2,29 @@ module.exports = translate
 const create = require('./create')
 
 /**
- * Translate a mat4 by the given vector
+ * Translate matrix mat4 by the given vector
  *
  * @param {mat4} out the receiving matrix
- * @param {mat4} a the matrix to translate
- * @param {vec3} v vector to translate by
+ * @param {vec3} vector vector to translate by
+ * @param {mat4} matrix the matrix to translate
  * @returns {mat4} out
  */
 function translate (...params) {
   let out
-  let a
-  let v
+  let vector
+  let matrix
   if (params.length === 2) {
     out = create()
-    a = params[0]
-    v = params[1]
+    vector = params[0]
+    matrix = params[1]
   } else {
     out = params[0]
-    a = params[1]
-    v = params[2]
+    vector = params[1]
+    matrix = params[2]
   }
-  let x = v[0]
-  let y = v[1]
-  let z = v[2]
+  let x = vector[0]
+  let y = vector[1]
+  let z = vector[2]
   let a00
   let a01
   let a02
@@ -38,24 +38,24 @@ function translate (...params) {
   let a22
   let a23
 
-  if (a === out) {
-    out[12] = a[0] * x + a[4] * y + a[8] * z + a[12]
-    out[13] = a[1] * x + a[5] * y + a[9] * z + a[13]
-    out[14] = a[2] * x + a[6] * y + a[10] * z + a[14]
-    out[15] = a[3] * x + a[7] * y + a[11] * z + a[15]
+  if (matrix === out) {
+    out[12] = matrix[0] * x + matrix[4] * y + matrix[8] * z + matrix[12]
+    out[13] = matrix[1] * x + matrix[5] * y + matrix[9] * z + matrix[13]
+    out[14] = matrix[2] * x + matrix[6] * y + matrix[10] * z + matrix[14]
+    out[15] = matrix[3] * x + matrix[7] * y + matrix[11] * z + matrix[15]
   } else {
-    a00 = a[0]; a01 = a[1]; a02 = a[2]; a03 = a[3]
-    a10 = a[4]; a11 = a[5]; a12 = a[6]; a13 = a[7]
-    a20 = a[8]; a21 = a[9]; a22 = a[10]; a23 = a[11]
+    a00 = matrix[0]; a01 = matrix[1]; a02 = matrix[2]; a03 = matrix[3]
+    a10 = matrix[4]; a11 = matrix[5]; a12 = matrix[6]; a13 = matrix[7]
+    a20 = matrix[8]; a21 = matrix[9]; a22 = matrix[10]; a23 = matrix[11]
 
     out[0] = a00; out[1] = a01; out[2] = a02; out[3] = a03
     out[4] = a10; out[5] = a11; out[6] = a12; out[7] = a13
     out[8] = a20; out[9] = a21; out[10] = a22; out[11] = a23
 
-    out[12] = a00 * x + a10 * y + a20 * z + a[12]
-    out[13] = a01 * x + a11 * y + a21 * z + a[13]
-    out[14] = a02 * x + a12 * y + a22 * z + a[14]
-    out[15] = a03 * x + a13 * y + a23 * z + a[15]
+    out[12] = a00 * x + a10 * y + a20 * z + matrix[12]
+    out[13] = a01 * x + a11 * y + a21 * z + matrix[13]
+    out[14] = a02 * x + a12 * y + a22 * z + matrix[14]
+    out[15] = a03 * x + a13 * y + a23 * z + matrix[15]
   }
 
   return out
