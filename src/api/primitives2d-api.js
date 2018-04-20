@@ -65,6 +65,8 @@ function circle (params) {
  * @example
  * let poly = polygon([0,1,2,3,4])
  * or
+ * let poly = polygon([[0,1,2,3],[4,5,6,7]])
+ * or
  * let poly = polygon({path: [0,1,2,3,4]})
  * or
  * let poly = polygon({path: [0,1,2,3,4], points: [2,1,3]})
@@ -88,58 +90,7 @@ function polygon (params) { // array of po(ints) and pa(ths)
       points = params.points
     }
   }
-  // -> single path in points list
-  if (typeof points[0][0] !== 'object') {
-    return fromPoints(points)
-  }
-  // -> multiple paths in points list
-  // First pass: create a collection of CAG paths
-  let paths = []
-  points.forEach(path => {
-    paths.push(fromPoints(path))
-  })
-  // Second pass: make a three of paths
-  let three = {}
-  let point = null
-  // for each polygon extract parents and childs polygons
-  paths.forEach((p1, i) => {
-    // only check for first point in polygon
-    point = p1.sides[0].vertex0.pos
-    // check for intersection
-    paths.forEach((p2, y) => {
-      if (p1 !== p2) {
-        // create default node
-        three[i] || (three[i] = { parents: [], isHole: false })
-        three[y] || (three[y] = { parents: [], isHole: false })
-        // check if point in poylgon
-        if (p2.hasPointInside(point)) {
-          // push parent and child
-          three[i].parents.push(y)
-
-          // odd parents number ==> hole
-          three[i].isHole = !! (three[i].parents.length % 2)
-          three[y].isHole = !! (three[y].parents.length % 2)
-        }
-      }
-    })
-  })
-  // Third pass: subtract holes
-  let path = null
-  for (key in three) {
-    path = three[key]
-    if (path.isHole) {
-      delete three[key] // remove holes for final pass
-      path.parents.forEach(parentKey => {
-        paths[parentKey] = paths[parentKey].subtract(paths[key])
-      })
-    }
-  }
-  // Fourth and last pass: create final CAG object
-  let cag = new CAG()
-  for (key in three) {
-    cag = cag.union(paths[key])
-  }
-  return cag
+  return fromPoints(points)
 }
 
 // FIXME: errr this is kinda just a special case of a polygon , why do we need it ?
