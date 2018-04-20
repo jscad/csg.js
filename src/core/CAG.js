@@ -9,7 +9,7 @@ const {fromSides, fromFakeCSG} = require('./CAGFactories')
 
 const canonicalize = require('./utils/canonicalize')
 const retesselate = require('./utils/retesellate')
-const {isCAGValid, isSelfIntersecting} = require('./utils/cagValidation')
+const {isCAGValid, isSelfIntersecting, hasPointInside} = require('./utils/cagValidation')
 const {area, getBounds} = require('./utils/cagMeasurements')
 
 // all of these are good candidates for elimination in this scope, since they are part of a functional api
@@ -177,6 +177,11 @@ CAG.prototype = {
   // ALIAS !
   overCutInsideCorners: function (cutterradius) {
     return overCutInsideCorners(this, cutterradius)
+  },
+
+  // ALIAS !
+  hasPointInside: function (point) {
+    return hasPointInside(this, point)
   },
 
   // All the toXXX functions

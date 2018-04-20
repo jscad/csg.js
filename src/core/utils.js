@@ -90,36 +90,6 @@ function isCSG (object) {
   return true
 }
 
-/** Check if the point stay in polygon (CAG)
-* ray-casting algorithm based on :
-* https://github.com/substack/point-in-polygon/blob/master/index.js
-* http://www.ecse.rp1.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
-* originaly writed for https://github.com/lautr3k/SLAcer.js/blob/dev/js/slacer/slicer.js#L82
-* @param {Object} p0 - Vertex2 like object
-* @param {CAG} polygon - CAG object
-* @returns {Boolean}
-*/
-function isPointInPolygon(p0, polygon) {
-  let sides = polygon.sides
-  let inside = false
-  let p1 = null
-  let p2 = null
-
-  let c1 = (p0, p1, p2) => (p1.y > p0.y) !== (p2.y > p0.y)
-  let c2 = (p0, p1, p2) => (p0.x < (p2.x - p1.x) * (p0.y - p1.y) / (p2.y - p1.y) + p1.x)
-
-  sides.forEach(side => {
-    p1 = side.vertex0.pos
-    p2 = side.vertex1.pos
-
-    if (c1(p0, p1, p2) && c2(p0, p1, p2)) {
-      inside = !inside
-    }
-  })
-
-  return inside
-}
-
 module.exports = {
   fnNumberSort,
   fnSortByIndex,
@@ -128,6 +98,5 @@ module.exports = {
   insertSorted,
   interpolateBetween2DPointsForY,
   isCAG,
-  isCSG,
-  isPointInPolygon
+  isCSG
 }

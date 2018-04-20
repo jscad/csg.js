@@ -1,6 +1,5 @@
 const {CAG} = require('../../csg')// we have to import from top level otherwise prototypes are not complete..
 const {fromPoints} = require('../core/CAGFactories')
-const {isPointInPolygon} = require('../core/utils')
 
 /** Construct a square/rectangle
  * @param {Object} [options] - options for construction
@@ -113,7 +112,7 @@ function polygon (params) { // array of po(ints) and pa(ths)
         three[i] || (three[i] = { parents: [], isHole: false })
         three[y] || (three[y] = { parents: [], isHole: false })
         // check if point in poylgon
-        if (isPointInPolygon(point, p2)) {
+        if (p2.hasPointInside(point)) {
           // push parent and child
           three[i].parents.push(y)
 
