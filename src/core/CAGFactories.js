@@ -43,7 +43,7 @@ const fromPoints = function (points) {
   if (!Array.isArray(points)) {
     throw new Error('points parameter must be an array')
   }
-  if (typeof points[0][0] === 'number') {
+  if (points[0].x !== undefined || typeof points[0][0] === 'number') {
     return fromPointsArray(points)
   }
   if (typeof points[0][0] === 'object') {
@@ -82,7 +82,7 @@ const fromNestedPointsArray = function (points) {
   // First pass: create a collection of CAG paths
   let paths = []
   points.forEach(path => {
-    paths.push(fromPoints(path))
+    paths.push(fromPointsArray(path))
   })
   // Second pass: make a three of paths
   let three = {}
