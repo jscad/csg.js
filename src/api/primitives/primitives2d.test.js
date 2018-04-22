@@ -276,3 +276,35 @@ test.failing('polygon (object params, with custom paths)', t => {
   t.deepEqual(obs.sides.length, 3)
   t.truthy(comparePositonVertices(obs.sides, expSides))
 })
+
+test('polygon (nested points array whit holes)', t => {
+  const obs = polygon([
+    [ [0,0], [0,10], [10,10], [10,0] ],
+    [ [2,2], [2,8], [8,8], [8,2] ],
+    [ [3,3], [3,7], [7,7], [7,3] ],
+    [ [4,4], [4,6], [6,6], [6,4] ]
+  ])
+
+  const expSides = [
+    [ [7,3], [7,7] ],
+    [ [7,7], [3,7] ],
+    [ [3,7], [3,3] ],
+    [ [3,3], [7,3] ],
+    [ [6,6], [6,4] ],
+    [ [4,6], [6,6] ],
+    [ [4,4], [4,6] ],
+    [ [6,4], [4,4] ],
+    [ [10,0], [10,10] ],
+    [ [10,10], [0,10] ],
+    [ [0,10], [0,0] ],
+    [ [0,0], [10,0] ],
+    [ [8,8], [8,2] ],
+    [ [2,8], [8,8] ],
+    [ [2,2], [2,8] ],
+    [ [8,2], [2,2] ],
+  ]
+
+  // we just use a sample of points for simplicity
+  t.deepEqual(obs.sides.length, 16)
+  t.truthy(comparePositonVertices(obs.sides, expSides))
+})
