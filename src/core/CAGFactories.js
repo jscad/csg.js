@@ -2,8 +2,7 @@ const Side = require('./math/Side')
 const Vector2D = require('./math/Vector2')
 const Vertex2 = require('./math/Vertex2')
 const {areaEPS} = require('./constants')
-const {isSelfIntersecting, hasPointInside} = require('./utils/cagValidation')
-const {union, difference} = require('../api/ops-booleans')
+const {isSelfIntersecting} = require('./utils/cagValidation')
 
 /** Construct a CAG from a list of `Side` instances.
  * @param {Side[]} sides - list of sides
@@ -99,7 +98,7 @@ const fromNestedPointsArray = function (points) {
         tree[i] || (tree[i] = { parents: [], isHole: false })
         tree[y] || (tree[y] = { parents: [], isHole: false })
         // check if point stay in poylgon
-        if (hasPointInside(p2, point)) {
+        if (p2.hasPointInside(point)) {
           // push parent and child; odd parents number ==> hole
           tree[i].parents.push(y)
           tree[i].isHole = !! (tree[i].parents.length % 2)
@@ -115,14 +114,14 @@ const fromNestedPointsArray = function (points) {
     if (path.isHole) {
       delete tree[key] // remove holes for final pass
       path.parents.forEach(parentKey => {
-        paths[parentKey] = difference(paths[parentKey], paths[key])
+        paths[parentKey] = paths[parentKey].subtract(paths[key])
       })
     }
   }
   // Fourth and last pass: create final CAG object
   let cag = fromSides([])
   for (key in tree) {
-    cag = union(cag, paths[key])
+    cag = cag.union(paths[key])
   }
   return cag
 }
