@@ -65,6 +65,8 @@ function circle (params) {
  * @example
  * let poly = polygon([0,1,2,3,4])
  * or
+ * let poly = polygon([[0,1,2,3],[4,5,6,7]])
+ * or
  * let poly = polygon({path: [0,1,2,3,4]})
  * or
  * let poly = polygon({path: [0,1,2,3,4], points: [2,1,3]})
