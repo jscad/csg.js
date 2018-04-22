@@ -84,8 +84,8 @@ const fromNestedPointsArray = function (points) {
   points.forEach(path => {
     paths.push(fromPointsArray(path))
   })
-  // Second pass: make a three of paths
-  let three = {}
+  // Second pass: make a tree of paths
+  let tree = {}
   let point = null
   // for each polygon extract parents and childs polygons
   paths.forEach((p1, i) => {
@@ -95,24 +95,24 @@ const fromNestedPointsArray = function (points) {
     paths.forEach((p2, y) => {
       if (p1 !== p2) {
         // create default node
-        three[i] || (three[i] = { parents: [], isHole: false })
-        three[y] || (three[y] = { parents: [], isHole: false })
+        tree[i] || (tree[i] = { parents: [], isHole: false })
+        tree[y] || (tree[y] = { parents: [], isHole: false })
         // check if point stay in poylgon
         if (p2.hasPointInside(point)) {
           // push parent and child; odd parents number ==> hole
-          three[i].parents.push(y)
-          three[i].isHole = !! (three[i].parents.length % 2)
-          three[y].isHole = !! (three[y].parents.length % 2)
+          tree[i].parents.push(y)
+          tree[i].isHole = !! (tree[i].parents.length % 2)
+          tree[y].isHole = !! (tree[y].parents.length % 2)
         }
       }
     })
   })
   // Third pass: subtract holes
   let path = null
-  for (key in three) {
-    path = three[key]
+  for (key in tree) {
+    path = tree[key]
     if (path.isHole) {
-      delete three[key] // remove holes for final pass
+      delete tree[key] // remove holes for final pass
       path.parents.forEach(parentKey => {
         paths[parentKey] = paths[parentKey].subtract(paths[key])
       })
@@ -120,7 +120,7 @@ const fromNestedPointsArray = function (points) {
   }
   // Fourth and last pass: create final CAG object
   let cag = fromSides([])
-  for (key in three) {
+  for (key in tree) {
     cag = cag.union(paths[key])
   }
   return cag
