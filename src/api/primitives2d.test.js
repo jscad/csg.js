@@ -283,15 +283,23 @@ test('polygon (object params)', t => {
   t.truthy(comparePositonVertices(obs.sides, expSides))
 })
 
-test.failing('polygon (object params, with custom paths)', t => {
-  const obs = polygon({points: [ [0, 0], [3, 0], [3, 3] ], paths: [ [0, 1, 2], [1, 2, 3] ]})
+test('polygon (object params, with custom paths)', t => {
+  const roof = [[10,11], [0,11], [5,20]]
+  const wall = [[0,0], [10,0], [10,10], [0,10]]
+  const obs = polygon({ points: [roof, wall], paths: [[0, 1, 2], [3, 4, 5, 6]] })
 
-  const expSides = [ [ [ 3, 3 ], [ 0, 0 ] ],
-    [ [ 0, 0 ], [ 3, 0 ] ],
-    [ [ 3, 0 ], [ 3, 3 ] ]
+  const expSides = [
+    [ [0.00000,10.00000], [0.00000,0.00000] ],
+    [ [0.00000,0.00000], [10.00000,0.00000] ],
+    [ [10.00000,0.00000], [10.00000,10.00000] ],
+    [ [10.00000,10.00000], [0.00000,10.00000] ],
+    [ [5.00000,20.00000], [0.00000,11.00000] ],
+    [ [0.00000,11.00000], [10.00000,11.00000] ],
+    [ [10.00000,11.00000], [5.00000,20.00000] ]
   ]
+
   // we just use a sample of points for simplicity
-  t.deepEqual(obs.sides.length, 3)
+  t.deepEqual(obs.sides.length, 7)
   t.truthy(comparePositonVertices(obs.sides, expSides))
 })
 
