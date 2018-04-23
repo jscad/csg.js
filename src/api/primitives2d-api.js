@@ -81,6 +81,9 @@ function circle (params) {
 function polygon (params) { // array of po(ints) and pa(ths)
   let points = []
   if (params.paths && params.paths.length && params.paths[0].length) { // pa(th): [[0,1,2],[2,3,1]] (two paths)
+    if (typeof params.points[0][0] !== 'number') { // flatten points array
+      params.points = params.points.reduce((a, b) => a.concat(b))
+    }
     params.paths.forEach((path, i) => {
       points.push([])
       path.forEach(j => points[i].push(params.points[j]))
