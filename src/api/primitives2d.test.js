@@ -295,7 +295,7 @@ test.failing('polygon (object params, with custom paths)', t => {
   t.truthy(comparePositonVertices(obs.sides, expSides))
 })
 
-test('polygon (nested points array whit holes)', t => {
+test('polygon (nested points array, with holes)', t => {
   const obs = polygon([
     [ [0,0], [0,10], [10,10], [10,0] ],
     [ [2,2], [2,8], [8,8], [8,2] ],
@@ -319,7 +319,7 @@ test('polygon (nested points array whit holes)', t => {
     [ [8,8], [8,2] ],
     [ [2,8], [8,8] ],
     [ [2,2], [2,8] ],
-    [ [8,2], [2,2] ],
+    [ [8,2], [2,2] ]
   ]
 
   // we just use a sample of points for simplicity
