@@ -55,21 +55,28 @@ function circle (params) {
   return CAG.circle({center: offset, radius: r, resolution: fn})
 }
 
-/** Construct a polygon either from arrays of paths and points, or just arrays of points
- * nested paths (multiple paths) and flat paths are supported
- * @param {Object} [options] - options for construction
- * @param {Array} [options.paths] - paths of the polygon : either flat or nested array
- * @param {Array} [options.points] - points of the polygon : either flat or nested array
+/** Construct a polygon either from arrays of paths and points,
+ * or just arrays of points nested paths (multiple paths) and flat paths are supported
+ * @param {Object} [options] - options for construction or either flat or nested array of points
+ * @param {Array} [options.points] - points of the polygon : either flat or nested array of points
+ * @param {Array} [options.paths] - paths of the polygon : either flat or nested array of points index
  * @returns {CAG} new polygon
  *
  * @example
- * let poly = polygon([0,1,2,3,4])
+ * let roof = [[10,11], [0,11], [5,20]]
+ * let wall = [[0,0], [10,0], [10,10], [0,10]]
+ *
+ * let poly = polygon(roof)
  * or
- * let poly = polygon([[0,1,2,3],[4,5,6,7]])
+ * let poly = polygon([roof, wall])
  * or
- * let poly = polygon({path: [0,1,2,3,4]})
+ * let poly = polygon({ points: roof })
  * or
- * let poly = polygon({path: [0,1,2,3,4], points: [2,1,3]})
+ * let poly = polygon({ points: [roof, wall] })
+ * or
+ * let poly = polygon({ points: roof, path: [0, 1, 2] })
+ * or
+ * let poly = polygon({ points: [roof, wall], path: [[0, 1, 2], [3, 4, 5, 6]] })
  */
 function polygon (params) { // array of po(ints) and pa(ths)
   let points = []
