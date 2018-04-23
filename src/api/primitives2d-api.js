@@ -72,17 +72,14 @@ function circle (params) {
  * let poly = polygon({path: [0,1,2,3,4], points: [2,1,3]})
  */
 function polygon (params) { // array of po(ints) and pa(ths)
-  let points = [ ]
+  let points = []
   if (params.paths && params.paths.length && params.paths[0].length) { // pa(th): [[0,1,2],[2,3,1]] (two paths)
-    for (let j = 0; j < params.paths.length; j++) {
-      for (let i = 0; i < params.paths[j].length; i++) {
-        points[i] = params.points[params.paths[j][i]]
-      }
-    }
+    params.paths.forEach((path, i) => {
+      points.push([])
+      path.forEach(j => points[i].push(params.points[j]))
+    })
   } else if (params.paths && params.paths.length) { // pa(th): [0,1,2,3,4] (single path)
-    for (let i = 0; i < params.paths.length; i++) {
-      points[i] = params.points[params.paths[i]]
-    }
+    params.paths.forEach(i => points.push(params.points[i]))
   } else { // pa(th) = po(ints)
     if (params.length) {
       points = params
