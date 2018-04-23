@@ -80,6 +80,9 @@ const fromPointsArray = function (points) {
 }
 
 const fromNestedPointsArray = function (points) {
+  if (points.length === 1) {
+    return fromPoints(points[0])
+  }
   // First pass: create a collection of CAG paths
   let paths = []
   points.forEach(path => {
