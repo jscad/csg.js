@@ -77,6 +77,8 @@ function circle (params) {
  * let poly = polygon({ points: roof, path: [0, 1, 2] })
  * or
  * let poly = polygon({ points: [roof, wall], path: [[0, 1, 2], [3, 4, 5, 6]] })
+ * or
+ * let poly = polygon({ points: roof.concat(wall), paths: [[0, 1, 2], [3, 4, 5], [3, 6, 5]] })
  */
 function polygon (params) { // array of po(ints) and pa(ths)
   let points = []
