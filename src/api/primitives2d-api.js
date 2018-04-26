@@ -1,5 +1,6 @@
 const {CAG} = require('../../csg')// we have to import from top level otherwise prototypes are not complete..
 const {fromPoints} = require('../core/CAGFactories')
+const {circlesIntersection} = require('../core/math/lineUtils')
 
 /** Construct a square/rectangle
  * @param {Object} [options] - options for construction
@@ -94,18 +95,115 @@ function polygon (params) { // array of po(ints) and pa(ths)
 }
 
 // FIXME: errr this is kinda just a special case of a polygon , why do we need it ?
+// FIXED: I do not know at all, but if he is still there, he must work ;)
+
+function radians (degrees) {
+  return degrees * Math.PI / 180;
+}
+
+function sinlaw (s, A1, A2) {
+  return (s / Math.sin(radians(A1))) * Math.sin(radians(A2))
+}
+
 /** Construct a triangle
+ *
+ *          (B)
+ *          / \
+ *         /   \
+ *    (a) /     \ (c)
+ *       /       \
+ *      /         \
+ *  (C) _ _ _ _ _ _ (A)
+ *          (b)
+ *
+ * Theory: https://www.mathsisfun.com/algebra/trig-solving-triangles.html
+ *
  * @returns {CAG} new triangle
  *
  * @example
- * let triangle = trangle({
- *   length: 10
- * })
+ * // Defaults: Equilateral triangle with sides of 1
+ * let t1 = triangle()
+ * 
+ * // AAS Triangles
+ * let t2 = triangle({ angles: { A: 90, B: 45 }, lengths: { a: 14.142135623730951 } })
+ * let t3 = triangle({ angles: { A: 90, B: 45 }, lengths: { b: 10 } })
+ * let t4 = triangle({ angles: { A: 90, C: 45 }, lengths: { c: 10 } })
  */
-function triangle () {
-  let a = arguments
-  if (a[0] && a[0].length) a = a[0]
-  return fromPoints(a)
+function triangle (params) {
+  let [ A, B, C, a, b, c ] = arguments.length ? [] : [60, 60, 60, null, 10, null]
+
+  if (arguments.length > 1) {
+    if (Array.isArray(arguments[0])) { // triangle([a, b, c], [A, B, C])
+      ([ A, B, C ] = arguments[0]) && ([ a, b, c ] = arguments[1] || [])
+    } else { // triangle(a, b, c, A, B, C)
+      ([ A, B, C, a, b, c ] = arguments)
+    }
+  } else if (Array.isArray(params)) {
+    if (Array.isArray(params[0])) { // triangle([ [a, b, c], [A, B, C] ])
+      ([ A, B, C ] = params[0]) && ([ a, b, c ] = params[1] || [])
+    } else { // triangle([ a, b, c, A, B, C ])
+      ([ A, B, C, a, b, c ] = params)
+    }
+  } else {
+    params = params || {}
+    if (Array.isArray(params.angles)) { // triangle({ angles: [ A, B, C ]})
+      ([ A, B, C ] = params.angles)
+    } else if (typeof params.angles === 'object') { // triangle({ angles: { A, B, C }})
+      ({ A, B, C } = params.angles)
+    }
+    if (Array.isArray(params.lengths)) { // triangle({ lengths: [ a, b, c ]})
+      ([ a, b, c ] = params.lengths)
+    } else if (typeof params.lengths === 'object') { // triangle({ lengths: { a, b, c }})
+      ({ a, b, c } = params.lengths)
+    }
+  }
+
+  A = parseFloat(A || 0)
+  B = parseFloat(B || 0)
+  C = parseFloat(C || 0)
+  a = parseFloat(a || 0)
+  b = parseFloat(b || 0)
+  c = parseFloat(c || 0)
+
+  // Shortcuts...
+  let AB = A && B
+  let BC = B && C
+  let CA = C && A
+  let ab = a && b
+  let bc = b && c
+  let ca = c && a
+
+  // Solving AAS Triangles
+  if ((AB || BC || CA) && (a || b || c)) {
+    let angle = 180 - A - B - C
+
+    !A && (A = angle)
+    !B && (B = angle)
+    !C && (C = angle)
+
+    if (a) {
+      c = sinlaw(a, A, C)
+      b = sinlaw(c, C, B)
+    } else if (b) {
+      a = sinlaw(b, B, A)
+      c = sinlaw(a, A, C)
+    } else if (c) {
+      b = sinlaw(c, C, B)
+      a = sinlaw(b, B, A)
+    }
+  }
+
+  // Compute triangle points
+  let p1 = [ -b / 2, 0 ]
+  let p2 = [ b / 2, 0 ]
+  let [x, y] = circlesIntersection(p1[0], p1[1], a, p2[0], p2[1], c)
+  let points = [ p1, p2, [x, y] ]
+
+  console.log('angles:', { A, B, C })
+  console.log('lengths:', { a, b, c })
+  console.log('points:', points)
+
+  return fromPoints(points)
 }
 
 module.exports = {
