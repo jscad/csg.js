@@ -117,14 +117,40 @@ function polygon (params) { // array of po(ints) and pa(ths)
  *  (A) _ _ _ _ _ _ (C)
  *          (b)
  *
- * Theory: https://www.mathsisfun.com/algebra/trig-solving-triangles.html
+ * Theory     : https://www.mathsisfun.com/algebra/trig-solving-triangles.html
  * Inspiration: https://www.nayuki.io/res/triangle-solver-javascript/triangle-solver.js
+
+ * By default, if no parameters is provided, return an equilateral triangle with sides of 1
+ *
+ * @param {Object|Integer} [options] - "a" length or either object or flat/nested array of lengths and angles
+ * @param {Array} [options.lengths] - lengths of the triangle : either object or flat/nested array of lengths
+ * @param {Array} [options.angles] - angles of the triangle : either object or flat/nested array of angles
+ * @param {Array} [options.returnBiggest=true] - return the bigger triangle in case of multiple solutions
+ * @param {Integer} [b] - "b" length or either object or flat/nested array of angles
+ * @param {Integer} [c] - "c" length
+ * @param {Integer} [A] - "A" angle
+ * @param {Integer} [B] - "B" angle
+ * @param {Integer} [C] - "C" angle
+ * @returns {CAG} new polygon
+ *
+ * @example
+ * let tri = triangle(a, b, c, A, B, C)
+ * or
+ * let tri = triangle([ a, b, c, A, B, C ])
+ * or
+ * let tri = triangle([ a, b, c ], [ A, B, C ])
+ * or
+ * let tri = triangle([ [ a, b, c ], [ A, B, C ] ])
+ * or
+ * let tri = triangle({ lengths: [ a, b, c ], angles: [ A, B, C ] })
+ * or
+ * let tri = triangle({ lengths: { a, b, c }, angles: { A, B, C } })
  *
  * @returns {CAG} new triangle
  */
 function triangle (params) {
   // By default output an equilateral triangle with sides of 1
-  let [ A, B, C, a, b, c ] = arguments.length ? [] : [ 60, 60, 60, null, 10, null ]
+  let [ A, B, C, a, b, c ] = arguments.length ? [] : [ 60, 60, 60, null, 1, null ]
 
   // By default return the bigger triangle in case of multiple solutions
   let returnBiggest = true
@@ -132,15 +158,15 @@ function triangle (params) {
   // Handle all variantes of arguments
   if (arguments.length > 1) {
     if (Array.isArray(arguments[0])) { // triangle([a, b, c], [A, B, C])
-      ([ A, B, C ] = arguments[0]) && ([ a, b, c ] = arguments[1] || [])
+      ([ a, b, c ] = arguments[0]) && ([ A, B, C ] = arguments[1] || [])
     } else { // triangle(a, b, c, A, B, C)
-      ([ A, B, C, a, b, c ] = arguments)
+      ([ a, b, c, A, B, C ] = arguments)
     }
   } else if (Array.isArray(params)) {
     if (Array.isArray(params[0])) { // triangle([ [a, b, c], [A, B, C] ])
-      ([ A, B, C ] = params[0]) && ([ a, b, c ] = params[1] || [])
+      ([ a, b, c ] = params[0]) && ([ A, B, C ] = params[1] || [])
     } else { // triangle([ a, b, c, A, B, C ])
-      ([ A, B, C, a, b, c ] = params)
+      ([ a, b, c, A, B, C ] = params)
     }
   } else {
     params = params || {}
@@ -158,12 +184,12 @@ function triangle (params) {
   }
 
   // Sanitize inputs
-  A = parseFloat(A || 0)
-  B = parseFloat(B || 0)
-  C = parseFloat(C || 0)
   a = parseFloat(a || 0)
   b = parseFloat(b || 0)
   c = parseFloat(c || 0)
+  A = parseFloat(A || 0)
+  B = parseFloat(B || 0)
+  C = parseFloat(C || 0)
 
   // Validate inputs
   let angles = (!!A) + (!!B) + (!!C)
