@@ -19,28 +19,80 @@ function comparePositonVertices (obs, exp) {
   return true
 }
 
-test.failing('triangle (defaults)', t => {
+test('triangle (defaults)', t => {
   const obs = triangle()
 
   const expSides = [
-    [[0, 1], [0, 0]],
-    [[0, 0], [1, 0]],
-    [[1, 0], [1, 1]]
+    [[-1.1102230246251565e-16, 0.8660254037844386], [-0.5, 0]],
+    [[-0.5, 0], [0.5, 0]],
+    [[0.5, 0], [-1.1102230246251565e-16, 0.8660254037844386]]
   ]
-  t.deepEqual(obs.sides.length, 3)
+  t.deepEqual(obs.sides.length, expSides.length)
   t.truthy(comparePositonVertices(obs.sides, expSides))
 })
 
-test.failing('triangle (custom size)', t => {
-  const obs = triangle(5)
+const triSides = [
+  [[5, 10.000000000000002], [-5, 0]],
+  [[-5, 0], [5, 0]],
+  [[5, 0], [5, 10.000000000000002]],
+]
 
-  const expSides = [
-    [[0, 1], [0, 0]],
-    [[0, 0], [1, 0]],
-    [[1, 0], [1, 1]]
-  ]
+test('triangle (a, b, c)', t => {
+  const obs = triangle(10, 10, 14.142135623730951)
   t.deepEqual(obs.sides.length, 3)
-  t.truthy(comparePositonVertices(obs.sides, expSides))
+  t.truthy(comparePositonVertices(obs.sides, triSides))
+})
+
+test('triangle ([ a, b, c ])', t => {
+  const obs = triangle([ 10, 10, 14.142135623730951 ])
+  t.deepEqual(obs.sides.length, 3)
+  t.truthy(comparePositonVertices(obs.sides, triSides))
+})
+
+test('triangle ([ a, null, null, A, B, null ])', t => {
+  const obs = triangle([ 10, null, null, 45, 45, null ])
+  t.deepEqual(obs.sides.length, 3)
+  t.truthy(comparePositonVertices(obs.sides, triSides))
+})
+
+test('triangle ([ a ], [ A, B ])', t => {
+  const obs = triangle([ 10 ], [ 45, 45 ])
+  t.deepEqual(obs.sides.length, 3)
+  t.truthy(comparePositonVertices(obs.sides, triSides))
+})
+
+test('triangle ({ lengths: [ a ], angles: [ A, B ] })', t => {
+  const obs = triangle({ lengths: [ 10 ], angles: [ 45, 45 ] })
+  t.deepEqual(obs.sides.length, 3)
+  t.truthy(comparePositonVertices(obs.sides, triSides))
+})
+
+test('triangle ({ lengths: { a }, angles: { A, B } })', t => {
+  const obs = triangle({ lengths: { a: 10 }, angles: { A: 45, B: 45 } })
+  t.deepEqual(obs.sides.length, 3)
+  t.truthy(comparePositonVertices(obs.sides, triSides))
+})
+
+test('triangle (SSA: two solutions)', t => {
+  const obs1 = triangle({ angles: { A: 31 }, lengths: { a: 8, c: 13 }, returnBiggest: true })
+  const obs2 = triangle({ angles: { A: 31 }, lengths: { a: 8, c: 13 }, returnBiggest: false })
+
+  const expSides1 = [
+    [[3.3823897102171987, 6.695494973830702], [-7.760785198910263, 0]],
+    [[-7.760785198910263, 0], [7.760785198910263, 0]],
+    [[7.760785198910263, 0], [3.3823897102171987, 6.695494973830702]]
+  ]
+
+  const expSides2 = [
+    [[7.760785198910266, 6.695494973830699], [-3.3823897102171965, 0]],
+    [[-3.3823897102171965, 0], [3.3823897102171965, 0]],
+    [[3.3823897102171965, 0], [7.760785198910266, 6.695494973830699]]
+  ]
+
+  t.deepEqual(obs1.sides.length, 3)
+  t.deepEqual(obs2.sides.length, 3)
+  t.truthy(comparePositonVertices(obs1.sides, expSides1))
+  t.truthy(comparePositonVertices(obs2.sides, expSides2))
 })
 
 test('square (defaults)', t => {
