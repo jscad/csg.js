@@ -259,40 +259,58 @@ test('circle (custom radius, custom resolution, centered object as parameter)', 
   sideEquals(t, obs.sides[obs.sides.length - 1], [[-8.090169943749475, -5.87785252292473], [3.0901699437494723, -9.510565162951536]])
 })
 
-test('polygon (direct params)', t => {
-  const obs = polygon([ [0, 0], [3, 0], [3, 3] ])
+// polygone
+const trianglePoints = [[10, 11], [0, 11], [5, 20]]
+const squarePoints = [[0, 0], [10, 0], [10, 10], [0, 10]]
+const houseNestedPoints = [trianglePoints, squarePoints]
+const houseFlatPoints = trianglePoints.concat(squarePoints)
 
-  const expSides = [ [ [ 3, 3 ], [ 0, 0 ] ],
-    [ [ 0, 0 ], [ 3, 0 ] ],
-    [ [ 3, 0 ], [ 3, 3 ] ]
-  ]
-  // we just use a sample of points for simplicity
-  t.deepEqual(obs.sides.length, 3)
-  t.truthy(comparePositonVertices(obs.sides, expSides))
+const triangleSides = [[[5, 20], [0, 11]], [[0, 11], [10, 11]], [[10, 11], [5, 20]]]
+const squareSides = [[[0, 10], [0, 0]], [[0, 0], [10, 0]], [[10, 0], [10, 10]], [[10, 10], [0, 10]]]
+const houseSides = squareSides.concat(triangleSides)
+
+test('polygon (points[])', t => {
+  const obs = polygon(squarePoints)
+  t.deepEqual(obs.sides.length, squareSides.length)
+  t.truthy(comparePositonVertices(obs.sides, squareSides))
 })
 
-test('polygon (object params)', t => {
-  const obs = polygon({points: [ [0, 0], [3, 0], [3, 3] ]})
-
-  const expSides = [ [ [ 3, 3 ], [ 0, 0 ] ],
-    [ [ 0, 0 ], [ 3, 0 ] ],
-    [ [ 3, 0 ], [ 3, 3 ] ]
-  ]
-  // we just use a sample of points for simplicity
-  t.deepEqual(obs.sides.length, 3)
-  t.truthy(comparePositonVertices(obs.sides, expSides))
+test('polygon (points[][])', t => {
+  const obs = polygon(houseNestedPoints)
+  t.deepEqual(obs.sides.length, houseSides.length)
+  t.truthy(comparePositonVertices(obs.sides, houseSides))
 })
 
-test.failing('polygon (object params, with custom paths)', t => {
-  const obs = polygon({points: [ [0, 0], [3, 0], [3, 3] ], paths: [ [0, 1, 2], [1, 2, 3] ]})
+test('polygon (params.points[])', t => {
+  const obs = polygon({ points: squarePoints })
+  t.deepEqual(obs.sides.length, squareSides.length)
+  t.truthy(comparePositonVertices(obs.sides, squareSides))
+})
 
-  const expSides = [ [ [ 3, 3 ], [ 0, 0 ] ],
-    [ [ 0, 0 ], [ 3, 0 ] ],
-    [ [ 3, 0 ], [ 3, 3 ] ]
-  ]
-  // we just use a sample of points for simplicity
-  t.deepEqual(obs.sides.length, 3)
-  t.truthy(comparePositonVertices(obs.sides, expSides))
+test('polygon (params.points[][])', t => {
+  const obs = polygon({ points: houseNestedPoints })
+  t.deepEqual(obs.sides.length, houseSides.length)
+  t.truthy(comparePositonVertices(obs.sides, houseSides))
+})
+
+test('polygon (params.points[], params.paths[])', t => {
+  const obs = polygon({ points: squarePoints, paths: [0, 1, 2, 3] })
+  t.deepEqual(obs.sides.length, squareSides.length)
+  t.truthy(comparePositonVertices(obs.sides, squareSides))
+})
+
+test('polygon (params.points[], params.paths[] - partial path)', t => {
+  // get the square from flat house points list
+  const obs = polygon({ points: houseFlatPoints, paths: [3, 4, 5, 6] })
+  t.deepEqual(obs.sides.length, squareSides.length)
+  t.truthy(comparePositonVertices(obs.sides, squareSides))
+})
+
+test('polygon (params.points[][], params.paths[][] - two paths)', t => {
+  // get the square and the triangle from nested house points list
+  const obs = polygon({ points: houseNestedPoints, paths: [[0, 1, 2], [3, 4, 5, 6]] })
+  t.deepEqual(obs.sides.length, houseSides.length)
+  t.truthy(comparePositonVertices(obs.sides, houseSides))
 })
 
 test('polygon (nested points array, with holes)', t => {
