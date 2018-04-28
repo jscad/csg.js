@@ -21,4 +21,28 @@ const linesIntersect = function (p0start, p0end, p1start, p1end) {
   return false
 }
 
-module.exports = {linesIntersect}
+/** Finds the intersection of two circles.
+ * https://jsfiddle.net/SalixAlba/54Fb2/
+ * @param {Float} x1 - first circle center point
+ * @param {Float} y1 - first circle center point
+ * @param {Float} d1 - first circle center point
+ * @param {Float} x2 - second circle center point
+ * @param {Float} y2 - second circle center point
+ * @param {Float} d2 - second circle center point
+ * @returns {Array} [x3, y3, x4, y4]
+ */
+ function circlesIntersection (x1, y1, d1, x2, y2, d2) {
+  let c = Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2))
+  let d = (d2 * d2 + c * c - d1 * d1) / (2 * c)
+  let h = Math.sqrt(d2 * d2 - d * d)
+  let x3 = (x2 - x1) * d / c - (y2 - y1) * h / c + x1
+  let y3 = (y2 - y1) * d / c + (x2 - x1) * h / c + y1
+  let x4 = (x2 - x1) * d / c + (y2 - y1) * h / c + x1
+  let y4 = (y2 - y1) * d / c - (x2 - x1) * h / c + y1
+  return [x3, y3, x4, y4]
+}
+
+module.exports = {
+  linesIntersect,
+  circlesIntersection
+}

@@ -1,5 +1,6 @@
 const {CAG} = require('../../csg')// we have to import from top level otherwise prototypes are not complete..
 const {fromPoints} = require('../core/CAGFactories')
+const {circlesIntersection} = require('../core/math/lineUtils')
 
 /** Construct a square/rectangle
  * @param {Object} [options] - options for construction
@@ -103,18 +104,248 @@ function polygon (params) { // array of po(ints) and pa(ths)
 }
 
 // FIXME: errr this is kinda just a special case of a polygon , why do we need it ?
+// FIXED: I do not know at all, but if he is still there, he must work ;)
+
 /** Construct a triangle
- * @returns {CAG} new triangle
+ *
+ *          (B)
+ *          / \
+ *         /   \
+ *    (c) /     \ (a)
+ *       /       \
+ *      /         \
+ *  (A) _ _ _ _ _ _ (C)
+ *          (b)
+ *
+ * Theory     : https://www.mathsisfun.com/algebra/trig-solving-triangles.html
+ * Inspiration: https://www.nayuki.io/res/triangle-solver-javascript/triangle-solver.js
+
+ * By default, if no parameters is provided, return an equilateral triangle with sides of 1
+ *
+ * @param {Object|Integer} [options] - "a" length or either object or flat/nested array of lengths and angles
+ * @param {Array} [options.lengths] - lengths of the triangle : either object or flat/nested array of lengths
+ * @param {Array} [options.angles] - angles of the triangle : either object or flat/nested array of angles
+ * @param {Array} [options.returnBiggest=true] - return the bigger triangle in case of multiple solutions
+ * @param {Integer} [b] - "b" length or either object or flat/nested array of angles
+ * @param {Integer} [c] - "c" length
+ * @param {Integer} [A] - "A" angle
+ * @param {Integer} [B] - "B" angle
+ * @param {Integer} [C] - "C" angle
+ * @returns {CAG} new polygon
  *
  * @example
- * let triangle = trangle({
- *   length: 10
- * })
+ * let tri = triangle(a, b, c, A, B, C)
+ * or
+ * let tri = triangle([ a, b, c, A, B, C ])
+ * or
+ * let tri = triangle([ a, b, c ], [ A, B, C ])
+ * or
+ * let tri = triangle([ [ a, b, c ], [ A, B, C ] ])
+ * or
+ * let tri = triangle({ lengths: [ a, b, c ], angles: [ A, B, C ] })
+ * or
+ * let tri = triangle({ lengths: { a, b, c }, angles: { A, B, C } })
+ *
+ * @returns {CAG} new triangle
  */
-function triangle () {
-  let a = arguments
-  if (a[0] && a[0].length) a = a[0]
-  return fromPoints(a)
+function triangle (params) {
+  // By default output an equilateral triangle with sides of 1
+  let [ A, B, C, a, b, c ] = arguments.length ? [] : [ 60, 60, 60, null, 1, null ]
+
+  // By default return the bigger triangle in case of multiple solutions
+  let returnBiggest = true
+
+  // Handle all variantes of arguments
+  if (arguments.length > 1) {
+    if (Array.isArray(arguments[0])) { // triangle([a, b, c], [A, B, C])
+      ([ a, b, c ] = arguments[0]) && ([ A, B, C ] = arguments[1] || [])
+    } else { // triangle(a, b, c, A, B, C)
+      ([ a, b, c, A, B, C ] = arguments)
+    }
+  } else if (Array.isArray(params)) {
+    if (Array.isArray(params[0])) { // triangle([ [a, b, c], [A, B, C] ])
+      ([ a, b, c ] = params[0]) && ([ A, B, C ] = params[1] || [])
+    } else { // triangle([ a, b, c, A, B, C ])
+      ([ a, b, c, A, B, C ] = params)
+    }
+  } else {
+    params = params || {}
+    if (Array.isArray(params.angles)) { // triangle({ angles: [ A, B, C ] })
+      ([ A, B, C ] = params.angles)
+    } else if (typeof params.angles === 'object') { // triangle({ angles: { A, B, C } })
+      ({ A, B, C } = params.angles)
+    }
+    if (Array.isArray(params.lengths)) { // triangle({ lengths: [ a, b, c ] })
+      ([ a, b, c ] = params.lengths)
+    } else if (typeof params.lengths === 'object') { // triangle({ lengths: { a, b, c } })
+      ({ a, b, c } = params.lengths)
+    }
+    returnBiggest = params.returnBiggest !== undefined ? !!params.returnBiggest : true
+  }
+
+  // Sanitize inputs
+  a = parseFloat(a || 0)
+  b = parseFloat(b || 0)
+  c = parseFloat(c || 0)
+  A = parseFloat(A || 0)
+  B = parseFloat(B || 0)
+  C = parseFloat(C || 0)
+
+  // Validate inputs
+  let angles = (!!A) + (!!B) + (!!C)
+  let lengths = (!!a) + (!!b) + (!!c)
+  let inputs = angles + lengths
+
+  if (inputs < 3) {
+    throw new Error('At least three values are needed to solve a triangle')
+  }
+
+  if (lengths < 1) {
+    throw new Error('At least one side length is needed to solve a triangle')
+  }
+
+  // SSS triangle
+  if (lengths === 3) {
+    if (((a + b) <= c) || ((b + c) <= a) || ((c + a) <= b)) {
+      throw new Error('The longest side is longer than the sum of the other sides')
+    }
+    return triangleFromLengths(a, b, c)
+  }
+
+  // ASA triangle
+  if (angles === 2) {
+    // Find missing angle
+    !A && (A = 180 - B - C)
+    !B && (B = 180 - C - A)
+    !C && (C = 180 - A - B)
+
+    if ((A <= 0) || (B <= 0) || (C <= 0)) {
+      throw new Error('All angles must be greater than 0°')
+    }
+
+    // Use law of sines to find sides
+    let ratio  // side / sin(angle)
+    let sinA = Math.sin(radians(A))
+    let sinB = Math.sin(radians(B))
+    let sinC = Math.sin(radians(C))
+
+    a && (ratio = a / sinA)
+    b && (ratio = b / sinB)
+    c && (ratio = c / sinC)
+    !a && (a = ratio * sinA)
+    !b && (b = ratio * sinB)
+    !c && (c = ratio * sinC)
+
+    return triangleFromLengths(a, b, c)
+  }
+
+  // SAS triangle
+  if ((A && !a) || (B && !b) || (C && !c)) {
+    if ((A >= 180) || (B >= 180) || (C >= 180)) {
+      throw new Error('All angles must be smaller than 180°')
+    }
+
+    !a && (a = triangleSolveSide(b, c, A))
+    !b && (b = triangleSolveSide(c, a, B))
+    !c && (c = triangleSolveSide(a, b, C))
+
+    return triangleFromLengths(a, b, c)
+  }
+
+  // SSA triangle
+  let [ knownSide, knownAngle, partialSide ] = []
+
+  if (a && A) {
+    knownSide = a
+    knownAngle = A
+  }
+
+  if (b && B) {
+    knownSide = b
+    knownAngle = B
+  }
+
+  if (c && C) {
+    knownSide = c
+    knownAngle = C
+  }
+
+  if (a && !A) { partialSide = a }
+  if (b && !B) { partialSide = b }
+  if (c && !C) { partialSide = c }
+
+  if (knownAngle >= 180) {
+    throw new Error('All angles must be smaller than 180°')
+  }
+
+  let [ partialAngle, unknownSide, unknownAngle ] = []
+  let ratio = knownSide / Math.sin(radians(knownAngle))
+  let temp = partialSide / ratio // sin(partialAngle)
+
+  if ((temp > 1) || (knownAngle >= 90) && (knownSide <= partialSide)) {
+    throw new Error('A triangle can\'t have two angles greater than 90°')
+  }
+
+  if ((temp == 1) || (knownSide >= partialSide)) {
+    partialAngle = degrees(Math.asin(temp))
+    unknownAngle = 180 - knownAngle - partialAngle
+    unknownSide = ratio * Math.sin(radians(unknownAngle)) // Law of sines
+  } else {
+    let partialAngle0 = degrees(Math.asin(temp))
+    let partialAngle1 = 180 - partialAngle0
+    let unknownAngle0 = 180 - knownAngle - partialAngle0
+    let unknownAngle1 = 180 - knownAngle - partialAngle1
+    let unknownSide0 = ratio * Math.sin(radians(unknownAngle0))  // Law of sines
+    let unknownSide1 = ratio * Math.sin(radians(unknownAngle1))  // Law of sines
+    partialAngle = [ partialAngle0, partialAngle1 ]
+    unknownAngle = [ unknownAngle0, unknownAngle1 ]
+    unknownSide = [ unknownSide0, unknownSide1 ]
+    let area0 = knownSide * partialSide * Math.sin(radians(unknownAngle0)) / 2
+    let area1 = knownSide * partialSide * Math.sin(radians(unknownAngle1)) / 2
+    if ((area0 > area1) && returnBiggest) {
+      partialAngle = partialAngle0
+      unknownSide = unknownSide0
+    } else {
+      partialAngle = partialAngle1
+      unknownSide = unknownSide1
+    }
+  }
+
+  if (a && !A) { A = partialAngle }
+  if (b && !B) { B = partialAngle }
+  if (c && !C) { C = partialAngle }
+  if (!a && !A) { a = unknownSide }
+  if (!b && !B) { b = unknownSide }
+  if (!c && !C) { c = unknownSide }
+
+  // Output the triangle
+  return triangleFromLengths(a, b, c)
+}
+
+function radians (degrees) {
+  return degrees / 180 * Math.PI
+}
+
+function degrees (radians) {
+  return radians / Math.PI * 180
+}
+
+function triangleSolveSide(a, b, C) {
+  C = radians(C)
+
+  if (C > 0.001) {
+    return Math.sqrt(a * a + b * b - 2 * a * b * Math.cos(C))
+  }
+
+  // Explained in https://www.nayuki.io/page/numerically-stable-law-of-cosines
+  return Math.sqrt((a - b) * (a - b) + a * b * C * C * (1 - C * C / 12))
+}
+
+function triangleFromLengths (a, b, c) {
+  let p1 = [ -b / 2, 0 ]
+  let p2 = [ b / 2, 0 ]
+  let [x, y] = circlesIntersection(p1[0], p1[1], a, p2[0], p2[1], c)
+  return fromPoints([ p1, p2, [x, y] ])
 }
 
 module.exports = {
