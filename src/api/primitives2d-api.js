@@ -55,34 +55,43 @@ function circle (params) {
   return CAG.circle({center: offset, radius: r, resolution: fn})
 }
 
-/** Construct a polygon either from arrays of paths and points, or just arrays of points
- * nested paths (multiple paths) and flat paths are supported
- * @param {Object} [options] - options for construction
- * @param {Array} [options.paths] - paths of the polygon : either flat or nested array
- * @param {Array} [options.points] - points of the polygon : either flat or nested array
+/** Construct a polygon either from arrays of paths and points,
+ * or just arrays of points nested paths (multiple paths) and flat paths are supported
+ * @param {Object} [options] - options for construction or either flat or nested array of points
+ * @param {Array} [options.points] - points of the polygon : either flat or nested array of points
+ * @param {Array} [options.paths] - paths of the polygon : either flat or nested array of points index
  * @returns {CAG} new polygon
  *
  * @example
- * let poly = polygon([0,1,2,3,4])
+ * let roof = [[10,11], [0,11], [5,20]]
+ * let wall = [[0,0], [10,0], [10,10], [0,10]]
+ *
+ * let poly = polygon(roof)
  * or
- * let poly = polygon([[0,1,2,3],[4,5,6,7]])
+ * let poly = polygon([roof, wall])
  * or
- * let poly = polygon({path: [0,1,2,3,4]})
+ * let poly = polygon({ points: roof })
  * or
- * let poly = polygon({path: [0,1,2,3,4], points: [2,1,3]})
+ * let poly = polygon({ points: [roof, wall] })
+ * or
+ * let poly = polygon({ points: roof, path: [0, 1, 2] })
+ * or
+ * let poly = polygon({ points: [roof, wall], path: [[0, 1, 2], [3, 4, 5, 6]] })
+ * or
+ * let poly = polygon({ points: roof.concat(wall), paths: [[0, 1, 2], [3, 4, 5], [3, 6, 5]] })
  */
 function polygon (params) { // array of po(ints) and pa(ths)
-  let points = [ ]
+  let points = []
   if (params.paths && params.paths.length && params.paths[0].length) { // pa(th): [[0,1,2],[2,3,1]] (two paths)
-    for (let j = 0; j < params.paths.length; j++) {
-      for (let i = 0; i < params.paths[j].length; i++) {
-        points[i] = params.points[params.paths[j][i]]
-      }
+    if (typeof params.points[0][0] !== 'number') { // flatten points array
+      params.points = params.points.reduce((a, b) => a.concat(b))
     }
+    params.paths.forEach((path, i) => {
+      points.push([])
+      path.forEach(j => points[i].push(params.points[j]))
+    })
   } else if (params.paths && params.paths.length) { // pa(th): [0,1,2,3,4] (single path)
-    for (let i = 0; i < params.paths.length; i++) {
-      points[i] = params.points[params.paths[i]]
-    }
+    params.paths.forEach(i => points.push(params.points[i]))
   } else { // pa(th) = po(ints)
     if (params.length) {
       points = params
