@@ -1,5 +1,7 @@
 const hersheyFont = require('../fonts/hershey')
 const { fromPoints } = require('../core/CAGFactories')
+const Matrix4x4 = require('../core/math/Matrix4')
+const { union } = require('./ops-booleans')
 const Path2D = require('../core/math/Path2')
 
 /** Construct a with, segments tupple from a character
@@ -185,7 +187,7 @@ function text (options) {
           ])
           break
         case 'Z': // end of path
-          pointsList.push(points.scale([ratio.x, ratio.y]).translate([x, settings.y]))
+          pointsList.push(points)
           break
         default:
           console.log('Warning: Unknow PATH command [' + command.type + ']')
@@ -193,12 +195,15 @@ function text (options) {
       }
     })
 
-    pointsList = pointsList.map(pl => pl.points)
-    output.push(fromPoints(pointsList))
+    let cag = fromPoints(pointsList.map(pl => pl.points))
+    cag = cag.transform(Matrix4x4.scaling([ratio.x, ratio.y]))
+    cag = cag.transform(Matrix4x4.translation([x, settings.y]))
+
+    output.push(cag)
   })
 
   if (settings.union) {
-    return output.reduce((a, b) => a.union(b))
+    return output.reduce((a, b) => union(a, b))
   }
 
   return output
