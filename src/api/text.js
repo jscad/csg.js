@@ -64,9 +64,11 @@ function vector_text (x, y, string) {
  * @param {Object} options - text options
  * @param {String} options.text - string
  * @param {opentype.Font} options.font - font object from opentype.js
- * @param {Float} [options.size=12] - text size (height)
+ * @param {Float} [options.size=12] - text height
  * @param {Float} [options.x=0] - x offset
  * @param {Float} [options.y=0] - y offset
+ * @param {Boolean[]} [options.center=[true, true]] - axis of which to center, true or false
+ * @param {Boolean} [options.union=true] - by default return an unique CAG, if false return an array of CAG (one item by char)
  * @param {Boolean} [options.kerning=true] - see opentype.js
  * @param {Boolean} [options.features=true] - see opentype.js
  * @param {Boolean} [options.hinting=false] - see opentype.js
@@ -76,24 +78,54 @@ function vector_text (x, y, string) {
  * let cagText = text({ text: 'HelloWorld!', font: font(roboto) })
  */
 function text (options) {
-  options = options || {}
+  // Merge defaults and user settings
+  let settings = Object.assign({
+    text: null,
+    font: null,
+    size: 10,
+    x: 0,
+    y: 0,
+    center: [true, true],
+    union: true,
+    kerning: true,
+    features: true,
+    hinting: false
+  }, options || {})
 
-  if (!options.text || !options.font) {
+  if (!settings.text || !settings.font) {
     throw new Error('text and font parameter must be defined')
   }
 
-  if (!options.font.getPath) {
+  if (!settings.font.getPath) {
     throw new Error('font parameter must have an getPath() method')
   }
 
   // opentype.Font.getPaths() return one SVG path by char
-  let paths = options.font.getPaths(options.text, options.x, options.y, options.size || 12, {
-    kerning: options.kerning !== undefined ? options.kerning : true,
-    features: options.features !== undefined ? options.features : true,
-    hinting: options.hinting !== undefined ? options.hinting : false
+  let paths = settings.font.getPaths(settings.text, 0, 0, settings.size, {
+    kerning: settings.kerning,
+    features: settings.features,
+    hinting: settings.hinting
   })
 
-  let output = [] // array of CAG chars
+  // Compute text size
+  let bbox1 = paths[0].getBoundingBox()
+  let bbox2 = paths[paths.length-1].getBoundingBox()
+  let size = { x: bbox2.x2 - bbox1.x1, y: bbox2.y2 - bbox1.y1 }
+  let ratio = settings.size / size.y // to match real text height
+
+  // Fix text X offset
+  settings.x -= bbox1.x1 * ratio
+
+  // Center offsets
+  if (settings.center[0]) {
+    settings.x -= ratio * size.x / 2
+  }
+  if (settings.center[1]) {
+    settings.y -= ratio * size.y / 2
+  }
+
+  // array of CAG chars
+  let output = []
 
   // For each path (char)
   paths.forEach(path => {
@@ -125,7 +157,7 @@ function text (options) {
           ])
           break
         case 'Z': // end of path
-          pointsList.push(points)
+          pointsList.push(points.scale([ratio, ratio]).translate([settings.x, settings.y, 0]))
           break
         default:
           console.log('Warning: Unknow PATH command [' + command.type + ']')
@@ -136,6 +168,10 @@ function text (options) {
     pointsList = pointsList.map(pl => pl.points)
     output.push(fromPoints(pointsList))
   })
+
+  if (settings.union) {
+    return output.reduce((a, b) => a.union(b))
+  }
 
   return output
 }
