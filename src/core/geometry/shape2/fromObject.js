@@ -1,14 +1,12 @@
 const fromSides = require('./fromSides')
 const Side = require('./math/Side')
 
-/** Reconstruct a CAG from an object with identical property names.
+/** Reconstruct a Shape2 from an object with identical property names.
  * @param {Object} obj - anonymous object, typically from JSON
- * @returns {CAG} new CAG object
+ * @returns {Shape2} new Shape2 object
  */
 const fromObject = function (obj) {
-  let sides = obj.sides.map(function (s) {
-    return Side.fromObject(s)
-  })
+  const sides = obj.sides.map(side => Side.fromObject(side))
   let cag = fromSides(sides)
   cag.isCanonicalized = obj.isCanonicalized
   return cag

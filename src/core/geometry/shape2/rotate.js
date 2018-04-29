@@ -3,7 +3,6 @@
 }, */
 
 const transform = require('./transform')
-
 const fromRotation = require('../../math/mat4/fromRotation')
 
 function rotate (vector, shape2) {

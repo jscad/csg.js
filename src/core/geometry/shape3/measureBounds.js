@@ -1,4 +1,4 @@
-const Vector3D = require('../math/Vector3')
+const vec3 = require('../../math/vec3')
 
 /**
  * Returns an array of Vector3D, providing minimum coordinates and maximum coordinates
@@ -10,8 +10,8 @@ const Vector3D = require('../math/Vector3')
  */
 const bounds = function (csg) {
   if (!csg.cachedBoundingBox) {
-    let minpoint = new Vector3D(0, 0, 0)
-    let maxpoint = new Vector3D(0, 0, 0)
+    let minpoint = vec3.create()
+    let maxpoint = vec3.create()
     let polygons = csg.polygons
     let numpolygons = polygons.length
     for (let i = 0; i < numpolygons; i++) {
@@ -21,8 +21,8 @@ const bounds = function (csg) {
         minpoint = bounds[0]
         maxpoint = bounds[1]
       } else {
-        minpoint = minpoint.min(bounds[0])
-        maxpoint = maxpoint.max(bounds[1])
+        minpoint = vec3.min(minpoint, bounds[0])
+        maxpoint = vec3.max(maxpoint, bounds[1])
       }
     }
       // FIXME: not ideal, we are mutating the input, we need to move some of it out
