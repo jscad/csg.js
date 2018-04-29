@@ -1,4 +1,5 @@
 const fromPoints = require('./fromPoints')
+
 /** Construct a CAG from a 2d-path (a closed sequence of points).
  * Like fromPoints() but does not check if the result is a valid polygon.
  * @param {path} Path2 - a Path2 path

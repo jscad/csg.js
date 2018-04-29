@@ -11,3 +11,5 @@ function fromSlices (options) {
         [0, 1, 0]
   ]).solidFromSlices(options)
 }
+
+module.exports = fromSlices

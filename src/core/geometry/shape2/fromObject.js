@@ -1,4 +1,5 @@
 const fromSides = require('./fromSides')
+const Side = require('./math/Side')
 
 /** Reconstruct a CAG from an object with identical property names.
  * @param {Object} obj - anonymous object, typically from JSON

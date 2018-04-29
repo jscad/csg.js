@@ -1,4 +1,5 @@
 const create = require('./create')
+
 /** Construct a CAG from a list of `Side` instances.
  * this is a duplicate of CAG's fromSides to avoid circular dependency CAG => fromSides => CAG
  * @param {Side[]} sides - list of sides

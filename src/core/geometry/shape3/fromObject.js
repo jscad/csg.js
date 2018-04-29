@@ -1,3 +1,5 @@
+const fromPolygons = require('./fromPolygons')
+
 /** Reconstruct a CSG solid from an object with identical property names.
  * @param {Object} obj - anonymous object, typically from JSON
  * @returns {CSG} new CSG object
@@ -11,3 +13,5 @@ function fromObject (obj) {
   csg.isRetesselated = obj.isRetesselated
   return csg
 }
+
+module.exports = fromObject

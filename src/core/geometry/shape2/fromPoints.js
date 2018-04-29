@@ -1,3 +1,12 @@
+const fromSides = require('./fromSides')
+const {area} = require('./utils/cagMeasurements')
+const canonicalize = require('./utils/canonicalize')
+const {areaEPS} = require('./constants')
+const {isSelfIntersecting} = require('./utils/cagValidation')
+const Side = require('./math/Side')
+const Vector2 = require('./math/Vector2')
+const Vertex2 = require('./math/Vertex2')
+
 /** Construct a CAG from a list of points (a polygon).
  * The rotation direction of the points is not relevant.
  * The points can define a convex or a concave polygon.
@@ -32,3 +41,5 @@ const fromPoints = function (points) {
   result = canonicalize(result)
   return result
 }
+
+module.exports = fromPoints

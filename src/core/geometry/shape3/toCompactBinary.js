@@ -1,10 +1,10 @@
 const canonicalize = require('./utils/canonicalize')
 
 /** returns a compact binary representation of this csg
- * usually used to transfer CSG objects to/from webworkes
- * NOTE: very interesting compact format, with a lot of reusable ideas
- * @returns {Object} compact binary representation of a CSG
- */
+   * usually used to transfer CSG objects to/from webworkes
+   * NOTE: very interesting compact format, with a lot of reusable ideas
+   * @returns {Object} compact binary representation of a CSG
+   */
 const toCompactBinary = (_csg) => {
   let csg = canonicalize(_csg)
   let numpolygons = csg.polygons.length
@@ -21,19 +21,19 @@ const toCompactBinary = (_csg) => {
   let shareds = []
   let sharedmap = {}
   let numshared = 0
-        // for (let i = 0, iMax = csg.polygons.length; i < iMax; i++) {
-        //  let p = csg.polygons[i];
-        //  for (let j = 0, jMax = p.length; j < jMax; j++) {
-        //      ++numpolygonvertices;
-        //      let vertextag = p[j].getTag();
-        //      if(!(vertextag in vertexmap)) {
-        //          vertexmap[vertextag] = numvertices++;
-        //          vertices.push(p[j]);
-        //      }
-        //  }
+          // for (let i = 0, iMax = csg.polygons.length; i < iMax; i++) {
+          //  let p = csg.polygons[i];
+          //  for (let j = 0, jMax = p.length; j < jMax; j++) {
+          //      ++numpolygonvertices;
+          //      let vertextag = p[j].getTag();
+          //      if(!(vertextag in vertexmap)) {
+          //          vertexmap[vertextag] = numvertices++;
+          //          vertices.push(p[j]);
+          //      }
+          //  }
   csg.polygons.map(function (polygon) {
-      // FIXME: why use map if we do not return anything ?
-      // either for... or forEach
+        // FIXME: why use map if we do not return anything ?
+        // either for... or forEach
     polygon.vertices.map(function (vertex) {
       ++numpolygonvertices
       let vertextag = vertex.getTag()
@@ -63,8 +63,8 @@ const toCompactBinary = (_csg) => {
   let planeData = new Float64Array(numplanes * 4)
   let polygonVerticesIndex = 0
 
-    // FIXME: doublecheck : why does it go through the whole polygons again?
-    // can we optimise that ? (perhap due to needing size to init buffers above)
+      // FIXME: doublecheck : why does it go through the whole polygons again?
+      // can we optimise that ? (perhap due to needing size to init buffers above)
   for (let polygonindex = 0; polygonindex < numpolygons; ++polygonindex) {
     let polygon = csg.polygons[polygonindex]
     numVerticesPerPolygon[polygonindex] = polygon.vertices.length

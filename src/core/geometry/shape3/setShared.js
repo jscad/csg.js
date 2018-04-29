@@ -1,3 +1,4 @@
+const fromPolygons = require('./fromPolygons')
 
 /**
  * set the .shared property of all polygons
@@ -8,7 +9,7 @@ function setShared (shared) {
   let polygons = this.polygons.map(function (p) {
     return new Polygon3(p.vertices, shared, p.plane)
   })
-  let result = CSG.fromPolygons(polygons)
+  let result = fromPolygons(polygons)
   result.properties = this.properties // keep original properties
   result.isRetesselated = this.isRetesselated
   result.isCanonicalized = this.isCanonicalized
