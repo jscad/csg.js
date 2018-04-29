@@ -70,6 +70,7 @@ function vector_text (x, y, string) {
  * @param {Float} [options.y=0] - y offset
  * @param {Boolean[]} [options.center=[true, true]] - axis of which to center, true or false
  * @param {Boolean} [options.union=true] - by default return an unique CAG, if false return an array of CAG (one item by char)
+ * @param {Float} [options.letterSpacing=0] - space between characters
  * @param {Boolean} [options.kerning=true] - see opentype.js
  * @param {Boolean} [options.features=true] - see opentype.js
  * @param {Boolean} [options.hinting=false] - see opentype.js
@@ -89,6 +90,7 @@ function text (options) {
     y: 0,
     center: [false, false],
     union: true,
+    letterSpacing: 0,
     kerning: true,
     features: true,
     hinting: false
@@ -118,12 +120,14 @@ function text (options) {
   let bbox2 = paths[paths.length-1].getBoundingBox()
   let size = { x: bbox2.x2 - bbox1.x1, y: bbox2.y2 - bbox1.y1 }
 
+  // Letter spacing
+  let totalSpacing = settings.letterSpacing * (paths.length - 1)
+
   // Scale ratio to match provided size
-  // let ratio = { x: settings.width / size.x, y: settings.height / size.y }
   let ratio = { x: null, y: null }
 
   if (settings.width) {
-    ratio.x = settings.width / size.x
+    ratio.x = (settings.width - totalSpacing) / size.x
   }
   if (settings.height) {
     ratio.y = settings.height / size.y
@@ -137,7 +141,7 @@ function text (options) {
 
   // Center offsets
   if (settings.center[0]) {
-    settings.x -= ratio.x * size.x / 2
+    settings.x -= ratio.x * size.x / 2 + (totalSpacing / 2)
   }
   if (settings.center[1]) {
     settings.y -= ratio.y * size.y / 2
@@ -147,7 +151,12 @@ function text (options) {
   let output = []
 
   // For each path (char)
-  paths.forEach(path => {
+  paths.forEach((path, i) => {
+    // Letter spacing
+    let x = settings.x
+    if (i) {
+      x += i * settings.letterSpacing
+    }
     // For each command (SVG style)
     // opentype.js output path with only [M, L, Q, C, Z] commands
     // https://github.com/nodebox/opentype.js/blob/5e71fcec2e237a8b3b5c034eed6973d18f69a8fc/src/glyph.js#L155
@@ -176,7 +185,7 @@ function text (options) {
           ])
           break
         case 'Z': // end of path
-          pointsList.push(points.scale([ratio.x, ratio.y]).translate([settings.x, settings.y, 0]))
+          pointsList.push(points.scale([ratio.x, ratio.y]).translate([x, settings.y]))
           break
         default:
           console.log('Warning: Unknow PATH command [' + command.type + ']')
