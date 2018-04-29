@@ -2,7 +2,6 @@ const fromPolygons = require('./fromPolygons')
 const Vector3D = require('./math/Vector3')
 const Vertex = require('./math/Vertex3')
 const Plane = require('./math/Plane')
-const Polygon2 = require('./math/Polygon2')
 const Polygon3 = require('./math/Polygon3')
 
 /** Reconstruct a CSG from the output of toCompactBinary().
@@ -67,10 +66,10 @@ function fromCompactBinary (bin) {
     polygon = new Polygon3(polygonvertices, shared, plane)
     polygons.push(polygon)
   }
-  let csg = fromPolygons(polygons)
-  csg.isCanonicalized = true
-  csg.isRetesselated = true
-  return csg
+  let shape3 = fromPolygons(polygons)
+  shape3.isCanonicalized = true
+  shape3.isRetesselated = true
+  return shape3
 }
 
 module.exports = fromCompactBinary

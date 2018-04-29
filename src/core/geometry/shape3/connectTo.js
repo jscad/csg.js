@@ -1,3 +1,5 @@
+const transform = require('./transform')
+
 /**
  * Connect a solid to another solid, such that two Connectors become connected
  * @param  {Connector} myConnector a Connector of this solid
@@ -10,7 +12,7 @@
  */
 function connectTo (shape3, myConnector, otherConnector, mirror, normalrotation) {
   let matrix = myConnector.getTransformationTo(otherConnector, mirror, normalrotation)
-  return transform(shape3, matrix)
+  return transform(matrix, shape3)
 }
 
 module.exports = connectTo

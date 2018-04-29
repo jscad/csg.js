@@ -31,4 +31,4 @@ const fromCompactBinary = function (bin) {
   return cag
 }
 
-module.exports = fromSides
+module.exports = fromCompactBinary

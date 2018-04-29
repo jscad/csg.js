@@ -1,10 +1,10 @@
-const CAG = require('../CAG')
+const {create} = require('../shape2/index')
 const {EPS, areaEPS} = require('../constants')
-const {area} = require('./cagMeasurements')
+const area = require('../shape2/measureArea')
+const fromPointsNoCheck = require('../shape2/fromPointsNoCheck')
 
   // project the 3D polygon onto a plane
 const projectPolygon3ToOrthoNormalBasis = function (poly3, orthobasis) {
-  const {fromPointsNoCheck} = require('../CAGFactories')
   let points2d = poly3.vertices.map(function (vertex) {
     return orthobasis.to2D(vertex.pos)
   })
@@ -14,7 +14,7 @@ const projectPolygon3ToOrthoNormalBasis = function (poly3, orthobasis) {
   if (Math.abs(resultArea) < areaEPS) {
       // the polygon was perpendicular to the orthnormal plane. The resulting 2D polygon would be degenerate
       // return an empty area instead:
-    result = new CAG()
+    result = create()
   } else if (resultArea < 0) {
     result = result.flipped()
   }
@@ -36,8 +36,12 @@ const projectToOrthoNormalBasis = function (csg, orthobasis) {
       cags.push(cag)
     }
   })
-  let result = new CAG().union(cags)
+  // fixme why union ???
+  let result = union(
+    create(),
+    cags
+  )
   return result
 }
 
-module.exports = {projectToOrthoNormalBasis}
+module.exports = projectToOrthoNormalBasis

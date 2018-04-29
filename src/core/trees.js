@@ -1,6 +1,6 @@
 const {_CSGDEBUG, EPS} = require('./constants')
-const Vertex = require('./math/Vertex3')
-const Polygon = require('./math/Polygon3')
+const Vertex3 = require('./math/Vertex3')
+const Polygon3 = require('./math/Polygon3')
 
 // Returns object:
 // .type:
@@ -10,8 +10,8 @@ const Polygon = require('./math/Polygon3')
 //   3: back
 //   4: spanning
 // In case the polygon is spanning, returns:
-// .front: a Polygon of the front part
-// .back: a Polygon of the back part
+// .front: a Polygon3 of the front part
+// .back: a Polygon3 of the back part
 function splitPolygonByPlane (plane, polygon) {
   let result = {
     type: null,
@@ -68,7 +68,7 @@ function splitPolygonByPlane (plane, polygon) {
           let point = vertex.pos
           let nextpoint = vertices[nextvertexindex].pos
           let intersectionpoint = plane.splitLineBetweenPoints(point, nextpoint)
-          let intersectionvertex = new Vertex(intersectionpoint)
+          let intersectionvertex = new Vertex3(intersectionpoint)
           if (isback) {
             backvertices.push(vertex)
             backvertices.push(intersectionvertex)
@@ -106,10 +106,10 @@ function splitPolygonByPlane (plane, polygon) {
         }
       }
       if (frontvertices.length >= 3) {
-        result.front = new Polygon(frontvertices, polygon.shared, polygon.plane)
+        result.front = new Polygon3(frontvertices, polygon.shared, polygon.plane)
       }
       if (backvertices.length >= 3) {
-        result.back = new Polygon(backvertices, polygon.shared, polygon.plane)
+        result.back = new Polygon3(backvertices, polygon.shared, polygon.plane)
       }
     }
   }
