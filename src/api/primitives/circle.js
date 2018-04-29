@@ -1,7 +1,7 @@
 const {defaultResolution2D} = require('../../core/constants')
-const Vector2 = require('../../core/math/Vector2')
+const vec2 = require('../../core/math/vec2')
 const {parseOptionAs2DVector, parseOptionAsFloat, parseOptionAsInt} = require('../optionParsers')
-const {fromPoints} = require('../../core/CAGFactories')
+const fromPoints = require('../../core/geometry/shape2/fromPoints')
 
 /** Construct a circle
  * @param {Object} [options] - options for construction
@@ -42,7 +42,13 @@ const _circle = function (options) {
   let points = []
   for (let i = 0; i < resolution; i++) {
     let radians = 2 * Math.PI * i / resolution
-    let point = Vector2.fromAngleRadians(radians).times(radius).plus(center)
+    let point = vec2.add(
+      vec2.scale(
+        vec2.fromAngleRadians(radians),
+        radius
+      ),
+      center
+    )
     points.push(point)
   }
   return fromPoints(points)

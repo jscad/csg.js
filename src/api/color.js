@@ -178,7 +178,8 @@ function css2rgb (s) {
 }
 
 const toArray = require('../core/utils/toArray')
-const {flatten, isNumber} = require('../core/utils')
+const flatten = require('../core/utils/flatten')
+const {isNumber} = require('../core/utils/typeChecks')
 // color( (array[r,g,b] | css-string) [,alpha] (,array[objects] | list of objects) )
 /** apply the given color to the input object(s)
  * @param {Object} color - either an array or a hex string of color values
