@@ -211,10 +211,10 @@ PolygonTreeNode.prototype = {
     }
   },
 
-    // split the node by a plane; add the resulting nodes to the frontnodes and backnodes array
-    // If the plane doesn't intersect the polygon, the 'this' object is added to one of the arrays
-    // If the plane does intersect the polygon, two new child nodes are created for the front and back fragments,
-    //  and added to both arrays.
+  // split the node by a plane; add the resulting nodes to the frontnodes and backnodes array
+  // If the plane doesn't intersect the polygon, the 'this' object is added to one of the arrays
+  // If the plane does intersect the polygon, two new child nodes are created for the front and back fragments,
+  //  and added to both arrays.
   splitByPlane: function (plane, coplanarfrontnodes, coplanarbacknodes, frontnodes, backnodes) {
     if (this.children.length) {
       let queue = [this.children]
