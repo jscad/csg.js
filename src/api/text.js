@@ -64,7 +64,8 @@ function vector_text (x, y, string) {
  * @param {Object} options - text options
  * @param {String} options.text - string
  * @param {opentype.Font} options.font - font object from opentype.js
- * @param {Float} [options.size=12] - text height
+ * @param {Float} [options.width=null] - text width, null = auto
+ * @param {Float} [options.height=10] - text height, null = auto
  * @param {Float} [options.x=0] - x offset
  * @param {Float} [options.y=0] - y offset
  * @param {Boolean[]} [options.center=[true, true]] - axis of which to center, true or false
@@ -82,15 +83,20 @@ function text (options) {
   let settings = Object.assign({
     text: null,
     font: null,
-    size: 10,
+    width: null,
+    height: null,
     x: 0,
     y: 0,
-    center: [true, true],
+    center: [false, false],
     union: true,
     kerning: true,
     features: true,
     hinting: false
   }, options || {})
+
+  if (!settings.width && !settings.height) {
+    settings.height = 10
+  }
 
   if (!settings.text || !settings.font) {
     throw new Error('text and font parameter must be defined')
@@ -101,7 +107,7 @@ function text (options) {
   }
 
   // opentype.Font.getPaths() return one SVG path by char
-  let paths = settings.font.getPaths(settings.text, 0, 0, settings.size, {
+  let paths = settings.font.getPaths(settings.text, 0, 0, settings.height || 1, {
     kerning: settings.kerning,
     features: settings.features,
     hinting: settings.hinting
@@ -111,17 +117,30 @@ function text (options) {
   let bbox1 = paths[0].getBoundingBox()
   let bbox2 = paths[paths.length-1].getBoundingBox()
   let size = { x: bbox2.x2 - bbox1.x1, y: bbox2.y2 - bbox1.y1 }
-  let ratio = settings.size / size.y // to match real text height
+
+  // Scale ratio to match provided size
+  // let ratio = { x: settings.width / size.x, y: settings.height / size.y }
+  let ratio = { x: null, y: null }
+
+  if (settings.width) {
+    ratio.x = settings.width / size.x
+  }
+  if (settings.height) {
+    ratio.y = settings.height / size.y
+  }
+
+  ratio.x = ratio.x || ratio.y
+  ratio.y = ratio.y || ratio.x
 
   // Fix text X offset
-  settings.x -= bbox1.x1 * ratio
+  settings.x -= bbox1.x1 * ratio.x
 
   // Center offsets
   if (settings.center[0]) {
-    settings.x -= ratio * size.x / 2
+    settings.x -= ratio.x * size.x / 2
   }
   if (settings.center[1]) {
-    settings.y -= ratio * size.y / 2
+    settings.y -= ratio.y * size.y / 2
   }
 
   // array of CAG chars
@@ -157,7 +176,7 @@ function text (options) {
           ])
           break
         case 'Z': // end of path
-          pointsList.push(points.scale([ratio, ratio]).translate([settings.x, settings.y, 0]))
+          pointsList.push(points.scale([ratio.x, ratio.y]).translate([settings.x, settings.y, 0]))
           break
         default:
           console.log('Warning: Unknow PATH command [' + command.type + ']')
