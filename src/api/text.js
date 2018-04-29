@@ -105,23 +105,23 @@ function text (options) {
     path.commands.forEach(command => {
       switch (command.type) {
         case 'M': // new path
-          points = new Path2D([[command.x, command.y]], false)
+          points = new Path2D([[command.x, -command.y]], false)
           break
         case 'L': // line to
-          points = points.appendPoint([command.x, command.y])
+          points = points.appendPoint([command.x, -command.y])
           break
         case 'Q': // absolute quadratic Bézier
           points = points.appendBezier([
-            [command.x1, command.y1],
-            [command.x1, command.y1],
-            [command.x, command.y]
+            [command.x1, -command.y1],
+            [command.x1, -command.y1],
+            [command.x, -command.y]
           ])
           break
         case 'C': // absolute cubic Bézier
           points = points.appendBezier([
-            [command.x1, command.y1],
-            [command.x2, command.y2],
-            [command.x, command.y]
+            [command.x1, -command.y1],
+            [command.x2, -command.y2],
+            [command.x, -command.y]
           ])
           break
         case 'Z': // end of path
