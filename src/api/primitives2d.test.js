@@ -313,7 +313,7 @@ test('polygon (params.points[][], params.paths[][] - two paths)', t => {
   t.truthy(comparePositonVertices(obs.sides, houseSides))
 })
 
-test('polygon (points[][] - with holes)', t => {
+test('polygon (nested points array, with holes)', t => {
   const obs = polygon([
     [ [0,0], [0,10], [10,10], [10,0] ],
     [ [2,2], [2,8], [8,8], [8,2] ],
@@ -337,10 +337,25 @@ test('polygon (points[][] - with holes)', t => {
     [ [8,8], [8,2] ],
     [ [2,8], [8,8] ],
     [ [2,2], [2,8] ],
-    [ [8,2], [2,2] ],
+    [ [8,2], [2,2] ]
   ]
 
   // we just use a sample of points for simplicity
   t.deepEqual(obs.sides.length, 16)
+  t.truthy(comparePositonVertices(obs.sides, expSides))
+})
+
+test('polygon (nested points array, with single path)', t => {
+  const obs = polygon([ [ [0,0], [0,10], [10,10], [10,0] ] ])
+
+  const expSides = [
+    [ [10,0], [10,10] ],
+    [ [10,10], [0,10] ],
+    [ [0,10], [0,0] ],
+    [ [0,0], [10,0] ]
+  ]
+
+  // we just use a sample of points for simplicity
+  t.deepEqual(obs.sides.length, 4)
   t.truthy(comparePositonVertices(obs.sides, expSides))
 })
