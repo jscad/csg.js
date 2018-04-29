@@ -2,7 +2,7 @@ const Side = require('./math/Side')
 const Vector2D = require('./math/Vector2')
 const Vertex2 = require('./math/Vertex2')
 const {areaEPS} = require('./constants')
-const {isSelfIntersecting, hasPointInside} = require('./utils/cagValidation')
+const {isSelfIntersecting, contains} = require('./utils/cagValidation')
 const {union, difference} = require('../api/ops-booleans')
 
 /** Construct a CAG from a list of `Side` instances.
@@ -80,6 +80,9 @@ const fromPointsArray = function (points) {
 }
 
 const fromNestedPointsArray = function (points) {
+  if (points.length === 1) {
+    return fromPoints(points[0])
+  }
   // First pass: create a collection of CAG paths
   let paths = []
   points.forEach(path => {
@@ -87,19 +90,16 @@ const fromNestedPointsArray = function (points) {
   })
   // Second pass: make a tree of paths
   let tree = {}
-  let point = null
-  // for each polygon extract parents and childs polygons
+    // for each polygon extract parents and childs polygons
   paths.forEach((p1, i) => {
-    // only check for first point in polygon
-    point = p1.sides[0].vertex0.pos
     // check for intersection
     paths.forEach((p2, y) => {
       if (p1 !== p2) {
         // create default node
         tree[i] || (tree[i] = { parents: [], isHole: false })
         tree[y] || (tree[y] = { parents: [], isHole: false })
-        // check if point stay in poylgon
-        if (hasPointInside(p2, point)) {
+        // check if polygon2 stay in poylgon1
+        if (contains(p2, p1)) {
           // push parent and child; odd parents number ==> hole
           tree[i].parents.push(y)
           tree[i].isHole = !! (tree[i].parents.length % 2)
