@@ -14,27 +14,30 @@ const Path2D = require('../core/math/Path2')
  * let charData = vector_char(0, 12.2, 'b')
  */
 function vector_char (x, y, char) {
-  char = char.charCodeAt(0)
-  char -= 32
-  if (char < 0 || char >= 95) return { width: 0, segments: [] }
-
-  let off = char * 112
-  let n = hersheyFont[off++]
-  let w = hersheyFont[off++]
-  let l = []
-  let segs = []
-
-  for (let i = 0; i < n; i++) {
-    let xp = hersheyFont[off + i * 2]
-    let yp = hersheyFont[off + i * 2 + 1]
-    if (xp === -1 && yp === -1) {
-      segs.push(l); l = []
+  let code = char.charCodeAt(0)
+  if (code < 33 || code > 126) {
+    throw new Error(`character code ${code} not supported`)
+  }
+  let glyph = hersheyFont[code]
+  let width = glyph.shift()
+  let segments = []
+  let polyline = []
+  let [ gx, gy ] = [ 0, 0 ]
+  for (let i = 0, il = glyph.length; i < il; i += 2) {
+    gx = glyph[i]
+    gy = glyph[i + 1]
+    if (gx === undefined) {
+      segments.push(polyline)
+      polyline = []
+      i--
     } else {
-      l.push([xp + x, yp + y])
+      polyline.push([ gx + x, gy + y ])
     }
   }
-  if (l.length) segs.push(l)
-  return { width: w, segments: segs }
+  if (polyline.length) {
+    segments.push(polyline)
+  }
+  return { width, segments }
 }
 
 /** Construct an array of with, segments tupple from a string
