@@ -1,4 +1,5 @@
 const fromSides = require('./fromSides')
+const vec2 = require('../../math/vec2')
 
 /** Reconstruct a CAG from the output of toCompactBinary().
  * @param {CompactBinary} bin - see toCompactBinary()
@@ -13,7 +14,7 @@ const fromCompactBinary = function (bin) {
   for (let vertexindex = 0; vertexindex < numvertices; vertexindex++) {
     let x = vertexData[arrayindex++]
     let y = vertexData[arrayindex++]
-    let pos = new Vector2(x, y)
+    let pos = vec2.fromValues(x, y)
     let vertex = new Vertex2(pos)
     vertices.push(vertex)
   }
