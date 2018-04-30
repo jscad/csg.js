@@ -15,4 +15,15 @@ const create = function () {
   }
 }
 
+// alternate, properties, declarative
+const create2 = function () {
+  return {
+    type: 'shape3',
+    polygons: [],
+    properties: {},
+    isCanonicalized: true,
+    isRetesselated: true
+  }
+}
+
 module.exports = create
