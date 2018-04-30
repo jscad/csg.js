@@ -5,6 +5,36 @@ const OrthoNormalBasis = require('./math/OrthoNormalBasis')
 const Plane = require('./math/Plane')
 const {fromVector2} = require('./math/Vector3Factories')
 
+// brain storm or whatever
+const vec3 = require('../core/math/vec3/index')
+const create = (point, axis, normal) => {
+  return {
+    point,
+    axis: vec3.unit(axis),
+    normal: vec3.unit(normal)
+  }
+}
+
+const transform = (matrix, connector) => {
+}
+
+const normalize = connector => {
+  const axis = vec3.unit(connector.axis)
+  // make the normal vector truly normal:
+  const n = vec3.unit(
+    vec3.cross(connector.normal, connector.axis)
+  )
+  const normal = vec3.cross(axis, n)
+  return create(connector.point, axis, normal)
+}
+
+const transformationFromTo = (options, from, to) => {
+  const defaults = {
+    mirror: false,
+    normalrotation: 0
+  }
+}
+
 // # class Connector
 // A connector allows to attach two objects at predefined positions
 // For example a servo motor and a servo horn:
@@ -42,7 +72,7 @@ Connector.prototype = {
     //   normalrotation: degrees of rotation between the 'normal' vectors of the two
     //                   connectors
   getTransformationTo: function (other, mirror, normalrotation) {
-    mirror = mirror ? true : false
+    mirror = !!mirror
     normalrotation = normalrotation ? Number(normalrotation) : 0
     let us = this.normalized()
     other = other.normalized()
