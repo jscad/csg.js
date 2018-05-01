@@ -82,6 +82,7 @@ function vector_char (options, char) {
 * @param {Float} [options.height=10] - font size (uppercase height)
 * @param {Float} [options.extrudeOffset=0] - size of the extrusion that will be applied manually after the creation of the character
 * @param {Float} [options.lineSpacing=1.4] - line spacing expressed as a percentage of font size
+* @param {Float} [options.letterSpacing=1] - extra letter spacing expressed as a percentage of font size
 * @param {String} [options.text='?'] - ascii string (ignored/overwrited if provided as seconds parameter)
 * @param {String} [text='?'] - ascii string
 * @returns {Array} segments - characters segments [[[x, y], ...], ...]
@@ -108,12 +109,14 @@ function vector_text (options, text) {
   let settings = Object.assign({
     x: 0,
     y: 0,
-    lineSpacing: 1.4
+    lineSpacing: 1.4,
+    letterSpacing: 1
   }, options || {})
   text = text || settings.text || 'OpenJSCAD'
   let x = parseFloat(settings.x)
   let y = parseFloat(settings.y)
   let lineSpacing = parseFloat(settings.lineSpacing)
+  let letterSpacing = parseFloat(settings.letterSpacing)
   let output = []
   let x0 = x
   for (let i = 0; i < text.length; i++) {
@@ -124,7 +127,7 @@ function vector_text (options, text) {
       y -= d.height * lineSpacing
       continue
     }
-    x += d.width
+    x += d.width * letterSpacing
     if (char !== ' ') {
       output = output.concat(d.segments)
     }
