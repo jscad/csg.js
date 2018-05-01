@@ -11,6 +11,7 @@ const defaultFont = require('../fonts/single-line/hershey/simplex.js')
 * @param {Object|String} [options] - options for construction or ascii char
 * @param {Float} [options.x='0'] - x offset
 * @param {Float} [options.y='0'] - y offset
+* @param {String} [options.char='?'] - ascii string (ignored/overwrited if provided as seconds parameter)
 * @param {String} [char='?'] - ascii character
 * @returns {VectorCharObject}
 *
@@ -34,7 +35,7 @@ function vector_char (options, char) {
     char = arguments[2]
   }
   let settings = Object.assign({ x: 0, y: 0 }, options || {})
-  char = settings.char || char || '?'
+  char = char || settings.char || '?'
   let x = parseFloat(settings.x)
   let y = parseFloat(settings.y)
   let code = char.charCodeAt(0)
@@ -65,7 +66,8 @@ function vector_char (options, char) {
 * @param {Object|String} [options] - options for construction or ascii string
 * @param {Float} [options.x='0'] - x offset
 * @param {Float} [options.y='0'] - y offset
-* @param {String} [string='?'] - ascii string
+* @param {String} [options.text='?'] - ascii string (ignored/overwrited if provided as seconds parameter)
+* @param {String} [text='?'] - ascii string
 * @returns {Array} segments - characters segments [[[x, y], ...], ...]
 *
 * @example
@@ -79,22 +81,22 @@ function vector_char (options, char) {
 * or
 * let textSegments = vector_text({ y: -80, text: 'OpenJSCAD' })
 */
-function vector_text (options, string) {
+function vector_text (options, text) {
   if (arguments.length === 1 && typeof options === 'string') {
-    string = options
+    text = options
     options = null
   } else if (arguments.length === 3) { // backward compatibility
-    options = { x: options, y: string }
-    string = arguments[2]
+    options = { x: options, y: text }
+    text = arguments[2]
   }
   let settings = Object.assign({ x: 0, y: 0 }, options || {})
-  string = settings.string || string || 'OpenJSCAD'
+  text = text || settings.text || 'OpenJSCAD'
   let x = parseFloat(settings.x)
   let y = parseFloat(settings.y)
   let output = []
   let x0 = x
-  for (let i = 0; i < string.length; i++) {
-    let char = string[i]
+  for (let i = 0; i < text.length; i++) {
+    let char = text[i]
     if (char === '\n') {
       x = x0
       y -= 30
