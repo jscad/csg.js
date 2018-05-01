@@ -47,7 +47,7 @@ function vector_char (options, char) {
   let polyline = []
   for (let i = 0, il = glyph.length; i < il; i += 2) {
     if (glyph[i] !== undefined) {
-      polyline.push([ glyph[i] + x, glyph[i + 1] + y ])
+      polyline.push([ glyph[i] + x, glyph[i + 1] + y + 1 ])
       continue
     }
     segments.push(polyline)
