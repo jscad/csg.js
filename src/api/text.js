@@ -3,14 +3,17 @@ const defaultFont = require('../fonts/single-line/hershey/simplex.js')
 /** Represents a character as segments
 * @typedef {Object} VectorCharObject
 * @property {Float} width - character width
+* @property {Float} height - character height (uppercase)
 * @property {Array} segments - character segments [[[x, y], ...], ...]
 */
 
 /** Construct a {@link VectorCharObject} from a ascii character whose code is between 32 and 127,
 * if the character is not supported it is replaced by a question mark.
 * @param {Object|String} [options] - options for construction or ascii char
-* @param {Float} [options.x='0'] - x offset
-* @param {Float} [options.y='0'] - y offset
+* @param {Float} [options.x=0] - x offset
+* @param {Float} [options.y=0] - y offset
+* @param {Float} [options.height=10] - font size (uppercase height)
+* @param {Float} [options.extrudeOffset=0] - size of the extrusion that will be applied manually after the creation of the character
 * @param {String} [options.char='?'] - ascii string (ignored/overwrited if provided as seconds parameter)
 * @param {String} [char='?'] - ascii character
 * @returns {VectorCharObject}
@@ -34,21 +37,31 @@ function vector_char (options, char) {
     options = { x: options, y: char }
     char = arguments[2]
   }
-  let settings = Object.assign({ x: 0, y: 0 }, options || {})
+  let settings = Object.assign({
+    x: 0,
+    y: 0,
+    height: 10,
+    extrudeOffset: 0
+  }, options || {})
   char = char || settings.char || '?'
   let x = parseFloat(settings.x)
   let y = parseFloat(settings.y)
+  let height = parseFloat(settings.height)
+  let extrudeOffset = parseFloat(settings.extrudeOffset)
   let code = char.charCodeAt(0)
   if (!code || code < 33 || code > 126) {
     code = 63 // 63 => ?
   }
   let glyph = [].concat(defaultFont[code])
-  let width = glyph.shift()
+  let ratio = (height - extrudeOffset) / defaultFont.height
+  let width = glyph.shift() * ratio
   let segments = []
   let polyline = []
   for (let i = 0, il = glyph.length; i < il; i += 2) {
+    gx = ratio * glyph[i] + x
+    gy = ratio * glyph[i + 1] + y + 1
     if (glyph[i] !== undefined) {
-      polyline.push([ glyph[i] + x, glyph[i + 1] + y + 1 ])
+      polyline.push([ gx, gy ])
       continue
     }
     segments.push(polyline)
@@ -58,14 +71,17 @@ function vector_char (options, char) {
   if (polyline.length) {
     segments.push(polyline)
   }
-  return { width, segments }
+  return { width, height, segments }
 }
 
 /** Construct an array of character segments from a ascii string whose characters code is between 32 and 127,
 * if one character is not supported it is replaced by a question mark.
 * @param {Object|String} [options] - options for construction or ascii string
-* @param {Float} [options.x='0'] - x offset
-* @param {Float} [options.y='0'] - y offset
+* @param {Float} [options.x=0] - x offset
+* @param {Float} [options.y=0] - y offset
+* @param {Float} [options.height=10] - font size (uppercase height)
+* @param {Float} [options.extrudeOffset=0] - size of the extrusion that will be applied manually after the creation of the character
+* @param {Float} [options.lineSpacing=1.4] - line spacing expressed as a percentage of font size
 * @param {String} [options.text='?'] - ascii string (ignored/overwrited if provided as seconds parameter)
 * @param {String} [text='?'] - ascii string
 * @returns {Array} segments - characters segments [[[x, y], ...], ...]
@@ -89,26 +105,29 @@ function vector_text (options, text) {
     options = { x: options, y: text }
     text = arguments[2]
   }
-  let settings = Object.assign({ x: 0, y: 0 }, options || {})
+  let settings = Object.assign({
+    x: 0,
+    y: 0,
+    lineSpacing: 1.4
+  }, options || {})
   text = text || settings.text || 'OpenJSCAD'
   let x = parseFloat(settings.x)
   let y = parseFloat(settings.y)
+  let lineSpacing = parseFloat(settings.lineSpacing)
   let output = []
   let x0 = x
   for (let i = 0; i < text.length; i++) {
     let char = text[i]
+    let d = vector_char(Object.assign({}, settings, { x, y }), char)
     if (char === '\n') {
       x = x0
-      y -= 30
+      y -= d.height * lineSpacing
       continue
     }
-    if (char === ' ') {
-      x += 16
-      continue
-    }
-    let d = vector_char(x, y, char)
-    output = output.concat(d.segments)
     x += d.width
+    if (char !== ' ') {
+      output = output.concat(d.segments)
+    }
   }
   return output
 }

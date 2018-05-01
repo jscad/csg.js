@@ -2,6 +2,7 @@
 // -- reduced to save some bytes...
 // { [ascii code]: [width, x, y, ...] } - undefined value as path separator
 module.exports = {
+  height: 21,
   33:[10,5,21,5,7,,5,2,4,1,5,0,6,1,5,2],
   34:[16,4,21,4,14,,12,21,12,14],
   35:[21,11,25,4,-7,,17,25,10,-7,,4,12,18,12,,3,6,17,6],
