@@ -129,7 +129,7 @@ function vector_text (options, text) {
     x: 0,
     y: 0,
     height: 10,
-    lineSpacing: 1.4,
+    lineSpacing: 1.7,
     letterSpacing: 1,
     extrude: { w: 0, h: 0 }
   }
