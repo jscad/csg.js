@@ -144,7 +144,7 @@ function vector_text (options, text) {
   let x0 = x
   for (let i = 0; i < text.length; i++) {
     let char = text[i]
-    let charOptions = { x, y, extrude: null }
+    let charOptions = { x, y, extrude: { w: extrude.w } }
     let d = vector_char(Object.assign({}, settings, charOptions), char)
     if (char === '\n') {
       x = x0
