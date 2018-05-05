@@ -18,51 +18,56 @@ function csgFromSegments (options, segments) {
   return union(output)
 }
 
+// TODO: comments
+const defaultsVectorParams = {
+  x: 0,
+  y: 0,
+  input: '?',
+  height: 10,
+  lineSpacing: 1.4,
+  letterSpacing: 1,
+  extrude: { w: 0, h: 0 }
+}
+
+// TODO: comments
+function vectorParams (options, input) {
+  if (!input && typeof options === 'string') {
+    options = { input: options }
+  }
+  options = options || {}
+  let params = Object.assign({}, defaultsVectorParams, options)
+  params.extrude = Object.assign({}, defaultsVectorParams.extrude, options.extrude || {})
+  params.input = input || params.input
+  return params
+}
+
 /** Construct a {@link VectorCharObject} from a ascii character whose code is between 32 and 127,
 * if the character is not supported it is replaced by a question mark.
-* @param {Object|String} [options] - options for construction or ascii char
+* @param {Object|String} [options] - options for construction or ascii character
 * @param {Float} [options.x=0] - x offset
 * @param {Float} [options.y=0] - y offset
 * @param {Float} [options.height=10] - font size (uppercase height)
 * @param {Object} [options.extrude] - {@link rectangular_extrude} options
 * @param {Float} [options.extrude.w=0] - width of the extrusion that will be applied (manually) after the creation of the character
 * @param {Float} [options.extrude.h=0] - extrusion height, if > 0 the function return a CSG object
-* @param {String} [options.char='?'] - ascii string (ignored/overwrited if provided as seconds parameter)
+* @param {String} [options.input='?'] - ascii character (ignored/overwrited if provided as seconds parameter)
 * @param {String} [char='?'] - ascii character
 * @returns {VectorCharObject|CSG} vectorCharObject or an CSG object if `options.extrude.h` is > 0
 *
 * @example
-* let vectorCharObject = vector_char()
+* let vectorCharObject = vectorChar()
 * or
-* let vectorCharObject = vector_char('A')
+* let vectorCharObject = vectorChar('A')
 * or
-* let vectorCharObject = vector_char(36, 0, 'B')
+* let vectorCharObject = vectorChar(36, 0, 'B')
 * or
-* let vectorCharObject = vector_char({ x: 57 }, 'C')
+* let vectorCharObject = vectorChar({ x: 57 }, 'C')
 * or
-* let vectorCharObject = vector_char({ x: 78, char: '!' })
+* let vectorCharObject = vectorChar({ x: 78, input: '!' })
 */
-function vector_char (options, char) {
-  if (arguments.length === 1 && typeof options === 'string') {
-    char = options
-    options = null
-  } else if (arguments.length === 3) { // backward compatibility
-    options = { x: options, y: char }
-    char = arguments[2]
-  }
-  const defaults = {
-    x: 0,
-    y: 0,
-    height: 10,
-    extrude: { w: 0, h: 0 }
-  }
-  let settings = Object.assign({}, defaults, options || {})
-  let extrude = Object.assign({}, defaults.extrude, settings.extrude || {})
-  char = char || settings.char || '?'
-  let x = parseFloat(settings.x)
-  let y = parseFloat(settings.y)
-  let height = parseFloat(settings.height)
-  let code = char.charCodeAt(0)
+function vectorChar (options, char) {
+  let { x, y, input, height, extrude } = vectorParams(options, char)
+  let code = input.charCodeAt(0)
   if (!code || code < 33 || code > 126) {
     code = 63 // 63 => ?
   }
@@ -102,50 +107,28 @@ function vector_char (options, char) {
 * @param {Object} [options.extrude] - {@link rectangular_extrude} options
 * @param {Float} [options.extrude.w=0] - width of the extrusion that will be applied (manually) after the creation of the character
 * @param {Float} [options.extrude.h=0] - extrusion height, if > 0 the function return a CSG object
-* @param {String} [options.text='?'] - ascii string (ignored/overwrited if provided as seconds parameter)
+* @param {String} [options.input='?'] - ascii string (ignored/overwrited if provided as seconds parameter)
 * @param {String} [text='?'] - ascii string
 * @returns {Array|CSG} characters segments [[[x, y], ...], ...] or an CSG object if `options.extrude.h` is > 0
 *
 * @example
-* let textSegments = vector_text()
+* let textSegments = vectorText()
 * or
-* let textSegments = vector_text('OpenJSCAD')
+* let textSegments = vectorText('OpenJSCAD')
 * or
-* let textSegments = vector_text(0, -20, 'OpenJSCAD')
+* let textSegments = vectorText(0, -20, 'OpenJSCAD')
 * or
-* let textSegments = vector_text({ y: -50 }, 'OpenJSCAD')
+* let textSegments = vectorText({ y: -50 }, 'OpenJSCAD')
 * or
-* let textSegments = vector_text({ y: -80, text: 'OpenJSCAD' })
+* let textSegments = vectorText({ y: -80, input: 'OpenJSCAD' })
 */
-function vector_text (options, text) {
-  if (arguments.length === 1 && typeof options === 'string') {
-    text = options
-    options = null
-  } else if (arguments.length === 3) { // backward compatibility
-    options = { x: options, y: text }
-    text = arguments[2]
-  }
-  const defaults = {
-    x: 0,
-    y: 0,
-    height: 10,
-    lineSpacing: 1.4,
-    letterSpacing: 1,
-    extrude: { w: 0, h: 0 }
-  }
-  let settings = Object.assign({}, defaults, options || {})
-  let extrude = Object.assign({}, defaults.extrude, settings.extrude || {})
-  text = text || settings.text || 'OpenJSCAD'
-  let x = parseFloat(settings.x)
-  let y = parseFloat(settings.y)
-  let lineSpacing = parseFloat(settings.lineSpacing)
-  let letterSpacing = parseFloat(settings.letterSpacing)
+function vectorText (options, text) {
+  let { x, y, input, height, extrude, lineSpacing, letterSpacing } = vectorParams(options, text)
   let output = []
   let x0 = x
-  for (let i = 0; i < text.length; i++) {
-    let char = text[i]
-    let charOptions = { x, y, extrude: { w: extrude.w } }
-    let d = vector_char(Object.assign({}, settings, charOptions), char)
+  for (let i = 0; i < input.length; i++) {
+    let char = input[i]
+    let d = vectorChar({ x, y, height, extrude: { w: extrude.w } }, char)
     if (char === '\n') {
       x = x0
       y -= d.height * lineSpacing
@@ -162,7 +145,39 @@ function vector_text (options, text) {
   return output
 }
 
+/** Construct a {@link VectorCharObject} from a ascii character whose code is between 32 and 127,
+* if the character is not supported it is replaced by a question mark.
+* @param {Float} x - x offset
+* @param {Float} y - y offset
+* @param {String} char - ascii character
+* @returns {VectorCharObject}
+* @deprecated >= v2
+
+* @example
+* let vectorCharObject = vector_char(36, 0, 'B')
+*/
+function vector_char (x, y, char) {
+  return vectorChar({ x, y }, char)
+}
+
+/** Construct an array of character segments from a ascii string whose characters code is between 32 and 127,
+* if one character is not supported it is replaced by a question mark.
+* @param {Float} x - x offset
+* @param {Float} y - y offset
+* @param {String} text - ascii string
+* @returns {Array} characters segments [[[x, y], ...], ...]
+* @deprecated >= v2
+*
+* @example
+* let textSegments = vector_text(0, -20, 'OpenJSCAD')
+*/
+function vector_text (x, y, text) {
+  return vectorText({ x, y }, text)
+}
+
 module.exports = {
   vector_char,
-  vector_text
+  vector_text,
+  vectorChar,
+  vectorText
 }
