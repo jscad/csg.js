@@ -73,12 +73,13 @@ function vectorChar (options, char) {
   }
   let glyph = [].concat(defaultFont[code])
   let ratio = (height - extrude.w) / defaultFont.height
+  let extrudeOffset = (extrude.w / 2)
   let width = glyph.shift() * ratio
   let segments = []
   let polyline = []
   for (let i = 0, il = glyph.length; i < il; i += 2) {
     gx = ratio * glyph[i] + x
-    gy = ratio * glyph[i + 1] + y + 1
+    gy = ratio * glyph[i + 1] + y + extrudeOffset
     if (glyph[i] !== undefined) {
       polyline.push([ gx, gy ])
       continue
