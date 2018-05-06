@@ -1,3 +1,4 @@
+const fromPolygons = require('./fromPolygons')
 /**
  * Return a new CSG solid with solid and empty space switched.
  * This solid is not modified.
@@ -9,7 +10,7 @@ function invert () {
   let flippedpolygons = this.polygons.map(function (p) {
     return p.flipped()
   })
-  return CSG.fromPolygons(flippedpolygons)
+  return fromPolygons(flippedpolygons)
   // TODO: flip properties?
 }
 

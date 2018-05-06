@@ -1,6 +1,7 @@
 const {EPS} = require('../constants')
 const Polygon = require('../math/Polygon3')
 const Plane = require('../math/Plane')
+const canonicalize = require('./canonicalize')
 
 function addSide (sidemap, vertextag2sidestart, vertextag2sideend, vertex0, vertex1, polygonindex) {
   let starttag = vertex0.getTag()
@@ -98,7 +99,7 @@ function deleteSide (sidemap, vertextag2sidestart, vertextag2sideend, vertex0, v
      not be used for further CSG operations!
 */
 const fixTJunctions = function (fromPolygons, csg) {
-  csg = csg.canonicalized()
+  csg = canonicalize(csg)
   let sidemap = {}
 
   // STEP 1
