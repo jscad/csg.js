@@ -2,23 +2,6 @@ const defaultFont = require('../fonts/single-line/hershey/simplex.js')
 const { rectangular_extrude } = require('./ops-extrusions')
 const { union } = require('./ops-booleans')
 
-/** Represents a character as segments
-* @typedef {Object} VectorCharObject
-* @property {Float} width - character width
-* @property {Float} height - character height (uppercase)
-* @property {Array} segments - character segments [[[x, y], ...], ...]
-*/
-
-// TODO: move and comments...
-function csgFromSegments (options, segments) {
-  let output = []
-  segments.forEach(polyline => output.push(
-    rectangular_extrude(polyline, options)
-  ))
-  return union(output)
-}
-
-// TODO: comments
 const defaultsVectorParams = {
   x: 0,
   y: 0,
@@ -29,7 +12,23 @@ const defaultsVectorParams = {
   extrude: { w: 0, h: 0 }
 }
 
-// TODO: comments
+/** Construct a CSG from an (nested) array of segments
+* @param {Object} options - options passed to {@link rectangular_extrude}
+* @param {Array} segments - [[x, y], ...] or [[[x, y], ...], ...]
+* @returns {CSG}
+*/
+function csgFromSegments (options, segments) {
+  if (!Array.isArray(segments[0][0])) {
+    return rectangular_extrude(segments, options)
+  }
+  let output = []
+  segments.forEach(polyline => output.push(
+    rectangular_extrude(polyline, options)
+  ))
+  return union(output)
+}
+
+// vectorsXXX parameters handler
 function vectorParams (options, input) {
   if (!input && typeof options === 'string') {
     options = { input: options }
@@ -41,7 +40,14 @@ function vectorParams (options, input) {
   return params
 }
 
-/** Construct a {@link VectorCharObject} from a ascii character whose code is between 32 and 127,
+/** Represents a character as segments
+* @typedef {Object} VectorCharObject
+* @property {Float} width - character width
+* @property {Float} height - character height (uppercase)
+* @property {Array} segments - character segments [[[x, y], ...], ...]
+*/
+
+/** Construct a {@link VectorCharObject} from a ascii character whose code is between 31 and 127,
 * if the character is not supported it is replaced by a question mark.
 * @param {Object|String} [options] - options for construction or ascii character
 * @param {Float} [options.x=0] - x offset
@@ -97,7 +103,7 @@ function vectorChar (options, char) {
   return { width, height, segments }
 }
 
-/** Construct an array of character segments from a ascii string whose characters code is between 32 and 127,
+/** Construct an array of character segments from a ascii string whose characters code is between 31 and 127,
 * if one character is not supported it is replaced by a question mark.
 * @param {Object|String} [options] - options for construction or ascii string
 * @param {Float} [options.x=0] - x offset
@@ -146,7 +152,7 @@ function vectorText (options, text) {
   return output
 }
 
-/** Construct a {@link VectorCharObject} from a ascii character whose code is between 32 and 127,
+/** Construct a {@link VectorCharObject} from a ascii character whose code is between 31 and 127,
 * if the character is not supported it is replaced by a question mark.
 * @param {Float} x - x offset
 * @param {Float} y - y offset
@@ -161,7 +167,7 @@ function vector_char (x, y, char) {
   return vectorChar({ x, y }, char)
 }
 
-/** Construct an array of character segments from a ascii string whose characters code is between 32 and 127,
+/** Construct an array of character segments from a ascii string whose characters code is between 31 and 127,
 * if one character is not supported it is replaced by a question mark.
 * @param {Float} x - x offset
 * @param {Float} y - y offset
