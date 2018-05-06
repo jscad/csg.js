@@ -65,8 +65,6 @@ function vectorParams (options, input) {
 * or
 * let vectorCharObject = vectorChar('A')
 * or
-* let vectorCharObject = vectorChar(36, 0, 'B')
-* or
 * let vectorCharObject = vectorChar({ x: 57 }, 'C')
 * or
 * let vectorCharObject = vectorChar({ x: 78, input: '!' })
@@ -122,8 +120,6 @@ function vectorChar (options, char) {
 * let textSegments = vectorText()
 * or
 * let textSegments = vectorText('OpenJSCAD')
-* or
-* let textSegments = vectorText(0, -20, 'OpenJSCAD')
 * or
 * let textSegments = vectorText({ y: -50 }, 'OpenJSCAD')
 * or
