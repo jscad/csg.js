@@ -23,8 +23,8 @@ const defaultsVectorParams = {
   x: 0,
   y: 0,
   input: '?',
-  height: 10,
-  lineSpacing: 1.4,
+  height: 21, // == old vector_xxx simplex font height
+  lineSpacing: 1.4285714285714286, // == 30/21 == old vector_xxx ratio
   letterSpacing: 1,
   extrude: { w: 0, h: 0 }
 }
@@ -46,7 +46,7 @@ function vectorParams (options, input) {
 * @param {Object|String} [options] - options for construction or ascii character
 * @param {Float} [options.x=0] - x offset
 * @param {Float} [options.y=0] - y offset
-* @param {Float} [options.height=10] - font size (uppercase height)
+* @param {Float} [options.height=21] - font size (uppercase height)
 * @param {Object} [options.extrude] - {@link rectangular_extrude} options
 * @param {Float} [options.extrude.w=0] - width of the extrusion that will be applied (manually) after the creation of the character
 * @param {Float} [options.extrude.h=0] - extrusion height, if > 0 the function return a CSG object
@@ -68,7 +68,7 @@ function vectorParams (options, input) {
 function vectorChar (options, char) {
   let { x, y, input, height, extrude } = vectorParams(options, char)
   let code = input.charCodeAt(0)
-  if (!code || code < 33 || code > 126) {
+  if (!code || code < 32 || code > 126) {
     code = 63 // 63 => ?
   }
   let glyph = [].concat(defaultFont[code])
@@ -102,7 +102,7 @@ function vectorChar (options, char) {
 * @param {Object|String} [options] - options for construction or ascii string
 * @param {Float} [options.x=0] - x offset
 * @param {Float} [options.y=0] - y offset
-* @param {Float} [options.height=10] - font size (uppercase height)
+* @param {Float} [options.height=21] - font size (uppercase height)
 * @param {Float} [options.lineSpacing=1.4] - line spacing expressed as a percentage of font size
 * @param {Float} [options.letterSpacing=1] - extra letter spacing expressed as a percentage of font size
 * @param {Object} [options.extrude] - {@link rectangular_extrude} options
