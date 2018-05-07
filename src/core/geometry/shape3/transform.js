@@ -1,3 +1,7 @@
+const mat4 = require('../../math/vec4')
+const vec4 = require('../../math/vec4')
+const poly3 = require('../poly3')
+const vert3 = require('../vert3')
 const fromPolygons = require('./fromPolygons')
 
 /**
@@ -11,8 +15,8 @@ const fromPolygons = require('./fromPolygons')
  * m = m.multiply(translate([-.5, 0, 0], m))
  * let B = transform(m, A)
 **/
-function transform (matrix, shape3) {
-    let ismirror = matrix.isMirroring()
+const transform = (matrix, shape3) => {
+    let ismirror = mat4.isMirroring(matrix)
     let transformedvertices = {}
     let transformedplanes = {}
     let newpolygons = shape3.polygons.map(function (p) {
@@ -22,7 +26,7 @@ function transform (matrix, shape3) {
       if (planetag in transformedplanes) {
         newplane = transformedplanes[planetag]
       } else {
-        newplane = plane.transform(matrix)
+        newplane = vec4.transform(matrix, plane)
         transformedplanes[planetag] = newplane
       }
       let newvertices = p.vertices.map(function (v) {
@@ -31,13 +35,13 @@ function transform (matrix, shape3) {
         if (vertextag in transformedvertices) {
           newvertex = transformedvertices[vertextag]
         } else {
-          newvertex = v.transform(matrix)
+          newvertex = vert3.transform(matrix, v)
           transformedvertices[vertextag] = newvertex
         }
         return newvertex
       })
       if (ismirror) newvertices.reverse()
-      return new Polygon3(newvertices, p.shared, newplane)
+      return poly3.fromData(newvertices, p.shared, newplane)
     })
     let result = fromPolygons(newpolygons)
     result.properties = shape3.properties._transform(matrix)

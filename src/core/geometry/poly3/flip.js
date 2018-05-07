@@ -1,4 +1,4 @@
-const vert3 = require('')
+const vert3 = require('../vert3')
 const plane = require('')
 const fromData = require('./fromData')
 

@@ -1,6 +1,6 @@
 const FuzzyCSGFactory = require('../FuzzyFactory3d')
-const reTesselateCoplanarPolygons = require('../math/reTesselateCoplanarPolygons')
-const {fromPolygons} = require('../CSGFactories')
+const reTesselateCoplanarPolygons = require('./reTesselateCoplanarPolygons')
+const fromPolygons = require('./fromPolygons')
 
 const reTesselate = function (csg) {
   if (csg.isRetesselated) {

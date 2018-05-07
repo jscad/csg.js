@@ -1,8 +1,9 @@
 
-  const transform = require('./transform')
+const transform = require('./transform')
+const mat4 = require('../../math/mat4')
 
-  function rotateY (shape3, deg) {
-    return transform(shape3, Matrix4x4.rotationY(deg))
-  }
+const rotateY = (deg, shape3) => {
+  return transform(mat4.fromYRotation(deg), shape3)
+}
 
-  module.exports = rotateY
+module.exports = rotateY

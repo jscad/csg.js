@@ -1,17 +1,16 @@
+const poly3 = require('../poly3')
 const fromPolygons = require('./fromPolygons')
 
-/** Reconstruct a CSG solid from an object with identical property names.
+/** Reconstruct a Shape3 solid from an object with identical property names.
  * @param {Object} obj - anonymous object, typically from JSON
- * @returns {CSG} new CSG object
+ * @returns {Shape3} new Shape3 object
  */
 function fromObject (obj) {
-  let polygons = obj.polygons.map(function (p) {
-    return Polygon3.fromObject(p)
-  })
-  let csg = fromPolygons(polygons)
-  csg.isCanonicalized = obj.isCanonicalized
-  csg.isRetesselated = obj.isRetesselated
-  return csg
+  let polygons = obj.polygons.map(polygonLike => poly3.fromObject(polygonLike))
+  let shape3 = fromPolygons(polygons)
+  shape3.isCanonicalized = obj.isCanonicalized
+  shape3.isRetesselated = obj.isRetesselated
+  return shape3
 }
 
 module.exports = fromObject

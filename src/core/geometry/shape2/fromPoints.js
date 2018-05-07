@@ -5,8 +5,7 @@ const canonicalize = require('./canonicalize')
 const {areaEPS} = require('./constants')
 const isSelfIntersecting = require('./validateIsSelfIntersecting')
 const Side = require('./math/Side')
-const Vector2 = require('./math/Vector2')
-const Vertex2 = require('./math/Vertex2')
+const vert2 = require('../vert2')
 const vec2 = require('../../math/vec2')
 
 /** Construct a Shape2 from a list of points (a polygon).
@@ -23,8 +22,8 @@ const fromPoints = function (points) {
   let prevpoint = new Vector2(points[numpoints - 1])
   let prevvertex = new Vertex2(prevpoint)
   points.map(function (p) {
-    let point = new Vector2(p)
-    let vertex = new Vertex2(point)
+    let point = vec2.fromValues(...p)
+    let vertex = vert2.() //new Vertex2(point)
     let side = new Side(prevvertex, vertex)
     sides.push(side)
     prevvertex = vertex

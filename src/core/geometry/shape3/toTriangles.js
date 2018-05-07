@@ -1,19 +1,23 @@
-/** returns the triangles of this csg
+const poly3 = require('../poly3')
+
+/** returns the triangles of this shape3
  * @returns {Polygons} triangulated polygons
  */
-const toTriangles = (_csg) => {
+const toTriangles = (shape3) => {
   let polygons = []
-  _csg.polygons.forEach(function (poly) {
+  shape3.polygons.forEach(function (poly) {
     let firstVertex = poly.vertices[0]
     for (let i = poly.vertices.length - 3; i >= 0; i--) {
-      polygons.push(new Polygon3(
+      const triangle = poly3.fromData(
         [
           firstVertex,
           poly.vertices[i + 1],
           poly.vertices[i + 2]
         ],
           poly.shared,
-          poly.plane))
+          poly.plane
+      )
+      polygons.push(triangle)
     }
   })
   return polygons

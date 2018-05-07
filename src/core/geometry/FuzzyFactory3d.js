@@ -46,6 +46,7 @@ FuzzyCSGFactory.prototype = {
     // two vertices that were originally very close may now have become
     // truly identical (referring to the same Vertex object).
     // Remove duplicate vertices:
+    // uses the tags to set vertices appart
     let newverticesDedup = []
     if (newvertices.length > 0) {
       let prevvertextag = newvertices[newvertices.length - 1].getTag()

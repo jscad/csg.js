@@ -12,7 +12,12 @@ test('shape2: create() should return an empty shape2', t => {
 })
 
 test('shape2: fromPoints() should create a shape2 from points', t => {
-  const obs = create()
+  const points = [
+    [-13, -13],
+    [13, -13],
+    [13, 13]
+  ]
+  const obs = fromPoints(points)
   const exp = {
     type: 'shape2',
     sides: [],

@@ -1,7 +1,7 @@
 const {EPS} = require('../constants')
-const Polygon = require('../math/Polygon3')
 const Plane = require('../math/Plane')
 const canonicalize = require('./canonicalize')
+const poly3 = require('../poly3')
 
 function addSide (sidemap, vertextag2sidestart, vertextag2sideend, vertex0, vertex1, polygonindex) {
   let starttag = vertex0.getTag()
@@ -249,7 +249,7 @@ const fixTJunctions = function (fromPolygons, csg) {
                     // split the side by inserting the vertex:
                     let newvertices = polygon.vertices.slice(0)
                     newvertices.splice(insertionvertextagindex, 0, endvertex)
-                    let newpolygon = new Polygon(newvertices, polygon.shared /* polygon.plane */)
+                    let newpolygon = poly3.fromData(newvertices, polygon.shared /* polygon.plane */)
 
                     // calculate plane with differents point
                     if (isNaN(newpolygon.plane.w)) {

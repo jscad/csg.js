@@ -1,8 +1,8 @@
+const vec3 = require('../../math/vec3')
+const vert3 = require('../vert3')
+const poly3 = require('../poly3')
 const fromPolygons = require('./fromPolygons')
-const Vector3D = require('./math/Vector3')
-const Vertex = require('./math/Vertex3')
 const Plane = require('./math/Plane')
-const Polygon3 = require('./math/Polygon3')
 
 /** Reconstruct a CSG from the output of toCompactBinary().
  * @param {CompactBinary} bin - see toCompactBinary().
@@ -20,7 +20,7 @@ function fromCompactBinary (bin) {
     y = planeData[arrayindex++]
     z = planeData[arrayindex++]
     w = planeData[arrayindex++]
-    normal = Vector3D.Create(x, y, z)
+    normal = vec3.fromValues(x, y, z)
     plane = new Plane(normal, w)
     planes.push(plane)
   }
@@ -35,8 +35,8 @@ function fromCompactBinary (bin) {
     x = vertexData[arrayindex++]
     y = vertexData[arrayindex++]
     z = vertexData[arrayindex++]
-    pos = Vector3D.Create(x, y, z)
-    vertex = new Vertex(pos)
+    // pos = vec3.fromValues(x, y, z)
+    vertex = vert3.fromValues(x, y, z) // Vertex(pos)
     vertices.push(vertex)
   }
 
@@ -63,10 +63,10 @@ function fromCompactBinary (bin) {
     }
     plane = planes[polygonPlaneIndexes[polygonindex]]
     shared = shareds[polygonSharedIndexes[polygonindex]]
-    polygon = new Polygon3(polygonvertices, shared, plane)
+    polygon = poly3.fromData(polygonvertices, shared, plane)
     polygons.push(polygon)
   }
-  let shape3 = fromPolygons(polygons)
+  const shape3 = fromPolygons(polygons)
   shape3.isCanonicalized = true
   shape3.isRetesselated = true
   return shape3
