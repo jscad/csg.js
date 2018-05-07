@@ -6,9 +6,9 @@ const fromValues = require('./fromValues')
  * m the mat4 by the dimensions in the given vec3
  * create an affine matrix for mirroring into an arbitrary plane:
  *
- * @param {mat4} out the receiving matrix
- * @param {mat4} a the matrix to scale
- * @param {vec3} v the vec3 to scale the matrix by
+ * @param {mat4} out the receiving matrix (optional)
+ * @param {vec4} v the vec4 to mirror the matrix by
+ * @param {mat4} a the matrix to mirror
  * @returns {mat4} out
  **/
 function mirror (...params) {
@@ -17,12 +17,12 @@ function mirror (...params) {
   let v
   if (params.length === 2) {
     out = create()
-    a = params[0]
-    v = params[1]
+    v = params[0]
+    a = params[1]
   } else {
     out = params[0]
-    a = params[1]
-    v = params[2]
+    v = params[1]
+    a = params[2]
   }
 
   let x = v[0]
@@ -65,12 +65,12 @@ function mirroring (...params) {
   let plane
   if (params.length === 2) {
     out = create()
-    a = params[0]
-    plane = params[1]
+    plane = params[0]
+    a = params[1]
   } else {
     out = params[0]
-    a = params[1]
-    plane = params[2]
+    plane = params[1]
+    a = params[2]
   }
   const [nx, ny, nz, w] = plane
   const elements = [
