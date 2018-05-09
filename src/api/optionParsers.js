@@ -1,5 +1,5 @@
-const Vector3D = require('../core/math/Vector3')
-const Vector2D = require('../core/math/Vector2')
+const vec2 = require('../core/math/vec2')
+const vec3 = require('../core/math/vec3')
 
 // Parse an option from the options object
 // If the option is not present, return the default value

@@ -1,4 +1,4 @@
-const {isCSG} = require('../../core/utils')
+const {isShape3} = require('../../core/utils/typeChecks')
 const CSG = require('../../core/CSG')
 const Tree = require('../../core/trees')
 
@@ -25,7 +25,7 @@ function intersection (...inputs) {
   if (!allIdenticalType) {
     throw new Error('you cannot do intersections of 2d & 3d shapes, please extrude the 2d shapes or flatten the 3d shapes')
   }
-  const is3d = isCSG(shapes[0])
+  const is3d = isShape3(shapes[0])
   const intersectFn = is3d ? intersect3d : intersect2d
   return shapes.length > 1 ? intersectFn(shapes[0], shapes.slice(1)) : shapes[0]
 }

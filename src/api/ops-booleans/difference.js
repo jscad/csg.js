@@ -4,7 +4,7 @@ const Tree = require('../../core/trees')
 const canonicalize = require('../../core/utils/canonicalize')
 const retesselate = require('../../core/utils/retesellate')
 
-const {isCSG} = require('../../core/utils')
+const {isShape3} = require('../../core/utils/typeChecks')
 
 const {fromFakeCSG} = require('../../core/CAGFactories')
 const {toCSGWall} = require('../../core/CAGToOther')
@@ -28,7 +28,7 @@ function difference (...inputs) {
   if (!allIdenticalType) {
     throw new Error('you cannot do subtractions of 2d & 3d shapes, please extrude the 2d shapes or flatten the 3d shapes')
   }
-  const is3d = isCSG(shapes[0])
+  const is3d = isShape3(shapes[0])
   const subtractFn = is3d ? subtract3d : subtract2d
   return shapes.length > 1 ? subtractFn(shapes[0], shapes.slice(1)) : shapes[0]
 }

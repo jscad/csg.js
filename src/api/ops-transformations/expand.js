@@ -1,9 +1,9 @@
-const {isCSG} = require('../../core/utils')
+const {isShape3} = require('../../core/utils/typeChecks')
 const {expandedShellOfCAG, expandedShellOfCCSG} = require('./expandedShell')
 
 const contract = function (shape, radius, resolution) {
   let result
-  if (isCSG(shape)) {
+  if (isShape3(shape)) {
     result = shape.subtract(expandedShellOfCCSG(shape, radius, resolution))
     result = result.reTesselated()
     result.properties = shape.properties // keep original properties
@@ -24,7 +24,7 @@ const contract = function (shape, radius, resolution) {
  */
 const expand = function (shape, radius, resolution) {
   let result
-  if (isCSG(shape)) {
+  if (isShape3(shape)) {
     result = shape.union(expandedShellOfCCSG(shape, radius, resolution))
     result = result.reTesselated()
     result.properties = shape.properties // keep original properties

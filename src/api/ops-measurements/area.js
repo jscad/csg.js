@@ -1,10 +1,10 @@
-const cagMeasurements = require('../../core/utils/cagMeasurements')
-const csgMeasurements = require('../../core/utils/csgMeasurements')
+const measureArea2d = require('../../core/geometry/shape2/measureArea')
+const measureArea3d = require('../../core/geometry/shape3/measureArea')
 
-const {isCAG} = require('../../core/utils')
+const {isShape2} = require('../../core/utils/typeChecks')
 
 const area = input => {
-  return isCAG(input) ? cagMeasurements.area(input) : csgMeasurements.area(input)
+  return isShape2(input) ? measureArea2d(input) : measureArea3d(input)
 }
 
 module.exports = area

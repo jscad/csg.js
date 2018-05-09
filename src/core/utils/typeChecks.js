@@ -4,7 +4,7 @@ const IsFloat = function (n) {
   return (!isNaN(n)) || (n === Infinity) || (n === -Infinity)
 }
 const isBoolean = val => typeof val === 'boolean'
-const isCAG = object => {
+const isShape2 = object => {
   // objects[i] instanceof CAG => NOT RELIABLE
   // 'instanceof' causes huge issues when using objects from
   // two different versions of CSG.js as they are not reckonized as one and the same
@@ -19,7 +19,7 @@ const isCAG = object => {
   return true
 }
 
-const isCSG = object => {
+const isShape3 = object => {
   // objects[i] instanceof CSG => NOT RELIABLE
   // 'instanceof' causes huge issues when using objects from
   // two different versions of CSG.js as they are not reckonized as one and the same
@@ -37,7 +37,7 @@ const areAllShapesTheSameType = shapes => {
   let previousType
   for (let i = 0; i < shapes.length; i++) {
     const shape = shapes[i]
-    let currentType = isCAG(shape) ? '2d' : '3d'
+    let currentType = isShape2(shape) ? '2d' : '3d'
     if (previousType) {
       if (currentType !== previousType) {
         return false
@@ -53,7 +53,7 @@ module.exports = {
   isArray,
   isNumber,
   isBoolean,
-  isCAG,
-  isCSG,
+  isShape2,
+  isShape3,
   areAllShapesTheSameType
 }

@@ -52,7 +52,21 @@
 function create () {
   return {
     vertices: [],
-    shared: undefined,
+    shared: {
+      getTag: function () {
+        let result = this.tag
+        if (!result) {
+          result = getTag()
+          this.tag = result
+        }
+        return result
+      },
+      // get a string uniquely identifying this object
+      getHash: function () {
+        if (!this.color) return 'null'
+        return this.color.join('/')
+      }
+    },
     plane: [0, 0, 0, 1] // FIXME: use plane structure, vec4, plane class?
   }
   /* if (!shared) shared = Polygon3.defaultShared

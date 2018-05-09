@@ -6,7 +6,7 @@ const Polygon = require('../../core/math/Polygon3')
 const {fnNumberSort} = require('../../core/utils')
 const {fromPoints, fromPointsNoCheck} = require('../../core/CAGFactories')
 const {extrudePolygon3} = require('../ops-extrusions/extrusionUtils')
-const {isCAG} = require('../../core/utils')
+const {isShape2} = require('../../core/utils/typeChecks')
 const {unionSub} = require('../ops-booleans/union')
 const canonicalize = require('../../core/utils/canonicalize')
 const retesselate = require('../../core/utils/retesellate')
@@ -312,7 +312,7 @@ const expandedShellOfCCSG = function (_csg, radius, resolution, unionWithThis) {
 }
 
 const expandedShell = (input, radius, resolution, unionWithThis) => {
-  return isCAG ? expandedShellOfCAG(input, radius, resolution) : expandedShellOfCCSG(input, radius, resolution, unionWithThis)
+  return isShape2 ? expandedShellOfCAG(input, radius, resolution) : expandedShellOfCCSG(input, radius, resolution, unionWithThis)
 }
 
 module.exports = {

@@ -13,16 +13,16 @@ test('shape3: create() should return an empty shape3', t => {
 })
 
 test('shape3: fromPolygons() should create a shape3 built using those polygons', t => {
-  const poly3 = require('../poly3')
-  const vertices = [
-    [0, 0, 0],
-    [0, 10, 0],
-    [0, 10, 10]
+  const polygons = [
+    [// a simple triangle
+      [0, 0, 0],
+      [0, 10, 0],
+      [0, 10, 10]
+    ]
   ]
-  const polygons = poly3.fromPoints(vertices)
   const obs = fromPolygons(polygons)
   const exp = { type: 'shape3',
-    polygons: [],
+    polygons,
     properties: {},
     isCanonicalized: true,
     isRetesselated: true }

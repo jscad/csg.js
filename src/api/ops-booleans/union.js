@@ -7,7 +7,7 @@ const {bounds} = require('../../core/utils/csgMeasurements')
 
 const {fromFakeCSG} = require('../../core/CAGFactories')
 const {toCSGWall} = require('../../core/CAGToOther')
-const {isCSG} = require('../../core/utils')
+const {isShape3} = require('../../core/utils/typeChecks')
 
 const toArray = require('../../core/utils/toArray')
 const {flatten, areAllShapesTheSameType} = require('../../core/utils')
@@ -46,7 +46,7 @@ function union (...inputs) {
   if (!allIdenticalType) {
     throw new Error('you cannot do unions of 2d & 3d shapes, please extrude the 2d shapes or flatten the 3d shapes')
   }
-  const is3d = isCSG(shapes[0])
+  const is3d = isShape3(shapes[0])
   const unionFn = is3d ? union3d : union2d
   return shapes.length > 1 ? unionFn(shapes) : shapes[0]
 }

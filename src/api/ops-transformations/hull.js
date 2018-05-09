@@ -1,4 +1,4 @@
-const { isCAG } = require('../../core/utils')
+const { isShape2 } = require('../../core/utils/typeChecks')
 const { fromPoints } = require('../../core/CAGFactories')
 
 /** create a convex hull of the given shapes
@@ -17,7 +17,7 @@ function hull () {
 
   for (let i = 0; i < a.length; i++) {              // extract all points of the CAG in the argument list
     let cag = a[i]
-    if (!isCAG(cag)) {
+    if (!isShape2(cag)) {
       throw new Error('ERROR: hull() accepts only 2D forms / CAG')
     }
     for (let j = 0; j < cag.sides.length; j++) {

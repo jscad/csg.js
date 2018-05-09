@@ -1,4 +1,4 @@
-const {EPS} = require('../constants')
+const {EPS} = require('../../constants')
 const FuzzyCAGFactory = require('../FuzzyFactory2d')
 const fromSides = require('./fromSides')
 

@@ -1,6 +1,6 @@
 const FuzzyFactory = require('./FuzzyFactory')
-const {EPS} = require('./constants')
-const Side = require('./math/Side')
+const {EPS} = require('../constants')
+const Side = require('../math/Side')
 
 const FuzzyCAGFactory = function () {
   this.vertexfactory = new FuzzyFactory(2, EPS)
