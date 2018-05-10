@@ -1,6 +1,11 @@
 
 const toArray = require('../../core/utils/toArray')
-const {flatten} = require('../../core/utils')
+const flatten = require('../../core/utils/flatten')
+
+// refactor this into a type lookup
+const shape2 = require('../../core/geometry/shape2')
+const shape3 = require('../../core/geometry/shape3')
+const {isShape2} = require('../../core/utils/typeChecks')
 
 /** translate an object in 2D/3D space
  * @param {Object} vector - 3D vector to translate the given object(s) by

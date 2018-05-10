@@ -1,5 +1,5 @@
 const { isShape2 } = require('../../core/utils/typeChecks')
-const { fromPoints } = require('../../core/CAGFactories')
+const fromPoints = require('../../core/geometry/shape2/fromPoints')
 
 /** create a convex hull of the given shapes
  * @param {Object(s)|Array} objects either a single or multiple CSG/CAG objects to create a hull around
@@ -16,13 +16,13 @@ function hull () {
   let done = []
 
   for (let i = 0; i < a.length; i++) {              // extract all points of the CAG in the argument list
-    let cag = a[i]
-    if (!isShape2(cag)) {
-      throw new Error('ERROR: hull() accepts only 2D forms / CAG')
+    let shape2 = a[i]
+    if (!isShape2(shape2)) {
+      throw new Error('ERROR: hull() accepts only 2D forms')
     }
-    for (let j = 0; j < cag.sides.length; j++) {
-      let x = cag.sides[j].vertex0.pos.x
-      let y = cag.sides[j].vertex0.pos.y
+    for (let j = 0; j < shape2.sides.length; j++) {
+      let x = shape2.sides[j].vertex0.pos.x
+      let y = shape2.sides[j].vertex0.pos.y
       // avoid some coord to appear multiple times
       if (done['' + x + ',' + y]) {
         continue

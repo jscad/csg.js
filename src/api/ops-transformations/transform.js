@@ -1,10 +1,17 @@
-const Matrix4 = require('../../core/math/Matrix4')
+const mat4 = require('../../core/math/mat4')
 const toArray = require('../../core/utils/toArray')
-const {flatten} = require('../../core/utils')
+const flatten = require('../../core/utils/flatten')
 
-/** apply the given matrix transform to the given objects
+// refactor this into a type lookup
+const shape2 = require('../../core/geometry/shape2')
+const shape3 = require('../../core/geometry/shape3')
+const {isShape2} = require('../../core/utils/typeChecks')
+
+const findFunctionInTypes = require('./typeLookup')
+
+/** apply the given matrix transform to the given shapes
  * @param {Array} matrix - the 4x4 matrix to apply, as a simple 1d array of 16 elements
- * @param {Object(s)|Array} objects either a single or multiple CSG/CAG objects to transform
+ * @param {Object(s)|Array} shapes either a single or multiple CSG/CAG shapes to transform
  * @returns {CSG} new CSG object , transformed
  *
  * @example
@@ -16,11 +23,10 @@ const {flatten} = require('../../core/utils')
  * 0,           0, 0,  1
  * ], sphere())
  */
-function transform (matrix, ...objects) { // v, obj or array
-  const shapes = flatten(toArray(objects))
-  const _objects = (shapes.length >= 1 && shapes[0].length) ? shapes[0] : shapes
+function transform (matrix, ...shapes) { // v, obj or array
+  let _shapes = flatten(toArray(shapes))
+  _shapes = (_shapes.length >= 1 && _shapes[0].length) ? _shapes[0] : _shapes
 
-  let transformationMatrix
   if (!Array.isArray(matrix)) {
     throw new Error('Matrix needs to be an array')
   }
@@ -29,9 +35,10 @@ function transform (matrix, ...objects) { // v, obj or array
       throw new Error('you can only use a flat array of valid, finite numbers (float and integers)')
     }
   })
-  transformationMatrix = new Matrix4(matrix)
-  const results = _objects.map(function (object) {
-    return object.transform(transformationMatrix)
+  const transformMatrix = mat4.fromValues(...matrix)
+  const results = _shapes.map(function (shape) {
+    const transform = findFunctionInTypes(shape, 'transform')
+    return transform(transformMatrix, shape)
   })
   return results.length === 1 ? results[0] : results
 }

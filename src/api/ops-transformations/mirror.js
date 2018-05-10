@@ -1,24 +1,28 @@
 const Plane = require('../../core/math/Plane')
-const Vector3 = require('../../core/math/Vector3')
+const vec4 = require('../../core/math/vec4')
+const vec3 = require('../../core/math/vec3')
 const toArray = require('../../core/utils/toArray')
-const {flatten} = require('../../core/utils')
+const flatten = require('../../core/utils/flatten')
+const shape2 = require('../../core/geometry/shape2')
+const shape3 = require('../../core/geometry/shape3')
+const {isShape2} = require('../../core/utils/typeChecks')
 
 /** mirror an object in 2D/3D space
  * @param {Array} vector - the axes to mirror the object(s) by
- * @param {Object(s)|Array} objects either a single or multiple CSG/CAG objects to mirror
- * @returns {CSG} new CSG object , mirrored
+ * @param {Object(s)|Array} shapes either a single or multiple Shape3/Shape2 shapes to mirror
+ * @returns {Shape3} new Shape3 object , mirrored
  *
  * @example
  * let rotatedSphere = mirror([0.2,15,1], sphere())
  */
-function mirror (vector, ...objects) {
-  const shapes = flatten(toArray(objects))
+function mirror (vector, ...shapes) {
+  let _shapes = flatten(toArray(shapes))
+  _shapes = (shapes.length >= 1 && shapes[0].length) ? shapes[0] : shapes
 
-  const _objects = (shapes.length >= 1 && shapes[0].length) ? shapes[0] : shapes
-  const plane = new Plane(new Vector3(vector[0], vector[1], vector[2]).unit(), 0)
+  const plane = vec4.fromValues(...vec3.normalize(vec3.fromValues(...vector)), 0)
 
-  const results = _objects.map(function (object) {
-    object.mirrored(plane)
+  const results = _shapes.map(function (shape) {
+    return isShape2(shape) ? shape2.mirror(plane, shape) : shape3.mirror(plane, shape)
   })
 
   return results.length === 1 ? results[0] : results

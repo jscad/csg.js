@@ -1,17 +1,23 @@
 const toArray = require('../../core/utils/toArray')
-const {flatten, isArray} = require('../../core/utils')
+const flatten = require('../../core/utils/flatten')
+const pipe = require('../../core/utils/pipe')
+const {isArray} = require('../../core/utils/typeChecks')
+
+const shape2 = require('../../core/geometry/shape2')
+const shape3 = require('../../core/geometry/shape3')
+const {isShape2} = require('../../core/utils/typeChecks')
 
 /** rotate an object in 2D/3D space
  * @param {Float|Array} rotation - either an array or simple number to rotate object(s) by
- * @param {Object(s)|Array} objects either a single or multiple CSG/CAG objects to rotate
- * @returns {CSG} new CSG object , rotated by the given amount
+ * @param {Object(s)|Array} shapes either a single or multiple Shape3/Shape2 shapes to rotate
+ * @returns {Shape3} new Shape3 object , rotated by the given amount
  *
  * @example
  * let rotatedSphere = rotate([0.2,15,1], spheroid())
  * rotate(r,[x,y,z],o) ????
  * rotate([x,y,z],o) ????
  **/
-function rotate (options, ...objects) {
+function rotate (options, ...shapes) {
   const defaults = {
     angle: 1,
     axes: [0, 0, 0]
@@ -20,13 +26,23 @@ function rotate (options, ...objects) {
     options.axes = options
   }
   const {angle, axes} = Object.assign({}, defaults, options)
-  objects = flatten(toArray(objects))
+  shapes = flatten(toArray(shapes))
 
-  const results = objects.map(function (object) {
+  const results = shapes.map(function (shape) {
+    const typeOp = isShape2(shape) ? shape2 : shape3
     if (angle !== 1) {
-      return object.rotate([0, 0, 0], axes, angle)
+      return typeOp.rotate([0, 0, 0], shape) // shape.rotate([0, 0, 0], axes, angle)
     } else {
-      return object.rotateX(axes[0]).rotateY(axes[1]).rotateZ(axes[2])
+      return typeOp.rotate(...axes, shape)
+      return pipe(
+        shape => shape,
+        typeOp.rotateX(axes[0]),
+        typeOp.rotateY(axes[1]),
+        typeOp.rotateZ(axes[2])
+      )
+        // typeOp.rotateZ(axes[2], typeOp.rotateY(axes[1], typeOp.rotateX(axes[0], shape)))
+
+        // shape.rotateX(axes[0]).rotateY(axes[1]).rotateZ(axes[2])
     }
   })
 
