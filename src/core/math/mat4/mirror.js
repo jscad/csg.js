@@ -56,7 +56,7 @@ function mirror (...params) {
  *
  * @param {mat4} out the receiving matrix
  * @param {mat4} a the matrix to mirror
- * @param {vec3} plane the vec4 to mirror the matrix by
+ * @param {vec4} plane the vec4 to mirror the matrix by
  * @returns {mat4} out
  **/
 function mirroring (...params) {
