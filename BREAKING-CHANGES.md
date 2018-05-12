@@ -60,6 +60,12 @@
     - extrusions of 2d shapes with no edges (sides length === 0) will now throw an error
     - solidFromSlices(polygon, options) => solidFromSlices(options, polygon)
 
+  ## Colors
+    - cut up into modules
+    - a few helper functions have been renamed for correctness & clarity
+      * rgb2Html => rgbToHex
+      * hex2Html => hexToRgb
+      * css2Rgb => colorNameToRgb
 
 # Things to fix:
 
