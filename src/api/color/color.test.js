@@ -3,57 +3,65 @@ const cuboid = require('./primitives/cuboid')
 const sphere = require('./primitives/spheroid')
 const square = require('./primitives/rectangle')
 const circle = require('./primitives/circle')
-const { color, rgb2hsl, hsl2rgb, rgb2hsv, hsv2rgb, html2rgb, rgb2html, css2rgb } = require('./color')
 
-test('css2rgb', t => {
-  const c1 = css2rgb('black')
+const color = require('./color')
+const rgbToHsl = require('./rgbToHsl')
+const hslToRgb = require('./hslToRgb')
+const rgbToHsv = require('./rgbToHsv')
+const hsvToRgb = require('./hsvToRgb')
+const hexToRgb = require('./hexToRgb')
+const rgbToHex = require('./rgbToHex')
+const colorNameToRgb = require('./colorNameToRgb')
+
+test('colorNameToRgb', t => {
+  const c1 = colorNameToRgb('black')
   const e1 = [0 / 255, 0 / 255, 0 / 255]
   t.deepEqual(c1, e1)
 
-  const c2 = css2rgb('yellowgreen')
+  const c2 = colorNameToRgb('yellowgreen')
   const e2 = [154 / 255, 205 / 255, 50 / 255]
   t.deepEqual(c2, e2)
 
-  // const c3 = css2rgb('jscad')
+  // const c3 = colorNameToRgb('jscad')
 })
 
-test('rgb2hsl', t => {
-  const obs = rgb2hsl(1, 0, 0)
+test('rgbToHsl', t => {
+  const obs = rgbToHsl(1, 0, 0)
   const expColor = [0, 1, 0.5]
 
   t.deepEqual(obs, expColor)
 })
 
-test('hsl2rgb', t => {
-  const obs = hsl2rgb(0, 1, 0)
+test('hslToRgb', t => {
+  const obs = hslToRgb(0, 1, 0)
   const expColor = [0, 0, 0]
 
   t.deepEqual(obs, expColor)
 })
 
-test('rgb2hsv', t => {
-  const obs = rgb2hsv(1, 0, 0.5)
+test('rgbToHsv', t => {
+  const obs = rgbToHsv(1, 0, 0.5)
   const expColor = [0.9166666666666666, 1, 1]
 
   t.deepEqual(obs, expColor)
 })
 
-test('hsv2rgb', t => {
-  const obs = hsv2rgb(0, 0.2, 0)
+test('hsvToRgb', t => {
+  const obs = hsvToRgb(0, 0.2, 0)
   const expColor = [0, 0, 0]
 
   t.deepEqual(obs, expColor)
 })
 
-test('html2rgb', t => {
-  const obs = html2rgb('#000000')
+test('hexToRgb', t => {
+  const obs = hexToRgb('#000000')
   const expColor = [0, 0, 0]
 
   t.deepEqual(obs, expColor)
 })
 
-test('rgb2html', t => {
-  const html = rgb2html(1, 0, 0.5)
+test('rgbToHex', t => {
+  const html = rgbToHex(1, 0, 0.5)
   const expHtml = '#ff007f'
 
   t.deepEqual(html, expHtml)
