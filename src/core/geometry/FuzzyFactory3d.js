@@ -2,6 +2,11 @@ const {EPS} = require('./constants')
 const Polygon = require('./math/Polygon3')
 const FuzzyFactory = require('./FuzzyFactory')
 
+const polygonSHaredHash = (shared) => {
+  if (!shared.color) return 'null'
+  return shared.color.join('/')
+}
+
 // ////////////////////////////////////
 const FuzzyCSGFactory = function () {
   this.vertexfactory = new FuzzyFactory(3, EPS)
@@ -11,7 +16,7 @@ const FuzzyCSGFactory = function () {
 
 FuzzyCSGFactory.prototype = {
   getPolygonShared: function (sourceshared) {
-    let hash = sourceshared.getHash()
+    let hash = polygonSHaredHash(sourceshared)
     if (hash in this.polygonsharedfactory) {
       return this.polygonsharedfactory[hash]
     } else {

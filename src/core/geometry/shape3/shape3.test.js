@@ -24,7 +24,7 @@ test('shape3: fromPolygons() should create a shape3 built using those polygons',
   const exp = { type: 'shape3',
     polygons,
     properties: {},
-    isCanonicalized: true,
-    isRetesselated: true }
+    isCanonicalized: false,
+    isRetesselated: false }
   t.deepEqual(obs, exp)
 })

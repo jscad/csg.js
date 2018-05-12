@@ -1,6 +1,6 @@
 const {_CSGDEBUG, EPS} = require('./constants')
 const Vertex3 = require('./math/Vertex3')
-const Polygon3 = require('./math/Polygon3')
+const poly3 = require('./poly3')
 
 // Returns object:
 // .type:
@@ -106,10 +106,10 @@ function splitPolygonByPlane (plane, polygon) {
         }
       }
       if (frontvertices.length >= 3) {
-        result.front = new Polygon3(frontvertices, polygon.shared, polygon.plane)
+        result.front = poly3.fromData(frontvertices, polygon.shared, polygon.plane)
       }
       if (backvertices.length >= 3) {
-        result.back = new Polygon3(backvertices, polygon.shared, polygon.plane)
+        result.back = poly3.fromData(backvertices, polygon.shared, polygon.plane)
       }
     }
   }
