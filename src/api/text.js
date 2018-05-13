@@ -6,6 +6,7 @@ const defaultsVectorParams = {
   x: 0,
   y: 0,
   input: '?',
+  align: 'left',
   height: 21, // == old vector_xxx simplex font height
   lineSpacing: 1.4285714285714286, // == 30/21 == old vector_xxx ratio
   letterSpacing: 1,
@@ -109,6 +110,7 @@ function vectorChar (options, char) {
 * @param {Float} [options.height=21] - font size (uppercase height)
 * @param {Float} [options.lineSpacing=1.4] - line spacing expressed as a percentage of font size
 * @param {Float} [options.letterSpacing=1] - extra letter spacing expressed as a percentage of font size
+* @param {String} [options.align='left'] - multi-line text alignement: left, center or right
 * @param {Object} [options.extrude] - {@link rectangular_extrude} options
 * @param {Float} [options.extrude.w=0] - width of the extrusion that will be applied (manually) after the creation of the character
 * @param {Float} [options.extrude.h=0] - extrusion height, if > 0 the function return a CSG object
@@ -126,26 +128,70 @@ function vectorChar (options, char) {
 * let textSegments = vectorText({ y: -80, input: 'OpenJSCAD' })
 */
 function vectorText (options, text) {
-  let { x, y, input, height, extrude, lineSpacing, letterSpacing } = vectorParams(options, text)
+  let {
+    x, y, input, height, align, extrude, lineSpacing, letterSpacing
+  } = vectorParams(options, text)
+  let [ i, il, char, vect, width, diff ] = []
+  let line = { width: 0, segments: [] }
+  let lines = []
   let output = []
-  let x0 = x
-  for (let i = 0; i < input.length; i++) {
-    let char = input[i]
-    let d = vectorChar({ x, y, height, extrude: { w: extrude.w } }, char)
+  let maxWidth = 0
+  let lineStart = x
+  const pushLine = () => {
+    lines.push(line)
+    maxWidth = Math.max(maxWidth, line.width)
+    line = { width: 0, segments: [] }
+  }
+  for (i = 0, il = input.length; i < il; i++) {
+    char = input[i]
+    vect = vectorChar({ x, y, height, extrude: { w: extrude.w } }, char)
     if (char === '\n') {
-      x = x0
-      y -= d.height * lineSpacing
+      x = lineStart
+      y -= vect.height * lineSpacing
+      pushLine()
       continue
     }
-    x += d.width * letterSpacing
+    width = vect.width * letterSpacing
+    line.width += width
+    x += width
     if (char !== ' ') {
-      output = output.concat(d.segments)
+      line.segments = line.segments.concat(vect.segments)
     }
+  }
+  if (line.segments.length) {
+    pushLine()
+  }
+  for (i = 0, il = lines.length; i < il; i++) {
+    line = lines[i]
+    if (maxWidth > line.width) {
+      diff = maxWidth - line.width
+      if (align === 'right') {
+        line = translateLine({ x: diff }, line)
+      } else if (align === 'center') {
+        line = translateLine({ x: diff / 2 }, line)
+      }
+    }
+    output = output.concat(line.segments)
   }
   if (extrude.h) {
     return csgFromSegments(extrude, output)
   }
   return output
+}
+
+function translateLine (options, line) {
+  const { x, y } = Object.assign({ x: 0, y: 0 }, options || {})
+  let segments = line.segments
+  let segment = null
+  let point = null
+  for (let i = 0, il = segments.length; i < il; i++) {
+    segment = segments[i]
+    for (let j = 0, jl = segment.length; j < jl; j++) {
+      point = segment[j]
+      segment[j] = [point[0] + x, point[1] + y]
+    }
+  }
+  return line
 }
 
 /** Construct a {@link VectorCharObject} from a ascii character whose code is between 31 and 127,
