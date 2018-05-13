@@ -23,9 +23,9 @@ function csgFromSegments (options, segments) {
     return rectangular_extrude(segments, options)
   }
   let output = []
-  segments.forEach(polyline => output.push(
-    rectangular_extrude(polyline, options)
-  ))
+  for (let i = 0, il = segments.length; i < il; i++) {
+    output.push(rectangular_extrude(segments[i], options))
+  }
   return union(output)
 }
 
