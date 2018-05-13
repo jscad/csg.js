@@ -41,6 +41,22 @@ function vectorParams (options, input) {
   return params
 }
 
+// translate text line
+function translateLine (options, line) {
+  const { x, y } = Object.assign({ x: 0, y: 0 }, options || {})
+  let segments = line.segments
+  let segment = null
+  let point = null
+  for (let i = 0, il = segments.length; i < il; i++) {
+    segment = segments[i]
+    for (let j = 0, jl = segment.length; j < jl; j++) {
+      point = segment[j]
+      segment[j] = [point[0] + x, point[1] + y]
+    }
+  }
+  return line
+}
+
 /** Represents a character as segments
 * @typedef {Object} VectorCharObject
 * @property {Float} width - character width
@@ -177,21 +193,6 @@ function vectorText (options, text) {
     return csgFromSegments(extrude, output)
   }
   return output
-}
-
-function translateLine (options, line) {
-  const { x, y } = Object.assign({ x: 0, y: 0 }, options || {})
-  let segments = line.segments
-  let segment = null
-  let point = null
-  for (let i = 0, il = segments.length; i < il; i++) {
-    segment = segments[i]
-    for (let j = 0, jl = segment.length; j < jl; j++) {
-      point = segment[j]
-      segment[j] = [point[0] + x, point[1] + y]
-    }
-  }
-  return line
 }
 
 /** Construct a {@link VectorCharObject} from a ascii character whose code is between 31 and 127,
