@@ -57,6 +57,17 @@ better for future code splitting etc)
     }
     ```
 
+#### Connectors
+
+  ##### purpose
+
+  'mating points' to make attaching parts together in preset places easier
+
+  ##### implementation
+
+  much like properties, connectors can now be considered a special type of data that is simply added as a child of a shape/part, with some additional orientation information
+    thus they get transformed like any item in the scene graph in a normal manner (local vs parent transforms etc)
+
 ### 2D shapes
 
 * descriptive : data describes each path segment/ curve that makes up a complex 2D shape
@@ -73,7 +84,7 @@ better for future code splitting etc)
     const myshape2 = {
       name:'superShapy!',
       transform: [0, 0, 0, 0 , 1, 1, 1 ,0...]
-      segments: [
+      segments: [ // for path-segments
         {
           points: [
             [0,0], [10, 100]// start at [0,0], go to [10, 100]
@@ -85,6 +96,13 @@ better for future code splitting etc)
             [10,100, 20, 17], [0, 0, 2, 36]// start at [10,100], go to [0, 0], by way of a bezier curve
           ],
           type:'bezier'
+        },
+        {
+          origin: [0,0], // ???? not sure, 
+          radius: 20,
+          start : 10,
+          end: 90,
+          type:'arc'
         }
       ]
     }
