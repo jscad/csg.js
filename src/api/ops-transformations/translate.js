@@ -2,10 +2,7 @@
 const toArray = require('../../core/utils/toArray')
 const flatten = require('../../core/utils/flatten')
 
-// refactor this into a type lookup
-const shape2 = require('../../core/geometry/shape2')
-const shape3 = require('../../core/geometry/shape3')
-const {isShape2} = require('../../core/utils/typeChecks')
+const findFunctionInTypes = require('./typeLookup')
 
 /** translate an object in 2D/3D space
  * @param {Object} vector - 3D vector to translate the given object(s) by
@@ -15,12 +12,13 @@ const {isShape2} = require('../../core/utils/typeChecks')
  * @example
  * let movedSphere = translate([10,2,0], sphere())
  */
-function translate (vector, ...objects) {      // v, obj or array
-  const shapes = flatten(toArray(objects))
-  const _objects = (shapes.length >= 1 && shapes[0].length) ? shapes[0] : shapes
+function translate (vector, ...shapes) {      // v, obj or array
+  let _shapes = flatten(toArray(shapes))
+  _shapes = (_shapes.length >= 1 && _shapes[0].length) ? _shapes[0] : _shapes
 
-  const results = _objects.map(function (object) {
-    return object.translate(vector)
+  const results = _shapes.map(function (shape) {
+    const specificTranslate = findFunctionInTypes(shape, 'translate')
+    return specificTranslate(vector, shape)
   })
   return results.length === 1 ? results[0] : results
 }

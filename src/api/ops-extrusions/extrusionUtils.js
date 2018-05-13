@@ -32,15 +32,15 @@ const extrude = function (cag, options) {
   if (twistangle === 0 || twiststeps < 1) {
     twiststeps = 1
   }
-  let normalVector = Vector3D.Create(0, 1, 0)
+  let normalVector = vec3.fromValues(0, 1, 0)
   let polygons = []
   // bottom and top
-  polygons = polygons.concat(_toPlanePolygons(cag, {
+  polygons = polygons.concat(shape2.toPlanePolygons(cag, {
     translation: [0, 0, 0],
     normalVector: normalVector,
     flipped: !(offsetVector.z < 0)}
   ))
-  polygons = polygons.concat(_toPlanePolygons(cag, {
+  polygons = polygons.concat(shape2.toPlanePolygons(cag, {
     translation: offsetVector,
     normalVector: normalVector.rotateZ(twistangle),
     flipped: offsetVector.z < 0}))
@@ -50,7 +50,7 @@ const extrude = function (cag, options) {
               normalVector.rotateZ(i * twistangle / twiststeps))
     let c2 = new Connector(offsetVector.times((i + 1) / twiststeps), [0, 0, offsetVector.z],
               normalVector.rotateZ((i + 1) * twistangle / twiststeps))
-    polygons = polygons.concat(_toWallPolygons(cag, {toConnector1: c1, toConnector2: c2}))
+    polygons = polygons.concat(shape2.toWallPolygons(cag, {toConnector1: c1, toConnector2: c2}))
   }
 
   return fromPolygons(polygons)

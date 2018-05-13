@@ -5,7 +5,7 @@ module.exports = fromValues
  *
  * @param {Number} x X component
  * @param {Number} y Y component
- * @returns {vec3} a new 3D vector
+ * @returns {vec3} a new 2D vector
  */
 function fromValues (x, y) {
   let out = new Float32Array(2)

@@ -2,11 +2,6 @@ const mat4 = require('../../core/math/mat4')
 const toArray = require('../../core/utils/toArray')
 const flatten = require('../../core/utils/flatten')
 
-// refactor this into a type lookup
-const shape2 = require('../../core/geometry/shape2')
-const shape3 = require('../../core/geometry/shape3')
-const {isShape2} = require('../../core/utils/typeChecks')
-
 const findFunctionInTypes = require('./typeLookup')
 
 /** apply the given matrix transform to the given shapes
@@ -37,8 +32,8 @@ function transform (matrix, ...shapes) { // v, obj or array
   })
   const transformMatrix = mat4.fromValues(...matrix)
   const results = _shapes.map(function (shape) {
-    const transform = findFunctionInTypes(shape, 'transform')
-    return transform(transformMatrix, shape)
+    const specificTransform = findFunctionInTypes(shape, 'transform')
+    return specificTransform(transformMatrix, shape)
   })
   return results.length === 1 ? results[0] : results
 }

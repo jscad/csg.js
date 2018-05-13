@@ -1,11 +1,9 @@
-const Plane = require('../../core/math/Plane')
 const vec4 = require('../../core/math/vec4')
 const vec3 = require('../../core/math/vec3')
 const toArray = require('../../core/utils/toArray')
 const flatten = require('../../core/utils/flatten')
-const shape2 = require('../../core/geometry/shape2')
-const shape3 = require('../../core/geometry/shape3')
-const {isShape2} = require('../../core/utils/typeChecks')
+
+const findFunctionInTypes = require('./typeLookup')
 
 /** mirror an object in 2D/3D space
  * @param {Array} vector - the axes to mirror the object(s) by
@@ -22,7 +20,8 @@ function mirror (vector, ...shapes) {
   const plane = vec4.fromValues(...vec3.normalize(vec3.fromValues(...vector)), 0)
 
   const results = _shapes.map(function (shape) {
-    return isShape2(shape) ? shape2.mirror(plane, shape) : shape3.mirror(plane, shape)
+    const specificMirror = findFunctionInTypes(shape, 'scale')
+    return specificMirror(plane, shape)
   })
 
   return results.length === 1 ? results[0] : results
