@@ -1,4 +1,5 @@
-const defaultFont = require('../fonts/single-line/hershey/simplex.js')
+//const defaultFont = require('../fonts/single-line/hershey/simplex.js')
+const defaultFont = require('../fonts/single-line/CamBam/Stick_9.js')
 const { rectangular_extrude } = require('./ops-extrusions')
 const { union } = require('./ops-booleans')
 
@@ -89,7 +90,7 @@ function translateLine (options, line) {
 function vectorChar (options, char) {
   let { x, y, input, height, extrude } = vectorParams(options, char)
   let code = input.charCodeAt(0)
-  if (!code || code < 32 || code > 126) {
+  if (!code || !defaultFont[code]) {
     code = 63 // 63 => ?
   }
   let glyph = [].concat(defaultFont[code])
