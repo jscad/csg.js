@@ -66,6 +66,10 @@
       * rgb2Html => rgbToHex
       * hex2Html => hexToRgb
       * css2Rgb => colorNameToRgb
+  
+  ## Properties
+    - there is no 'properties' class/ object anymore
+    - it is a simple array attribute on parts/shapes
 
 # Things to fix:
 

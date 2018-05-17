@@ -30,6 +30,31 @@ better for future code splitting etc)
   If you want for example to create a system to show assembled/ disassembled versions of a design, you can now just apply a different transformation matrix, and leave the bulk of the work for displaying things in the right place to the scenegraph/GPU which is considerably faster than changing every vertex every frame
   * any booleans/ operations that alter the geometry itself (vertices), should not be conflated with more generic transforms
 
+  transforms do not have to be specified manually every time:
+  * they default to a 'unit' matrix
+  * ie position: [0, 0 ,0] , rotation [0,0,0], scale [1, 1, 1]
+
+  ie (pseudo code)
+
+  ```javascript
+  const myPart = {
+    name:'foo'
+  }
+  ```
+  
+  is the same as
+
+  ```javascript
+    const myPart = {
+      transform : [1,0,0,0,1,0,0,0,0,1,0,0,0,0,1]
+      name:'foo'
+    }
+  ```
+  
+  **TODO**  
+  * use quaternions or not ?
+  * define position, rotation, scale individually, or just transformation matrix/quaternion, with setters/getters
+
 #### properties
 
   ##### purpose
@@ -56,6 +81,20 @@ better for future code splitting etc)
       ]
     }
     ```
+    we could also keep properties as a special, explicit field:
+
+    ```javascript
+    const myPart = {
+      transform: [0, 0, 0, 0 , 1, 1, 1 ,0...] // transform relative to parent
+      properties: [
+        {
+          type:'vec3',
+          name: 'somecoolstuff',
+          transform: [0, 0, 0, 0 , 1, 1, 1 ,0...] // transform relative to parent
+        }
+      ]
+    }
+    ```
 
 #### Connectors
 
@@ -65,8 +104,24 @@ better for future code splitting etc)
 
   ##### implementation
 
-  much like properties, connectors can now be considered a special type of data that is simply added as a child of a shape/part, with some additional orientation information
+  much like properties, connectors can just be considered a special type of data that is simply added as a child of a shape/part, with some additional orientation information
     thus they get transformed like any item in the scene graph in a normal manner (local vs parent transforms etc)
+
+
+    ```javascript
+    const myPart = {
+      transform: [0, 0, 0, 0 , 1, 1, 1 ,0...] // transform relative to parent
+      properties: [
+        {
+          type:'connector',
+          name: 'somecoolstuff',
+          point: [0, 10, 10],// position relative to parent
+          axis: [0, 1, 0],
+          normal: [1, 0, 0],
+        }
+      ]
+    }
+    ```
 
 ### 2D shapes
 
@@ -74,7 +129,7 @@ better for future code splitting etc)
 * seperation of concerns : data vs internal representation
   * we do not recompute the polygons everytime a different line segment or bezier curve is added
   * we describe : [point1, point2, handle1, handle2]
-* only distinction between a set of paths and a shape, is whether or not it is closed
+* only distinction between a set of paths and a shape, is whether or not it is closed ?
 
 #### implementation
 
@@ -107,3 +162,46 @@ better for future code splitting etc)
       ]
     }
     ```
+
+### Parts
+
+part : {
+  geometry : // or other name ???
+    any nested tree of shapes & extrusions ?
+}
+
+
+### Various
+
+- More advanced features : 
+ - holes with countersinks or special shapes ? 
+  * could be implemented as a compound operation (combine multiple extrusions, unions etc)
+  * this is an example of purely **geometrical** construct: makes no sense as part of a ...part
+  * would not be a part of core ?
+- patterns: put objects in positions based on a mathematical formula
+   * just a function really ? some presets perhaps ?
+
+- more heavy reliances on 2d shapes that get extruded ?
+  * cylinders
+  * cubes
+  * torii 
+
+
+- parts vs assemblies:
+  looking at various 'ui based' cad systems, things are a bit different for us:
+  * parts: functions
+  * assemblies, instances of the various parts, structured together ?
+  * returning arrays: returns all the assemblies that you can have ?
+
+- connectors:
+  * should be easier to define
+  * should be visualized
+    * points, axis, normals should be easilly viewed & understood
+  * should be offsetable
+
+- visuals that NEED to be added
+ * connectors (see above)
+ * perhaps we can visualize the 2D bases of extruded shapes (ie the circles 
+ at the top/ bottom of cylinders )
+ * annotations (not sure)
+  * dimensions (not right now, but could be usefull, they are a special type of annotations)
