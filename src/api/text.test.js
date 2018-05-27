@@ -50,8 +50,8 @@ test('vectorChar (char)', t => {
   t.deepEqual(obs.segments, expSegments)
 })
 
-test('vectorChar ({ x, y }, char)', t => {
-  const obs = vectorChar({ x: 10, y: 20 }, 'H')
+test('vectorChar ({ xOffset, yOffset }, char)', t => {
+  const obs = vectorChar({ xOffset: 10, yOffset: 20 }, 'H')
   const expSegments = [
     [[14,41],[14,20]],
     [[28,41],[28,20]],
@@ -108,8 +108,8 @@ test('vectorText (multi-line-text)', t => {
   t.deepEqual(obs, expSegments)
 })
 
-test('vectorText ({ y }, text)', t => {
-  const obs = vectorText({ y: 20 }, 'y20')
+test('vectorText ({ yOffset }, text)', t => {
+  const obs = vectorText({ yOffset: 20 }, 'y20')
   const expSegments = [
     [[2,34],[8,20]],
     [[14,34],[8,20],[6,16],[4,14],[2,13],[1,13]],
@@ -120,8 +120,8 @@ test('vectorText ({ y }, text)', t => {
   t.deepEqual(obs, expSegments)
 })
 
-test('vectorText ({ x, input, letterSpacing })', t => {
-  const obs = vectorText({ x: -10, input: 'space', letterSpacing: 1.5 })
+test('vectorText ({ xOffset, input, letterSpacing })', t => {
+  const obs = vectorText({ xOffset: -10, input: 'space', letterSpacing: 1.5 })
   const expSegments = [
     [[4,11],[3,13],[0,14],[-3,14],[-6,13],[-7,11],[-6,9],[-4,8],[1,7],[3,6],[4,4],[4,3],[3,1],[0,0],[-3,0],[-6,1],[-7,3]],
     [[19.5,14],[19.5,-7]],

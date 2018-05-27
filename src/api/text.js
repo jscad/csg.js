@@ -2,8 +2,8 @@ const defaultFont = require('../fonts/single-line/hershey/simplex.js')
 const { union } = require('./ops-booleans')
 
 const defaultsVectorParams = {
-  x: 0,
-  y: 0,
+  xOffset: 0,
+  yOffset: 0,
   input: '?',
   align: 'left',
   height: 21, // == old vector_xxx simplex font height
@@ -49,8 +49,8 @@ function translateLine (options, line) {
 /** Construct a {@link VectorCharObject} from a ascii character whose code is between 31 and 127,
 * if the character is not supported it is replaced by a question mark.
 * @param {Object|String} [options] - options for construction or ascii character
-* @param {Float} [options.x=0] - x offset
-* @param {Float} [options.y=0] - y offset
+* @param {Float} [options.xOffset=0] - x offset
+* @param {Float} [options.yOffset=0] - y offset
 * @param {Float} [options.height=21] - font size (uppercase height)
 * @param {Float} [options.extrudeOffset=0] - width of the extrusion that will be applied (manually) after the creation of the character
 * @param {String} [options.input='?'] - ascii character (ignored/overwrited if provided as seconds parameter)
@@ -62,12 +62,14 @@ function translateLine (options, line) {
 * or
 * let vectorCharObject = vectorChar('A')
 * or
-* let vectorCharObject = vectorChar({ x: 57 }, 'C')
+* let vectorCharObject = vectorChar({ xOffset: 57 }, 'C')
 * or
-* let vectorCharObject = vectorChar({ x: 78, input: '!' })
+* let vectorCharObject = vectorChar({ xOffset: 78, input: '!' })
 */
 function vectorChar (options, char) {
-  let { x, y, input, height, extrudeOffset } = vectorParams(options, char)
+  let {
+    xOffset, yOffset, input, height, extrudeOffset
+  } = vectorParams(options, char)
   let code = input.charCodeAt(0)
   if (!code || !defaultFont[code]) {
     code = 63 // 63 => ?
@@ -79,8 +81,8 @@ function vectorChar (options, char) {
   let segments = []
   let polyline = []
   for (let i = 0, il = glyph.length; i < il; i += 2) {
-    gx = ratio * glyph[i] + x
-    gy = ratio * glyph[i + 1] + y + extrudeYOffset
+    gx = ratio * glyph[i] + xOffset
+    gy = ratio * glyph[i + 1] + yOffset + extrudeYOffset
     if (glyph[i] !== undefined) {
       polyline.push([ gx, gy ])
       continue
@@ -98,8 +100,8 @@ function vectorChar (options, char) {
 /** Construct an array of character segments from a ascii string whose characters code is between 31 and 127,
 * if one character is not supported it is replaced by a question mark.
 * @param {Object|String} [options] - options for construction or ascii string
-* @param {Float} [options.x=0] - x offset
-* @param {Float} [options.y=0] - y offset
+* @param {Float} [options.xOffset=0] - x offset
+* @param {Float} [options.yOffset=0] - y offset
 * @param {Float} [options.height=21] - font size (uppercase height)
 * @param {Float} [options.lineSpacing=1.4] - line spacing expressed as a percentage of font size
 * @param {Float} [options.letterSpacing=1] - extra letter spacing expressed as a percentage of font size
@@ -114,14 +116,15 @@ function vectorChar (options, char) {
 * or
 * let textSegments = vectorText('OpenJSCAD')
 * or
-* let textSegments = vectorText({ y: -50 }, 'OpenJSCAD')
+* let textSegments = vectorText({ yOffset: -50 }, 'OpenJSCAD')
 * or
-* let textSegments = vectorText({ y: -80, input: 'OpenJSCAD' })
+* let textSegments = vectorText({ yOffset: -80, input: 'OpenJSCAD' })
 */
 function vectorText (options, text) {
   let {
-    x, y, input, height, align, extrudeOffset, lineSpacing, letterSpacing
+    xOffset, yOffset, input, height, align, extrudeOffset, lineSpacing, letterSpacing
   } = vectorParams(options, text)
+  let [ x, y ] = [ xOffset, yOffset ]
   let [ i, il, char, vect, width, diff ] = []
   let line = { width: 0, segments: [] }
   let lines = []
@@ -135,7 +138,7 @@ function vectorText (options, text) {
   }
   for (i = 0, il = input.length; i < il; i++) {
     char = input[i]
-    vect = vectorChar({ x, y, height, extrudeOffset }, char)
+    vect = vectorChar({ xOffset: x, yOffset: y, height, extrudeOffset }, char)
     if (char === '\n') {
       x = lineStart
       y -= vect.height * lineSpacing
@@ -179,7 +182,7 @@ function vectorText (options, text) {
 * let vectorCharObject = vector_char(36, 0, 'B')
 */
 function vector_char (x, y, char) {
-  return vectorChar({ x, y }, char)
+  return vectorChar({ xOffset: x, yOffset: y }, char)
 }
 
 /** Construct an array of character segments from a ascii string whose characters code is between 31 and 127,
@@ -194,7 +197,7 @@ function vector_char (x, y, char) {
 * let textSegments = vector_text(0, -20, 'OpenJSCAD')
 */
 function vector_text (x, y, text) {
-  return vectorText({ x, y }, text)
+  return vectorText({ xOffset: x, yOffset: y }, text)
 }
 
 module.exports = {
