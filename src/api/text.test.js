@@ -76,21 +76,6 @@ test('vectorChar ({ height }, char)', t => {
   t.deepEqual(obs.segments, expSegments)
 })
 
-// FIXME  ! circular dependencies (only in test)
-// location: core\math\Path2.js:197
-// message : CAG.fromSides is not a function
-test.failing('vectorChar ({ height, extrude }, char)', t => {
-  const obs = vectorChar({ height: 10, extrude: { w: 2, h: 2 } }, 'H')
-
-  t.deepEqual(obs.polygons.length, 34)
-})
-
-test('vectorText (defaults)', t => {
-  const obs = vectorText()
-
-  t.deepEqual(obs, questionMarkSegments)
-})
-
 test('vectorText (text)', t => {
   const obs = vectorText('OpenJSCAD')
   const expSegments = openTextSegments.concat([
@@ -150,8 +135,8 @@ test('vectorText ({ x, input, letterSpacing })', t => {
   t.deepEqual(obs, expSegments)
 })
 
-test('vectorText ({ height, extrude: { w } }, text)', t => {
-  const obs = vectorText({ height: 12, extrude: { w: 2 } }, 'size')
+test('vectorText ({ height, extrudeOffset }, text)', t => {
+  const obs = vectorText({ height: 12, extrudeOffset: 2 }, 'size')
   const expSegments = [
     [[6.666666666666666,6.238095238095238],[6.19047619047619,7.19047619047619],[4.761904761904762,7.666666666666666],[3.333333333333333,7.666666666666666],[1.9047619047619047,7.19047619047619],[1.4285714285714284,6.238095238095238],[1.9047619047619047,5.285714285714286],[2.8571428571428568,4.809523809523809],[5.238095238095238,4.333333333333333],[6.19047619047619,3.8571428571428568],[6.666666666666666,2.9047619047619047],[6.666666666666666,2.4285714285714284],[6.19047619047619,1.4761904761904763],[4.761904761904762,1],[3.333333333333333,1],[1.9047619047619047,1.4761904761904763],[1.4285714285714284,2.4285714285714284]],
     [[9.523809523809524,11],[10,10.523809523809524],[10.476190476190476,11],[10,11.476190476190476],[9.523809523809524,11]],
@@ -201,13 +186,4 @@ test('vectorText ({ align: right }, text)', t => {
   ]
 
   t.deepEqual(obs, expSegments)
-})
-
-// FIXME ! circular dependencies (only in test)
-// location: core\math\Path2.js:197
-// message : CAG.fromSides is not a function
-test.failing('vectorText ({ height, extrude: { w, h } })', t => {
-  const obs = vectorText({ height: 12, extrude: { w: 2, h: 2 } }, 'extrude')
-
-  t.deepEqual(obs.polygons.length, 438)
 })

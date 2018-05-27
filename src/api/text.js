@@ -1,6 +1,4 @@
-//const defaultFont = require('../fonts/single-line/hershey/simplex.js')
-const defaultFont = require('../fonts/single-line/CamBam/Stick_9.js')
-const { rectangular_extrude } = require('./ops-extrusions')
+const defaultFont = require('../fonts/single-line/hershey/simplex.js')
 const { union } = require('./ops-booleans')
 
 const defaultsVectorParams = {
@@ -11,23 +9,7 @@ const defaultsVectorParams = {
   height: 21, // == old vector_xxx simplex font height
   lineSpacing: 1.4285714285714286, // == 30/21 == old vector_xxx ratio
   letterSpacing: 1,
-  extrude: { w: 0, h: 0 }
-}
-
-/** Construct a CSG from an (nested) array of segments
-* @param {Object} options - options passed to {@link rectangular_extrude}
-* @param {Array} segments - [[x, y], ...] or [[[x, y], ...], ...]
-* @returns {CSG}
-*/
-function csgFromSegments (options, segments) {
-  if (!Array.isArray(segments[0][0])) {
-    return rectangular_extrude(segments, options)
-  }
-  let output = []
-  for (let i = 0, il = segments.length; i < il; i++) {
-    output.push(rectangular_extrude(segments[i], options))
-  }
-  return union(output)
+  extrudeOffset: 0
 }
 
 // vectorsXXX parameters handler
@@ -37,7 +19,6 @@ function vectorParams (options, input) {
   }
   options = options || {}
   let params = Object.assign({}, defaultsVectorParams, options)
-  params.extrude = Object.assign({}, defaultsVectorParams.extrude, options.extrude || {})
   params.input = input || params.input
   return params
 }
@@ -71,12 +52,10 @@ function translateLine (options, line) {
 * @param {Float} [options.x=0] - x offset
 * @param {Float} [options.y=0] - y offset
 * @param {Float} [options.height=21] - font size (uppercase height)
-* @param {Object} [options.extrude] - {@link rectangular_extrude} options
-* @param {Float} [options.extrude.w=0] - width of the extrusion that will be applied (manually) after the creation of the character
-* @param {Float} [options.extrude.h=0] - extrusion height, if > 0 the function return a CSG object
+* @param {Float} [options.extrudeOffset=0] - width of the extrusion that will be applied (manually) after the creation of the character
 * @param {String} [options.input='?'] - ascii character (ignored/overwrited if provided as seconds parameter)
 * @param {String} [char='?'] - ascii character
-* @returns {VectorCharObject|CSG} vectorCharObject or an CSG object if `options.extrude.h` is > 0
+* @returns {VectorCharObject}
 *
 * @example
 * let vectorCharObject = vectorChar()
@@ -88,20 +67,20 @@ function translateLine (options, line) {
 * let vectorCharObject = vectorChar({ x: 78, input: '!' })
 */
 function vectorChar (options, char) {
-  let { x, y, input, height, extrude } = vectorParams(options, char)
+  let { x, y, input, height, extrudeOffset } = vectorParams(options, char)
   let code = input.charCodeAt(0)
   if (!code || !defaultFont[code]) {
     code = 63 // 63 => ?
   }
   let glyph = [].concat(defaultFont[code])
-  let ratio = (height - extrude.w) / defaultFont.height
-  let extrudeOffset = (extrude.w / 2)
+  let ratio = (height - extrudeOffset) / defaultFont.height
+  let extrudeYOffset = (extrudeOffset / 2)
   let width = glyph.shift() * ratio
   let segments = []
   let polyline = []
   for (let i = 0, il = glyph.length; i < il; i += 2) {
     gx = ratio * glyph[i] + x
-    gy = ratio * glyph[i + 1] + y + extrudeOffset
+    gy = ratio * glyph[i + 1] + y + extrudeYOffset
     if (glyph[i] !== undefined) {
       polyline.push([ gx, gy ])
       continue
@@ -112,9 +91,6 @@ function vectorChar (options, char) {
   }
   if (polyline.length) {
     segments.push(polyline)
-  }
-  if (extrude.h) {
-    return csgFromSegments(extrude, segments)
   }
   return { width, height, segments }
 }
@@ -128,12 +104,10 @@ function vectorChar (options, char) {
 * @param {Float} [options.lineSpacing=1.4] - line spacing expressed as a percentage of font size
 * @param {Float} [options.letterSpacing=1] - extra letter spacing expressed as a percentage of font size
 * @param {String} [options.align='left'] - multi-line text alignement: left, center or right
-* @param {Object} [options.extrude] - {@link rectangular_extrude} options
-* @param {Float} [options.extrude.w=0] - width of the extrusion that will be applied (manually) after the creation of the character
-* @param {Float} [options.extrude.h=0] - extrusion height, if > 0 the function return a CSG object
+* @param {Float} [options.extrudeOffset=0] - width of the extrusion that will be applied (manually) after the creation of the character
 * @param {String} [options.input='?'] - ascii string (ignored/overwrited if provided as seconds parameter)
 * @param {String} [text='?'] - ascii string
-* @returns {Array|CSG} characters segments [[[x, y], ...], ...] or an CSG object if `options.extrude.h` is > 0
+* @returns {Array} characters segments [[[x, y], ...], ...]
 *
 * @example
 * let textSegments = vectorText()
@@ -146,7 +120,7 @@ function vectorChar (options, char) {
 */
 function vectorText (options, text) {
   let {
-    x, y, input, height, align, extrude, lineSpacing, letterSpacing
+    x, y, input, height, align, extrudeOffset, lineSpacing, letterSpacing
   } = vectorParams(options, text)
   let [ i, il, char, vect, width, diff ] = []
   let line = { width: 0, segments: [] }
@@ -161,7 +135,7 @@ function vectorText (options, text) {
   }
   for (i = 0, il = input.length; i < il; i++) {
     char = input[i]
-    vect = vectorChar({ x, y, height, extrude: { w: extrude.w } }, char)
+    vect = vectorChar({ x, y, height, extrudeOffset }, char)
     if (char === '\n') {
       x = lineStart
       y -= vect.height * lineSpacing
@@ -189,9 +163,6 @@ function vectorText (options, text) {
       }
     }
     output = output.concat(line.segments)
-  }
-  if (extrude.h) {
-    return csgFromSegments(extrude, output)
   }
   return output
 }
