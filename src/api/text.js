@@ -6,8 +6,8 @@ const defaultsVectorParams = {
   yOffset: 0,
   input: '?',
   align: 'left',
-  height: 21, // == old vector_xxx simplex font height
-  lineSpacing: 1.4285714285714286, // == 30/21 == old vector_xxx ratio
+  height: 14, // == old vector_xxx simplex font height
+  lineSpacing: 2.142857142857143, // == 30/14 == old vector_xxx ratio
   letterSpacing: 1,
   extrudeOffset: 0
 }
