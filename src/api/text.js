@@ -6,6 +6,7 @@ const defaultsVectorParams = {
   yOffset: 0,
   input: '?',
   align: 'left',
+  font: defaultFont,
   height: 14, // == old vector_xxx simplex font height
   lineSpacing: 2.142857142857143, // == 30/14 == old vector_xxx ratio
   letterSpacing: 1,
@@ -68,14 +69,14 @@ function translateLine (options, line) {
 */
 function vectorChar (options, char) {
   let {
-    xOffset, yOffset, input, height, extrudeOffset
+    xOffset, yOffset, input, font, height, extrudeOffset
   } = vectorParams(options, char)
   let code = input.charCodeAt(0)
-  if (!code || !defaultFont[code]) {
+  if (!code || !font[code]) {
     code = 63 // 63 => ?
   }
-  let glyph = [].concat(defaultFont[code])
-  let ratio = (height - extrudeOffset) / defaultFont.height
+  let glyph = [].concat(font[code])
+  let ratio = (height - extrudeOffset) / font.height
   let extrudeYOffset = (extrudeOffset / 2)
   let width = glyph.shift() * ratio
   let segments = []
@@ -122,7 +123,7 @@ function vectorChar (options, char) {
 */
 function vectorText (options, text) {
   let {
-    xOffset, yOffset, input, height, align, extrudeOffset, lineSpacing, letterSpacing
+    xOffset, yOffset, input, font, height, align, extrudeOffset, lineSpacing, letterSpacing
   } = vectorParams(options, text)
   let [ x, y ] = [ xOffset, yOffset ]
   let [ i, il, char, vect, width, diff ] = []
@@ -138,7 +139,7 @@ function vectorText (options, text) {
   }
   for (i = 0, il = input.length; i < il; i++) {
     char = input[i]
-    vect = vectorChar({ xOffset: x, yOffset: y, height, extrudeOffset }, char)
+    vect = vectorChar({ xOffset: x, yOffset: y, font, height, extrudeOffset }, char)
     if (char === '\n') {
       x = lineStart
       y -= vect.height * lineSpacing
