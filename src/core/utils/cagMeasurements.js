@@ -1,8 +1,8 @@
 const Vector2D = require('../math/Vector2')
 
-// see http://local.wasp.uwa.edu.au/~pbourke/geometry/polyarea/ :
-// Area of the polygon. For a counter clockwise rotating polygon the area is positive, otherwise negative
-// Note(bebbi): this looks wrong. See polygon getArea()
+// Calculate the area of the give CAG (a closed convex 2D polygon)
+// For a counter clockwise rotating polygon (about Z) the area is positive, otherwise negative.
+// See http://paulbourke.net/geometry/polygonmesh/
 const area = function (cag) {
   let polygonArea = 0
   cag.sides.map(function (side) {
