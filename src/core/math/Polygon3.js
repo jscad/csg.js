@@ -1,6 +1,7 @@
 const Vector3D = require('./Vector3')
 const Vertex = require('./Vertex3')
 const Matrix4x4 = require('./Matrix4')
+const measureArea = require('./measureArea')
 const {_CSGDEBUG, EPS, getTag, areaEPS} = require('../constants')
 
 /** Class Polygon
@@ -75,15 +76,8 @@ Polygon.prototype = {
     return signedVolume
   },
 
-    // Note: could calculate vectors only once to speed up
   getArea: function () {
-    let polygonArea = 0
-    for (let i = 0; i < this.vertices.length - 2; i++) {
-      polygonArea += this.vertices[i + 1].pos.minus(this.vertices[0].pos)
-                .cross(this.vertices[i + 2].pos.minus(this.vertices[i + 1].pos)).length()
-    }
-    polygonArea /= 2
-    return polygonArea
+    return measureArea(this)
   },
 
     // accepts array of features to calculate
