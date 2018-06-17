@@ -1,6 +1,7 @@
 import test from 'ava'
 import {CSG} from '../csg'
 import {CAG} from '../csg'
+import {nearlyEquals} from './helpers/asserts'
 
 function planeEquals (t, observed, expected) {
   t.is(observed.w,expected.w)
@@ -271,5 +272,62 @@ test('CSG.Polygon.Shared construction', t => {
   t.is(s4.tag,4)
   t.is(s4.getTag(),4)
 
+})
+
+test('CSG.Polygon3 measurements', t => {
+  const Vertex3 = CSG.Vertex
+  const Vector3 = CSG.Vector3D
+  const Polygon = CSG.Polygon
+
+// V-shape
+  const points = [
+    [0, 3, 0],
+    [0, 5, 0],
+    [0, 8, 2],
+    [0, 6, 5],
+    [0, 8, 6],
+    [0, 5, 6],
+    [0, 5, 2],
+    [0, 2, 5],
+    [0, 1, 3],
+    [0, 3, 3],
+  ]
+  const vectors = [
+    new Vector3(points[0]),
+    new Vector3(points[1]),
+    new Vector3(points[2]),
+    new Vector3(points[3])
+  ]
+
+  const shared = CSG.Polygon.defaultShared
+  const plane = CSG.Plane.fromVector3Ds(vectors[0],vectors[1],vectors[2])
+
+  let observed = Polygon.createFromPoints(points,shared,plane)
+
+  t.deepEqual(observed.vertices.length, points.length)
+  vertexEquals(t, observed.vertices[0], points[0])
+  vertexEquals(t, observed.vertices[1], points[1])
+  vertexEquals(t, observed.vertices[2], points[2])
+  vertexEquals(t, observed.vertices[3], points[3])
+  t.is(observed.checkIfConvex(), false)
+
+// and rotate into 3D space
+  observed = observed.rotateX(-45).rotateY(45).rotateZ(-90)
+
+// and excercise features
+  const volume   = observed.getSignedVolume()
+  const area     = observed.getArea()
+  const features = observed.getTetraFeatures(['volume','area','junk'])
+  const bsphere  = observed.boundingSphere()
+  const bbox     = observed.boundingBox()
+
+  //t.true(nearlyEquals(volume, 0, 0.0001)) // this is STUPID, by definition all points are on the same plane!
+  t.true(nearlyEquals(area, 19.5, 0.0001))
+
+  let reversed = observed.vertices.concat([]).reverse()
+  let robserved = new Polygon(reversed, shared, plane)
+
+  const rarea = robserved.getArea()
+  t.true(nearlyEquals(rarea, 19.5, 0.0001))
 })
 
