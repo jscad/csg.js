@@ -1,5 +1,5 @@
-const Vector2 = require('../../core/math/Vector2')
-const {fromPoints} = require('../../core/CAGFactories')
+const vec2 = require('../../core/math/vec2')
+const {fromPoints} = require('../../core/geometry/shape2')
 const {parseOptionAs2DVector, parseOptionAsFloat, parseOptionAsInt} = require('../optionParsers')
 const {isArray, isBoolean, isNumber} = require('../../core/utils')
 
@@ -87,10 +87,10 @@ const rectangle = function (options) {
 
 /** Construct a rounded rectangle.
  * @param {Object} [options] - options for construction
- * @param {Vector2} [options.center=[0,0]] - center of rounded rectangle
- * @param {Vector2} [options.radius=[1,1]] - radius of rounded rectangle, width and height
- * @param {Vector2} [options.corner1=[0,0]] - bottom left corner of rounded rectangle (alternate)
- * @param {Vector2} [options.corner2=[0,0]] - upper right corner of rounded rectangle (alternate)
+ * @param {vec2} [options.center=[0,0]] - center of rounded rectangle
+ * @param {vec2} [options.radius=[1,1]] - radius of rounded rectangle, width and height
+ * @param {vec2} [options.corner1=[0,0]] - bottom left corner of rounded rectangle (alternate)
+ * @param {vec2} [options.corner2=[0,0]] - upper right corner of rounded rectangle (alternate)
  * @param {Number} [options.roundradius=0.2] - round radius of corners
  * @param {Number} [options.resolution=defaultResolution2D] - number of sides per 360 rotation
  * @returns {CAG} new CAG object
@@ -125,7 +125,7 @@ const roundedRectangle = function (options) {
   maxroundradius -= 0.1
   roundradius = Math.min(roundradius, maxroundradius)
   roundradius = Math.max(0, roundradius)
-  radius = new Vector2(radius.x - roundradius, radius.y - roundradius)
+  radius = vec2.fromValues(radius.x - roundradius, radius.y - roundradius)
   let rect = rectangle({
     center: center,
     radius: radius

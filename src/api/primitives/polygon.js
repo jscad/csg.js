@@ -1,11 +1,11 @@
-const {fromPoints} = require('../../core/CAGFactories')
+const {fromPoints} = require('../../core/geometry/shape2')
 
 /** Construct a 2D polygon either from arrays of paths and points, or just arrays of points
  * nested paths (multiple paths) and flat paths are supported
  * @param {Object} [options] - options for construction
  * @param {Array} [options.paths] - paths of the polygon : either flat or nested array
  * @param {Array} [options.points] - points of the polygon : either flat or nested array
- * @returns {CAG} new polygon
+ * @returns {Shape2} new polygon
  *
  * @example
  * let poly = polygon([0,1,2,3,4])
@@ -38,7 +38,7 @@ function polygon (params) { // array of po(ints) and pa(ths)
 
 // FIXME: errr this is kinda just a special case of a polygon , why do we need it ?
 /** Construct a triangle
- * @returns {CAG} new triangle
+ * @returns {Shape2} new triangle
  *
  * @example
  * let triangle = trangle({

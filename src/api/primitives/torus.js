@@ -40,7 +40,7 @@ function torus (params) {
   let baseCircle = circle({r: ri, fn: fni, center: true})
 
   if (roti) baseCircle = baseCircle.rotateZ(roti)
-  let result = rotateExtrude({fn: fno}, translate([ro, 0, 0], baseCircle))
+  const result = rotateExtrude({fn: fno}, translate([ro, 0, 0], baseCircle))
   return result
 }
 
