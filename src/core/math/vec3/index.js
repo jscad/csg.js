@@ -12,6 +12,7 @@ module.exports = {
   fromValues: require('./fromValues'),
   fromVarious: require('./fromVarious'),
   fromVec2: require('./fromVec2'),
+  fromScalar: require('./fromScalar'),
   length: require('./length'),
   lerp: require('./lerp'),
   max: require('./max'),

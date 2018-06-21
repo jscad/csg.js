@@ -15,6 +15,7 @@ module.exports = {
   fromAngleDegrees: require('./fromAngleDegrees'),
   fromAngleRadians: require('./fromAngleRadians'),
   fromValues: require('./fromValues'),
+  fromScalar: require('./fromScalar'),
   fromVarious: require('./fromVarious'),
   length: require('./length'),
   lerp: require('./lerp'),
