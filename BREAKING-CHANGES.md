@@ -69,7 +69,7 @@
   
   ## Properties
     - there is no 'properties' class/ object anymore
-    - it is a simple array attribute on parts/shapes
+    - it is a simple array (Object??) attribute on parts/shapes
 
 # Things to fix:
 

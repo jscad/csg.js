@@ -125,13 +125,28 @@ better for future code splitting etc)
 
 ### 2D shapes
 
+#### Currently:
+
+* path2: imperative api at odds with the rest ie 
+  const path = new Path2()
+  path = path.appendArc(xxxx)
+
+#### Future
+
 * descriptive : data describes each path segment/ curve that makes up a complex 2D shape
 * seperation of concerns : data vs internal representation
   * we do not recompute the polygons everytime a different line segment or bezier curve is added
   * we describe : [point1, point2, handle1, handle2]
 * only distinction between a set of paths and a shape, is whether or not it is closed ?
+* not immediate triangulation
 
-#### implementation
+ ##### Curve types
+  * line : start, end
+  * arc : start, center, radius, startAngle, endAngle
+  * quadratic bezier: start, controlPoint1, controlPoint2
+  * cubic bezier: start, , controlPoint1, controlPoint2, end
+
+#### implementation (description)
 
   ie (pseudo code)
 
@@ -139,7 +154,7 @@ better for future code splitting etc)
     const myshape2 = {
       name:'superShapy!',
       transform: [0, 0, 0, 0 , 1, 1, 1 ,0...]
-      segments: [ // for path-segments
+      curves: [ // or pathSegments, or segments, or paths?
         {
           points: [
             [0,0], [10, 100]// start at [0,0], go to [10, 100]
@@ -172,6 +187,9 @@ part : {
 
 
 ### Various
+
+- Eliminate 3d shapes completely ?
+  * everything can be create from 2d shapes + transforms/extrusions
 
 - More advanced features : 
  - holes with countersinks or special shapes ? 
