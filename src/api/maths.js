@@ -86,6 +86,19 @@ function round (a) {
   return floor(a + 0.5)
 }
 
+function gcd(a, b) {
+  // https://en.wikipedia.org/wiki/Greatest_common_divisor#Using_Euclid's_algorithm
+  if (a === b) { return a }
+  if (a < b) { return gcd(b, a) }
+  if (b === 1) { return 1 }
+  if (b === 0) { return a }
+  return gcd(b, a % b)
+}
+
+function lcm(a, b) {
+  return (a * b) / gcd(a, b)
+}
+
 module.exports = {
   sin,
   cos,
@@ -105,5 +118,7 @@ module.exports = {
   pow,
   sign,
   sqrt,
-  round
+  round,
+  gcd,
+  lcm
 }
