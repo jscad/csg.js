@@ -12,16 +12,16 @@ const {IsFloat} = require('../../utils/typeChecks')
  */
 function fromVarious (...params) {
   let out = new Float32Array(3)
-  if (arguments.length === 3) {
-    out[0] = parseFloat(arguments[0])
-    out[1] = parseFloat(arguments[1])
-    out[2] = parseFloat(arguments[2])
-  } else if (arguments.length === 2) {
-    out[0] = parseFloat(arguments[0])
-    out[1] = parseFloat(arguments[1])
+  if (params.length === 3) {
+    out[0] = parseFloat(params[0])
+    out[1] = parseFloat(params[1])
+    out[2] = parseFloat(params[2])
+  } else if (params.length === 2) {
+    out[0] = parseFloat(params[0])
+    out[1] = parseFloat(params[1])
     out[2] = 0
-  } else if (arguments.length === 1) {
-    const x = arguments[0]
+  } else if (params.length === 1) {
+    const x = params[0]
     if (typeof (x) === 'object') {
 //      if (x instanceof vec3) {
 //        out[0] = x[0]
