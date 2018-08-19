@@ -1,9 +1,9 @@
-module.exports = randomNonParallel
+module.exports = random
 
 const normalize = require('./normalize')
 const fromValues = require('./fromValues')
 
-function randomNonParallel (input) {
+function random (input) {
   let abs = normalize(input)
   if ((abs[0] <= abs[1]) && (abs[0] <= abs[2])) {
     return fromValues(1, 0, 0)
