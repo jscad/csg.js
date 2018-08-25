@@ -1,7 +1,7 @@
 const test = require('ava')
 const {distance, fromValues} = require('./index')
 
-const {nearlyEqual} = require('../../../../test/helpers/nearlyEqual')
+const {nearlyEqual} = require('../../../../test/helpers/index')
 const {EPS} = require('../../constants')
 
 test('vec3: distance() should return correct values', t => {
