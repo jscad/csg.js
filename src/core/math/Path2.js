@@ -161,6 +161,28 @@ Path2D.prototype = {
     return this.closed
   },
 
+  /**
+   * Determine the overall turn of a path.
+   * @returns {String} One of 'clockwise', 'counter-clockwise', or 'straight'.
+   */
+  getTurn: function () {
+    let area = 0
+    let lastpoint;
+    this.points.map(function (point) {
+      if (lastpoint !== undefined) {
+        area += (lastpoint[0] - point[0]) * (lastpoint[1] - point[1]);
+      }
+      lastpoint = point;
+    });
+    if (area > 0) {
+      return 'clockwise';
+    } else if (area < 0) {
+      return 'counter-clockwise';
+    } else {
+      return 'straight';
+    }
+  },
+
     // Extrude the path by following it with a rectangle (upright, perpendicular to the path direction)
     // Returns a CSG solid
     //   width: width of the extrusion, in the z=0 plane
