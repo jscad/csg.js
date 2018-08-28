@@ -170,7 +170,7 @@ Path2D.prototype = {
     const points = this.points;
     let twice_area = 0;
     let last = points.length - 1;
-    for (let current = 0; current < this.points.length; last = current++) {
+    for (let current = 0; current < points.length; last = current++) {
       twice_area += points[last].x * points[current].y - points[last].y * points[current].x;
     }
     if (twice_area > 0) {
