@@ -165,22 +165,13 @@ Path2D.prototype = {
    * Determine the overall turn of a path.
    * @returns {String} One of 'clockwise', 'counter-clockwise', or 'straight'.
    */
-  getTurn: function () {
+  getArea: function () {
+    let points = this.points;
     let area = 0
-    let lastpoint;
-    this.points.map(function (point) {
-      if (lastpoint !== undefined) {
-        area += (lastpoint[0] - point[0]) * (lastpoint[1] - point[1]);
-      }
-      lastpoint = point;
+    for (let last = 0, current = 1; current < this.points.length; last++, current++) {
+      area += (points[last].x - points[current].x) * (points[last].y - points[current].y);
     });
-    if (area > 0) {
-      return 'clockwise';
-    } else if (area < 0) {
-      return 'counter-clockwise';
-    } else {
-      return 'straight';
-    }
+    return area / 2;
   },
 
     // Extrude the path by following it with a rectangle (upright, perpendicular to the path direction)
