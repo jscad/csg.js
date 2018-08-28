@@ -162,18 +162,24 @@ Path2D.prototype = {
   },
 
   /**
-   * Determine the area of a path were it to describe a closed polygon.
-   * see: http://mathworld.wolfram.com/PolygonArea.html
-   * @returns {Number}
+   * Determine the overall clockwise or anti-clockwise turn of a path.
+   * See: http://mathworld.wolfram.com/PolygonArea.html
+   * @returns {String} One of ['clockwise', 'counter-clockwise', 'straight'].
    */
-  getArea: function () {
+  getTurn: function () {
     const points = this.points;
-    let area = 0;
+    let twice_area = 0;
     let last = points.length - 1;
     for (let current = 0; current < this.points.length; last = current++) {
-      area += points[last].x * points[current].y - points[last].y * points[current].x;
+      twice_area += points[last].x * points[current].y - points[last].y * points[current].x;
     }
-    return area / 2;
+    if (twice_area > 0) {
+      return 'clockwise';
+    } else if (twice_area < 0) {
+      return 'counter-clockwise';
+    } else {
+      return 'straight';
+    }
   },
 
     // Extrude the path by following it with a rectangle (upright, perpendicular to the path direction)
