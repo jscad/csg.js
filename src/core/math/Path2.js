@@ -162,15 +162,17 @@ Path2D.prototype = {
   },
 
   /**
-   * Determine the overall turn of a path.
-   * @returns {String} One of 'clockwise', 'counter-clockwise', or 'straight'.
+   * Determine the area of a path were it to describe a closed polygon.
+   * see: http://mathworld.wolfram.com/PolygonArea.html
+   * @returns {Number}
    */
   getArea: function () {
-    let points = this.points;
-    let area = 0
-    for (let last = 0, current = 1; current < this.points.length; last++, current++) {
-      area += (points[last].x - points[current].x) * (points[last].y - points[current].y);
-    });
+    const points = this.points;
+    let area = 0;
+    let last = points.length - 1;
+    for (let current = 0; current < this.points.length; last = current++) {
+      area += points[last].x * points[current].y - points[last].y * points[current].x;
+    }
     return area / 2;
   },
 

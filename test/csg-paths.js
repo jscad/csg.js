@@ -151,4 +151,27 @@ test('CSG.Path2D creates CAG from paths', t => {
   t.is(typeof cag05, 'object')
 })
 
+test('CSG.Path2D unit cw area is +1', t => {
+  let path = new CSG.Path2D([[0, 0]], false).appendPoint([1, 0]).appendPoint([1, 1]).appendPoint([0, 1]).close();
+  t.deepEqual(path.getArea(), 1);
+})
 
+test('CSG.Path2D unit right angle triangle area is 0.5', t => {
+  let path = new CSG.Path2D([[0, 0]], false).appendPoint([1, 0]).appendPoint([0, 1]).close();
+  t.deepEqual(path.getArea(), 0.5);
+})
+
+test('CSG.Path2D unit right angle triangle area is 0.5 also when unclosed', t => {
+  let path = new CSG.Path2D([[0, 0]], false).appendPoint([1, 0]).appendPoint([0, 1]);
+  t.deepEqual(path.getArea(), 0.5);
+})
+
+test('CSG.Path2D unit ccw area is -1', t => {
+  let path = new CSG.Path2D([[0, 0]], false).appendPoint([0, 1]).appendPoint([1, 1]).appendPoint([1, 0]).close();
+  t.deepEqual(path.getArea(), -1);
+})
+
+test('CSG.Path2D unit straight path area is 0', t => {
+  let path = new CSG.Path2D([[0, 0]], false).appendPoint([0, 1]);
+  t.deepEqual(path.getArea(), 0);
+})
