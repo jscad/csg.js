@@ -12,7 +12,7 @@ function rotate (...params) {
   let out
   let angle
   let vector
-  if (params.length === 3) {
+  if (params.length === 2) {
     out = create()
     angle = params[0]
     vector = params[1]
@@ -23,7 +23,9 @@ function rotate (...params) {
   }
 
   // fIXME: not correct
-  out = rotateZ(angle[2], rotateY(angle[1], rotateX(angle[0], vector)))
+  console.log('rotate', angle, vector)
+  const origin = [0, 0, 0]
+  out = rotateZ(angle[2], origin, rotateY(angle[1], origin, rotateX(angle[0], origin, vector)))
   return out
 }
 
