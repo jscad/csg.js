@@ -1,6 +1,6 @@
 const {EPS, defaultResolution3D} = require('../core/constants')
 const OrthoNormalBasis = require('../core/math/OrthoNormalBasis')
-const {parseOptionAs3DVector, parseOptionAsBool, parseOptionAsFloat, parseOptionAsInt} = require('./optionParsers')
+const {parseOption, parseOptionAs3DVector, parseOptionAsBool, parseOptionAsFloat, parseOptionAsInt} = require('./optionParsers')
 const Vector3D = require('../core/math/Vector3')
 const Matrix4 = require('../core/math/Matrix4')
 const Path2D = require('../core/math/Path2')
@@ -9,7 +9,7 @@ const Vertex = require('../core/math/Vertex2')
 const {Connector} = require('../core/connectors')
 const {fromPolygons} = require('../core/CSGFactories')
 const {cagToPointsArray, clamp, rightMultiply1x3VectorToArray, polygonFromPoints} = require('./helpers')
-const {fromPoints} = require('../core/CAGFactories')
+const {fromPoints, fromSides} = require('../core/CAGFactories')
 const {lcm} = require('./maths')
 
 /** extrude the CAG in a certain plane.
@@ -61,7 +61,7 @@ const extrudeInPlane = function (cag, axis1, axis2, depth, options) {
  * (a 3D vector as a 3 component array)
  * @param {Boolean} [options.twiststeps=defaultResolution3D] - twiststeps determines the resolution of the twist (should be >= 1)
  * @param {Boolean} [options.twistangle=0] - twistangle The final face is rotated <twistangle> degrees. Rotation is done around the origin of the 2d shape (i.e. x=0, y=0)
- * @param {CAG} [options.cag] - cag The target CAG to extrude to. Defaults to cag
+ * @param {CAG} [options.endShape=cag] - cag The target CAG to extrude to. Defaults to cag
  * @returns {CSG} the extrude shape, as a CSG object
  * @example extruded=cag.extrude({offset: [0,0,10], twistangle: 360, twiststeps: 100});
 */
@@ -81,9 +81,11 @@ const extrude = function (cag, options) {
     twiststeps = 1
   }
   let normalVector = Vector3D.Create(0, 1, 0)
-  let toCag = (options && 'cag' in options) ? options.cag : cag
-  _equalizeSidesCount(cag, toCag)
-
+  let endShape = parseOption(options, 'endShape', cag)
+  const equalized = _equalizeSidesCount(cag, endShape)
+  cag = equalized[0]
+  endShape = equalized[1]
+  
   let polygons = []
   // bottom and top
   polygons = polygons.concat(cag._toPlanePolygons({
@@ -91,7 +93,7 @@ const extrude = function (cag, options) {
     normalVector: normalVector,
     flipped: !(offsetVector.z < 0)}
   ))
-  polygons = polygons.concat(toCag._toPlanePolygons({
+  polygons = polygons.concat(endShape._toPlanePolygons({
     translation: offsetVector,
     normalVector: normalVector.rotateZ(twistangle),
     flipped: offsetVector.z < 0}))
@@ -101,22 +103,23 @@ const extrude = function (cag, options) {
               normalVector.rotateZ(i * twistangle / twiststeps))
     let c2 = new Connector(offsetVector.times((i + 1) / twiststeps), [0, 0, offsetVector.z],
               normalVector.rotateZ((i + 1) * twistangle / twiststeps))
-    polygons = polygons.concat(cag._toWallPolygons({toConnector1: c1, toConnector2: c2, cag: toCag}))
+    polygons = polygons.concat(cag._toWallPolygons({toConnector1: c1, toConnector2: c2, cag: endShape}))
   }
   return fromPolygons(polygons)
 }
 
-// Modify arguments in place to ensure they have an equal number of
-// sides, potentially splitting existing sides to make this so.
+// Return versions of the arguments that enclose the same area as
+// their original versions but have an equal number of sides as their
+// counterpart, potentially splitting existing sides to make this so.
 function _equalizeSidesCount(cag1, cag2) {
   const l1 = cag1.sides.length
   const l2 = cag2.sides.length
   const newSidesCount = lcm(l1, l2)
-  _repartitionSides(cag1, newSidesCount)
-  _repartitionSides(cag2, newSidesCount)
+  return [_repartitionSides(cag1, newSidesCount), _repartitionSides(cag2, newSidesCount)]
 }
 
-// Split |cag|'s existing sides so that on return it has |newSidesCount| total sides.
+// Return a version of |cag| that encloses the same area but splits
+// existing sides to have |newSidesCount| total sides.
 function _repartitionSides(cag, newSidesCount) {
   // NOTE: This implementation splits sides evenly. An alternative
   // would be to sum the lengths of all cag.sides and repartition that
@@ -125,7 +128,7 @@ function _repartitionSides(cag, newSidesCount) {
   // new sides as splits of its 2 long edges.
   const multiple = newSidesCount / cag.sides.length
   if (multiple === 1) {
-    return
+    return cag
   }
   const newSides = []
   for (var s of cag.sides) {
@@ -140,8 +143,8 @@ function _repartitionSides(cag, newSidesCount) {
       newSides.push(new Side(prev, next))
       prev = next
     }
-    cag.sides = newSides
   }
+  return fromSides(newSides)
 }
 
 // THIS IS AN OLD untested !!! version of rotate extrude
