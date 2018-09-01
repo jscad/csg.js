@@ -151,4 +151,22 @@ test('CSG.Path2D creates CAG from paths', t => {
   t.is(typeof cag05, 'object')
 })
 
+test('CSG.Path2D closed cw square turns cw', t => {
+  let path = new CSG.Path2D([[0, 0]], false).appendPoint([1, 0]).appendPoint([1, 1]).appendPoint([0, 1]).close();
+  t.deepEqual(path.getTurn(), 'clockwise');
+})
 
+test('CSG.Path2D unclosed cw triangle turns cw', t => {
+  let path = new CSG.Path2D([[0, 0]], false).appendPoint([1, 0]).appendPoint([0, 1]);
+  t.deepEqual(path.getTurn(), 'clockwise');
+})
+
+test('CSG.Path2D closed ccw square is ccw', t => {
+  let path = new CSG.Path2D([[0, 0]], false).appendPoint([0, 1]).appendPoint([1, 1]).appendPoint([1, 0]).close();
+  t.deepEqual(path.getTurn(), 'counter-clockwise');
+})
+
+test('CSG.Path2D unit straight path area is straight', t => {
+  let path = new CSG.Path2D([[0, 0]], false).appendPoint([0, 1]);
+  t.deepEqual(path.getTurn(), 'straight');
+})

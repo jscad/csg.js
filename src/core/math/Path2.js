@@ -161,6 +161,27 @@ Path2D.prototype = {
     return this.closed
   },
 
+  /**
+   * Determine the overall clockwise or anti-clockwise turn of a path.
+   * See: http://mathworld.wolfram.com/PolygonArea.html
+   * @returns {String} One of ['clockwise', 'counter-clockwise', 'straight'].
+   */
+  getTurn: function () {
+    const points = this.points;
+    let twice_area = 0;
+    let last = points.length - 1;
+    for (let current = 0; current < points.length; last = current++) {
+      twice_area += points[last].x * points[current].y - points[last].y * points[current].x;
+    }
+    if (twice_area > 0) {
+      return 'clockwise';
+    } else if (twice_area < 0) {
+      return 'counter-clockwise';
+    } else {
+      return 'straight';
+    }
+  },
+
     // Extrude the path by following it with a rectangle (upright, perpendicular to the path direction)
     // Returns a CSG solid
     //   width: width of the extrusion, in the z=0 plane
