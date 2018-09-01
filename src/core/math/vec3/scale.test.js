@@ -3,7 +3,7 @@ const {scale, fromValues} = require('./index')
 
 const {compareVectors} = require('../../../../test/helpers/index')
 
-test.only('vec3: scale() called with two paramerters should return a vec3 with correct values', t => {
+test('vec3: scale() called with two paramerters should return a vec3 with correct values', t => {
 
   const obs1 = scale(0, [0, 0, 0])
   t.true(compareVectors(obs1, [0, 0, 0]))
@@ -24,7 +24,7 @@ test.only('vec3: scale() called with two paramerters should return a vec3 with c
   t.true(compareVectors(obs6, [6, 12, 18]))
 })
 
-test.only('vec3: scale() called with three paramerters should update a vec3 with correct values', t => {
+test('vec3: scale() called with three paramerters should update a vec3 with correct values', t => {
   let obs1 = fromValues(0, 0, 0)
   const ret1 = scale(obs1, 0, [0, 0, 0])
   t.true(compareVectors(obs1, [0, 0, 0]))

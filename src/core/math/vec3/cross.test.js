@@ -1,97 +1,81 @@
 const test = require('ava')
 const {cross, fromValues} = require('./index')
 
-test.only('vec3: cross() called with two paramerters should return a vec3 with correct values', t => {
+const {compareVectors} = require('../../../../test/helpers/index')
+
+test('vec3: cross() called with two paramerters should return a vec3 with correct values', t => {
 
   const obs1 = cross([0, 0, 0], [0, 0, 0])
-  const exp1 = fromValues(0, 0, 0)
-  t.deepEqual(obs1, exp1)
+  t.true(compareVectors(obs1, [0, 0, 0]))
 
   const obs2 = cross([5, 5, 5], [10, 20, 30])
-  const exp2 = fromValues(50.000000000, -100.000000000, 50.000000000)
-  t.deepEqual(obs2, exp2)
+  t.true(compareVectors(obs2, [50, -100, 50]))
 
   const obs3 = cross([5, 5, 5], [10, -20, 30])
-  const exp3 = fromValues(250.000000000, -100.000000000, -150.000000000)
-  t.deepEqual(obs3, exp3)
+  t.true(compareVectors(obs3, [250, -100, -150]))
 
   const obs4 = cross([5, 5, 5], [-10, -20, 30])
-  const exp4 = fromValues(250.000000000, -200.000000000, -50.000000000)
-  t.deepEqual(obs4, exp4)
+  t.true(compareVectors(obs4, [250, -200, -50]))
 
   const obs5 = cross([5, 5, 5], [-10, 20, 30])
-  const exp5 = fromValues(50.000000000, -200.000000000, 150.0000000000)
-  t.deepEqual(obs5, exp5)
+  t.true(compareVectors(obs5, [50, -200, 150]))
 
   const obs6 = cross([5, 5, 5], [10, 20, -30])
-  const exp6 = fromValues(-250.000000000, 200.000000000, 50.000000000)
-  t.deepEqual(obs6, exp6)
+  t.true(compareVectors(obs6, [-250, 200, 50]))
 
   const obs7 = cross([5, 5, 5], [10, -20, -30])
-  const exp7 = fromValues(-50.000000000, 200.000000000, -150.000000000)
-  t.deepEqual(obs7, exp7)
+  t.true(compareVectors(obs7, [-50, 200, -150]))
 
   const obs8 = cross([5, 5, 5], [-10, -20, -30])
-  const exp8 = fromValues(-50.000000000, 100.000000000, -50.000000000)
-  t.deepEqual(obs8, exp8)
+  t.true(compareVectors(obs8, [-50, 100, -50]))
 
   const obs9 = cross([5, 5, 5], [-10, 20, -30])
-  const exp9 = fromValues(-250.000000000, 100.000000000, 150.0000000000)
-  t.deepEqual(obs9, exp9)
+  t.true(compareVectors(obs9, [-250, 100, 150]))
 })
 
-test.only('vec3: cross() called with three paramerters should update a vec3 with correct values', t => {
+test('vec3: cross() called with three paramerters should update a vec3 with correct values', t => {
   let obs1 = fromValues(0, 0, 0)
   const ret1 = cross(obs1, [0, 0, 0], [0, 0, 0])
-  const exp1 = fromValues(0, 0, 0)
-  t.deepEqual(obs1, exp1)
-  t.deepEqual(ret1, exp1)
+  t.true(compareVectors(obs1, [0, 0, 0]))
+  t.true(compareVectors(ret1, [0, 0, 0]))
 
   let obs2 = fromValues(0, 0, 0)
   const ret2 = cross(obs2, [5, 5, 5], [10, 20, 30])
-  const exp2 = fromValues(50.000000000, -100.000000000, 50.000000000)
-  t.deepEqual(obs2, exp2)
-  t.deepEqual(ret2, exp2)
+  t.true(compareVectors(obs2, [50, -100, 50]))
+  t.true(compareVectors(ret2, [50, -100, 50]))
 
   let obs3 = fromValues(0, 0, 0)
   const ret3 = cross(obs3, [5, 5, 5], [10, -20, 30])
-  const exp3 = fromValues(250.000000000, -100.000000000, -150.000000000)
-  t.deepEqual(obs3, exp3)
-  t.deepEqual(ret3, exp3)
+  t.true(compareVectors(obs3, [250, -100, -150]))
+  t.true(compareVectors(ret3, [250, -100, -150]))
 
   let obs4 = fromValues(0, 0, 0)
   const ret4 = cross(obs4, [5, 5, 5], [-10, -20, 30])
-  const exp4 = fromValues(250.000000000, -200.000000000, -50.000000000)
-  t.deepEqual(obs4, exp4)
-  t.deepEqual(ret4, exp4)
+  t.true(compareVectors(obs4, [250, -200, -50]))
+  t.true(compareVectors(ret4, [250, -200, -50]))
 
   let obs5 = fromValues(0, 0, 0)
   const ret5 = cross(obs5, [5, 5, 5], [-10, 20, 30])
-  const exp5 = fromValues(50.000000000, -200.000000000, 150.0000000000)
-  t.deepEqual(obs5, exp5)
-  t.deepEqual(ret5, exp5)
+  t.true(compareVectors(obs5, [50, -200, 150]))
+  t.true(compareVectors(ret5, [50, -200, 150]))
 
   let obs6 = fromValues(0, 0, 0)
   const ret6 = cross(obs6, [5, 5, 5], [10, 20, -30])
-  const exp6 = fromValues(-250.000000000, 200.000000000, 50.000000000)
-  t.deepEqual(obs6, exp6)
-  t.deepEqual(ret6, exp6)
+  t.true(compareVectors(obs6, [-250, 200, 50]))
+  t.true(compareVectors(ret6, [-250, 200, 50]))
 
   let obs7 = fromValues(0, 0, 0)
   const ret7 = cross(obs7, [5, 5, 5], [10, -20, -30])
-  const exp7 = fromValues(-50.000000000, 200.000000000, -150.000000000)
-  t.deepEqual(obs7, exp7)
-  t.deepEqual(ret7, exp7)
+  t.true(compareVectors(obs7, [-50, 200, -150]))
+  t.true(compareVectors(ret7, [-50, 200, -150]))
 
   let obs8 = fromValues(0, 0, 0)
   const ret8 = cross(obs8, [5, 5, 5], [-10, -20, -30])
-  const exp8 = fromValues(-50.000000000, 100.000000000, -50.000000000)
-  t.deepEqual(obs8, exp8)
-  t.deepEqual(ret8, exp8)
+  t.true(compareVectors(obs8, [-50, 100, -50]))
+  t.true(compareVectors(ret8, [-50, 100, -50]))
 
   let obs9 = fromValues(0, 0, 0)
   const ret9 = cross(obs9, [5, 5, 5], [-10, 20, -30])
-  const exp9 = fromValues(-250.000000000, 100.000000000, 150.0000000000)
-  t.deepEqual(obs9, exp9)
-  t.deepEqual(ret9, exp9)
+  t.true(compareVectors(obs9, [-250, 100, 150]))
+  t.true(compareVectors(ret9, [-250, 100, 150]))
 })
