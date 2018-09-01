@@ -1,3 +1,13 @@
+<a name="0.7.0"></a>
+# [0.7.0](https://github.com/jscad/csg.js/compare/v0.6.0...v0.7.0) (2018-09-01)
+
+
+### Features
+
+* **path:** Add getTurn()  method to determine the general turn direction of a path. ([#116](https://github.com/jscad/csg.js/issues/116)) ([4cd83fa](https://github.com/jscad/csg.js/commit/4cd83fa))
+
+
+
 <a name="0.6.0"></a>
 # [0.6.0](https://github.com/jscad/csg.js/compare/v0.5.4...v0.6.0) (2018-06-21)
 
