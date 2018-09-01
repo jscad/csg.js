@@ -1,16 +1,15 @@
 const test = require('ava')
 const {abs, fromValues} = require('./index')
 
+const {compareVectors} = require('../../../../test/helpers/index')
+
 test('vec2: abs() should return a vec2 with positive values', t => {
   const obs1 = abs([0, 0])
-  const exp1 = fromValues(0, 0)
-  t.deepEqual(obs1, exp1)
+  t.true(compareVectors(obs1, [0, 0]))
 
   const obs2 = abs([1, 2])
-  const exp2 = fromValues(1, 2)
-  t.deepEqual(obs2, exp2)
+  t.true(compareVectors(obs2, [1, 2]))
 
   const obs3 = abs([-1, -2])
-  const exp3 = fromValues(1, 2)
-  t.deepEqual(obs3, exp3)
+  t.true(compareVectors(obs3, [1, 2]))
 })
