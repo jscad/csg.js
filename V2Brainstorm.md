@@ -16,6 +16,9 @@ better for future code splitting etc)
  * to make functions curryable
  * to accomodate for variable amount of objects passed in etc
 
+## Clear errors
+
+* nothing should fail silently!
 
 ## capabilities
 
@@ -123,6 +126,17 @@ better for future code splitting etc)
     }
     ```
 
+#### Annotations
+
+  ##### purpose
+
+  metadata for parts, possible to be displayed within the 3D view
+  somewhat related to measurements
+
+  ##### implementation
+
+  much like properties and connectors, perhaps annotations can also just be considered a special type of data that is simply added as a child of a shape/part
+
 ### 2D shapes
 
 #### Currently:
@@ -189,7 +203,7 @@ part : {
 ### Various
 
 - Eliminate 3d shapes completely ?
-  * everything can be create from 2d shapes + transforms/extrusions
+  * everything can be create from 2d shapes + transforms/extrusions?
 
 - More advanced features : 
  - holes with countersinks or special shapes ? 
@@ -212,7 +226,7 @@ part : {
   * returning arrays: returns all the assemblies that you can have ?
 
 - connectors:
-  * should be easier to define
+  * should be easier to define : addConnector({point, normal, axis}, shape)
   * should be visualized
     * points, axis, normals should be easilly viewed & understood
   * should be offsetable
@@ -223,3 +237,4 @@ part : {
  at the top/ bottom of cylinders )
  * annotations (not sure)
   * dimensions (not right now, but could be usefull, they are a special type of annotations)
+
