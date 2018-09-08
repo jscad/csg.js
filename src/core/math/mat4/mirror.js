@@ -7,7 +7,7 @@ const fromValues = require('./fromValues')
  * create an affine matrix for mirroring into an arbitrary plane:
  *
  * @param {mat4} out the receiving matrix (optional)
- * @param {vec4} v the vec4 to mirror the matrix by
+ * @param {vec3} v the vec3 to mirror the matrix by
  * @param {mat4} a the matrix to mirror
  * @returns {mat4} out
  **/
