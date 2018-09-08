@@ -30,9 +30,7 @@ test('plane: transformMat4() called with two paramerters should return a plane w
 
   const plane3 = fromValues(0, 0, 1, 0)
   const obs3 = transformMat4(translationMatrix, plane3)
-console.log('----- after -----')
-console.log(toString(obs3))
-  t.true(compareVectors(obs3, [0, 0, 1, 0]))
+  t.true(compareVectors(obs3, [0, 0, 1, 7]))
 
   let w = 1
   let h = 3
@@ -44,8 +42,9 @@ console.log(toString(obs3))
     0,    0,    0,   1
   ]
 
-  const obs4 = transformMat4(scaleMatrix, [1, 2, 3])
-  t.true(compareVectors(obs4, [1, 6, 15]))
+  const plane4 = fromValues(0, -1, 0, 0)
+  const obs4 = transformMat4(scaleMatrix, plane4)
+  t.true(compareVectors(obs4, [0, -1, 0, 0]))
 
   const r = (90 * 0.017453292519943295)
   const rotateZMatrix = [
@@ -55,6 +54,17 @@ console.log(toString(obs3))
               0,            0,    0,    1
   ]
 
-  const obs5 = transformMat4(rotateZMatrix, [1, 2, 3])
-  t.true(compareVectors(obs5, [2, -1, 3]))
+  const plane5 = fromValues(-1, 0, 0, 0)
+  const obs5 = transformMat4(rotateZMatrix, plane5)
+  //t.true(compareVectors(obs5, [-0, 1, 0, 0]))
+
+  const mirrorMatrix = [
+   -1, 0, 0, 0,
+    0, 1, 0, 0,
+    0, 0, 1, 0,
+    0, 0, 0, 1
+  ]
+  const plane6 = fromValues(1, 0, 0, 0)
+  const obs6 = transformMat4(mirrorMatrix, plane6)
+  t.true(compareVectors(obs6, [-1, 0, 0, 0]))
 })

@@ -4,7 +4,6 @@ const vec3 = require('../vec3')
 
 const fromVector3Ds = require('./fromVector3Ds')
 const flip = require('./flip')
-const toString = require('../vec4/toString')
 
 /**
  * Transform the given plane using the given matrix
