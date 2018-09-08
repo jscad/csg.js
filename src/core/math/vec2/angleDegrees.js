@@ -2,8 +2,8 @@ module.exports = angleDegrees
 
 const angleRadians = require('./angleRadians')
 
+const {radToDeg} = require('../utils.js')
+
 function angleDegrees (vector) {
-  // y=sin, x=cos
-  const radians = angleRadians(vector)
-  return 180 * radians / Math.PI
+  return radToDeg(angleRadians(vector))
 }
