@@ -12,8 +12,8 @@ function normalize (...params) {
   let a
   let out
   if (params.length === 1) {
-    a = params[0]
     out = create()
+    a = params[0]
   } else {
     out = params[0]
     a = params[1]
