@@ -24,7 +24,7 @@ function cross (...params) {
   }
   let z = a[0] * b[1] - a[1] * b[0]
   out[0] = out[1] = 0
-  out[2] = z
+  out[1] = z
   return out
 }
 
