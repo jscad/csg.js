@@ -15,7 +15,7 @@ function lerp (...params) {
   let t
   let a
   let b
-  if (params.length === 2) {
+  if (params.length === 3) {
     out = create()
     t = params[0]
     a = params[1]
