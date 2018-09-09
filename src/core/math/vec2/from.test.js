@@ -12,3 +12,19 @@ test('vec2: fromScalar() should return a new vec2 with correct values', t => {
 
   const str = toString(obs2)
 })
+
+test('vec2: fromAngleRadians() should return a new vec2 with correct values', t => {
+  const obs1 = fromAngleRadians(0)
+  t.true(compareVectors(obs1, [1.0, 0.0]))
+
+  const obs2 = fromAngleRadians(Math.PI)
+  t.true(compareVectors(obs2, [-1, 1.2246468525851679e-16]))
+})
+
+test('vec2: fromAngleDegrees() should return a new vec2 with correct values', t => {
+  const obs1 = fromAngleDegrees(0)
+  t.true(compareVectors(obs1, [1.0, 0.0]))
+
+  const obs2 = fromAngleDegrees(180)
+  t.true(compareVectors(obs2, [-1, 1.2246468525851679e-16]))
+})
