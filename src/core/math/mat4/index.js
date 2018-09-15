@@ -22,6 +22,6 @@ module.exports = {
   rotateZ: require('./rotateZ'),
   scale: require('./scale'),
   subtract: require('./subtract'),
-// toString: require('./toString'),
+ toString: require('./toString'),
   translate: require('./translate')
 }
