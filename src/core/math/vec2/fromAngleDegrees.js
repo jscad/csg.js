@@ -1,11 +1,8 @@
-const create = require('./create')
+const fromValues = require('./fromValues')
 
 const fromAngleDegrees = (degrees) => {
   const radians = Math.PI * degrees / 180
-  let out = create()
-  out[0] = Math.cos(radians)
-  out[1] = Math.sin(radians)
-  return out
+  return fromValues(Math.cos(radians), Math.sin(radians))
 }
 
 module.exports = fromAngleDegrees

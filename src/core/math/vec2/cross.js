@@ -1,4 +1,3 @@
-module.exports = cross
 const vec3 = require('../vec3/index')
 
 /**
@@ -9,7 +8,7 @@ const vec3 = require('../vec3/index')
  * @param {vec2} b the second operand
  * @returns {vec3} cross product
  */
-function cross (...params) {
+const cross = (...params) => {
   let out
   let a
   let b
@@ -22,11 +21,11 @@ function cross (...params) {
     a = params[1]
     b = params[2]
   }
-  let z = a[0] * b[1] - a[1] * b[0]
-  out[0] = out[1] = 0
-  out[2] = z
+  out[0] = 0
+  out[1] = 0
+  out[2] = a[0] * b[1] - a[1] * b[0]
   // alternative return vec3.cross(out, vec3.fromVec2(a), vec3.fromVec2(b))
   return out
 }
 
-
+module.exports = cross

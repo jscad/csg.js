@@ -4,7 +4,6 @@ const { scale, fromValues } = require('./index')
 const { compareVectors } = require('../../../../test/helpers/index')
 
 test('vec3: scale() called with two paramerters should return a vec3 with correct values', (t) => {
-
   const obs1 = scale(0, [0, 0, 0])
   t.true(compareVectors(obs1, [0, 0, 0]))
 
