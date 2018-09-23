@@ -1,10 +1,10 @@
 const test = require('ava')
-const {angleDegrees, fromValues} = require('./index')
+const { angleDegrees } = require('./index')
 
-const {nearlyEqual} = require('../../../../test/helpers/index')
-const {EPS} = require('../../constants')
+const { nearlyEqual } = require('../../../../test/helpers/index')
+const { EPS } = require('../../constants')
 
-test('vec2: angleDegrees() should return correct values', t => {
+test('vec2: angleDegrees() should return correct values', (t) => {
   const distance1 = angleDegrees([0, 0])
   nearlyEqual(t, distance1, 0.0, EPS)
 

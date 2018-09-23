@@ -1,11 +1,9 @@
 const test = require('ava')
-const {normal, fromValues, toString} = require('./index')
+const { normal } = require('./index')
 
-const {compareVectors} = require('../../../../test/helpers/index')
+const { compareVectors } = require('../../../../test/helpers/index')
 
-test('vec2: normal() should return a vec2 with correct values', t => {
-  const radians = 90 * Math.PI / 180
-
+test('vec2: normal() should return a vec2 with correct values', (t) => {
   const obs1 = normal([0, 0])
   t.true(compareVectors(obs1, [0, 0]))
 
