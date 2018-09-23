@@ -1,56 +1,56 @@
 const test = require('ava')
-const {equals, fromValues} = require('./index')
+const { equals, fromValues } = require('./index')
 
-test('vec3: equals() should return correct booleans', t => {
-  let vec_a = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-  let vec_b = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-  t.true(equals(vec_a, vec_b))
+test('vec3: equals() should return correct booleans', (t) => {
+  const veca = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+  const vecb = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+  t.true(equals(veca, vecb))
 
-  let vec_b0 = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-  t.false(equals(vec_a, vec_b0))
+  const vecb0 = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+  t.false(equals(veca, vecb0))
 
-  let vec_b1 = [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-  t.false(equals(vec_a, vec_b1))
+  const vecb1 = [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+  t.false(equals(veca, vecb1))
 
-  let vec_b2 = [0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-  t.false(equals(vec_a, vec_b2))
+  const vecb2 = [0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+  t.false(equals(veca, vecb2))
 
-  let vec_b3 = [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-  t.false(equals(vec_a, vec_b3))
+  const vecb3 = [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+  t.false(equals(veca, vecb3))
 
-  let vec_b4 = [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-  t.false(equals(vec_a, vec_b4))
+  const vecb4 = [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+  t.false(equals(veca, vecb4))
 
-  let vec_b5 = [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-  t.false(equals(vec_a, vec_b5))
+  const vecb5 = [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+  t.false(equals(veca, vecb5))
 
-  let vec_b6 = [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-  t.false(equals(vec_a, vec_b6))
+  const vecb6 = [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+  t.false(equals(veca, vecb6))
 
-  let vec_b7 = [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0]
-  t.false(equals(vec_a, vec_b7))
+  const vecb7 = [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0]
+  t.false(equals(veca, vecb7))
 
-  let vec_b8 = [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0]
-  t.false(equals(vec_a, vec_b8))
+  const vecb8 = [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0]
+  t.false(equals(veca, vecb8))
 
-  let vec_b9 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0]
-  t.false(equals(vec_a, vec_b9))
+  const vecb9 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0]
+  t.false(equals(veca, vecb9))
 
-  let vec_b10 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0]
-  t.false(equals(vec_a, vec_b10))
+  const vecb10 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0]
+  t.false(equals(veca, vecb10))
 
-  let vec_b11 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0]
-  t.false(equals(vec_a, vec_b11))
+  const vecb11 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0]
+  t.false(equals(veca, vecb11))
 
-  let vec_b12 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0]
-  t.false(equals(vec_a, vec_b12))
+  const vecb12 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0]
+  t.false(equals(veca, vecb12))
 
-  let vec_b13 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
-  t.false(equals(vec_a, vec_b13))
+  const vecb13 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
+  t.false(equals(veca, vecb13))
 
-  let vec_b14 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0]
-  t.false(equals(vec_a, vec_b14))
+  const vecb14 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0]
+  t.false(equals(veca, vecb14))
 
-  let vec_b15 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1]
-  t.false(equals(vec_a, vec_b15))
+  const vecb15 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1]
+  t.false(equals(veca, vecb15))
 })
