@@ -14,6 +14,7 @@ module.exports = {
   identity: require('./identity'),
   isMirroring: require('./isMirroring'),
   mirror: require('./mirror'),
+  mirroring: require('./mirroring'),
   multiply: require('./multiply'),
   rotate: require('./rotate'),
   rotateX: require('./rotateX'),
