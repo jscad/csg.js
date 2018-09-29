@@ -4,7 +4,6 @@ module.exports = {
   equals: require('./equals'),
   flip: require('./flip'),
   fromNormalAndPoint: require('./fromNormalAndPoint'),
-  fromObject: require('./fromObject'),
   fromValues: require('../vec4/fromValues'),
   fromVec3s: require('./fromVec3s'),
   signedDistanceToPoint: require('./signedDistanceToPoint'),
