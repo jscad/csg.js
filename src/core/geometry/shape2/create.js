@@ -9,7 +9,8 @@ const create = function () {
   return {
     type: 'shape2',
     sides: [],
-    isCanonicalized: false
+    isCanonicalized: false,
+    curves: []
   }
 }
 

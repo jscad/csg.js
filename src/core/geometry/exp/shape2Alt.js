@@ -27,36 +27,9 @@ const ellipse = (params) => {
   }
 }
 
-const arc = (params) => {
-  let radius
-  let origin = [0, 0]
-  if ('radius' in params) {
-    radius = params.radius
-  }
-  if ('diameter' in params) {
-    radius = params.diameter * 0.5
-  }
 
-  return {
-    type: 'arc',
-    origin,
-    radius
-  }
-}
 
-const bezierCurve = (controlPoints) => {
-  let subType = 'quad' // quatratic or cubic ?
-  if (controlPoints.length === 3) {
-    subType = 'quadratic'
-  } else {
-    subType = 'cubic'
-  }
-  return {
-    type: 'bezierCurve',
-    subType,
-    controlPoints
-  }
-}
+
 
 const myShape = shape2.fromData(
   [line({ start: [0, 2], end: [10, 0] }), ellipse({ diameter: 10 })]
@@ -65,7 +38,8 @@ const myShape = shape2.fromData(
 const myShape2 = shape2.fromData(
   [
     line({ start: [0, 2], end: [10, 0] }),
-    line({ start: [10, 0], end: [10, 0] })
+    line({ start: [10, 0], end: [15, 20] }),
+    line({ start: [15, 20], end: [0, 2] })
   ]
 )
 
@@ -73,6 +47,9 @@ const myShape3 = shape2.fromPoints([
   [0, 2], [10, 0], [0.2]
 ])
 
+const myShape = shape2.fromData(
+  [line({ start: [0, 2], end: [10, 0] }), bezierCurve([10, 0]...)]
+)
 
 
 // curves or paths or something else ?

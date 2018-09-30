@@ -1,6 +1,7 @@
 const { _CSGDEBUG, EPS } = require('./constants')
 const Vertex3 = require('./math/Vertex3')
 const poly3 = require('./poly3')
+const plane3 = require('../math/plane')
 
 // Returns object:
 // .type:
@@ -67,7 +68,7 @@ function splitPolygonByPlane (plane, polygon) {
           // line segment intersects plane:
           let point = vertex.pos
           let nextpoint = vertices[nextvertexindex].pos
-          let intersectionpoint = plane.splitLineBetweenPoints(point, nextpoint)
+          let intersectionpoint = plane3.splitLineSegmentByPlane(plane, point, nextpoint)
           let intersectionvertex = new Vertex3(intersectionpoint)
           if (isback) {
             backvertices.push(vertex)
@@ -244,7 +245,7 @@ PolygonTreeNode.prototype = {
   _splitByPlane: function (plane, coplanarfrontnodes, coplanarbacknodes, frontnodes, backnodes) {
     let polygon = this.polygon
     if (polygon) {
-      let bound = polygon.boundingSphere()
+      let bound = poly3.measureBoundingSphere(polygon)
       let sphereradius = bound[1] + EPS // FIXME Why add imprecision?
       let planenormal = plane.normal
       let spherecenter = bound[0]
@@ -314,7 +315,7 @@ PolygonTreeNode.prototype = {
       for (j = 0, l = children.length; j < l; j++) {
         node = children[j]
         if (node.polygon) {
-          node.polygon = node.polygon.flipped()
+          node.polygon = poly3.flip(node.polygon)
         }
         queue.push(node.children)
       }

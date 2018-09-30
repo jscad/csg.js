@@ -39,8 +39,7 @@ const reTesselate = function (csg) {
       if (sourcepolygons.length < 2) {
         destpolygons = destpolygons.concat(sourcepolygons)
       } else {
-        let retesselayedpolygons = []
-        reTesselateCoplanarPolygons(sourcepolygons, retesselayedpolygons)
+        const retesselayedpolygons = reTesselateCoplanarPolygons(sourcepolygons)
         destpolygons = destpolygons.concat(retesselayedpolygons)
       }
     }

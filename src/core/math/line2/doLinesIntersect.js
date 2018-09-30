@@ -1,9 +1,9 @@
-const {EPS} = require('../constants')
-const {solve2Linear} = require('../utils')
+const { EPS } = require('../constants')
+const { solve2Linear } = require('../utils')
 
 // see if the line between p0start and p0end intersects with the line between p1start and p1end
 // returns true if the lines strictly intersect, the end points are not counted!
-const linesIntersect = function (p0start, p0end, p1start, p1end) {
+const doLinesIntersect = function (p0start, p0end, p1start, p1end) {
   if (p0end.equals(p1start) || p1end.equals(p0start)) {
     let d = p1end.minus(p1start).unit().plus(p0end.minus(p0start).unit()).length()
     if (d < EPS) {
@@ -21,4 +21,4 @@ const linesIntersect = function (p0start, p0end, p1start, p1end) {
   return false
 }
 
-module.exports = {linesIntersect}
+module.exports = doLinesIntersect
