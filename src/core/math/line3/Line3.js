@@ -1,5 +1,5 @@
 const Vector3D = require('./Vector3')
-const {EPS} = require('../constants')
+const {EPS} = require('../../constants')
 const {solve2Linear} = require('../utils')
 
 // # class Line3D

@@ -1,12 +1,12 @@
-const fromSides = require('./fromSides')
-const flip = require('./flip')
-const area = require('./measureArea')
-const canonicalize = require('./canonicalize')
-const {areaEPS} = require('./constants')
-const isSelfIntersecting = require('./validateIsSelfIntersecting')
-const Side = require('./math/Side')
-const vert2 = require('../vert2')
+const { areaEPS } = require('../../constants')
 const vec2 = require('../../math/vec2')
+
+// const fromSides = require('./fromSides')
+const fromCurves = require('./fromCurves')
+const flip = require('./flip')
+const measureArea = require('./measureArea')
+const isSelfIntersecting = require('./validateIsSelfIntersecting')
+//const canonicalize = require('./canonicalize')
 
 // new implementation
 
@@ -26,28 +26,28 @@ const fromPoints = function (points) {
   if (!Array.isArray(points)) {
     throw new Error('points parameter must be an array')
   }
-  if (points[0].x !== undefined || typeof points[0][0] === 'number') {
+  if (typeof points[0][0] === 'number') {
     return fromPointsArray(points)
   }
   if (typeof points[0][0] === 'object') {
-    return fromNestedPointsArray(points)
+    // return fromNestedPointsArray(points)
   }
   throw new Error('Unsupported points list format')
 }
 
 // Do not export the two following function (code splitting for fromPoints())
-const fromPointsArray = function (points) {
+const fromPointsArray = points => {
   if (points.length < 3) {
     throw new Error('shape2 needs at least 3 points')
   }
   let sides = []
-  let prevvertex = new Vertex2(new Vector2D(points[points.length - 1]))
+  let prevVertex = vec2.fromArray(points[points.length - 1])
   points.map(function (point) {
-    let vertex = new Vertex2(new Vector2D(point))
-    sides.push(new Side(prevvertex, vertex))
-    prevvertex = vertex
+    const vertex = vec2.fromArray(point)
+    sides.push([prevVertex, vertex])
+    prevVertex = vertex
   })
-  let result = fromSides(sides)
+  let result = fromCurves(sides)
   if (isSelfIntersecting(result)) {
     throw new Error('Polygon is self intersecting!')
   }
@@ -61,6 +61,7 @@ const fromPointsArray = function (points) {
   return canonicalize(result)
 }
 
+/*
 const fromNestedPointsArray = function (points) {
   if (points.length === 1) {
     return fromPoints(points[0])
@@ -72,7 +73,7 @@ const fromNestedPointsArray = function (points) {
   })
   // Second pass: make a tree of paths
   let tree = {}
-    // for each polygon extract parents and childs polygons
+  // for each polygon extract parents and childs polygons
   paths.forEach((p1, i) => {
     // check for intersection
     paths.forEach((p2, y) => {
@@ -84,8 +85,8 @@ const fromNestedPointsArray = function (points) {
         if (contains(p2, p1)) {
           // push parent and child; odd parents number ==> hole
           tree[i].parents.push(y)
-          tree[i].isHole = !! (tree[i].parents.length % 2)
-          tree[y].isHole = !! (tree[y].parents.length % 2)
+          tree[i].isHole = !!(tree[i].parents.length % 2)
+          tree[y].isHole = !!(tree[y].parents.length % 2)
         }
       }
     })
@@ -108,5 +109,5 @@ const fromNestedPointsArray = function (points) {
   }
   return cag
 }
-
+*/
 module.exports = fromPoints

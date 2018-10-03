@@ -1,4 +1,4 @@
-const { EPS } = require('../constants')
+const { EPS } = require('../../constants')
 const { solve2Linear } = require('../utils')
 
 // see if the line between p0start and p0end intersects with the line between p1start and p1end
