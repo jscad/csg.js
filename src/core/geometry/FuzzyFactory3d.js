@@ -8,13 +8,13 @@ const polygonSHaredHash = (shared) => {
 }
 
 // ////////////////////////////////////
-const FuzzyCSGFactory = function () {
+const FuzzyShape3Factory = function () {
   this.vertexfactory = new FuzzyFactory(3, EPS)
   this.planefactory = new FuzzyFactory(4, EPS)
   this.polygonsharedfactory = {}
 }
 
-FuzzyCSGFactory.prototype = {
+FuzzyShape3Factory.prototype = {
   getPolygonShared: function (sourceshared) {
     let hash = polygonSHaredHash(sourceshared)
     if (hash in this.polygonsharedfactory) {
@@ -71,4 +71,4 @@ FuzzyCSGFactory.prototype = {
   }
 }
 
-module.exports = FuzzyCSGFactory
+module.exports = FuzzyShape3Factory
