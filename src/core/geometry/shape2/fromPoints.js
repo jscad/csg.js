@@ -1,12 +1,12 @@
 const { areaEPS } = require('../../constants')
 const vec2 = require('../../math/vec2')
 
-// const fromSides = require('./fromSides')
-const fromCurves = require('./fromCurves')
+const fromSides = require('./fromSides')
+// const fromCurves = require('./fromCurves')
 const flip = require('./flip')
 const measureArea = require('./measureArea')
 const isSelfIntersecting = require('./validateIsSelfIntersecting')
-//const canonicalize = require('./canonicalize')
+const canonicalize = require('./canonicalize')
 
 // new implementation
 
@@ -47,7 +47,7 @@ const fromPointsArray = points => {
     sides.push([prevVertex, vertex])
     prevVertex = vertex
   })
-  let result = fromCurves(sides)
+  let result = fromSides(sides)
   if (isSelfIntersecting(result)) {
     throw new Error('Polygon is self intersecting!')
   }
