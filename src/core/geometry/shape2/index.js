@@ -26,7 +26,7 @@ module.exports = {
   toPlanePolygons: require('./toPlanePolygons'),
   toWallPolygons: require('./toWallPolygons'),
   toString: require('./toString'),
-  subtract: require('./subtract'),
+  difference: require('./difference'),
   transform: require('./transform'),
   validate: require('./validate'),
   validateIsSelfIntersecting: require('./validateIsSelfIntersecting')
