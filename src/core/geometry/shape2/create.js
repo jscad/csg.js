@@ -1,3 +1,5 @@
+const mat4 = require('../../math/mat4')
+
 /**
  * create shape2/ CAG
  * Holds a solid area geometry like CSG but 2D.
@@ -8,9 +10,10 @@
 const create = function () {
   return {
     type: 'shape2',
-    sides: [],
+    sides: [], // not sure if sides or curves will be kept (either or)
+    curves: [], // not sure if sides or curves will be kept (either or)
     isCanonicalized: false,
-    curves: []
+    transforms: mat4.create()
   }
 }
 

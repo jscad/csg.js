@@ -1,15 +1,15 @@
 module.exports = {
-  //canonicalize: require('./canonicalize'),
+  // canonicalize: require('./canonicalize'),
   create: require('./create'),
-  //fromCompactBinary: require('./fromCompactBinary'),
-  //fromFakeShape3: require('./fromFakeShape3'),
-  //fromObject: require('./fromObject'),
+  // fromCompactBinary: require('./fromCompactBinary'),
+  // fromFakeShape3: require('./fromFakeShape3'),
+  // fromObject: require('./fromObject'),
   fromPoints: require('./fromPoints'),
-  /* fromPointsNoCheck: require('./fromPointsNoCheck'),
+  // fromPointsNoCheck: require('./fromPointsNoCheck'),
   fromSides: require('./fromSides'),
-  equals: require('./equals'),
+  // equals: require('./equals'),
   measureArea: require('./measureArea'),
-  measureBounds: require('./measureBounds'),
+  /* measureBounds: require('./measureBounds'),
   mirror: require('./mirror'),
   mirrorX: require('./mirrorX'),
   mirrorY: require('./mirrorY'),
@@ -26,8 +26,10 @@ module.exports = {
   toPlanePolygons: require('./toPlanePolygons'),
   toWallPolygons: require('./toWallPolygons'),
   toString: require('./toString'),
-  difference: require('./difference'),
+  difference: require('./difference'), */
   transform: require('./transform'),
-  validate: require('./validate'),
-  validateIsSelfIntersecting: require('./validateIsSelfIntersecting')*/
+  translate: require('./translate'),
+  transformGeometry: require('./transformGeometry')
+  /* validate: require('./validate'),
+  validateIsSelfIntersecting: require('./validateIsSelfIntersecting') */
 }
