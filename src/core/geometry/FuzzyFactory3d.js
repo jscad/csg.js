@@ -1,4 +1,4 @@
-const {EPS} = require('./constants')
+const { EPS } = require('./constants')
 const Polygon = require('./math/Polygon3')
 const FuzzyFactory = require('./FuzzyFactory')
 
@@ -63,7 +63,7 @@ FuzzyCSGFactory.prototype = {
         prevvertextag = vertextag
       })
     }
-        // If it's degenerate, remove all vertices:
+    // If it's degenerate, remove all vertices:
     if (newverticesDedup.length < 3) {
       newverticesDedup = []
     }

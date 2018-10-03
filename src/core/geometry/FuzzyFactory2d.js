@@ -8,15 +8,15 @@ const FuzzyShape2Factory = function () {
 FuzzyShape2Factory.prototype = {
   getVertex: function (sourcevertex) {
     let elements = [sourcevertex[0], sourcevertex[1]]
-    let result = this.vertexfactory.lookupOrCreate(elements, function (els) {
+    // FIXME: oh blimey, this actually never did anything : returns the SOURCE VERTEX!!
+    return this.vertexfactory.lookupOrCreate(elements, function (els) {
       return sourcevertex
     })
-    return result
   },
 
   getSide: function (sourceside) {
-    let vertex0 = this.getVertex(sourceside[0])
-    let vertex1 = this.getVertex(sourceside[0])
+    const vertex0 = this.getVertex(sourceside[0])
+    const vertex1 = this.getVertex(sourceside[1])
     return [vertex0, vertex1]
   }
 }
