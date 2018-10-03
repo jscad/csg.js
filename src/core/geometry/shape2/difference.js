@@ -1,13 +1,13 @@
-const subtract = function (ohterCag, cag) {
+const subtract = function (otherShape, shape) {
   let cags
-  if (cag instanceof Array) {
-    cags = cag
+  if (shape instanceof Array) {
+    cags = shape
   } else {
-    cags = [cag]
+    cags = [shape]
   }
-  let result = toCSGWall(ohterCag, -1, 1)
-  cags.map(function (cag) {
-    result = subtractSub(result, toCSGWall(cag, -1, 1), false, false)
+  let result = toCSGWall(otherShape, -1, 1)
+  cags.map(function (shape) {
+    result = subtractSub(result, toCSGWall(shape, -1, 1), false, false)
   })
   result = retesselate(result)
   result = canonicalize(result)
@@ -15,3 +15,5 @@ const subtract = function (ohterCag, cag) {
   result = canonicalize(result)
   return result
 }
+
+module.exports = subtract

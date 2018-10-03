@@ -10,7 +10,7 @@ const fromPolygons = require('./fromPolygons')
   are joined horizontally and vertically into larger polygons (making sure that we
   will end up with convex polygons).
 */
-const reTesselate = function (csg) {
+const retessellate = function (csg) {
   if (csg.isRetesselated) {
     return csg
   } else {
@@ -51,4 +51,4 @@ const reTesselate = function (csg) {
   }
 }
 
-module.exports = reTesselate
+module.exports = retessellate
