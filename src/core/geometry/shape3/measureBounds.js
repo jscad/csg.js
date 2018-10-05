@@ -8,11 +8,11 @@ const measureBoundingBox = require('../poly3/measureBoundingBox')
  * let bounds = A.getBounds()
  * let minX = bounds[0].x
  */
-const bounds = function (csg) {
-  if (!csg.cachedBoundingBox) {
+const bounds = function (shape) {
+  if (!shape.cachedBoundingBox) {
     let minpoint = vec3.create()
     let maxpoint = vec3.create()
-    let polygons = csg.polygons
+    let polygons = shape.polygons
     let numpolygons = polygons.length
     for (let i = 0; i < numpolygons; i++) {
       let polygon = polygons[i]
@@ -26,9 +26,9 @@ const bounds = function (csg) {
       }
     }
     // FIXME: not ideal, we are mutating the input, we need to move some of it out
-    csg.cachedBoundingBox = [minpoint, maxpoint]
+    shape.cachedBoundingBox = [minpoint, maxpoint]
   }
-  return csg.cachedBoundingBox
+  return shape.cachedBoundingBox
 }
 
 module.exports = bounds

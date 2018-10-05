@@ -1,15 +1,15 @@
-const {EPS} = require('../core/constants')
-const vec4 = require('../core/math/vec4')
-const vec2 = require('../core/math/vec2')
-const poly3 = require('../core/geometry/poly3')
-const intersection = require('./ops-booleans/intersection')
+const {EPS} = require('../../constants')
+const vec4 = require('../../math/vec4')
+const vec2 = require('../../math/vec2')
+const poly3 = require('../poly3')
+const intersection = require('../../../api/ops-booleans/intersection')
 
-const Plane = require('../core/math/Plane')
+const Plane = require('../../math/Plane')
 const Vertex3 = require('../core/math/Vertex3')
-const OrthoNormalBasis = require('../core/math/OrthoNormalBasis')
+const OrthoNormalBasis = require('../../math/OrthoNormalBasis')
 
 const {projectToOrthoNormalBasis} = require('../core/utils/csgProjections')
-const {extrudePolygon3} = require('./ops-extrusions/extrusionUtils')
+const {extrudePolygon3} = require('../../../api/ops-extrusions/extrusionUtils')
 
 /** cuts a csg along a orthobasis
  * @param  {CSG} csg the csg object to cut

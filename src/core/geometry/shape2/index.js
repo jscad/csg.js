@@ -13,9 +13,9 @@ module.exports = {
   mirror: require('./mirror'),
   mirrorX: require('./mirrorX'),
   mirrorY: require('./mirrorY'),
-  mirrorZ: require('./mirrorZ'),
+  mirrorZ: require('./mirrorZ'),*/
   rotate: require('./rotate'),
-  rotateX: require('./rotateX'),
+  /*rotateX: require('./rotateX'),
   rotateY: require('./rotateY'),
   rotateZ: require('./rotateZ'),
   scale: require('./scale'),
