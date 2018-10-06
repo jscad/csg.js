@@ -3,7 +3,7 @@ module.exports = {
   clone: require('./clone'),
   constants: require('./constants'),
   create: require('./create'),
-  equals: require('./equals'),
+  exactEquals: require('./exactEquals'),
   fromRotation: require('./fromRotation'),
   fromScaling: require('./fromScaling'),
   fromTranslation: require('./fromTranslation'),
