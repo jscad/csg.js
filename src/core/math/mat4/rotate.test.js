@@ -25,19 +25,19 @@ test('mat4: rotate() called with out parameter should return a new mat4 with cor
   const idn = identity()
 
 // invalid condition when axis is 0,0,0
-  const mat1 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-  const ret1 = rotate(mat1, rotation, [0, 0, 0], idn)
+  const out1 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+  const ret1 = rotate(out1, rotation, [0, 0, 0], idn)
   t.true(ret1 === null)
-  t.true(compareVectors(mat1, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]))
+  t.true(compareVectors(out1, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]))
 
-  const mat2 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-  const ret2 = rotate(mat2, rotation, [0, 0, 1], idn)
-  t.true(compareVectors(mat2, [0, 1, 0, 0, -1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]))
+  const out2 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+  const ret2 = rotate(out2, rotation, [0, 0, 1], idn)
+  t.true(compareVectors(out2, [0, 1, 0, 0, -1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]))
   t.true(compareVectors(ret2, [0, 1, 0, 0, -1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]))
-  t.is(mat2, ret2)
+  t.is(out2, ret2)
 
-  const mat3 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-  const ret3 = rotate(mat3, -rotation, [0, 0, 1], idn)
-  t.true(compareVectors(mat3, [0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]))
+  const out3 = identity()
+  const ret3 = rotate(out3, -rotation, [0, 0, 1], out3)
+  t.true(compareVectors(out3, [0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]))
   t.true(compareVectors(ret3, [0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]))
 })
