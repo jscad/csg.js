@@ -15,11 +15,11 @@ module.exports = {
   mirrorY: require('./mirrorY'),
   mirrorZ: require('./mirrorZ'),*/
   rotate: require('./rotate'),
-  /*rotateX: require('./rotateX'),
+  rotateX: require('./rotateX'),
   rotateY: require('./rotateY'),
   rotateZ: require('./rotateZ'),
   scale: require('./scale'),
-  toCompactBinary: require('./toCompactBinary'),
+  /*toCompactBinary: require('./toCompactBinary'),
   toShape3Wall: require('./toShape3Wall'),
   toPoints: require('./toPoints'),
   toVec3Pairs: require('./toVec3Pairs'),
