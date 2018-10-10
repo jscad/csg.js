@@ -1,7 +1,7 @@
 const { _CSGDEBUG, EPS } = require('./constants')
-const Vertex3 = require('./math/Vertex3')
 const poly3 = require('./poly3')
-const plane3 = require('../math/plane')
+const vec4 = require('../math/plane')
+const vec3 = require('../math/vec3')
 
 // Returns object:
 // .type:
@@ -20,13 +20,13 @@ function splitPolygonByPlane (plane, polygon) {
     back: null
   }
   // cache in local lets (speedup):
-  let planenormal = plane.normal
+  let planenormal = [plane[0], plane[1], plane[2]] // plane.normal
   let vertices = polygon.vertices
   let numvertices = vertices.length
   if (polygon.plane.equals(plane)) {
     result.type = 0
   } else {
-    let thisw = plane.w
+    let thisw = plane[3]// .w
     let hasfront = false
     let hasback = false
     let vertexIsBack = []
@@ -40,7 +40,7 @@ function splitPolygonByPlane (plane, polygon) {
     }
     if ((!hasfront) && (!hasback)) {
       // all points coplanar
-      let t = planenormal.dot(polygon.plane.normal)
+      let t = vec3.dot(planenormal, polygon.plane.normal) // FIXME FINISH CONVERSION TO V2
       result.type = (t >= 0) ? 0 : 1
     } else if (!hasback) {
       result.type = 2
@@ -68,8 +68,8 @@ function splitPolygonByPlane (plane, polygon) {
           // line segment intersects plane:
           let point = vertex.pos
           let nextpoint = vertices[nextvertexindex].pos
-          let intersectionpoint = plane3.splitLineSegmentByPlane(plane, point, nextpoint)
-          let intersectionvertex = new Vertex3(intersectionpoint)
+          let intersectionpoint = vec4.splitLineSegmentByPlane(plane, point, nextpoint)
+          // let intersectionvertex = new Vertex3(intersectionpoint)
           if (isback) {
             backvertices.push(vertex)
             backvertices.push(intersectionvertex)
@@ -247,9 +247,9 @@ PolygonTreeNode.prototype = {
     if (polygon) {
       let bound = poly3.measureBoundingSphere(polygon)
       let sphereradius = bound[1] + EPS // FIXME Why add imprecision?
-      let planenormal = plane.normal
+      let planenormal = [plane[0], plane[1], plane[2]]// .normal
       let spherecenter = bound[0]
-      let d = planenormal.dot(spherecenter) - plane.w
+      let d = vec3.dot(planenormal, spherecenter) - plane[3]// plane.w
       if (d > sphereradius) {
         frontnodes.push(this)
       } else if (d < -sphereradius) {
