@@ -1,10 +1,21 @@
 const Path2D = require('../core/math/Path2')
+const canonicalize = require('./canonicalize')
+const vec2 = require('../../math/vec2')
 
-const cagoutlinePaths = function (_cag) {
-  let cag = _cag.canonicalized()
+const direction = () => {
+
+}
+
+/** returns the outline of the given Shape2 as an array of paths
+ * FIXME: convert to V2 data structures
+ * @param  {Shape2} shape
+ * @returns {Array} array of paths
+ */
+const outlineToPaths = function (shape) {
+  let cleanShape = canonicalize(shape)
   let sideTagToSideMap = {}
   let startVertexTagToSideTagMap = {}
-  cag.sides.map(function (side) {
+  cleanShape.sides.map(function (side) {
     let sidetag = side.getTag()
     sideTagToSideMap[sidetag] = side
     let startvertextag = side.vertex0.getTag()
@@ -42,14 +53,14 @@ const cagoutlinePaths = function (_cag) {
       if (nextpossiblesidetags.length === 1) {
         nextsideindex = 0
       } else {
-                  // more than one side starting at the same vertex. cag means we have
-                  // two shapes touching at the same corner
+        // more than one side starting at the same vertex. cag means we have
+        // two shapes touching at the same corner
         let bestangle = null
-        let cagangle = cagside.direction().angleDegrees()
+        let cagangle = vec2.angleDegrees(direction(cagside))
         for (let sideindex = 0; sideindex < nextpossiblesidetags.length; sideindex++) {
           let nextpossiblesidetag = nextpossiblesidetags[sideindex]
           let possibleside = sideTagToSideMap[nextpossiblesidetag]
-          let angle = possibleside.direction().angleDegrees()
+          let angle = vec2.angleDegrees(direction(possibleside))
           let angledif = angle - cagangle
           if (angledif < -180) angledif += 360
           if (angledif >= 180) angledif -= 360
@@ -77,4 +88,4 @@ const cagoutlinePaths = function (_cag) {
   return paths
 }
 
-module.exports = cagoutlinePaths
+module.exports = outlineToPaths
