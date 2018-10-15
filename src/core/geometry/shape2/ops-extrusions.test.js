@@ -1,9 +1,9 @@
 const test = require('ava')
-const rectangle = require('../primitives/rectangle')
+const rectangle = require('../../../api/primitives/rectangle')
 const linearExtrude = require('./linearExtrude')
 const rotateExtrude = require('./rotateExtrude')
 const rectangularExtrude = require('./rectangularExtrude')
-const { simplifiedPolygon } = require('../test-helpers')
+const { simplifiedPolygon } = require('../../../api/test-helpers')
 
 test('linearExtrude (height)', t => {
   const op1 = rectangle()

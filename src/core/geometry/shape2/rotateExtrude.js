@@ -1,10 +1,10 @@
 const Matrix4 = require('../../core/math/Matrix4')
-const {cagToPointsArray, clamp, rightMultiply1x3VectorToArray, polygonFromPoints} = require('../helpers')
-const {fromPoints} = require('../../core/CAGFactories')
-const {fromPolygons} = require('../../core/CSGFactories')
-const {_toPlanePolygons} = require('./extrusionUtils')
-const canonicalize = require('../../core/utils/canonicalize')
-const retesellate = require('../../core/utils/retesellate')
+const { cagToPointsArray, clamp, rightMultiply1x3VectorToArray, polygonFromPoints } = require('../../../api/helpers')
+const fromPoints = require('./fromPoints')
+const { fromPolygons } = require('../../core/CSGFactories')
+const { _toPlanePolygons } = require('./extrusionUtils')
+const canonicalize = require('./canonicalize')
+const retesellate = require('./retesellate')
 
 /** rotate extrusion / revolve of the given 2d shape
  * @param {Object} [options] - options for construction
@@ -17,7 +17,7 @@ const retesellate = require('../../core/utils/retesellate')
  * @returns {CSG} new extruded shape
  *
  * @example
- * let revolved = rotate_extrude({fn: 10}, square())
+ * let revolved = rotateExtrude({fn: 10}, square())
  */
 function rotateExtrude (params, baseShape) {
   // note, we should perhaps alias this to revolve() as well
@@ -28,7 +28,7 @@ function rotateExtrude (params, baseShape) {
     overflow: 'cap'
   }
   params = Object.assign({}, defaults, params)
-  let {fn, startAngle, angle, overflow} = params
+  let { fn, startAngle, angle, overflow } = params
   if (overflow !== 'cap') {
     throw new Error('only capping of overflowing points is supported !')
   }
@@ -52,7 +52,7 @@ function rotateExtrude (params, baseShape) {
   // convert baseshape to just an array of points, easier to deal with
   let shapePoints = cagToPointsArray(baseShape)
 
-  // determine if the rotate_extrude can be computed in the first place
+  // determine if the rotateExtrude can be computed in the first place
   // ie all the points have to be either x > 0 or x < 0
 
   // generic solution to always have a valid solid, even if points go beyond x/ -x
@@ -81,7 +81,7 @@ function rotateExtrude (params, baseShape) {
   }
 
   // console.log('negXs', pointsWithNegativeX, 'pointsWithPositiveX', pointsWithPositiveX, 'arePointsWithNegAndPosX', arePointsWithNegAndPosX)
- //  console.log('shapePoints AFTER', shapePoints, baseShape.sides)
+  //  console.log('shapePoints AFTER', shapePoints, baseShape.sides)
 
   let polygons = []
 
@@ -136,13 +136,13 @@ function rotateExtrude (params, baseShape) {
       const endMatrix = Matrix4.rotationX(90).multiply(
         Matrix4.rotationZ(-startAngle)
       )
-      const endCap = _toPlanePolygons(sideShape, {flipped: flipped})
+      const endCap = _toPlanePolygons(sideShape, { flipped: flipped })
         .map(x => x.transform(endMatrix))
 
       const startMatrix = Matrix4.rotationX(90).multiply(
         Matrix4.rotationZ(-angle - startAngle)
       )
-      const startCap = _toPlanePolygons(sideShape, {flipped: !flipped})
+      const startCap = _toPlanePolygons(sideShape, { flipped: !flipped })
         .map(x => x.transform(startMatrix))
       polygons = polygons.concat(endCap).concat(startCap)
     }

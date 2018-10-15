@@ -1,6 +1,6 @@
-const {extrude} = require('./extrusionUtils')
-const translate = require('../ops-transformations/translate')
-const bounds = require('../ops-measurements/bounds')
+const { extrude } = require('./extrusionUtils')
+const translate = require('../../../api/ops-transformations/translate')
+const measureBounds = require('../shape3/measureBounds')
 
 /** linear extrusion of the input 2d shape
  * @param {Object} [options] - options for construction
@@ -21,11 +21,11 @@ function linearExtrude (params, baseShape) {
     twist: 0,
     center: false
   }
-  const {height, twist, slices, center} = Object.assign({}, defaults, params)
+  const { height, twist, slices, center } = Object.assign({}, defaults, params)
 
-  let output = extrude(baseShape, {offset: [0, 0, height], twistangle: twist, twiststeps: slices})
+  let output = extrude(baseShape, { offset: [0, 0, height], twistangle: twist, twiststeps: slices })
   if (center === true) {
-    const outputBounds = bounds(output)
+    const outputBounds = measureBounds(output)
     const offset = (outputBounds[1].plus(outputBounds[0])).times(-0.5)
     output = translate(offset, output)
   }

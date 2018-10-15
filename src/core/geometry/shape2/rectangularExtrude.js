@@ -1,9 +1,7 @@
 const Path2 = require('../../core/math/Path2')
-const Vertex2 = require('../../core/math/Vertex2')
-const Side = require('../../core/math/Side')
-const {fromSides} = require('../../core/CAGFactories')
-const {extrude} = require('./extrusionUtils')
-const {expandedShell} = require('../ops-transformations/expandedShell')
+const { fromSides } = require('../../core/CAGFactories')
+const { extrude } = require('./extrusionUtils')
+const { expandedShell } = require('./expand')
 
 /** rectangular extrusion of the given array of points
  * Extrude the path by following it with a rectangle (upright, perpendicular to the path direction)
@@ -29,10 +27,10 @@ function rectangularExtrude (params, basePoints) {
     round: true
   }
   // FIXME ! turns out 'round' is not used
-  const {w, h, fn, closed} = Object.assign({}, defaults, params)
+  const { w, h, fn, closed } = Object.assign({}, defaults, params)
   const path = new Path2(basePoints, closed)
-  let cag = expandToCAG(path, w / 2, fn)
-  let result = extrude(cag, {
+  let shape = expandToShape2(path, w / 2, fn)
+  let result = extrude(shape, {
     offset: [0, 0, h]
   })
   return result
@@ -41,25 +39,24 @@ function rectangularExtrude (params, basePoints) {
 
 // Expand the path to a CAG
 // This traces the path with a circle with radius pathradius
-const expandToCAG = (path, pathradius, resolution) => {
+const expandToShape2 = (path, pathradius, resolution) => {
   let sides = []
   let numpoints = path.points.length
-  let startindex = 0
-  if (path.closed && (numpoints > 2)) startindex = -1
-  let prevvertex
-  for (let i = startindex; i < numpoints; i++) {
-    let pointindex = i
-    if (pointindex < 0) pointindex = numpoints - 1
-    let point = path.points[pointindex]
-    let vertex = new Vertex2(point)
-    if (i > startindex) {
-      let side = new Side(prevvertex, vertex)
+  let startIndex = 0
+  if (path.closed && (numpoints > 2)) startIndex = -1
+  let prevPoint
+  for (let i = startIndex; i < numpoints; i++) {
+    let pointIndex = i
+    if (pointIndex < 0) pointIndex = numpoints - 1
+    const point = path.points[pointIndex]
+    if (i > startIndex) {
+      let side = [prevPoint, point]
       sides.push(side)
     }
-    prevvertex = vertex
+    prevPoint = point
   }
-  let shellcag = fromSides(sides)
-  let expanded = expandedShell(shellcag, pathradius, resolution)
+  let shellShape = fromSides(sides)
+  let expanded = expandedShell(shellShape, pathradius, resolution)
   return expanded
 }
 

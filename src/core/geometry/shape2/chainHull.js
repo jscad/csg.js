@@ -1,17 +1,18 @@
-const union = require('../ops-booleans/union')
 const hull = require('./hull')
+const union = require('./union')
 
+// FIXME: cleanup, clarify 'closed' parameter
 /** create a chain hull of the given shapes
  * Originally "Whosa whatsis" suggested "Chain Hull" ,
  * as described at https://plus.google.com/u/0/105535247347788377245/posts/aZGXKFX1ACN
  * essentially hull A+B, B+C, C+D and then union those
- * @param {Object(s)|Array} objects either a single or multiple CSG/CAG objects to create a chain hull around
- * @returns {CSG} new CSG object ,which a chain hull of the inputs
+ * @param {Object(s)|Array} objects either a single or multiple Shape3/Shape2 objects to create a chain hull around
+ * @returns {Shape3} new Shape3 object ,which a chain hull of the inputs
  *
  * @example
  * let hulled = chainHull(rect(), circle())
  */
-function chainHull (params, objects) {
+const chainHull = (params, objects) => {
   /*
   const defaults = {
     closed: false

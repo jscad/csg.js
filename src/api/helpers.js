@@ -32,6 +32,4 @@ const rightMultiply1x3VectorToArray = (matrix, vector) => {
   return [x, y, z]
 }
 
-const degToRad = deg => (Math.PI / 180) * deg
-
 module.exports = {cagToPointsArray, clamp, rightMultiply1x3VectorToArray, polygonFromPoints}

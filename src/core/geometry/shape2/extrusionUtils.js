@@ -1,13 +1,13 @@
-const {EPS, defaultResolution3D} = require('../../core/constants')
-const OrthoNormalBasis = require('../../core/math/OrthoNormalBasis')
+const {EPS, defaultResolution3D} = require('../../constants')
+const OrthoNormalBasis = require('../../math/OrthoNormalBasis')
 
-const {parseOptionAs3DVector, parseOptionAsBool, parseOptionAsFloat, parseOptionAsInt} = require('../optionParsers')
-const {Connector} = require('../../core/connectors')
+const {parseOptionAs3DVector, parseOptionAsBool, parseOptionAsFloat, parseOptionAsInt} = require('../../../api/optionParsers')
+const {Connector} = require('../../connectors')
 const {fromPolygons} = require('../../core/CSGFactories')
 
-const vec3 = require('../../core/math/vec3')
-const poly3 = require('../../core/geometry/poly3')
-const shape2 = require('../../core/geometry/shape2')
+const vec3 = require('../../math/vec3')
+const poly3 = require('../poly3')
+const shape2 = require('.')
 
 /** linear extrusion of 2D shape, with optional twist
  * @param  {CAG} cag the cag to extrude
