@@ -13,7 +13,10 @@ const create = function () {
     sides: [], // not sure if sides or curves will be kept (either or)
     curves: [], // not sure if sides or curves will be kept (either or)
     isCanonicalized: false,
-    transforms: mat4.create()
+
+    transforms: mat4.create(),
+
+    negative: false
   }
 }
 
