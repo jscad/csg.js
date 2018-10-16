@@ -1,7 +1,7 @@
 const fromPoints = require('./fromPoints')
 
 // from http://www.psychedelicdevelopment.com/grahamscan/
-//    see also at https://github.com/bkiers/GrahamScan/blob/master/src/main/cg/GrahamScan.java
+// see also at https://github.com/bkiers/GrahamScan/blob/master/src/main/cg/GrahamScan.java
 let ConvexHullPoint = function (index, angle, distance) {
   this.index = index
   this.angle = angle
@@ -127,7 +127,7 @@ let ConvexHull = function () {
 
 // FIXME: extract shapes to work with both spread & array
 /** create a convex hull of the given shapes
- * @param {Object(s)|Array} objects either a single or multiple CSG/Shape2 objects to create a hull around
+ * @param {Object(s)|Array} objects either a single or multiple Shape2 objects to create a hull around
  * @returns {Shape3} new Shape3 object , a hull around the given shapes
  *
  * @example
@@ -140,14 +140,14 @@ const hull = shapes => {
   for (let i = 0; i < shapes.length; i++) { // extract all points of the Shape2 in the argument list
     let shape2 = shapes[i]
     for (let j = 0; j < shape2.sides.length; j++) {
-      let x = shape2.sides[j].vertex0.pos.x
-      let y = shape2.sides[j].vertex0.pos.y
+      const x = shape2.sides[j][0][0]
+      const y = shape2.sides[j][0][1]
       // avoid some coord to appear multiple times
-      if (done['' + x + ',' + y]) {
+      if (done[`${x},${y}`]) {
         continue
       }
-      pts.push({ x: x, y: y })
-      done['' + x + ',' + y]++
+      pts.push({ x, y })
+      done[`${x},${y}`]++
     }
   }
   const hull = new ConvexHull()
