@@ -14,7 +14,7 @@ const create = function () {
       isCanonicalized: true,
       isRetesselated: true
     },
-    transforms: mat4.create()
+    transforms: mat4.identity()
   }
 }
 

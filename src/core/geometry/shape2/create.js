@@ -14,7 +14,7 @@ const create = function () {
     curves: [], // not sure if sides or curves will be kept (either or)
     isCanonicalized: false,
 
-    transforms: mat4.create(),
+    transforms: mat4.identity(),
 
     negative: false
   }
