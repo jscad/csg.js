@@ -1,5 +1,4 @@
 const create = require('./create')
-const fromValues = require('./fromValues')
 
 /**
  * Create an affine matrix for mirroring onto an arbitrary plane
@@ -8,7 +7,7 @@ const fromValues = require('./fromValues')
  * @param {vec4} plane to mirror the matrix by
  * @returns {mat4} out
  */
-const mirroring = (...params) => {
+const mirrorByPlane = (...params) => {
   let out
   let plane
   if (params.length === 1) {
@@ -40,4 +39,4 @@ const mirroring = (...params) => {
   return out
 }
 
-module.exports = mirroring
+module.exports = mirrorByPlane
