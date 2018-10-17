@@ -8,7 +8,7 @@ const clone = (sourceShape) => {
   // newShape.curves = fromCurves(sourceShape.curves)
   newShape.isCanonicalized = sourceShape.isCanonicalized
   newShape.transforms = mat4.clone(sourceShape.transforms)
-  newShape.negative = sourceShape.negative
+  newShape.isNegative = sourceShape.isNegative
   return newShape
 }
 

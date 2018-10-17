@@ -16,7 +16,7 @@ const create = function () {
 
     transforms: mat4.identity(),
 
-    negative: false
+    isNegative: false
   }
 }
 

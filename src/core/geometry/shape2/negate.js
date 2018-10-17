@@ -7,7 +7,7 @@ const clone = require('./clone')
  */
 const negate = shape => {
   const cloned = clone(shape)
-  cloned.negative = true
+  cloned.isNegative = true
   return cloned
 }
 
