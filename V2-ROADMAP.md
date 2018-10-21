@@ -4,19 +4,19 @@
 
 ## The past
 
-The current version of CSG.js has been built over  a long time, by adding a lot of features on top of the original csg.js
+The current version of CSG.js has been built over  a long time, by adding a lot of features on top of the original csg.js.
 Up until recently there where :
   - no unit tests
-  - no coherence requirement
+  - no coherence requirements
   - no overarching intent
   - no checks for duplicate features or partially implemented ones
-  - a double API: the 'old' object oriented API and a functional API
+  - a double API: the 'old' object oriented API and a functional API semi overlapping, semi conflicting
   - no linting
-  - a blind trust in what came before 
+  - a blind trust in what came before (insert giant with feet of clay jokes here)
   - barebones documentation, that was written at various stages of development and thus partially outdated or flat out 
   false in some cases
   - no decoupling between API & implementation
-  - not using standards or modules (up until recently all of csg was a few GIANT files)
+  - not using standards or modules (up until recently all of csg was a few GIANT js files, no modules, which made maintenance/ changes very hard)
 
 The end result at this stage is to put it midly, a big mess, that has become increasingly hard to maintain and expand
 
@@ -46,7 +46,40 @@ The end result at this stage is to put it midly, a big mess, that has become inc
   
   - use webgl & js environement more inteligently
     - a shorter path to webgl would be ideal to avoid having to regenerate geometry useable by webgl (this note is only valid as long as we use triangle based structures obviously)
-    - seperate object TRANSFORMS (transformation matrix) from object STRUCTURE: 
+    - seperate object TRANSFORMS (transformation matrix) from object STRUCTURE, ie move from transforms 'baked in'
+    into geometry to seperate transforms
+      multiple reasons for this:
+        * currently any transformation (translate, rotate, scale etc) updates every point of every vertex of every polygon (essentially newVertices => oldVertices.map(transform)), this can be very costly and does not scale well
+        * A shape is only 
+          ```javascript
+          {geometry}
+          ```
+        * the api is immutable so 
+          ```javascript
+          const a = someFunctionThatCreatesSomeGeometry()
+          const b = translate([10, 0, 0], a)
+          ```
+          means
+          - all the geometry of **a** is transformed (memory & cpu use), and stored (memory) in **b**
+          - almost only the boolean /csg operation need the baked in transforms (even that could be changed)
+
+        * it could be modified like so:
+          A shape could be ```{transforms, geometry}```
+          which means
+          ```javascript
+          const a = someFunctionThatCreatesSomeGeometry() // => {transforms: mat4.identity(), geometry}
+          const b = translate([10, 0, 0], a) // {transforms: mat4.identity() * mat4.translation([10, 0,0]), geometry }
+          ```
+          As long as we are not applying operations that change the actual STRUCTURE of the shape (booleans etc) 
+          we only store a **reference** to the original shape's (**a**) geometry
+          * we just update the transformation matrix of shape **b*** which is trivial and fast (low memory & cpu cost)
+          * we pass that transformation matrix along with the geometry to WebGL for display (which is also very fast & efficient)
+          * if we want to export the data to various file formats we might need to bake in the transforms if the format has no support for seperate transforms(STL), or we can keep the data seperate (AMF/ 3MF).
+          since exporting happens a lot less than displaying the shapes on screen, this is again much more efficient
+
+        * possible use of instancing : same object with different transforms at different places
+        * real time movement of the final shapes in assemblies (common use case)
+        
   
   - use arrays & typed arrays with functions to manipulate their data rather than overly complex , shoe-horned classes where applicable
   - use of more modern standards & structures: ES6 is our friend ! more readable code , weakmaps, sets , iterators, your name it !
@@ -61,7 +94,7 @@ The end result at this stage is to put it midly, a big mess, that has become inc
   features: we feel most contributions are valid, but instead of having a giant 'do it all but not well core', we want to make finding, importing & using small , specialized pieces of code easier
 
   - Solutions:
-    - use of node modules to distribute user created helpers & designs (this works very well in practice)
+    - use of node modules to distribute user created helpers & designs (this works very well [in practice](https://github.com/PiRo-bots/kiwikee/tree/master/cad/kiwikee))
     - support es6 modules when they are ready (requires universal support for the dynamic `import()` statement)
     - the future website (not just )
 
