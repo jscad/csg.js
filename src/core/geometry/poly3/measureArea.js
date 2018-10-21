@@ -4,23 +4,26 @@ const vec3 = require('../../math/vec3')
 // translated from the orginal C++ code from Dan Sunday
 // 2000 softSurfer http://geomalgorithms.com
 const measureArea = (poly3) => {
-  let n = poly3.vectors.length
+  let n = poly3.vertices.length
   if (n < 3) {
     return 0 // degenerate polygon
   }
-  let vectors = poly3.vectors
+  let vertices = poly3.vertices
 
 // calculate a real normal
-  let a = vectors[0]
-  let b = vectors[1]
-  let c = vectors[2]
-  let normal = b.minus(a).cross(c.minus(a))
+  let a = vertices[0]
+  let b = vertices[1]
+  let c = vertices[2]
+  let ba = vec3.subtract(b, a)
+  let ca = vec3.subtract(c, a)
+  let normal = vec3.cross(ba, ca)
+  //let normal = b.minus(a).cross(c.minus(a))
   //let normal = poly3.plane.normal // unit based normal, CANNOT use
 
 // determin direction of projection
-  let ax = Math.abs(normal._x)
-  let ay = Math.abs(normal._y)
-  let az = Math.abs(normal._z)
+  let ax = Math.abs(normal[0])
+  let ay = Math.abs(normal[1])
+  let az = Math.abs(normal[2])
   let an = Math.sqrt( (ax * ax) + (ay * ay) + (az * az)) // length of normal
 
   let coord = 3 // ignore Z coordinates
@@ -41,11 +44,11 @@ const measureArea = (poly3) => {
       for (i = 1; i < n; i++) {
         h = i - 1
         j = (i + 1) % n
-        area += (vectors[i][1] * (vectors[j][2] - vectors[h][2]))
+        area += (vertices[i][1] * (vertices[j][2] - vertices[h][2]))
       }
-      area += (vectors[0][1] * (vectors[1][2] - vectors[n - 1][2]))
+      area += (vertices[0][1] * (vertices[1][2] - vertices[n - 1][2]))
     // scale to get area
-      area *= (an / (2 * normal._x))
+      area *= (an / (2 * normal[0]))
       break
 
     case 2: // ignore Y coordinates
@@ -53,11 +56,11 @@ const measureArea = (poly3) => {
       for (i = 1; i < n; i++) {
         h = i - 1
         j = (i + 1) % n
-        area += (vectors[i][2] * (vectors[j][0] - vectors[h][0]))
+        area += (vertices[i][2] * (vertices[j][0] - vertices[h][0]))
       }
-      area += (vectors[0][2] * (vectors[1][0] - vectors[n - 1][0]))
+      area += (vertices[0][2] * (vertices[1][0] - vertices[n - 1][0]))
     // scale to get area
-      area *= (an / (2 * normal._y))
+      area *= (an / (2 * normal[1]))
       break
 
     case 3: // ignore Z coordinates
@@ -65,30 +68,14 @@ const measureArea = (poly3) => {
       for (i = 1; i < n; i++) {
         h = i - 1
         j = (i + 1) % n
-        area += (vectors[i][0] * (vectors[j][1] - vectors[h][1]))
+        area += (vertices[i][0] * (vertices[j][1] - vertices[h][1]))
       }
-      area += (vectors[0][0] * (vectors[1][1] - vectors[n - 1][1]))
+      area += (vertices[0][0] * (vertices[1][1] - vertices[n - 1][1]))
     // scale to get area
-      area *= (an / (2 * normal._z))
+      area *= (an / (2 * normal[2]))
       break
   }
   return area
-}
-
-// Note: could calculate vectors only once to speed up
-// FIXME: use a pipe operator to simplify vec3 operations
-const measureArea2 = (poly3) => {
-  let polygonArea = 0
-  for (let i = 0; i < poly3.vectors.length - 2; i++) {
-    polygonArea += vec3.length(
-        vec3.cross(
-          vec3.subtract(poly3.vectors[i + 1], poly3.vectors[0]),
-          vec3.subtract(poly3.vectors[i + 2], poly3.vectors[i + 1])
-      )
-    )
-  }
-  polygonArea *= 0.5
-  return polygonArea
 }
 
 module.exports = measureArea
