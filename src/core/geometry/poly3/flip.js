@@ -11,7 +11,7 @@ const _vec3 = require('../../math/vec3')
  */
 const flip = (polygon) => {
   const out = create()
-  out.vectors = polygon.vectors.reverse()
+  out.vertices = polygon.vertices.reverse()
   out.plane = _plane.flip(polygon.plane)
   return out
 }

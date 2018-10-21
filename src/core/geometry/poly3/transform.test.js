@@ -12,7 +12,7 @@ test('poly3: transform() should return a new poly3 with correct values', (t) => 
     0, 0, 0, 1
   ]
 
-  const exp1 = { plane: [0, 0, 1, 0], vectors: [[0, 0, 0], [1, 0, 0], [1, 1, 0]] }
+  const exp1 = { plane: [0, 0, 1, 0], vertices: [[0, 0, 0], [1, 0, 0], [1, 1, 0]] }
   const org1 = fromPoints([[0, 0, 0], [1, 0, 0], [1, 1, 0]])
   const ret1 = transform(identityMatrix, org1)
   t.true(comparePolygons(ret1, exp1))
@@ -28,7 +28,7 @@ test('poly3: transform() should return a new poly3 with correct values', (t) => 
     x, y, z, 1
   ]
 
-  const exp2 = { plane: [0, 0, 1, 7], vectors: [[1, 5, 7], [2, 5, 7], [2, 6, 7]] }
+  const exp2 = { plane: [0, 0, 1, 7], vertices: [[1, 5, 7], [2, 5, 7], [2, 6, 7]] }
   const org2 = fromPoints([[0, 0, 0], [1, 0, 0], [1, 1, 0]])
   const ret2 = transform(translationMatrix, org2)
   t.true(comparePolygons(ret2, exp2))
@@ -42,7 +42,7 @@ test('poly3: transform() should return a new poly3 with correct values', (t) => 
               0,            0, 0, 1
   ]
 
-  const exp3 = { plane: [0, 0, 1, 0], vectors: [[0, 0, 0], [0, -1, 0], [1, -1, 0]] }
+  const exp3 = { plane: [0, 0, 1, 0], vertices: [[0, 0, 0], [0, -1, 0], [1, -1, 0]] }
   const org3 = fromPoints([[0, 0, 0], [1, 0, 0], [1, 1, 0]])
   const ret3 = transform(rotateZMatrix, org3)
   t.true(comparePolygons(ret3, exp3))

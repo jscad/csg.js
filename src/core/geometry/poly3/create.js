@@ -1,7 +1,7 @@
 const plane = require('../../math/plane/')
 
 /**
- * Represents a convex polygon. The vectors used to initialize a polygon must
+ * Represents a convex polygon. The vertices used to initialize a polygon must
  *   be coplanar and form a convex loop. They do not have to be `vec3`
  *   instances but they must behave similarly.
  * <br>
@@ -13,13 +13,13 @@ const plane = require('../../math/plane/')
  *   The plane can alternatively be passed as the third argument to avoid calculations.
  *
  * @constructor
- * @param {vec3[]} vectors - list of vectors
+ * @param {vec3[]} vertices - list of vertices
  * @param {shared} [shared=defaultShared] - shared property to apply
  * @param {plane} [plane] - plane of the polygon
  *
  * @example
- * const vectors = [ [0, 0, 0], [0, 10, 0], [0, 10, 10] ]
- * let observed = poly3.fromPoints(vectors)
+ * const vertices = [ [0, 0, 0], [0, 10, 0], [0, 10, 10] ]
+ * let observed = poly3.fromPoints(vertices)
  */
 
 /**
@@ -29,7 +29,7 @@ const plane = require('../../math/plane/')
  */
 const create = () => {
   return {
-           vectors: [],
+           vertices: [],
            plane: plane.create()
          }
 }

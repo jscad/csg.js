@@ -7,13 +7,13 @@ const _mat4 = require('../../math/mat4')
 
 // Affine transformation of polygon. Returns a new Polygon3
 const transform = (matrix, poly3) => {
-  const vectors = poly3.vectors.map((vector) => { return _vec3.transformMat4(matrix, vector)} )
+  const vertices = poly3.vertices.map((vertex) => { return _vec3.transformMat4(matrix, vertex)} )
   if (_mat4.isMirroring(matrix)) {
     // reverse the order to preserve the orientation
-    vectors.reverse()
+    vertices.reverse()
   }
   const out = create()
-  out.vectors = vectors
+  out.vertices = vertices
   out.plane = _plane.transformMat4(matrix, poly3.plane)
   return out
 }
