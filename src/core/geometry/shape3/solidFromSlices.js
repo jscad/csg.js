@@ -1,6 +1,6 @@
 const Polygon = require('../core/math/Polygon3')
-const {fromPolygons} = require('../core/CSGFactories')
-const {fnSortByIndex} = require('../core/utils')
+const { fromPolygons } = require('../core/CSGFactories')
+const { fnSortByIndex } = require('../core/utils')
 
 // FIXME: WHY is this for 3D polygons and not for 2D shapes ?
 /**
@@ -19,31 +19,25 @@ const solidFromSlices = function (options, polygon) {
   let prev = null
   let bottom = null
   let top = null
-  let numSlices = 2
-  let bLoop = false
-  let fnCallback
   let flipped = null
 
-  if (options) {
-    bLoop = Boolean(options['loop'])
+  let square = Polygon.createFromPoints([
+    [0, 0, 0],
+    [1, 0, 0],
+    [1, 1, 0],
+    [0, 1, 0]
+  ])
 
-    if (options.numslices) { numSlices = options.numslices }
-
-    if (options.callback) {
-      fnCallback = options.callback
+  const defaults = {
+    numSlices: 2,
+    loop: false,
+    fnCallback: function (t, slice) {
+      return t === 0 || t === 1 ? translate([0, 0, t], square) : null
     }
   }
-  if (!fnCallback) {
-    let square = Polygon.createFromPoints([
-                  [0, 0, 0],
-                  [1, 0, 0],
-                  [1, 1, 0],
-                  [0, 1, 0]
-    ])
-    fnCallback = function (t, slice) {
-      return t === 0 || t === 1 ? square.translate([0, 0, t]) : null
-    }
-  }
+  const { numSlices, loop, fnCallback } = Object.assign({}, defaults, options)
+  // bLoop = Boolean(options['loop'])
+
   for (let i = 0, iMax = numSlices - 1; i <= iMax; i++) {
     csg = fnCallback.call(polygon, i / iMax, i)
     if (csg) {
@@ -65,7 +59,7 @@ const solidFromSlices = function (options, polygon) {
   }
   top = csg
 
-  if (bLoop) {
+  if (loop) {
     let bSameTopBottom = bottom.vertices.length === top.vertices.length &&
                   bottom.vertices.every(function (v, index) {
                     return v.pos.equals(top.vertices[index].pos)
@@ -94,12 +88,12 @@ const _addWalls = function (walls, bottom, top, bFlipped) {
   let topPoints = top.vertices.slice(0) // make a copy
   let color = top.shared || null
 
-        // check if bottom perimeter is closed
+  // check if bottom perimeter is closed
   if (!bottomPoints[0].pos.equals(bottomPoints[bottomPoints.length - 1].pos)) {
     bottomPoints.push(bottomPoints[0])
   }
 
-        // check if top perimeter is closed
+  // check if top perimeter is closed
   if (!topPoints[0].pos.equals(topPoints[topPoints.length - 1].pos)) {
     topPoints.push(topPoints[0])
   }
@@ -115,7 +109,7 @@ const _addWalls = function (walls, bottom, top, bFlipped) {
   let bMoreBottoms = iExtra < 0
 
   let aMin = [] // indexes to start extra triangles (polygon with minimal square)
-        // init - we need exactly /iExtra/ small triangles
+  // init - we need exactly /iExtra/ small triangles
   for (let i = Math.abs(iExtra); i > 0; i--) {
     aMin.push({
       len: Infinity,
@@ -127,7 +121,7 @@ const _addWalls = function (walls, bottom, top, bFlipped) {
   if (bMoreBottoms) {
     for (let i = 0; i < iBotLen; i++) {
       len = bottomPoints[i].pos.distanceToSquared(bottomPoints[i + 1].pos)
-                // find the element to replace
+      // find the element to replace
       for (let j = aMin.length - 1; j >= 0; j--) {
         if (aMin[j].len > len) {
           aMin[j].len = len
@@ -139,7 +133,7 @@ const _addWalls = function (walls, bottom, top, bFlipped) {
   } else if (bMoreTops) {
     for (let i = 0; i < iTopLen; i++) {
       len = topPoints[i].pos.distanceToSquared(topPoints[i + 1].pos)
-                // find the element to replace
+      // find the element to replace
       for (let j = aMin.length - 1; j >= 0; j--) {
         if (aMin[j].len > len) {
           aMin[j].len = len
@@ -165,24 +159,24 @@ const _addWalls = function (walls, bottom, top, bFlipped) {
     if (aMin.length) {
       if (bMoreTops && iT === aMin[0].index) { // one vertex is on the bottom, 2 - on the top
         secondPoint = topPoints[++iT]
-                    // console.log('<<< extra top: ' + secondPoint + ', ' + tpoint + ', bottom: ' + bpoint);
+        // console.log('<<< extra top: ' + secondPoint + ', ' + tpoint + ', bottom: ' + bpoint);
         walls.push(getTriangle(
-                        secondPoint, tpoint, bpoint, color
-                    ))
+          secondPoint, tpoint, bpoint, color
+        ))
         tpoint = secondPoint
         aMin.shift()
         continue
       } else if (bMoreBottoms && iB === aMin[0].index) {
         secondPoint = bottomPoints[++iB]
         walls.push(getTriangle(
-                        tpoint, bpoint, secondPoint, color
-                    ))
+          tpoint, bpoint, secondPoint, color
+        ))
         bpoint = secondPoint
         aMin.shift()
         continue
       }
     }
-            // choose the shortest path
+    // choose the shortest path
     if (iB < iBotLen) { // one vertex is on the top, 2 - on the bottom
       nBotFacet = tpoint.pos.distanceToSquared(bottomPoints[iB + 1].pos)
     } else {
@@ -196,15 +190,15 @@ const _addWalls = function (walls, bottom, top, bFlipped) {
     if (nBotFacet <= nTopFacet) {
       secondPoint = bottomPoints[++iB]
       walls.push(getTriangle(
-                    tpoint, bpoint, secondPoint, color
-                ))
+        tpoint, bpoint, secondPoint, color
+      ))
       bpoint = secondPoint
     } else if (iT < iTopLen) { // nTopFacet < Infinity
       secondPoint = topPoints[++iT]
-                // console.log('<<< top: ' + secondPoint + ', ' + tpoint + ', bottom: ' + bpoint);
+      // console.log('<<< top: ' + secondPoint + ', ' + tpoint + ', bottom: ' + bpoint);
       walls.push(getTriangle(
-                    secondPoint, tpoint, bpoint, color
-                ))
+        secondPoint, tpoint, bpoint, color
+      ))
       tpoint = secondPoint
     };
   }
