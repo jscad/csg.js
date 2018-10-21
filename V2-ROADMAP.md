@@ -4,7 +4,7 @@
 
 ## The past
 
-The current version of CSG.js has been built overtime, by adding a lot of features on top of the original csg.js
+The current version of CSG.js has been built over  a long time, by adding a lot of features on top of the original csg.js
 Up until recently there where :
   - no unit tests
   - no coherence requirement
@@ -43,11 +43,14 @@ The end result at this stage is to put it midly, a big mess, that has become inc
   - simplification of data structures and functions (they should do one thing & do it well)
     - vertices, points, polygons etc all have deeply nested, overly complex data structures
     - the whole use of 'tags' on the above to find identical instances is overly complex and should be removed (the code predates weakmaps, sets etc)
-  - use arrays & typed arrays rather than overly complex , shoe-horned classes where applicable
-  - use of more modern standards & structures
+  
   - use webgl & js environement more inteligently
     - a shorter path to webgl would be ideal to avoid having to regenerate geometry useable by webgl (this note is only valid as long as we use triangle based structures obviously)
     - seperate object TRANSFORMS (transformation matrix) from object STRUCTURE: 
+  
+  - use arrays & typed arrays with functions to manipulate their data rather than overly complex , shoe-horned classes where applicable
+  - use of more modern standards & structures: ES6 is our friend ! more readable code , weakmaps, sets , iterators, your name it !
+
   - do not reinvent the wheel, but avoid dependency bloat
   - optimise (but avoid premature optimisation)
 
@@ -75,3 +78,12 @@ details are [here](V2-BREAKING-CHANGES.md)
 # BRAINSTORMING
 
 details are [here](V2-BRAINSTORM.md)
+
+# Notes
+
+- for documentation prefer markdown files over wiki
+  - no need for infrastructure
+  - single source of truth
+  - can be distributed easilly (desktop app, docs generation etc)
+  - 'kiss' principle
+
