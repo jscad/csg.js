@@ -5,6 +5,7 @@ module.exports = {
 //  fromData: require('./fromData'),
   fromPoints: require('./fromPoints'),
 //  fromObject: require('./fromObject'),
+  isConvex: require('./isConvex'),
   measureArea: require('./measureArea'),
 //  measureSignedVolume: require('./measureSignedVolume'),
 //  measureBoundingBox: require('./measureBoundingBox'),
