@@ -1,6 +1,6 @@
 const test = require('ava')
 
-const { transform, fromPoints, toString } = require('./index')
+const { transform, fromPoints } = require('./index')
 
 const { comparePolygons } = require('../../../../test/helpers/index')
 
@@ -47,4 +47,16 @@ test('poly3: transform() should return a new poly3 with correct values', (t) => 
   const ret3 = transform(rotateZMatrix, org3)
   t.true(comparePolygons(ret3, exp3))
   t.not(org3, ret3)
+
+  const mirrorMatrix = [
+   -1, 0, 0, 0,
+    0, 1, 0, 0,
+    0, 0, 1, 0,
+    0, 0, 0, 1
+  ]
+  const exp4 = { plane: [0, 0, 1, 0], vertices: [[-1, 1, 0], [-1, 0, 0], [0, 0, 0]] }
+  const org4 = fromPoints([[0, 0, 0], [1, 0, 0], [1, 1, 0]])
+  const ret4 = transform(mirrorMatrix, org4)
+  t.true(comparePolygons(ret4, exp4))
+  t.not(org4, ret4)
 })
