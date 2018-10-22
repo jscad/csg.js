@@ -34,16 +34,21 @@ The end result at this stage is to put it midly, a big mess, that has become inc
   - decouple api & implementation
     - we want to be able to change the internals of the csg algorithm & data structures without breaking everything
     in the process
-      - for example we have been looking into f-rep, b-rep, half edges
+      - for example we have been looking into f-rep, b-rep, half edges and beyond that, into Implicit Surfaces and true volumetric modeling (signed distance fields, raymarching & co)
     - see [vtree experiments](https://github.com/kaosat-dev/jscad-tree-experiments) for a working system based on V1
   - keep the immutability of the API, it is sane, avoids issues with accidental mutation
     - note that this does NOT mean that there cannot be mutable parts in the 'core' (behind the scenes)
   
 ### Internals: 
+  - emphasis on simple data as inputs
+
   - simplification of data structures and functions (they should do one thing & do it well)
     - vertices, points, polygons etc all have deeply nested, overly complex data structures
     - the whole use of 'tags' on the above to find identical instances is overly complex and should be removed (the code predates weakmaps, sets etc)
   
+  - the 2d shapes system is in a rather bad state and needs an overhaul, keeping in line with the new functional API,
+  and simplifing the data structures
+
   - use webgl & js environement more inteligently
     - a shorter path to webgl would be ideal to avoid having to regenerate geometry useable by webgl (this note is only valid as long as we use triangle based structures obviously)
     - seperate object TRANSFORMS (transformation matrix) from object STRUCTURE, ie move from transforms 'baked in'
@@ -79,6 +84,7 @@ The end result at this stage is to put it midly, a big mess, that has become inc
 
         * possible use of instancing : same object with different transforms at different places
         * real time movement of the final shapes in assemblies (common use case)
+        * more in depth information about this [here](./V2-BRAINSTORM.md##capabilities)
         
   
   - use arrays & typed arrays with functions to manipulate their data rather than overly complex , shoe-horned classes where applicable
