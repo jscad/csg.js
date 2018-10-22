@@ -1,6 +1,6 @@
-const Polygon = require('../core/math/Polygon3')
-const { fromPolygons } = require('../core/CSGFactories')
-const { fnSortByIndex } = require('../core/utils')
+const poly3 = require('../poly3')
+const { fromPolygons } = require('./fromPolygons')
+// const { fnSortByIndex } = require('../../')
 
 // FIXME: WHY is this for 3D polygons and not for 2D shapes ?
 /**
@@ -21,7 +21,7 @@ const solidFromSlices = function (options, polygon) {
   let top = null
   let flipped = null
 
-  let square = Polygon.createFromPoints([
+  let square = poly3.fromPoints([
     [0, 0, 0],
     [1, 0, 0],
     [1, 1, 0],
@@ -32,7 +32,7 @@ const solidFromSlices = function (options, polygon) {
     numSlices: 2,
     loop: false,
     fnCallback: function (t, slice) {
-      return t === 0 || t === 1 ? translate([0, 0, t], square) : null
+      return t === 0 || t === 1 ? poly3.translate([0, 0, t], square) : null
     }
   }
   const { numSlices, loop, fnCallback } = Object.assign({}, defaults, options)
@@ -76,6 +76,10 @@ const solidFromSlices = function (options, polygon) {
     polygons.push(flipped ? top.flipped() : top)
   }
   return fromPolygons(polygons)
+}
+
+function fnSortByIndex (a, b) {
+  return a.index - b.index
 }
 
 /**
