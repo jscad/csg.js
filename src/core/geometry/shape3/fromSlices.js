@@ -2,10 +2,6 @@ const poly3 = require('../poly3')
 const { fromPolygons } = require('./fromPolygons')
 // const { fnSortByIndex } = require('../../')
 
-<<<<<<< HEAD
-=======
-
->>>>>>> refactor(fromSlices): merged fromSlices & solidFromSlices
 /** Construct a Shape3 solid from a list of pre-generated slices.
  * See Polygon.prototype.solidFromSlices() for details.
  * @param {Object} options - options passed to solidFromSlices()
@@ -19,6 +15,7 @@ const { fromPolygons } = require('./fromPolygons')
     [0, 1, 0]
   ]).solidFromSlices(options)
 } */
+
 
 // module.exports = fromSlices
 
@@ -231,23 +228,24 @@ const addWalls = function (walls, bottom, top, flipped) {
   return walls
 }
 
+
 // module.exports = fromSlices
 
-
-// FIXME: WHY is this for 3D polygons and not for 2D shapes ?
 /**
  * Creates solid from slices (Polygon) by generating walls
+ * this for 3D polygons and not for 2D shapes directly because of the ability to generate extrusions on any plane,
+ * distorted polygons etc
  * @param {Object} options Solid generating options
  *  - numslices {Number} Number of slices to be generated
  *  - callback(t, slice) {Function} Callback function generating slices.
  *          arguments: t = [0..1], slice = [0..numslices - 1]
  *          return: Polygon or null to skip
- *  - loop {Boolean} no flats, only walls, it's used to generate solids like a tor
+ *  - loop {Boolean} no caps, only walls, it's used to generate solids like a torus
  *  @param {Polygon3} options base polygon
  */
-const solidFromSlices = function (options, polygon) {
+const fromSlices = (options, polygon) => {
   let polygons = []
-  let csg = null
+  let currentPolygon = null
   let prev = null
   let bottom = null
   let top = null
@@ -271,35 +269,35 @@ const solidFromSlices = function (options, polygon) {
   // bLoop = Boolean(options['loop'])
 
   for (let i = 0, iMax = numSlices - 1; i <= iMax; i++) {
-    csg = fnCallback.call(polygon, i / iMax, i)
-    if (csg) {
-      if (!(csg instanceof Polygon)) {
+    currentPolygon = fnCallback.call(polygon, i / iMax, i)
+    if (currentPolygon) {
+      if (!(currentPolygon instanceof Polygon)) {
         throw new Error('SolidFromSlices callback error: Polygon expected')
       }
-      csg.checkIfConvex()
+      currentPolygon.checkIfConvex()
 
       if (prev) { // generate walls
         if (flipped === null) { // not generated yet
-          flipped = prev.plane.signedDistanceToPoint(csg.vertices[0].pos) < 0
+          flipped = prev.plane.signedDistanceToPoint(currentPolygon.vertices[0].pos) < 0
         }
-        _addWalls(polygons, prev, csg, flipped)
+        addWalls(polygons, prev, currentPolygon, flipped)
       } else { // the first - will be a bottom
-        bottom = csg
+        bottom = currentPolygon
       }
-      prev = csg
+      prev = currentPolygon
     } // callback can return null to skip that slice
   }
-  top = csg
+  top = currentPolygon
 
   if (loop) {
-    let bSameTopBottom = bottom.vertices.length === top.vertices.length &&
-                  bottom.vertices.every(function (v, index) {
-                    return v.pos.equals(top.vertices[index].pos)
-                  })
+    let sameTopBottom = bottom.vertices.length === top.vertices.length &&
+      bottom.vertices.every(function (v, index) {
+        return v.pos.equals(top.vertices[index].pos)
+      })
     // if top and bottom are not the same -
     // generate walls between them
-    if (!bSameTopBottom) {
-      _addWalls(polygons, top, bottom, flipped)
+    if (!sameTopBottom) {
+      addWalls(polygons, top, bottom, flipped)
     } // else - already generated
   } else {
     // save top and bottom
@@ -319,7 +317,7 @@ function fnSortByIndex (a, b) {
  * @param bottom Bottom polygon
  * @param top Top polygon
  */
-const _addWalls = function (walls, bottom, top, bFlipped) {
+const addWalls = function (walls, bottom, top, flipped) {
   let bottomPoints = bottom.vertices.slice(0) // make a copy
   let topPoints = top.vertices.slice(0) // make a copy
   let color = top.shared || null
@@ -333,7 +331,8 @@ const _addWalls = function (walls, bottom, top, bFlipped) {
   if (!topPoints[0].pos.equals(topPoints[topPoints.length - 1].pos)) {
     topPoints.push(topPoints[0])
   }
-  if (bFlipped) {
+
+  if (flipped) {
     bottomPoints = bottomPoints.reverse()
     topPoints = topPoints.reverse()
   }
@@ -441,4 +440,4 @@ const _addWalls = function (walls, bottom, top, bFlipped) {
   return walls
 }
 
-module.exports = solidFromSlices
+module.exports = fromSlices
