@@ -31,13 +31,25 @@ The end result at this stage is to put it midly, a big mess, that has become inc
       'radius' in some others
       'diameter' is sometimes supported, sometimes not, sometimes 'd' is used instead etc
     - correct primitive & function names, that actually represent what they are doing ! (square => rectangle, cube => cuboid etc)
+  
   - decouple api & implementation
     - we want to be able to change the internals of the csg algorithm & data structures without breaking everything
     in the process
       - for example we have been looking into f-rep, b-rep, half edges and beyond that, into Implicit Surfaces and true volumetric modeling (signed distance fields, raymarching & co)
+      -  those representations might be useful for different purposes: fast realtime view with distance fields, triangulated/ polygonal output for stl files etc
+      The code below does not need to say anything about HOW things are implemented (with the usual caveats that not all of the above can do everything , or equaly well)
+  
+      ```javascript 
+      const shape1 = cube()
+      const shape2 = sphere()
+      const combined = union(shape1, shape2)
+      ``` 
+    
     - see [vtree experiments](https://github.com/kaosat-dev/jscad-tree-experiments) for a working system based on V1
+  
   - keep the immutability of the API, it is sane, avoids issues with accidental mutation
     - note that this does NOT mean that there cannot be mutable parts in the 'core' (behind the scenes)
+  - make all extrusions forms (linear, rotate, fromSlices, etc) use the same code base (most likely a HEAVILLY updated/ optimized version of fromSlices as it is the most generic one)
   
 ### Internals: 
   - emphasis on simple data as inputs
@@ -88,8 +100,13 @@ The end result at this stage is to put it midly, a big mess, that has become inc
         
   
   - use arrays & typed arrays with functions to manipulate their data rather than overly complex , shoe-horned classes where applicable
-  - use of more modern standards & structures: ES6 is our friend ! more readable code , weakmaps, sets , iterators, your name it !
 
+  - 
+
+
+ #### Some generic thoughts
+
+  - use of more modern standards & structures: ES6 is our friend ! more readable code , weakmaps, sets , iterators, your name it !
   - do not reinvent the wheel, but avoid dependency bloat
   - optimise (but avoid premature optimisation)
 
