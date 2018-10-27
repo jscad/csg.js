@@ -7,9 +7,9 @@ module.exports = {
 //  fromObject: require('./fromObject'),
   isConvex: require('./isConvex'),
   measureArea: require('./measureArea'),
-//  measureSignedVolume: require('./measureSignedVolume'),
-//  measureBoundingBox: require('./measureBoundingBox'),
-//  measureBoundingSphere: require('./measureBoundingSphere'),
+  measureSignedVolume: require('./measureSignedVolume'),
+  measureBoundingBox: require('./measureBoundingBox'),
+  measureBoundingSphere: require('./measureBoundingSphere'),
   toString: require('./toString'),
   transform: require('./transform'),
   translate: require('./translate')
