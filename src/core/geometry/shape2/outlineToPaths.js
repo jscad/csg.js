@@ -1,65 +1,65 @@
-const Path2D = require('../core/math/Path2')
 const canonicalize = require('./canonicalize')
+
+//const path2 = require('../path2')
 const vec2 = require('../../math/vec2')
 
-const direction = () => {
-
-}
-
 /** returns the outline of the given Shape2 as an array of paths
- * FIXME: convert to V2 data structures
- * @param  {Shape2} shape
+ * @param  {shape2} shape
  * @returns {Array} array of paths
  */
-const outlineToPaths = function (shape) {
+const outlineToPaths = (shape) => {
+console.log('--- outlineToPaths ---')
   let cleanShape = canonicalize(shape)
-  let sideTagToSideMap = {}
-  let startVertexTagToSideTagMap = {}
+  let vertexMap = new Map()
   cleanShape.sides.map(function (side) {
-    let sidetag = side.getTag()
-    sideTagToSideMap[sidetag] = side
-    let startvertextag = side.vertex0.getTag()
-    if (!(startvertextag in startVertexTagToSideTagMap)) {
-      startVertexTagToSideTagMap[startvertextag] = []
+    if (!(vertexMap.has(side[0]))) {
+console.log('  set: ' + side[0])
+      vertexMap.set(side[0], [])
     }
-    startVertexTagToSideTagMap[startvertextag].push(sidetag)
+    let sideslist = vertexMap.get(side[0])
+console.log('  push: ' + side)
+    console.log(sideslist.push(side))
+    sideslist = vertexMap.get(side[0])
   })
   let paths = []
   while (true) {
-    let startsidetag = null
-    for (let aVertexTag in startVertexTagToSideTagMap) {
-      let sidesForcagVertex = startVertexTagToSideTagMap[aVertexTag]
-      startsidetag = sidesForcagVertex[0]
-      sidesForcagVertex.splice(0, 1)
-      if (sidesForcagVertex.length === 0) {
-        delete startVertexTagToSideTagMap[aVertexTag]
+    let startside = undefined
+console.log('  startside: ' + startside)
+    for (let [vertex, sides] of vertexMap) {
+      startside = sides.shift()
+      if (!startside) {
+console.log('  delete: ' + vertex)
+        vertexMap.delete(vertex)
+        continue
       }
       break
     }
-    if (startsidetag === null) break // we've had all sides
+    if (startside === undefined) break // all vertices have been visited
+console.log('  startside: ' + startside)
     let connectedVertexPoints = []
-    let sidetag = startsidetag
-    let cagside = sideTagToSideMap[sidetag]
-    let startvertextag = cagside.vertex0.getTag()
+    let startvertex = startside[0]
+console.log('  startvertex: ' + startvertex)
     while (true) {
-      connectedVertexPoints.push(cagside.vertex0.pos)
-      let nextvertextag = cagside.vertex1.getTag()
-      if (nextvertextag === startvertextag) break // we've closed the polygon
-      if (!(nextvertextag in startVertexTagToSideTagMap)) {
+      connectedVertexPoints.push(startside[0])
+      let nextvertex = startside[1]
+console.log('  nextvertex: ' + nextvertex)
+      if (nextvertex === startvertex) break // we've closed the polygon
+      let nextpossiblesides = vertexMap.get(nextvertex)
+console.log('  nextpossiblesides: ' + nextpossiblesides)
+      if (!nextpossiblesides) {
         throw new Error('Area is not closed!')
       }
-      let nextpossiblesidetags = startVertexTagToSideTagMap[nextvertextag]
       let nextsideindex = -1
-      if (nextpossiblesidetags.length === 1) {
+console.log('  nextpossiblesides.length: ' + nextpossiblesides.length)
+      if (nextpossiblesides.length === 1) {
         nextsideindex = 0
       } else {
-        // more than one side starting at the same vertex. cag means we have
-        // two shapes touching at the same corner
+        // more than one side starting at the same vertex
         let bestangle = null
-        let cagangle = vec2.angleDegrees(direction(cagside))
-        for (let sideindex = 0; sideindex < nextpossiblesidetags.length; sideindex++) {
-          let nextpossiblesidetag = nextpossiblesidetags[sideindex]
-          let possibleside = sideTagToSideMap[nextpossiblesidetag]
+        let cagangle = vec2.angleDegrees(direction(startside))
+        for (let sideindex = 0; sideindex < nextpossiblesides.length; sideindex++) {
+          let nextpossibleside = nextpossiblesides[sideindex]
+          let possibleside = nextpossiblesidetag
           let angle = vec2.angleDegrees(direction(possibleside))
           let angledif = angle - cagangle
           if (angledif < -180) angledif += 360
@@ -70,21 +70,24 @@ const outlineToPaths = function (shape) {
           }
         }
       }
-      let nextsidetag = nextpossiblesidetags[nextsideindex]
-      nextpossiblesidetags.splice(nextsideindex, 1)
-      if (nextpossiblesidetags.length === 0) {
-        delete startVertexTagToSideTagMap[nextvertextag]
+      let nextside = nextpossiblesides[nextsideindex]
+      nextpossiblesides.splice(nextsideindex, 1) // remove side from list
+      if (nextpossiblesides.length === 0) {
+        vertexMap.delete(nextvertex)
       }
-      cagside = sideTagToSideMap[nextsidetag]
+      startside = nextside
     } // inner loop
     // due to the logic of fromPoints()
     // move the first point to the last
     if (connectedVertexPoints.length > 0) {
       connectedVertexPoints.push(connectedVertexPoints.shift())
     }
-    let path = new Path2D(connectedVertexPoints, true)
-    paths.push(path)
+console.log('  path:')
+console.log(connectedVertexPoints)
+    //let path = new Path2D(connectedVertexPoints, true)
+    //paths.push(path)
   } // outer loop
+  vertexMap.clear()
   return paths
 }
 
