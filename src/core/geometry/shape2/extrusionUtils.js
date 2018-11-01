@@ -1,9 +1,9 @@
-const {EPS, defaultResolution3D} = require('../../constants')
+const { EPS, defaultResolution3D } = require('../../constants')
 const OrthoNormalBasis = require('../../math/OrthoNormalBasis')
 
-const {parseOptionAs3DVector, parseOptionAsBool, parseOptionAsFloat, parseOptionAsInt} = require('../../../api/optionParsers')
-const {Connector} = require('../../connectors')
-const {fromPolygons} = require('../../core/CSGFactories')
+const { parseOptionAs3DVector, parseOptionAsBool, parseOptionAsFloat, parseOptionAsInt } = require('../../../api/optionParsers')
+const { Connector } = require('../../connectors')
+const { fromPolygons } = require('../../core/CSGFactories')
 
 const vec3 = require('../../math/vec3')
 const poly3 = require('../poly3')
@@ -38,19 +38,19 @@ const extrude = function (cag, options) {
   polygons = polygons.concat(shape2.toPlanePolygons(cag, {
     translation: [0, 0, 0],
     normalVector: normalVector,
-    flipped: !(offsetVector.z < 0)}
+    flipped: !(offsetVector.z < 0) }
   ))
   polygons = polygons.concat(shape2.toPlanePolygons(cag, {
     translation: offsetVector,
     normalVector: normalVector.rotateZ(twistangle),
-    flipped: offsetVector.z < 0}))
+    flipped: offsetVector.z < 0 }))
   // walls
   for (let i = 0; i < twiststeps; i++) {
     let c1 = new Connector(offsetVector.times(i / twiststeps), [0, 0, offsetVector.z],
-              normalVector.rotateZ(i * twistangle / twiststeps))
+      normalVector.rotateZ(i * twistangle / twiststeps))
     let c2 = new Connector(offsetVector.times((i + 1) / twiststeps), [0, 0, offsetVector.z],
-              normalVector.rotateZ((i + 1) * twistangle / twiststeps))
-    polygons = polygons.concat(shape2.toWallPolygons(cag, {toConnector1: c1, toConnector2: c2}))
+      normalVector.rotateZ((i + 1) * twistangle / twiststeps))
+    polygons = polygons.concat(shape2.toWallPolygons(cag, { toConnector1: c1, toConnector2: c2 }))
   }
 
   return fromPolygons(polygons)
@@ -76,11 +76,11 @@ const rotateExtrude = function (cag, options) { // FIXME options should be optio
   // planes only needed if alpha > 0
   let connS = new Connector(origin, axisV, normalV)
   if (alpha > 0 && alpha < 360) {
-          // we need to rotate negative to satisfy wall function condition of
-          // building in the direction of axis vector
+    // we need to rotate negative to satisfy wall function condition of
+    // building in the direction of axis vector
     let connE = new Connector(origin, axisV.rotateZ(-alpha), normalV)
-    polygons = polygons.concat(shape2.toPlanePolygons(cag, {toConnector: connS, flipped: true}))
-    polygons = polygons.concat(shape2.toPlanePolygons(cag, {toConnector: connE}))
+    polygons = polygons.concat(shape2.toPlanePolygons(cag, { toConnector: connS, flipped: true }))
+    polygons = polygons.concat(shape2.toPlanePolygons(cag, { toConnector: connE }))
   }
   let connT1 = connS
   let connT2
@@ -88,7 +88,7 @@ const rotateExtrude = function (cag, options) { // FIXME options should be optio
   for (let a = step; a <= alpha + EPS; a += step) { // FIXME Should this be angelEPS?
     connT2 = new Connector(origin, axisV.rotateZ(-a), normalV)
     polygons = polygons.concat(shape2.toPlanePolygons(cag,
-              {toConnector1: connT1, toConnector2: connT2}))
+      { toConnector1: connT1, toConnector2: connT2 }))
     connT1 = connT2
   }
   return fromPolygons(polygons).reTesselated()

@@ -1,4 +1,5 @@
 const mat4 = require('../../math/mat4')
+const geom3 = require('./geom3')
 
 /** create shape3/ CSG
  * Holds a binary space partition tree representing a 3D solid. Two solids can
@@ -9,12 +10,7 @@ const create = function () {
   return {
     type: 'shape3',
     properties: {}, // properties are just simple objects, 'children' of the shape (ie transforms applied to the shape are applied to properties)
-    polygonData: new Float32Array(),
-    geometry: {
-      polygons: [],
-      isCanonicalized: true,
-      isRetesselated: true
-    },
+    geometry: geom3.create(),
     transforms: mat4.identity()
   }
 }

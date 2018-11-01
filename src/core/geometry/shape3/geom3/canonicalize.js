@@ -9,7 +9,7 @@ const fromPolygons = require('./fromPolygons')
    * let rawCSG = someCSGMakingFunction()
    * let canonicalizedCSG = canonicalize(rawCSG)
    */
-const canonicalizeCSG = function (csg, options) {
+const canonicalize = function (csg, options) {
   if (csg.isCanonicalized) {
     return csg
   } else {
@@ -27,7 +27,7 @@ const CSGFromCSGFuzzyFactory = function (factory, sourcecsg) {
   let newpolygons = []
   sourcecsg.polygons.forEach(function (polygon) {
     let newpolygon = _this.getPolygon(polygon)
-          // see getPolygon above: we may get a polygon with no vertices, discard it:
+    // see getPolygon above: we may get a polygon with no vertices, discard it:
     if (newpolygon.vertices.length >= 3) {
       newpolygons.push(newpolygon)
     }
@@ -35,4 +35,4 @@ const CSGFromCSGFuzzyFactory = function (factory, sourcecsg) {
   return fromPolygons(newpolygons)
 }
 
-module.exports = canonicalizeCSG
+module.exports = canonicalize
