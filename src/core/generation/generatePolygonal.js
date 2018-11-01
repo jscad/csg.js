@@ -48,7 +48,6 @@ const generate = (node, cache) => {
       break
     case 'translate':
       operands = flatten(node.children).map(n => generate(n, cache))
-      // console.log('translate::::', node.params, operands)
       result = translate(node.params, operands)
       break
     case 'rotate':
