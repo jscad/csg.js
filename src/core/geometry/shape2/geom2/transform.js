@@ -1,7 +1,7 @@
-const mat4 = require('../../math/mat4')
-const vec2 = require('../../math/vec2')
-const fromSides = require('./fromSides')
-const flip = require('./flip')
+const mat4 = require('../../../math/mat4')
+const vec2 = require('../../../math/vec2')
+const fromSides = require('../fromSides')
+const flip = require('../flip')
 
 /** this actually transforms the individual points/ vertices/ etc
  * so should be called sparselly

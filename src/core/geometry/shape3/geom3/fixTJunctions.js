@@ -1,7 +1,7 @@
 const { EPS } = require('../constants')
 const Plane = require('../math/Plane')
 const canonicalize = require('./canonicalize')
-const poly3 = require('../poly3')
+const poly3 = require('../../poly3')
 
 function addSide (sidemap, vertextag2sidestart, vertextag2sideend, vertex0, vertex1, polygonindex) {
   let starttag = vertex0.getTag()

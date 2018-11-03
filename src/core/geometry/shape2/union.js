@@ -1,33 +1,4 @@
-const retessellate = require('../shape3/retessellate')
-const canonicalize = require('./canonicalize')
-const toShape3Wall = require('./toShape3Wall')
-const fromFakeShape3 = require('./fromFakeShape3')
-const transformGeometry = require('./transformGeometry')
-
-// FIXME: duplicate code in shape3.union
-const unionSub = function (otherCsg, csg, doRetesselate, doCanonicalize) {
-  if (!isOverlapping(otherCsg, csg)) {
-    return unionForNonIntersecting(otherCsg, csg)
-  } else {
-    let a = new Tree(otherCsg.polygons)
-    let b = new Tree(csg.polygons)
-    a.clipTo(b, false)
-
-    // b.clipTo(a, true); // ERROR: this doesn't work
-    b.clipTo(a)
-    b.invert()
-    b.clipTo(a)
-    b.invert()
-
-    let newpolygons = a.allPolygons().concat(b.allPolygons())
-    let result = fromPolygons(newpolygons)
-    // FIXME: what to do with properties ????
-    // result.properties = otherCsg.properties._merge(csg.properties)
-    if (doRetesselate) result = retesselate(result)
-    if (doCanonicalize) result = canonicalize(result)
-    return result
-  }
-}
+const geom2 = require('./geom2')
 
 /** // FIXME: double check this algorithm, or even better, swap it out with something not reliant
  * on converting to 3D and back !!!
@@ -41,17 +12,10 @@ const unionSub = function (otherCsg, csg, doRetesselate, doCanonicalize) {
  */
 const union = shapes => {
   // apply the transforms of the shapes to their geometries
-  let _shapes = shapes.map(shape => transformGeometry(shape.transforms, shape))
-  _shapes[0] = retessellate(toShape3Wall(_shapes[0], -1, 1))
-
-  let i
-  // combine csg pairs in a way that forms a balanced binary tree pattern
-  for (i = 1; i < _shapes.length; i += 2) {
-    const current = retessellate(toShape3Wall(_shapes[i], -1, 1))
-    const previous = _shapes[i - 1]
-    _shapes.push(unionSub(previous, current, false, false))
-  }
-  return canonicalize(fromFakeShape3(_shapes[i - 1]))
+  let _shapes = shapes.map(shape => {
+    // transformGeometry(shape.transforms, shape)
+    const newGeom = geom2.transform(shape.transform, shape.geometry)
+  })
 }
 
 module.exports = union

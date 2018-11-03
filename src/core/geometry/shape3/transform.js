@@ -81,7 +81,7 @@ const transform2 = (matrix, shape3) => {
   // [vert1, vert2, vert3, plane]
 }
 
-module.exports = transform2
+module.exports = transform
 
 /*
     // Affine transformation of CSG object. Returns a new CSG object
