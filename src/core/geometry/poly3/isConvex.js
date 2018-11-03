@@ -32,6 +32,7 @@ const isConvexPoint = function (prevpoint, point, nextpoint, plane) {
     vec3.subtract(point, prevpoint),
     vec3.subtract(nextpoint, point)
   )
+  // note: plane ~= normal point
   const crossdotnormal = vec3.dot(crossproduct, plane)
   return crossdotnormal >= 0
 }
