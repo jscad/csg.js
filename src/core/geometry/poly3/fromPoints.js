@@ -1,14 +1,13 @@
 const create = require('./create')
 
-const _plane = require('../../math/plane/')
-const _vec3 = require('../../math/vec3')
+const plane = require('../../math/plane/')
+const vec3 = require('../../math/vec3')
 
 /**
  * Create a poly3 from the given points.
  *
  * @param {Array[]} points - list of points
- * @param {Polygon3.Shared} [shared=defaultShared] - shared property to apply
- * @param {Plane} [plane] - plane of the polygon
+ * @param {plane} [planeof] - plane of the polygon
  *
  * @example
  * const points = [
@@ -18,11 +17,11 @@ const _vec3 = require('../../math/vec3')
  * ]
  * const polygon = createFromPoints(points)
  */
-const fromPoints = (points, shared, plane) => {
-// TODO handle optional parameters; shared and plane
+const fromPoints = (points, planeof) => {
+// TODO handle optional parameters; planeof
   let out = create()
-  out.vertices = points.map((point) => { return _vec3.clone(point) } )
-  out.plane = _plane.fromVec3s(out.vertices[0], out.vertices[1], out.vertices[2])
+  out.vertices = points.map((point) => { return vec3.clone(point) } )
+  out.plane = plane.fromVec3s(out.vertices[0], out.vertices[1], out.vertices[2])
   return out
 }
 
