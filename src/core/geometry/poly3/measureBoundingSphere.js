@@ -1,16 +1,15 @@
 const vec3 = require('../../math/vec3')
 const measureBoundingBox = require('./measureBoundingBox')
 
-/** compute's a poly3's bounding sphere
- * returns an array with a midpoint (vec3) and a radius
+/** Measure the bounding sphere of the given poly3
  * @param {poly3} the poly3 to measure
- * @returns the computed bounding sphere
+ * @returns computed bounding sphere; center (vec3) and radius
  */
-const measureBoundingSphere = poly3 => {
+const measureBoundingSphere = (poly3) => {
   const box = measureBoundingBox(poly3)
-  const midpoint = vec3.add(box[0], vec3.scale(0.5, box[1]))
-  let radius = vec3.distance(midpoint, box[1])
-  return [midpoint, radius]
+  const center = vec3.add(box[0], vec3.scale(0.5, box[1]))
+  let radius = vec3.distance(center, box[1])
+  return [center, radius]
 }
 
 module.exports = measureBoundingSphere
