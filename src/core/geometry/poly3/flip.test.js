@@ -1,6 +1,6 @@
 const test = require('ava')
 
-const { flip, fromPoints, toString } = require('./index')
+const { flip, fromPoints } = require('./index')
 
 const { comparePolygons } = require('../../../../test/helpers/index')
 

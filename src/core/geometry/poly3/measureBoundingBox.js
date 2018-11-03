@@ -1,9 +1,9 @@
 const vec3 = require('../../math/vec3')
 
 // returns an array of two Vector3Ds (minimum coordinates and maximum coordinates)
-const measureBoundingBox = poly3 => {
-  let vertices = poly3.vertices
-  let numvertices = vertices.length
+const measureBoundingBox = (poly3) => {
+  const vertices = poly3.vertices
+  const numvertices = vertices.length
   let min = numvertices === 0 ? vec3.create() : vertices[0]
   let max = min
   for (let i = 1; i < numvertices; i++) {

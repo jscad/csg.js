@@ -49,7 +49,7 @@ test('poly3: transform() should return a new poly3 with correct values', (t) => 
   t.not(org3, ret3)
 
   const mirrorMatrix = [
-   -1, 0, 0, 0,
+    -1, 0, 0, 0,
     0, 1, 0, 0,
     0, 0, 1, 0,
     0, 0, 0, 1

@@ -29,9 +29,9 @@ const plane = require('../../math/plane/')
  */
 const create = () => {
   return {
-           vertices: [],
-           plane: plane.create()
-         }
+    vertices: [],
+    plane: plane.create()
+  }
 }
 
 //    shared: {

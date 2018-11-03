@@ -19,8 +19,8 @@ const vec3 = require('../../math/vec3')
  */
 const fromPoints = (points, planeof) => {
 // TODO handle optional parameters; planeof
-  let out = create()
-  out.vertices = points.map((point) => { return vec3.clone(point) } )
+  const out = create()
+  out.vertices = points.map((point) => { return vec3.clone(point) })
   out.plane = plane.fromVec3s(out.vertices[0], out.vertices[1], out.vertices[2])
   return out
 }

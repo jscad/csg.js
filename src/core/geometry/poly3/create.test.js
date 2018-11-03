@@ -1,5 +1,5 @@
 const test = require('ava')
-const { create, toString } = require('./index')
+const { create } = require('./index')
 
 test('poly3: create() should return a poly3 with initial values', (t) => {
   const obs = create()
