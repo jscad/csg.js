@@ -10,7 +10,7 @@ const geom2 = require('./geom2')
 const create = function () {
   return {
     type: 'shape2',
-    curves: [], // not sure if sides or curves will be kept (either or)
+    curves: [], // not sure if this should be kept
 
     geometry: geom2.create(),
     transforms: mat4.identity(),

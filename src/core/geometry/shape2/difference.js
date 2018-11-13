@@ -1,4 +1,4 @@
-const difference = (shape, otherShape) {
+const difference = (shape, otherShape) => {
  
 }
 

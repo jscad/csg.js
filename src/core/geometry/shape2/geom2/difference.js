@@ -1,3 +1,5 @@
+const canonicalize = require('./canonicalize')
+
 const subtract = function (otherShape, shape) {
   let cags
   if (shape instanceof Array) {
@@ -5,9 +7,9 @@ const subtract = function (otherShape, shape) {
   } else {
     cags = [shape]
   }
-  let result = toCSGWall(otherShape, -1, 1)
+  let result = toShape3Wall(otherShape, -1, 1)
   cags.map(function (shape) {
-    result = subtractSub(result, toCSGWall(shape, -1, 1), false, false)
+    result = subtractSub(result, toShape3Wall(shape, -1, 1), false, false)
   })
   result = retesselate(result)
   result = canonicalize(result)
