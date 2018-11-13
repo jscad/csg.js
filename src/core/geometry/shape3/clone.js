@@ -8,3 +8,5 @@ const clone = sourceShape => {
   newShape.transforms = mat4.clone(sourceShape.transforms)
   newShape.properties = { ...sourceShape.properties }
 }
+
+module.exports = clone

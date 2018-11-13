@@ -1,11 +1,13 @@
 const fromPolygons = require('./fromPolygons')
 const retesselate = require('./retesellate')
 const canonicalize = require('./canonicalize')
+const Tree = require('../../trees')
+
 /**
-   * Return a new CSG solid representing space in this solid but
+   * Return a new geom3 representing space in this solid but
    * not in the given solids. Neither this solid nor the given solids are modified.
-   * @param {CSG[]} csg - list of CSG objects
-   * @returns {CSG} new CSG object
+   * @param {geom3[]} csg - list of geom3 objects
+   * @returns {geom3} new geom3 object
    * @example
    * let C = A.subtract(B)
    * @example
@@ -18,32 +20,30 @@ const canonicalize = require('./canonicalize')
    *      |       |
    *      +-------+
    */
-const subtract = function (otherCsg, csg) {
-  let csgs
-  if (csg instanceof Array) {
-    csgs = csg
+const subtract = (otherCsg, geometry) => {
+  let geometries
+  if (geometry instanceof Array) {
+    geometries = geometry
   } else {
-    csgs = [csg]
+    geometries = [geometry]
   }
   let result = otherCsg
-  for (let i = 0; i < csgs.length; i++) {
-    let islast = (i === (csgs.length - 1))
-    result = subtractSub(result, csgs[i], islast, islast)
+  for (let i = 0; i < geometries.length; i++) {
+    let islast = (i === (geometries.length - 1))
+    result = subtractSub(result, geometries[i], islast, islast)
   }
   return result
 }
 
-const subtractSub = function (otherCsg, csg, doRetesselate, doCanonicalize) {
+const subtractSub = (otherCsg, geometry, doRetesselate, doCanonicalize) => {
   let a = new Tree(otherCsg.polygons)
-  let b = new Tree(csg.polygons)
+  let b = new Tree(geometry.polygons)
   a.invert()
   a.clipTo(b)
   b.clipTo(a, true)
   a.addPolygons(b.allPolygons())
   a.invert()
   let result = fromPolygons(a.allPolygons())
-  // FIXME: what to do with properties ????
-  // result.properties = otherCsg.properties._merge(csg.properties)
   if (doRetesselate) result = retesselate(result)
   if (doCanonicalize) result = canonicalize(result)
   return result
