@@ -7,7 +7,7 @@ const cutByPlane = require('./cutByPlane')
  * @param  {Shape3} shape the shape3 object to cut
  * @param  {Orthobasis} orthobasis the orthobasis to cut along
  */
-const section = function (shape, orthobasis) {
+const section = (shape, orthobasis) => {
   let plane1 = orthobasis.plane
   let plane2 = orthobasis.plane.flipped()
   plane1 = plane.fromValues(plane1) // new Plane(plane1.normal, plane1.w)

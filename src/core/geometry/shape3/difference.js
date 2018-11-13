@@ -23,6 +23,7 @@ const difference = (...shapes) => {
   if (shapes.length < 2) {
     throw new Error(`please provide at least two operands for a boolean difference.(${shapes.length} given)`)
   }
+  // first we transform all geometries to 'bake in' the transforms
   const shapesWithUpdatedGeoms = shapes.map(shape => {
     const transformedGeom = geom3.transform(shape.transforms, shape.geometry)
     const newShape = clone(shape)
