@@ -2,9 +2,9 @@ const mat4 = require('../../math/mat4')
 const transform = require('./transform')
 
 /**
- * @param  {} plane
- * @param  {} shape3
+ * @param  {Vec4} plane
+ * @param  {Shape3} shape
  */
-const mirror = (plane, shape3) => transform(mat4.mirror(plane, mat4.create()), shape3)
+const mirror = (plane, shape) => transform(mat4.mirror(plane, mat4.create()), shape)
 
 module.exports = mirror

@@ -8,8 +8,8 @@ const fromPolygons = require('./fromPolygons')
  * @example
  * let B = invert(A)
  */
-function invert (geom3) {
-  let flippedpolygons = geom3.polygons.map(polygon => poly3.flip(polygon))
+const invert = geometry => {
+  let flippedpolygons = geometry.polygons.map(polygon => poly3.flip(polygon))
   return fromPolygons(flippedpolygons)
   // TODO: flip properties?
 }

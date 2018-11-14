@@ -1,9 +1,12 @@
-const poly3 = require('../poly3')
+const geom3 = require('./geom3')
 
-const volume = function (shape3) {
-  let result = shape3.toTriangles().map(triPoly => poly3.getSignedVolume(triPoly))
-  console.log('volume', result)
-  return result
+/** measure the volume of the given shape
+ * @param  {Shape} shape
+ * @returns float : the volume
+ */
+const volume = shape => {
+  const transformedGeom = geom3.transform(shape.transforms, shape.geometry)
+  return geom3.measureVolume(transformedGeom)
 }
 
 module.exports = volume

@@ -4,9 +4,9 @@ const setShared = require('./setShared')
  * @param  {Object} args
  * @returns {CSG} a copy of this CSG, with the given color
  */
-function setColor (shape3, args) {
+const setColor = (shape, args) => {
   let newshared = Polygon3.Shared.fromColor.apply(this, arguments)
-  return setShared(shape3, newshared)
+  return setShared(shape, newshared)
 }
 
 module.exports = setColor

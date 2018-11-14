@@ -29,4 +29,6 @@ const normalize = (...params) => {
   return out
 }
 
+// old this.dividedBy(this.length())
+
 module.exports = normalize

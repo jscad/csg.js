@@ -3,9 +3,9 @@
  * @returns {Shape3} new Shape3 object , mirrored
  *
  * @example
- * let hulled = hull(rect(), circle())
+ * const result = minkowski(rect(), circle())
  */
-const minkowski = () => {
+const minkowski = shapes => {
   throw new Error('minkowski() is not yet implemented')
 }
 

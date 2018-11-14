@@ -1,5 +1,4 @@
 const { EPS } = require('../../constants')
-const { projectToOrthoNormalBasis } = require('../core/utils/csgProjections')
 const plane = require('../../math/plane')
 const cutByPlane = require('./cutByPlane')
 

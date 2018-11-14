@@ -8,8 +8,8 @@ const isOverlapping = (otherShape, shape) => {
   if ((otherShape.polygons.length === 0) || (shape.polygons.length === 0)) {
     return false
   } else {
-    let mybounds = measureBounds(otherShape)
-    let otherbounds = measureBounds(shape)
+    const mybounds = measureBounds(otherShape)
+    const otherbounds = measureBounds(shape)
     if (mybounds[1][0] < otherbounds[0][0]) return false
     if (mybounds[0][0] > otherbounds[1][0]) return false
     if (mybounds[1][1] < otherbounds[0][1]) return false

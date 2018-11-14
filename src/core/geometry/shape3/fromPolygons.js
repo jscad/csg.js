@@ -1,14 +1,13 @@
+const geom3 = require('./geom3')
 const create = require('./create')
 
-/** Construct a CSG solid from a list of `Polygon` instances.
+/** Construct a Shape3 solid from a list of `Polygons`.
  * @param {Polygon[]} polygons - list of polygons
- * @returns {CSG} new CSG object
+ * @returns {Shape3} new Shape3 object
  */
-const fromPolygons = function (polygons) {
-  let shape3 = create()
-  shape3.polygons = polygons
-  shape3.isCanonicalized = false
-  shape3.isRetesselated = false
+const fromPolygons = polygons => {
+  const shape3 = create()
+  shape3.geometry = geom3.fromPolygons(polygons)
   return shape3
 }
 

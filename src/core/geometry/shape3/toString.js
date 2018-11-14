@@ -1,10 +1,11 @@
-const poly3 = require('../poly3')
+const geom3 = require('./geom3')
+const mat4 = require('../../math/mat4')
 
-const toString = shape3 => {
-  return shape3.polygons.reduce((result, polygon) => {
-    result += poly3.toString(polygon)
-    return result
-  }, 'CSG solid:\n')
+// TODO: deal with properties etc
+const toString = shape => {
+  return ` ${mat4.toString(shape.transforms)}
+  ${geom3.toString(shape.geometry)}
+  `
 }
 
 module.exports = toString

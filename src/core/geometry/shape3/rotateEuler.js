@@ -18,7 +18,6 @@ const rotateEulerAngles = (alpha, beta, gamma, position, shape3) => {
     T
   )
   // Rz2.multiply(Rx).multiply(Rz1).multiply(T)
-
   return transform(transformMatrix, shape3)
 }
 
