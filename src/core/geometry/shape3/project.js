@@ -4,7 +4,7 @@ const area = require('../shape2/measureArea')
 const fromPointsNoCheck = require('../shape2/fromPointsNoCheck')
 
 // project the 3D polygon onto a plane
-const projectPolygon3ToOrthoNormalBasis = function (poly3, orthobasis) {
+const projectPolygon3ToOrthoNormalBasis = (poly3, orthobasis) => {
   let points2d = poly3.vertices.map(function (vertex) {
     return orthobasis.to2D(vertex.pos)
   })
@@ -27,24 +27,24 @@ const projectPolygon3ToOrthoNormalBasis = function (poly3, orthobasis) {
  * @param  {Shape3} shape the shape3 object to cut
  * @param  {Orthobasis} orthobasis the orthobasis to cut along
  */
-const projectToOrthoNormalBasis = function (shape, orthobasis) {
-  let cags = []
+const project = function (shape, orthobasis) {
+  let shape2s = []
   shape.polygons.filter(function (p) {
     // only return polys in plane, others may disturb result
     return p.plane.normal.minus(orthobasis.plane.normal).lengthSquared() < (EPS * EPS)
   })
     .map(function (polygon) {
-      let cag = projectPolygon3ToOrthoNormalBasis(polygon, orthobasis)
-      if (cag.sides.length > 0) {
-        cags.push(cag)
+      let shape2 = projectPolygon3ToOrthoNormalBasis(polygon, orthobasis)
+      if (shape2.sides.length > 0) {
+        shape2s.push(shape2)
       }
     })
   // fixme why union ???
   let result = union(
     create(),
-    cags
+    shape2s
   )
   return result
 }
 
-module.exports = projectToOrthoNormalBasis
+module.exports = project

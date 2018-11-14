@@ -1,6 +1,6 @@
 const poly3 = require('../poly3')
 const area = function (shape3) {
-  let result = shape3.toTriangles().map(triPoly => poly3.measureArea())
+  let result = shape3.toTriangles().map(triPoly => poly3.measureArea(triPoly))
   console.log('area', result)
   return result
 }

@@ -1,7 +1,8 @@
 module.exports = {
   canonicalize: require('./canonicalize'),
-  create: require('./create'),
   clone: require('./clone'),
+  create: require('./create'),
+  cutByPlane: require('./cutByPlane'),
   difference: require('./difference'),
   fixTJunctions: require('./fixTJunctions'),
   transform: require('./transform')
