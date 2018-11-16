@@ -14,9 +14,9 @@ const { extrudePolygon3 } = require('../../../api/ops-extrusions/extrusionUtils'
  * @param  {Plane} plane
  * @returns {Geom3} the geometry on the back side of the plane
  */
-const cutByPlane =  (geometry, plane)  => {
+const cutByPlane = (geometry, plane) => {
   if (geometry.polygons.length === 0) {
-    throw new Error('cannot cut empty shape3')
+    throw new Error('cannot cut empty Geom3')
   }
   // Ideally we would like to do an intersection with a polygon of inifinite size
   // but this is not supported by our implementation. As a workaround, we will create

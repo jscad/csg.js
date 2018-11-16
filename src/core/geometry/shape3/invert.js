@@ -1,18 +1,19 @@
 const geom3 = require('./geom3')
 const clone = require('./clone')
-// TODO: flip properties?
-// TODO: is this too close to negate() ?
 
-/**
+/** TODO: same as  negate() ?
  * Return a new Shape3 solid with solid and empty space switched.
  * This solid is not modified.
  * @returns {Shape3} new Shape3 object
  * @example
- * let B = invert(A)
+ * const B = invert(A)
  */
-const invert = shape3 => {
-  const newShape = clone(shape3)
-  newShape.geometry = geom3.invert(shape3.geometry)
+const invert = shape => {
+  const newShape = clone(shape)
+  newShape.isNegative = !shape.isNegative
+  // FIXME: multiple ways to do this: should the geometry be inverted ? or we just use the flag + special handling 
+  // in the boolean operations
+  newShape.geometry = geom3.invert(shape.geometry)
   return newShape
 }
 

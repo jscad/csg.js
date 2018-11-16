@@ -1,4 +1,4 @@
-const fromPolygons = require('./fromPolygons')
+const fromPolygons = require('../fromPolygons')
 
 /**
  * set the .shared property of all polygons

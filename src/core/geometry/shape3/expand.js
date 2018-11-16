@@ -26,7 +26,7 @@ const fromPolygons = require('./fromPolygons')
  * @param  {Integer} resolution
  * @param  {Boolean} unionWithThis
  */
-const expand = function (_csg, radius, resolution, unionWithThis) {
+const expand = (_csg, radius, resolution, unionWithThis) => {
   // const {sphere} = require('./primitives3d') // FIXME: circular dependency !
   let csg = retesselate(_csg)
   let result

@@ -1,6 +1,6 @@
-const FuzzyCSGFactory = require('../FuzzyFactory3d')
+const FuzzyCSGFactory = require('../../FuzzyFactory3d')
 const reTesselateCoplanarPolygons = require('./reTesselateCoplanarPolygons')
-const fromPolygons = require('./fromPolygons')
+const fromPolygons = require('../fromPolygons')
 
 /*
   After CSG operations all coplanar polygon fragments are joined by a retesselating

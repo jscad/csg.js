@@ -1,6 +1,6 @@
 const geom3 = require('./geom3')
 
-/** returns the triangles of this Shape3
+/** returns a triangulated version of this Shape3's geometry
  * @param {Shape3} shape input shape
  * @returns {Polygons} triangulated polygons
  */

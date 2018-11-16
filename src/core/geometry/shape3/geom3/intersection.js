@@ -5,7 +5,8 @@ const Tree = require('../../trees')
 
 /**
    * Return a new Geom3 solid representing space in both this solid and
-   * in the given solids. Neither this solid nor the given solids are modified.
+   * in the given solids.
+   * Immutable: Neither this solid nor the given solids are modified.
    * @param {Geom3[]} geometry - list of Geom3 objects
    * @returns {Geom3} new Geom3 object
    * @example

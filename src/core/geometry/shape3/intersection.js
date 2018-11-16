@@ -4,16 +4,17 @@ const create = require('./create')
 
 /**
    * Return a new Shape3 solid representing space in both this solid and
-   * in the given solids. Neither this solid nor the given solids are modified.
-   * @param {Shape3[]} csg - list of Shape3 objects
+   * in the given solids.
+   * Immutable: Neither this solid nor the given solids are modified.
+   * @param {Shape3[]} shapes - list of Shape3 objects
    * @returns {Shape3} new Shape3 object
    * @example
-   * let C = A.intersect(B)
+   * let C = intersection(A, B)
    * @example
    * +-------+
    * |       |
    * |   A   |
-   * |    +--+----+   =   +--+
+   * |    +--+----+   =   +--+ C
    * +----+--+    |       +--+
    *      |   B   |
    *      |       |
@@ -32,7 +33,11 @@ const intersection = (...shapes) => {
   })
 
   const newGeometry = geom3.intersection(shapesWithUpdatedGeoms[0], ...shapesWithUpdatedGeoms)
-  const newShape = create() // this means that the new shapes transforms are the default ones !
+  /* this means that the new shape:
+   - has default transforms (reset)
+   - does not get any attributes or data from the input shapes
+  */
+  const newShape = create()
   newShape.geometry = newGeometry
   return newShape
 }
