@@ -109,7 +109,10 @@
     * [ ] implementation: review & update
     * [ ] docstrings
   - [ ] clone :
-    * [ ] should it point to the source geometry or clone it ?
+    * [ ] implementation: should it point to the source geometry or clone it ?
+    * [x] docstrings
+  - [x] create :
+    * [x] implementation
     * [x] docstrings
 
 # Geom2

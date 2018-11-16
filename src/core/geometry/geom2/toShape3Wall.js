@@ -1,4 +1,4 @@
-const fromPolygons = require('../shape3/fromPolygons')
+const fromPolygons = require('../../shape3/fromPolygons')
 
 /** convert a Shape2 to a Shape3 'wall' of zero thickness
  * @param  {} z0

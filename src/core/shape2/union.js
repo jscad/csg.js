@@ -1,21 +1,45 @@
 const geom2 = require('../geometry/geom2')
+const clone = require('./clone')
+const create = require('./create')
 
-/** // FIXME: double check this algorithm, or even better, swap it out with something not reliant
- * on converting to 3D and back !!!
- * do a boolean union of two (or more) 2d shapes
- * 1 - first apply the transforms of the shapes to their geometries, 'freezing' their transform
- * into the points/vertices (or else) that make up their geometry, see transformGeometry
- * 2 - apply the boolean operation
- * 3 - return a single output 2d shape
- * @param  {} shapes
- * @returns {Shape2} a single 2d shape, with default transforms (identity matrix)
- */
-const union = shapes => {
-  // apply the transforms of the shapes to their geometries
-  let _shapes = shapes.map(shape => {
-    // transformGeometry(shape.transforms, shape)
-    const newGeom = geom2.transform(shape.transform, shape.geometry)
+/**
+   * Return a new Shape3 solid representing the space in either this solid or
+   * in the given solids.
+   * Immutable: Neither this solid nor the given solids are modified.
+   * @param {Shape3[]} csg - list of Shape3 objects
+   * @returns {Shape3} new Shape3 object
+   * @example
+   * let C = union(A, B)
+   * @example
+   * +-------+            +-------+
+   * |       |            |       |
+   * |   A   |            |   C   |
+   * |    +--+----+   =   |       +----+
+   * +----+--+    |       +----+       |
+   *      |   B   |            |       |
+   *      |       |            |       |
+   *      +-------+            +-------+
+   */
+const union = (...shapes) => {
+  if (shapes.length < 2) {
+    throw new Error(`please provide at least two operands for a boolean union.(${shapes.length} given)`)
+  }
+  // first we transform all geometries to 'bake in' the transforms
+  const shapesWithUpdatedGeoms = shapes.map(shape => {
+    const transformedGeom = geom2.transform(shape.transforms, shape.geometry)
+    const newShape = clone(shape)
+    newShape.geometry = transformedGeom
+    return newShape
   })
+
+  const newGeometry = geom2.union(shapesWithUpdatedGeoms[0], ...shapesWithUpdatedGeoms)
+  /* this means that the new shape:
+   - has default transforms (reset)
+   - does not get any attributes or data from the input shapes
+  */
+  const newShape = create()
+  newShape.geometry = newGeometry
+  return newShape
 }
 
 module.exports = union

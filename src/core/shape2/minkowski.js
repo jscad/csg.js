@@ -1,12 +1,12 @@
 /** create a minkowski sum of the given shapes
  * @param {Object(s)|Array} objects either a single or multiple CSG/CAG objects to create a hull around
- * @returns {CSG} new CSG object , mirrored
+ * @returns {Shape2} new Shape2 object
  *
  * @example
- * let hulled = hull(rect(), circle())
+ * const result = minkowski(rect(), circle())
  */
 function minkowski () {
-  console.log('minkowski() not yet implemented')
+  throw new Error('minkowski() not yet implemented')
 }
 
 module.exports = minkowski
