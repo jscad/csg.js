@@ -1,11 +1,11 @@
 const { EPS, defaultResolution3D } = require('../../constants')
-const OrthoNormalBasis = require('../../math/OrthoNormalBasis')
+const OrthoNormalBasis = require('../math//OrthoNormalBasis')
 
 const { parseOptionAs3DVector, parseOptionAsBool, parseOptionAsFloat, parseOptionAsInt } = require('../../../api/optionParsers')
 const { Connector } = require('../../connectors')
 const { fromPolygons } = require('../../core/CSGFactories')
 
-const vec3 = require('../../math/vec3')
+const vec3 = require('../math//vec3')
 const poly3 = require('../poly3')
 const shape2 = require('.')
 

@@ -1,5 +1,5 @@
 const fromSides = require('./fromSides')
-const vec2 = require('../../math/vec2')
+const vec2 = require('../math//vec2')
 
 /** Reconstruct a CAG from the output of toCompactBinary().
  * @param {CompactBinary} bin - see toCompactBinary()

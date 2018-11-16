@@ -105,5 +105,11 @@
 # Geom3
 
 # Shape2
+  - [ ] chainHull :
+    * [ ] implementation: review & update
+    * [ ] docstrings
+  - [ ] clone :
+    * [ ] should it point to the source geometry or clone it ?
+    * [x] docstrings
 
 # Geom2

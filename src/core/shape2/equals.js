@@ -1,5 +1,5 @@
-const mat4 = require('../../math/mat4')
-const geom2 = require('./geom2')
+const mat4 = require('../math//mat4')
+const geom2 = require('../geometry/geom2')
 
 const equals = (shape, otherShape) =>
   mat4.equals(shape.transforms, otherShape.transforms) &&

@@ -1,4 +1,4 @@
-const { min, create, max } = require('../../math/vec2')
+const { min, create, max } = require('../math//vec2')
 
 const getBounds = shape => {
   let minPoint = shape.sides.length === 0 ? create() : [shape.sides[0][0][0], shape.sides[0][0][1]]

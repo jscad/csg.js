@@ -1,4 +1,4 @@
-const geom2 = require('./geom2')
+const geom2 = require('../geometry/geom2')
 
 /** // FIXME: double check this algorithm, or even better, swap it out with something not reliant
  * on converting to 3D and back !!!
