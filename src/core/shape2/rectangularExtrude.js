@@ -18,7 +18,7 @@ const { expandedShell } = require('./expand')
  * @example
  * let revolved = rectangularExtrude({height: 10}, square())
  */
-function rectangularExtrude (params, basePoints) {
+const rectangularExtrude = (params, basePoints) => {
   const defaults = {
     w: 1,
     h: 1,

@@ -4,7 +4,7 @@ const vec2 = require('../../math/vec2')
 const fromSides = require('../../shape2/fromSides')
 // const fromCurves = require('./fromCurves')
 const flip = require('./flip')
-const measureArea = require('../../shape2/measureArea')
+const measureArea = require('./measureArea')
 const isSelfIntersecting = require('../../shape2/validateIsSelfIntersecting')
 const canonicalize = require('./canonicalize')
 

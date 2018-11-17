@@ -19,7 +19,7 @@ const retesellate = require('./retesellate')
  * @example
  * let revolved = rotateExtrude({fn: 10}, square())
  */
-function rotateExtrude (params, baseShape) {
+const rotateExtrude = (params, baseShape) => {
   // note, we should perhaps alias this to revolve() as well
   const defaults = {
     fn: 32,

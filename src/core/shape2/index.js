@@ -4,7 +4,7 @@ module.exports = {
   // fromCompactBinary: require('./fromCompactBinary'),
   // fromFakeShape3: require('./fromFakeShape3'),
   // fromObject: require('./fromObject'),
-  fromPoints: require('../geometry/geom2/fromPoints'),
+  fromPoints: require('./fromPoints'),
   // fromPointsNoCheck: require('./fromPointsNoCheck'),
   fromSides: require('./fromSides'),
   // equals: require('./equals'),

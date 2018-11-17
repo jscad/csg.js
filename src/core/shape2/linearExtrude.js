@@ -14,7 +14,7 @@ const measureBounds = require('../shape3/measureBounds')
  * @example
  * let revolved = linearExtrude({height: 10}, rectangle())
  */
-function linearExtrude (params, baseShape) {
+const linearExtrude = (params, baseShape) => {
   const defaults = {
     height: 1,
     slices: 10,

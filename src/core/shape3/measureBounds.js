@@ -8,8 +8,8 @@ const geom3 = require('../geometry/geom3')
  * @param  {Shape3} shape
  * @returns {Array[]}
  * @example
- * let bounds = A.getBounds()
- * let minX = bounds[0].x
+ * const bounds = measureBounds(a)
+ * const minX = bounds[0][0]
  */
 const measureBounds = shape => {
   const transformedGeom = geom3.transform(shape.transforms, shape.geometry)

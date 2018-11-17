@@ -4,6 +4,7 @@ const create = require('./create')
 
 // FIXME: double check this algorithm, or even better, swap it out with something not reliant
 // on converting to 3D and back !!!
+// TODO: except for the use of geom2 vs geom3 this is identical to shape3's difference
 /**
    * Return a new Shape2 solid representing space in this solid but
    * not in the given solids.

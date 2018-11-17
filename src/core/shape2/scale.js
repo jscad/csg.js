@@ -8,8 +8,6 @@ const fromScaling = require('../math//mat4/fromScaling')
  * @param  {Shape2} shape the shape to scale
  * @returns {Shape2} a new shape, with the same geometry, but new transforms
  */
-const scale = (vector, shape) => {
-  return transform(fromScaling(vector), shape)
-}
+const scale = (vector, shape) => transform(fromScaling(vector), shape)
 
 module.exports = scale

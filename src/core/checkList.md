@@ -114,5 +114,44 @@
   - [x] create :
     * [x] implementation
     * [x] docstrings
-
+  - [x] difference :
+    * [x] implementation
+    * [x] docstrings
+  - [ ] equals :
+    * [ ] implementation: todo: how to deal with properties
+    * [x] docstrings
+  - [ ] expand :
+    * [ ] implementation: implement / upgrade
+    * [ ] docstrings
+  - [ ] fromCompactBinary :
+    * [ ] implementation: review, update, see if this should not be the standard data structure
+    * [ ] docstrings
+  - [ ] fromCurves :
+    * [ ] implementation: implement
+    * [ ] docstrings
+  - [ ] fromObject :
+    * [ ] implementation: is this still needed ??
+    * [ ] docstrings
+  - [ ] fromPath2 :
+    * [ ] implementation: is this too close to fromCurves ?
+    * [ ] docstrings
+  - [ ] fromPoints :
+    * [ ] implementation: review & upgrade
+    * [ ] docstrings
+  - [ ] fromSides : TODO : ELIMINATE, sides are not used as such anymore ! use fromPoints, fromCurves etc
+  - [x] hull :
+    * [x] implementation
+    * [x] docstrings
+  - [x] intersection :
+    * [x] implementation
+    * [x] docstrings
+  - [ ] linearExtrude :
+    * [ ] implementation: review & upgrade
+    * [ ] docstrings
+  - [x] measureArea :
+    * [x] implementation
+    * [x] docstrings
+  - [x] measureBounds :
+    * [x] implementation
+    * [ ] docstrings: almost complete, save for the return type
 # Geom2

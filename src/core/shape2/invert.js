@@ -5,10 +5,10 @@ const clone = require('./clone')
  * @param  {Shape2} shape the original shape
  * @returns {Shape2} the negated shape
  */
-const negate = shape => {
+const invert = shape => {
   const cloned = clone(shape)
-  cloned.isNegative = true
+  cloned.isNegative = !cloned.isNegative
   return cloned
 }
 
-module.exports = negate
+module.exports = invert

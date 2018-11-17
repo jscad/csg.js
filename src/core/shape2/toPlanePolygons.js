@@ -1,4 +1,4 @@
-const {intersectSub} = require('../ops-booleans/intersection') 
+const { intersectSub } = require('../ops-booleans/intersection')
 /*
 * transform a cag into the polygons of a corresponding 3d plane, positioned per options
 * Accepts a connector for plane positioning, or optionally
@@ -10,22 +10,22 @@ const toPlanePolygons = function (_cag, options) {
     flipped: false
   }
   options = Object.assign({}, defaults, options)
-  let {flipped} = options
-    // reference connector for transformation
+  let { flipped } = options
+  // reference connector for transformation
   let origin = [0, 0, 0]
   let defaultAxis = [0, 0, 1]
   let defaultNormal = [0, 1, 0]
   let thisConnector = new Connector(origin, defaultAxis, defaultNormal)
-    // translated connector per options
+  // translated connector per options
   let translation = options.translation || origin
   let axisVector = options.axisVector || defaultAxis
   let normalVector = options.normalVector || defaultNormal
-    // will override above if options has toConnector
+  // will override above if options has toConnector
   let toConnector = options.toConnector ||
             new Connector(translation, axisVector, normalVector)
-    // resulting transform
+  // resulting transform
   let m = thisConnector.getTransformationTo(toConnector, false, 0)
-    // create plane as a (partial non-closed) CSG in XY plane
+  // create plane as a (partial non-closed) CSG in XY plane
   let bounds = _cag.getBounds()
   bounds[0] = bounds[0].minus(new Vector2D(1, 1))
   bounds[1] = bounds[1].plus(new Vector2D(1, 1))
@@ -39,13 +39,13 @@ const toPlanePolygons = function (_cag, options) {
   if (flipped) {
     csgplane = csgplane.invert()
   }
-    // intersectSub -> prevent premature retesselate/canonicalize
+  // intersectSub -> prevent premature retesselate/canonicalize
   csgplane = intersectSub(csgplane, csgshell)
-    // only keep the polygons in the z plane:
+  // only keep the polygons in the z plane:
   let polys = csgplane.polygons.filter(function (polygon) {
     return Math.abs(polygon.plane.normal.z) > 0.99
   })
-    // finally, position the plane per passed transformations
+  // finally, position the plane per passed transformations
   return polys.map(function (poly) {
     return poly.transform(m)
   })

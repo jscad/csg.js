@@ -5,7 +5,7 @@ const hasPointInside = require('./validateHasPointInside')
 * @param {Object} shape2 - Shape2 object
 * @returns {Boolean}
 */
-const contains = function (shape1, shape2) {
+const contains = (shape1, shape2) => {
   for (let i = 0, il = shape2.sides.length; i < il; i++) {
     if (!hasPointInside(shape1, shape2.sides[i][0])) {
       return false

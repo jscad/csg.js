@@ -7,8 +7,6 @@ const fromTranslation = require('../math//mat4/fromTranslation')
  * @param  {Shape2} shape the shape to translate
  * @returns {Shape2} a new shape, with the same geometry, but new transforms
  */
-const translate = (vector, shape2) => {
-  return transform(fromTranslation(vector), shape2)
-}
+const translate = (vector, shape2) => transform(fromTranslation(vector), shape2)
 
 module.exports = translate
