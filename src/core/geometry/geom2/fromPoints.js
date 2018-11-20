@@ -19,7 +19,7 @@ const canonicalize = require('./canonicalize')
  * @param {points[]|Array.<points[]>} points - (nested) list of points in 2D space
  * @returns {Shape2} new Shape2 object
  */
-const fromPoints = function (points) {
+const fromPoints = points => {
   if (!points) {
     throw new Error('points parameter must be defined')
   }

@@ -5,7 +5,7 @@ const fromPoints = require('./fromPoints')
  * @param {path} Path2 - a Path2 path
  * @returns {Shape2} new Shape2 object
  */
-const fromPath2 = function (path) {
+const fromPath2 = path => {
   if (!path.isClosed()) throw new Error('The path should be closed!')
   return fromPoints(path.getPoints())
 }

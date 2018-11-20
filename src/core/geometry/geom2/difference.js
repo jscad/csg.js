@@ -1,10 +1,11 @@
 const canonicalize = require('./canonicalize')
+const toGeom3Wall = require('./toGeom3Wall')
 
 const difference = shapes => {
   const [shape, otherShapes] = [shapes[0], ...shapes]
-  let result = toShape3Wall(shape, -1, 1)
+  let result = toGeom3Wall(shape, -1, 1)
   otherShapes.map(shape => {
-    result = subtractSub(result, toShape3Wall(shape, -1, 1), false, false)
+    result = subtractSub(result, toGeom3Wall(shape, -1, 1), false, false)
   })
   result = retesselate(result)
   result = canonicalize(result)

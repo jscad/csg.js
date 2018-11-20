@@ -1,6 +1,6 @@
 const retessellate = require('../shape3/retessellate')
 const canonicalize = require('./canonicalize')
-const toShape3Wall = require('./toShape3Wall')
+const toShape3Wall = require('./toGeom3Wall')
 const fromFakeShape3 = require('./fromFakeGeom3')
 const transformGeometry = require('./transformGeometry')
 
