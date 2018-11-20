@@ -8,7 +8,7 @@ const geom2 = require('../geometry/geom2')
  */
 const clone = (sourceShape) => {
   const newShape = create()
-  newShape.geometry = geom2.clone(sourceShape.geometry)
+  newShape.geometry = sourceShape.geometry // geom2.clone(sourceShape.geometry)
   // not sure newShape.curves = fromCurves(sourceShape.curves)
   newShape.transforms = mat4.clone(sourceShape.transforms)
   newShape.isNegative = sourceShape.isNegative

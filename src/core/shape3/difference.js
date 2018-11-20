@@ -1,6 +1,8 @@
 const geom3 = require('../geometry/geom3')
 const clone = require('./clone')
 const create = require('./create')
+const flatten = require('../utils/flatten')
+const toArray = require('../utils/toArray')
 
 /**
    * Return a new Shape3 solid representing space in this solid but
@@ -21,6 +23,7 @@ const create = require('./create')
    *      +-------+
    */
 const difference = (...shapes) => {
+  shapes = flatten(toArray(shapes))
   if (shapes.length < 2) {
     throw new Error(`please provide at least two operands for a boolean difference.(${shapes.length} given)`)
   }

@@ -1,6 +1,8 @@
 const geom3 = require('../geometry/geom3')
 const clone = require('./clone')
 const create = require('./create')
+const flatten = require('../utils/flatten')
+const toArray = require('../utils/toArray')
 
 /**
    * Return a new Shape3 solid representing space in both this solid and
@@ -21,6 +23,7 @@ const create = require('./create')
    *      +-------+
    */
 const intersection = (...shapes) => {
+  shapes = flatten(toArray(shapes))
   if (shapes.length < 2) {
     throw new Error(`please provide at least two operands for a boolean intersection.(${shapes.length} given)`)
   }
@@ -32,7 +35,7 @@ const intersection = (...shapes) => {
     return newShape
   })
 
-  const newGeometry = geom3.intersection(shapesWithUpdatedGeoms[0], ...shapesWithUpdatedGeoms)
+  const newGeometry = geom3.intersection(shapesWithUpdatedGeoms)
   /* this means that the new shape:
    - has default transforms (reset)
    - does not get any attributes or data from the input shapes

@@ -1,4 +1,4 @@
-const toVector3DPairs = function (cag, m) {
+const toVec3Pairs = (cag, m) => {
   // transform m
   let pairs = cag.sides.map(function (side) {
     let p0 = side.vertex0.pos
@@ -16,4 +16,4 @@ const toVector3DPairs = function (cag, m) {
   return pairs
 }
 
-module.exports = toVector3DPairs
+module.exports = toVec3Pairs

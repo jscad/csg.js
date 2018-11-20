@@ -2,12 +2,12 @@ const { EPS, angleEPS } = require('../../constants')
 const canonicalize = require('./canonicalize')
 const fromPoints = require('./fromPoints')
 
-const expand = (_cag, radius, resolution) => {
+const expand = (_geom2, radius, resolution) => {
   resolution = resolution || 8
   if (resolution < 4) resolution = 4
   let cags = []
   let pointmap = {}
-  let cag = canonicalize(_cag)
+  let cag = canonicalize(_geom2)
   cag.sides.map(function (side) {
     let d = side.vertex1.pos.minus(side.vertex0.pos)
     let dl = d.length()
@@ -83,8 +83,7 @@ const expand = (_cag, radius, resolution) => {
       cags.push(newcag)
     }
   }
-  let result = new CAG()
-  result = union(result, cags)// FIXME: Not quite sure how to deal with this: union(cags.concat([result])) ?
+  const result = union(result, cags)
   return result
 }
 module.exports = expand

@@ -1,4 +1,4 @@
-const canonicalize = require('./utils/canonicalize')
+const canonicalize = require('./canonicalize')
 
 /** returns a compact binary representation of this csg
    * usually used to transfer CSG objects to/from webworkes

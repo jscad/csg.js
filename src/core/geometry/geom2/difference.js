@@ -1,14 +1,9 @@
 const canonicalize = require('./canonicalize')
 
-const subtract = function (otherShape, shape) {
-  let cags
-  if (shape instanceof Array) {
-    cags = shape
-  } else {
-    cags = [shape]
-  }
-  let result = toShape3Wall(otherShape, -1, 1)
-  cags.map(function (shape) {
+const difference = shapes => {
+  const [shape, otherShapes] = [shapes[0], ...shapes]
+  let result = toShape3Wall(shape, -1, 1)
+  otherShapes.map(shape => {
     result = subtractSub(result, toShape3Wall(shape, -1, 1), false, false)
   })
   result = retesselate(result)
@@ -18,4 +13,4 @@ const subtract = function (otherShape, shape) {
   return result
 }
 
-module.exports = subtract
+module.exports = difference

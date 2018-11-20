@@ -11,7 +11,7 @@ const c2 = (p0, p1, p2) => (p0[0] < (p2[0] - p1[0]) * (p0[1] - p1[1]) / (p2[1] -
 * @param {Object} p0 - Vertex2 like object
 * @returns {Boolean}
 */
-const hasPointInside = function (shape, p0) {
+const hasPointInside = (shape, p0) => {
   let p1 = null
   let p2 = null
   let inside = false

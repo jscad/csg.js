@@ -1,6 +1,8 @@
 const geom2 = require('../geometry/geom2')
 const clone = require('./clone')
 const create = require('./create')
+const flatten = require('../utils/flatten')
+const toArray = require('../utils/toArray')
 
 // FIXME: double check this algorithm, or even better, swap it out with something not reliant
 // on converting to 3D and back !!!
@@ -24,6 +26,7 @@ const create = require('./create')
    *      +-------+
    */
 const difference = (...shapes) => {
+  shapes = flatten(toArray(shapes))
   if (shapes.length < 2) {
     throw new Error(`please provide at least two operands for a boolean difference.(${shapes.length} given)`)
   }
@@ -35,7 +38,7 @@ const difference = (...shapes) => {
     return newShape
   })
 
-  const newGeometry = geom2.difference(shapesWithUpdatedGeoms[0], ...shapesWithUpdatedGeoms)
+  const newGeometry = geom2.difference(shapesWithUpdatedGeoms)
   /* this means that the new shape:
    - has default transforms (reset)
    - does not get any attributes or data from the input shapes
