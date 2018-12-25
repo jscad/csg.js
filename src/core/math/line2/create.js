@@ -8,14 +8,16 @@
 */
 
 /**
- * Creates a new 2D line, mirroring the X axis.
+ * Creates a new 2D line, running along the X axis.
  *
- * @returns {line2} a new 2D line
+ * @returns {line2} a new unbounded 2D line
  */
 const create = () => {
   const out = new Float32Array(3)
-  out[0] = 0
-  out[1] = 0
-  out[2] = 0
+  out[0] = 0 // normal
+  out[1] = 1
+  out[2] = 0 // distance
   return out
 }
+
+module.exports = create

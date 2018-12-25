@@ -1,12 +1,13 @@
-const vec2 = require('./vec2')
+const vec2 = require('../vec2')
 
 /**
- * Return the origin of the given line
+ * Return the origin of the given line.
  *
  * @return {vec2} origin of the line
  */
 const origin = (line) => {
-  return vec2.times(line, line[2])
+  const origin = vec2.scale(line[2], line)
+  return origin
 }
 
 module.exports = origin

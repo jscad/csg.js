@@ -1,7 +1,9 @@
-const vec2 = require('./vec2')
+const vec2 = require('../vec2')
 
 /**
- * ABS
+ * Calculate the distance (positive) between the given line and point
+ *
+ * @return {Number} distance between line and point
  */
 const distanceToPoint = (line, point) => {
   let distance = vec2.dot(point, line)

@@ -1,4 +1,4 @@
-const vec2 = require('./vec2')
+const vec2 = require('../vec2')
 
 const transform = (line, matrix) => {
   let origin = vec2.fromValues(0, 0)
