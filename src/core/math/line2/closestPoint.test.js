@@ -1,0 +1,35 @@
+const test = require('ava')
+const { closestPoint, create, fromPoints, toString } = require('./index')
+
+const { nearlyEqual } = require('../../../../test/helpers/index')
+const { EPS } = require('../../constants')
+
+test('line2: closestPoint() should return proper values', (t) => {
+  const line1 = create()
+console.log(toString(line1))
+  const x1 = closestPoint(line1, [0, 0])
+  //nearlyEqual(t, x1, 0, EPS)
+  const x2 = closestPoint(line1, [0, 1])
+  //nearlyEqual(t, x2, 0, EPS)
+  const x3 = closestPoint(line1, [6, 0])
+  //nearlyEqual(t, x3, 0, EPS)
+
+  const line2 = fromPoints([-5, 4], [5, -6])
+console.log(toString(line2))
+  const x4 = closestPoint(line2, [0, 0])
+  //nearlyEqual(t, x4, 0.7071067690849304, EPS)
+  //const x5 = closestPoint(line2, 1)
+  //nearlyEqual(t, x5, 1.4142135381698608, EPS)
+  //const x6 = closestPoint(line2, 2)
+  //nearlyEqual(t, x6, 2.1213203072547913, EPS)
+  //const x7 = closestPoint(line2, 3)
+  //nearlyEqual(t, x7, 2.8284270763397217, EPS)
+  //const x8 = closestPoint(line2, 4)
+  //nearlyEqual(t, x8, 3.535533845424652, EPS)
+  const x9 = closestPoint(line2, [0, 5])
+  const x0 = closestPoint(line2, [0, 10])
+  //nearlyEqual(t, dis9, 4.2426406145095825, EPS)
+
+
+  t.true(true)
+})
