@@ -1,5 +1,5 @@
 
-const xAtY = (line, y) => {
+const xAtY = (y, line) => {
   // px = (distance - normal.y * y) / normal.x
   let x = (line[2] - (line[1] * y)) / line[0]
   return x

@@ -1,6 +1,6 @@
 const vec2 = require('../vec2')
 
-const transform = (line, matrix) => {
+const transform = (matrix, line) => {
   let origin = vec2.fromValues(0, 0)
   let neworigin = vec2.transformMat4(origin, matrix)
   let neworiginPlusNormal = vec2.transformMat4(line, matrix)
