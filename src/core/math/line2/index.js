@@ -11,6 +11,6 @@ module.exports = {
   origin: require('./origin'),
   reverse: require('./reverse'),
   toString: require('./toString'),
-  transform: require('./transform'),
+  transformMat4: require('./transformMat4'),
   xAtY: require('./xAtY')
 }
