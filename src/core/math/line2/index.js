@@ -1,4 +1,5 @@
 module.exports = {
+  clone: require('./clone'),
   closestPoint: require('./closestPoint'),
   create: require('./create'),
   direction: require('./direction'),
