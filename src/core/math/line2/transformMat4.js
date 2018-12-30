@@ -1,16 +1,24 @@
 const vec2 = require('../vec2')
 
-const transform = (matrix, line) => {
-  let origin = vec2.fromValues(0, 0)
-  let neworigin = vec2.transformMat4(origin, matrix)
-  let neworiginPlusNormal = vec2.transformMat4(line, matrix)
-  let newnormal = vec2.minus(neworiginPlusNormal, neworigin)
+const fromPoints = require('./fromPoints')
+const origin = require('./origin')
+const direction = require('./direction')
 
-  let pointOnPlane = origin(line)
-  let newpointOnPlane = vec2.transformMat4(pointOnPlane, matrix)
-  let neww = vec2.dot(newnormal, newpointOnPlane)
+/**
+ * Transforms the given 2D line using the given matrix.
+ *
+ * @param {mat4} matrix matrix to transform with
+ * @param {line2} line the 2D line to transform
+ * @returns {line2} a new unbounded 2D line
+ */
+const transformMat4 = (matrix, line) => {
+  let org = origin(line)
+  let dir = direction(line)
 
-  return fromValues(newnormal[0], newnormal[1], neww)
+  vec2.transformMat4(org, matrix, org)
+  vec2.transformMat4(dir, matrix, dir)
+
+  return fromPoints(org, dir)
 }
 
-module.exports = transform
+module.exports = transformMat4
