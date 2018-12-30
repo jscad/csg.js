@@ -1,5 +1,5 @@
 const test = require('ava')
-const { fromValues } = require('./index')
+const { fromValues, toString } = require('./index')
 
 const { compareVectors } = require('../../../../test/helpers/index')
 

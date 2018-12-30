@@ -1,43 +1,39 @@
 const test = require('ava')
-const { xAtY, create, fromPoints, toString } = require('./index')
+const { xAtY, create, fromPoints } = require('./index')
 
 const { nearlyEqual } = require('../../../../test/helpers/index')
 const { EPS } = require('../../constants')
 
 test('line2: xAtY() should return proper values', (t) => {
   const line1 = create()
-  //const line1 = fromPoints([0, 0], [1, 0])
-console.log(toString(line1))
+
   const x1 = xAtY(0, line1)
-console.log(x1)
-  //nearlyEqual(t, x1, 0, EPS)
-  const x2 = xAtY(1, line1)
-console.log(x2)
-  //nearlyEqual(t, x2, 0, EPS)
-  const x3 = xAtY(6, line1)
-console.log(x3)
-  //nearlyEqual(t, x3, 0, EPS)
+  nearlyEqual(t, x1, 0, EPS)
+
+  const x2 = xAtY(6, line1)
+  t.false(Number.isFinite(x2)) // X is infinite, as the line is parallel to X-axis
+
+  const x3 = xAtY(-6, line1)
+  t.false(Number.isFinite(x3)) // X is infinite, as the line is parallel to X-axis
 
   const line2 = fromPoints([-5, 4], [5, -6])
-console.log(toString(line2))
-  const x4 = xAtY(0, line2)
-console.log(x4)
-  //nearlyEqual(t, x4, 0.7071067690849304, EPS)
-  const x5 = xAtY(1, line2)
-console.log(x5)
-  //nearlyEqual(t, x5, 1.4142135381698608, EPS)
-  const x6 = xAtY(2, line2)
-console.log(x6)
-  //nearlyEqual(t, x6, 2.1213203072547913, EPS)
-  const x7 = xAtY(3, line2)
-console.log(x7)
-  //nearlyEqual(t, x7, 2.8284270763397217, EPS)
-  const x8 = xAtY(4, line2)
-console.log(x8)
-  //nearlyEqual(t, x8, 3.535533845424652, EPS)
-  const x9 = xAtY(5, line2)
-console.log(x9)
-  //nearlyEqual(t, dis9, 4.2426406145095825, EPS)
+  const y1 = xAtY(0, line2)
+  nearlyEqual(t, y1, -1, EPS)
+
+  const y2 = xAtY(1, line2)
+  nearlyEqual(t, y2, -2, EPS)
+
+  const y3 = xAtY(2, line2)
+  nearlyEqual(t, y3, -3, EPS)
+
+  const y4 = xAtY(-1, line2)
+  nearlyEqual(t, y4, 0, EPS)
+
+  const y5 = xAtY(-2, line2)
+  nearlyEqual(t, y5, 1, EPS)
+
+  const y6 = xAtY(-3, line2)
+  nearlyEqual(t, y6, 2, EPS)
 
 
   t.true(true)

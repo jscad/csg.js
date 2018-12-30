@@ -3,7 +3,6 @@ module.exports = {
   create: require('./create'),
   direction: require('./direction'),
   distanceToPoint: require('./distanceToPoint'),
-  doLinesIntersect: require('./doLinesIntersect'),
   equals: require('./equals'),
   fromPoints: require('./fromPoints'),
   fromValues: require('./fromValues'),
