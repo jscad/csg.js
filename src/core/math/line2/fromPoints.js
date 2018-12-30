@@ -3,7 +3,7 @@ const vec2 = require('../vec2')
 const fromValues = require('./fromValues')
 
 /**
- * Creates a new line2 that passes through the given points
+ * Create a new 2D line that passes through the given points
  *
  * @param {vec2} p1 start point of the 2D line
  * @param {vec2} p2 end point of the 2D line

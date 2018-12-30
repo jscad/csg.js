@@ -1,5 +1,6 @@
 /**
- * Compare the given lines for equality
+ * Compare the given 2D lines for equality
+ *
  * @return {boolean} true if lines are equal
  */
 const equals = (line1, line2) => {

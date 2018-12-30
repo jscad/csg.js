@@ -3,9 +3,9 @@ const vec2 = require('../vec2')
 const fromValues = require('./fromValues')
 
 /**
- * Create a new line in the opposite direction as the given
+ * Create a new line in the opposite direction as the given.
  *
- * @param {line2} line the line to reverse
+ * @param {line2} line the 2D line to reverse
  * @returns {line2} a new unbounded 2D line
  */
 const reverse = (line) => {

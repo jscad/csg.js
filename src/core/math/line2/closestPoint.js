@@ -4,8 +4,12 @@ const direction = require('./direction')
 const origin = require('./origin')
 
 /**
- * Determine the closest point on the given line to the given point
+ * Determine the closest point on the given line to the given point.
  * Thanks to @khrismuc
+ *
+ * @param {vec2} point the point of reference
+ * @param {line2} line the 2D line for calculations
+ * @returns {vec2} a new point
  */
 const closestPoint = (point, line) => {
   // linear function of AB
