@@ -9,5 +9,6 @@ module.exports = {
   fromPoints: require('./fromPoints'),
   intersectWithPlane: require('./intersectWithPlane'),
   reverse: require('./reverse'),
+  toString: require('./toString'),
   transform: require('./transform')
 }

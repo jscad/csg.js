@@ -1,7 +1,12 @@
-const vec3 = require('./vec3')
+const vec3 = require('../vec3')
+
+const fromData = require('./fromData')
 
 /**
- * Create a simple line in 3D space, centered at 0,0,0 and lying on X axis.
+ * Create an unbounded 3D line.
+ * The line is centered at 0,0,0 and lying on X axis.
+ *
+ * @returns {line3} a new unbounded 3D line
  */
 const create = () => {
   let point = vec3.fromValues(0, 0, 0)

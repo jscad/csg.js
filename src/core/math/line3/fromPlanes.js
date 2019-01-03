@@ -1,12 +1,18 @@
-const vec3 = require('./vec3')
+const vec3 = require('../vec3')
+
+const { EPS } = require('../../constants')
+const { solve2Linear } = require("../../utils/various")
+
+const fromData = require('./fromData')
 
 const fromPlanes = (plane1, plane2) => {
-  let direction = vec3.cross(plane1, plane3)
-  let length = direction.length()
+  let direction = vec3.cross(plane1, plane2)
+  let length = vec3.length(direction)
   if (length < EPS) {
     throw new Error('Invalid line3; given parallel planes')
   }
-  direction = vec3.times(direction, (1.0 / l))
+  length = (1.0 / length)
+  direction = vec3.scale(length, direction)
 
   let absx = Math.abs(direction[0])
   let absy = Math.abs(direction[1])
