@@ -9,7 +9,7 @@ const vec3 = require('../vec3')
  * @param {line3} line the 3D line of reference
  * @returns {vec3} a new point
  */
-const intersectWithPlane = (plane, line) => {
+const intersectToPlane = (plane, line) => {
   // plane: plane.normal * p = plane.w
   let pnormal = plane
   let pw = plane[3]
@@ -26,4 +26,4 @@ const intersectWithPlane = (plane, line) => {
   return point
 }
 
-module.exports = intersectWithPlane
+module.exports = intersectToPlane

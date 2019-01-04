@@ -8,7 +8,7 @@ module.exports = {
   fromData: require('./fromData'),
   fromPlanes: require('./fromPlanes'),
   fromPoints: require('./fromPoints'),
-  intersectWithPlane: require('./intersectWithPlane'),
+  intersectToPlane: require('./intersectToPlane'),
   origin: require('./origin'),
   reverse: require('./reverse'),
   toString: require('./toString'),

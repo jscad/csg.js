@@ -9,7 +9,7 @@ const fromPlanes = (plane1, plane2) => {
   let direction = vec3.cross(plane1, plane2)
   let length = vec3.length(direction)
   if (length < EPS) {
-    throw new Error('Invalid line3; given parallel planes')
+    throw new Error('parallel planes do not intersect')
   }
   length = (1.0 / length)
   direction = vec3.scale(length, direction)
