@@ -10,9 +10,9 @@ const closestPoint = require('./closestPoint')
  * @return {Number} distance between line and point
  */
 const distanceToPoint = (point, line) => {
-  let closest = closestPoint(point, line)
-  let distancevector = vec3.subtract(point, closest)
-  let distance = vec3.length(distancevector)
+  const closest = closestPoint(point, line)
+  const distancevector = vec3.subtract(point, closest)
+  const distance = vec3.length(distancevector)
   return distance
 }
 

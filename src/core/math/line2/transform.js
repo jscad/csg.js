@@ -28,8 +28,8 @@ const transform = (...params) => {
     line = params[2]
   }
 
-  let org = origin(line)
-  let dir = direction(line)
+  const org = origin(line)
+  const dir = direction(line)
 
   vec2.transformMat4(org, matrix, org)
   vec2.transformMat4(dir, matrix, dir)

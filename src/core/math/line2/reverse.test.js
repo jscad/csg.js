@@ -56,4 +56,3 @@ test('line2: reverse() called with two paramerters should update a line2 with pr
   t.true(compareVectors(ret5, [-0.7071067690849304, -0.7071067690849304, 0]))
   t.true(compareVectors(obs5, [-0.7071067690849304, -0.7071067690849304, 0]))
 })
-

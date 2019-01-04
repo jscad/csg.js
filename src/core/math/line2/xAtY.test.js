@@ -35,6 +35,5 @@ test('line2: xAtY() should return proper values', (t) => {
   const y6 = xAtY(-3, line2)
   nearlyEqual(t, y6, 2, EPS)
 
-
   t.true(true)
 })

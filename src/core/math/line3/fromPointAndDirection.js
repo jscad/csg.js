@@ -11,9 +11,9 @@ const vec3 = require('../vec3')
  * @param {vec3} direction direction of the line segment
  * @returns {line3} a new unbounded 3D line
  */
-const fromData = (point, direction) => {
-  let unit = vec3.unit(direction)
+const fromPointAndDirection = (point, direction) => {
+  const unit = vec3.unit(direction)
   return [point, unit]
 }
 
-module.exports = fromData
+module.exports = fromPointAndDirection

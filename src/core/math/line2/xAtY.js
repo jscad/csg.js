@@ -1,5 +1,3 @@
-const vec2 = require('../vec2')
-
 const origin = require('./origin')
 
 /**

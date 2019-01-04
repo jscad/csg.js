@@ -1,7 +1,7 @@
 const test = require('ava')
 const plane = require('../plane/')
 
-const { fromPlanes, toString } = require('./index')
+const { fromPlanes } = require('./index')
 
 const { compareVectors } = require('../../../../test/helpers/index')
 
@@ -9,9 +9,7 @@ test('line3: fromPlanes() should return a new line3 with correct values', (t) =>
   const planeXY = plane.fromVec3s([0, 0, 0], [1, 0, 0], [1, 1, 0]) // flat on XY
   const planeXZ = plane.fromVec3s([0, 0, 0], [1, 0, 0], [0, 0, 1]) // flat on XZ
   const planeYZ = plane.fromVec3s([0, 0, 0], [0, 1, 0], [0, 0, 1]) // flat on YZ
-  const plane1 = plane.fromVec3s([0, 0, 3], [1, 0, 3], [1, 1, 3])
   const plane2 = plane.fromVec3s([0, -3, 0], [1, -3, 0], [0, -3, 1])
-  const plane3 = plane.fromVec3s([3, 0, 0], [3, 1, 0], [3, 0, 1])
 
   let obs = fromPlanes(planeXY, planeXZ)
   let pnt = obs[0]

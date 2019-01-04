@@ -1,5 +1,5 @@
 const test = require('ava')
-const { transform, create, fromPoints, toString } = require('./index')
+const { transform, create, fromPoints } = require('./index')
 
 const { compareVectors } = require('../../../../test/helpers/index')
 
@@ -84,7 +84,7 @@ test('line2: transform() called with three paramerters should update a line2 wit
     0, 0, 0, 1
   ]
 
-  let obs1 = create()
+  const obs1 = create()
   let ret1 = transform(obs1, identityMatrix, line1)
   t.true(compareVectors(ret1, [0, 1, 0]))
   t.true(compareVectors(obs1, [0, 1, 0]))
@@ -105,7 +105,7 @@ test('line2: transform() called with three paramerters should update a line2 wit
     x, y, z, 1
   ]
 
-  let obs2 = create()
+  const obs2 = create()
   let ret2 = transform(obs2, translationMatrix, line1)
   t.true(compareVectors(ret2, [0, 1, 5]))
   t.true(compareVectors(obs2, [0, 1, 5]))
@@ -126,7 +126,7 @@ test('line2: transform() called with three paramerters should update a line2 wit
     0, 0, 0, 1
   ]
 
-  let obs3 = create()
+  const obs3 = create()
   let ret3 = transform(obs3, scaleMatrix, line1)
   // rounding t.true(compareVectors(ret3, [0, 1, 0]))
   // rounding t.true(compareVectors(obs3, [0, 1, 0]))
@@ -145,7 +145,7 @@ test('line2: transform() called with three paramerters should update a line2 wit
               0,            0, 0, 1
   ]
 
-  let obs4 = create()
+  const obs4 = create()
   let ret4 = transform(obs4, rotateZMatrix, line1)
   t.true(compareVectors(ret4, [-1, 0, 0]))
   t.true(compareVectors(obs4, [-1, 0, 0]))
@@ -156,5 +156,3 @@ test('line2: transform() called with three paramerters should update a line2 wit
   t.true(compareVectors(ret4, [-0.7071067690849304, -0.7071067690849304, 0]))
   t.true(compareVectors(obs4, [-0.7071067690849304, -0.7071067690849304, 0]))
 })
-
-

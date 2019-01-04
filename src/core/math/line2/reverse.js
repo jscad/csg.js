@@ -22,8 +22,8 @@ const reverse = (...params) => {
     line = params[1]
   }
 
-  let normal = vec2.negate(line)
-  let distance = -line[2]
+  const normal = vec2.negate(line)
+  const distance = -line[2]
   return clone(out, fromValues(normal[0], normal[1], distance))
 }
 

@@ -8,14 +8,14 @@ const vec3 = require('../vec3')
  * @returns {vec3} a new point
  */
 const closestPoint = (point, line) => {
-  let lpoint = line[0]
-  let ldirection = line[1]
+  const lpoint = line[0]
+  const ldirection = line[1]
 
-  let a = vec3.dot(vec3.subtract(point, lpoint), ldirection)
-  let b = vec3.dot(ldirection, ldirection)
-  let t = a / b
+  const a = vec3.dot(vec3.subtract(point, lpoint), ldirection)
+  const b = vec3.dot(ldirection, ldirection)
+  const t = a / b
 
-  let closestpoint = vec3.add(lpoint, vec3.scale(t, ldirection))
+  const closestpoint = vec3.add(lpoint, vec3.scale(t, ldirection))
   return closestpoint
 }
 

@@ -11,18 +11,16 @@ const vec3 = require('../vec3')
  */
 const intersectToPlane = (plane, line) => {
   // plane: plane.normal * p = plane.w
-  let pnormal = plane
-  let pw = plane[3]
+  const pnormal = plane
+  const pw = plane[3]
 
-  let lpoint = line[0]
-  let ldirection = line[1]
+  const lpoint = line[0]
+  const ldirection = line[1]
 
   // point: p = line.point + labda * line.direction
-  let a = (pw - vec3.dot(pnormal, lpoint))
-  let b = vec3.dot(pnormal, ldirection)
-  let labda = (pw - vec3.dot(pnormal, lpoint)) / vec3.dot(pnormal, ldirection)
+  const labda = (pw - vec3.dot(pnormal, lpoint)) / vec3.dot(pnormal, ldirection)
 
-  let point = vec3.add(lpoint, vec3.scale(labda, ldirection))
+  const point = vec3.add(lpoint, vec3.scale(labda, ldirection))
   return point
 }
 

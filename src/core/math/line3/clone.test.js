@@ -1,5 +1,5 @@
 const test = require('ava')
-const { create, clone, fromPointAndDirection, toString } = require('./index')
+const { create, clone, fromPointAndDirection } = require('./index')
 
 const { compareVectors } = require('../../../../test/helpers/index')
 

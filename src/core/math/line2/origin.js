@@ -7,8 +7,8 @@ const vec2 = require('../vec2')
  * @return {vec2} the origin of the line
  */
 const origin = (line) => {
-  const origin = vec2.scale(line[2], line)
-  return origin
+  const point = vec2.scale(line[2], line)
+  return point
 }
 
 module.exports = origin

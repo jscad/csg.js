@@ -1,5 +1,3 @@
-const vec3 = require('../vec3')
-
 /**
  * Return the direction of the given line.
  *

@@ -22,8 +22,8 @@ const reverse = (...params) => {
     line = params[1]
   }
 
-  let point = vec3.clone(line[0])
-  let direction = vec3.negate(line[1])
+  const point = vec3.clone(line[0])
+  const direction = vec3.negate(line[1])
   return clone(out, fromPointAndDirection(point, direction))
 }
 

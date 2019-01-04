@@ -10,7 +10,7 @@ const fromPointAndDirection = require('./fromPointAndDirection')
  * @returns {line3} a new unbounded 3D line
  */
 const fromPoints = (p1, p2) => {
-  let direction = vec3.subtract(p2, p1)
+  const direction = vec3.subtract(p2, p1)
   return fromPointAndDirection(p1, direction)
 }
 

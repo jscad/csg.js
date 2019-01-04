@@ -13,8 +13,8 @@ const equals = (line1, line2) => {
   if (!vec3.equals(line1[0], line2[0])) return false
 
   // why would lines with the same slope (direction) and different points be equal?
-  //let distance = distanceToPoint(line1, line2[0])
-  //if (distance > EPS) return false
+  // let distance = distanceToPoint(line1, line2[0])
+  // if (distance > EPS) return false
 
   return true
 }

@@ -42,7 +42,7 @@ test('line3: reverse() should return proper lines', (t) => {
 
 test('line3: reverse() called with two paramerters should update a line3 with proper values', (t) => {
   const line1 = create()
-  let out = create()
+  const out = create()
   let rev = reverse(out, line1)
   let pnt = rev[0]
   let dir = rev[1]
@@ -68,4 +68,3 @@ test('line3: reverse() called with two paramerters should update a line3 with pr
   t.true(compareVectors(dir, [0.7071067690849304, -0.7071067690849304, 0]))
   t.is(rev, line2)
 })
-

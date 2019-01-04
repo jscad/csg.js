@@ -69,8 +69,8 @@ test('line3: transform() called with two paramerters should return a line3 with 
   const rotateZMatrix = [
     Math.cos(r), Math.sin(r), 0, 0,
    -Math.sin(r), Math.cos(r), 0, 0,
-              0,            0, 1, 0,
-              0,            0, 0, 1
+              0,           0, 1, 0,
+              0,           0, 0, 1
   ]
 
   let obs4 = transform(rotateZMatrix, line1)
@@ -96,7 +96,7 @@ test('line3: transform() called with three paramerters should update a line3 wit
     0, 0, 0, 1
   ]
 
-  let obs1 = create()
+  const obs1 = create()
   let ret1 = transform(obs1, identityMatrix, line1)
   t.true(compareVectors(ret1[0], [0, 0, 0]))
   t.true(compareVectors(ret1[1], [0, 0, 1]))
@@ -145,5 +145,3 @@ test('line3: transform() called with three paramerters should update a line3 wit
   t.true(compareVectors(line3[1], [0.5773502588272095, 0.5773502588272095, 0.5773502588272095]))
   t.is(ret2, line3)
 })
-
-

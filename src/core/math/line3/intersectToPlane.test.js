@@ -1,7 +1,7 @@
 const test = require('ava')
 const plane = require('../plane/')
 
-const { intersectToPlane, fromPoints, toString } = require('./index')
+const { intersectToPlane, fromPoints } = require('./index')
 
 const { compareVectors } = require('../../../../test/helpers/index')
 
