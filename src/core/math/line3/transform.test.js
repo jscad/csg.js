@@ -1,9 +1,9 @@
 const test = require('ava')
-const { transform, create, fromPoints, toString } = require('./index')
+const { transform, create, fromPoints } = require('./index')
 
 const { compareVectors } = require('../../../../test/helpers/index')
 
-test.only('line3: transform() called with two paramerters should return a line3 with correct values', (t) => {
+test('line3: transform() called with two paramerters should return a line3 with correct values', (t) => {
   const line1 = create()
   const line2 = fromPoints([1, 0, 0], [0, 1, 0])
   const line3 = fromPoints([-3, -3, -3], [3, 3, 3])
@@ -86,8 +86,8 @@ test.only('line3: transform() called with two paramerters should return a line3 
 
 test('line3: transform() called with three paramerters should update a line3 with correct values', (t) => {
   const line1 = create()
-  const line2 = fromPoints([0, 0], [0, 1])
-  const line3 = fromPoints([-3, -3], [3, 3])
+  const line2 = fromPoints([1, 0, 0], [0, 1, 0])
+  const line3 = fromPoints([-3, -3, -3], [3, 3, 3])
 
   const identityMatrix = [
     1, 0, 0, 0,
@@ -98,14 +98,22 @@ test('line3: transform() called with three paramerters should update a line3 wit
 
   let obs1 = create()
   let ret1 = transform(obs1, identityMatrix, line1)
-  t.true(compareVectors(ret1, [0, 1, 0]))
-  t.true(compareVectors(obs1, [0, 1, 0]))
+  t.true(compareVectors(ret1[0], [0, 0, 0]))
+  t.true(compareVectors(ret1[1], [0, 0, 1]))
+  t.true(compareVectors(obs1[0], [0, 0, 0]))
+  t.true(compareVectors(obs1[1], [0, 0, 1]))
+  t.not(line1, obs1)
+  t.is(ret1, obs1)
   ret1 = transform(obs1, identityMatrix, line2)
-  t.true(compareVectors(ret1, [-1, 0, 0]))
-  t.true(compareVectors(obs1, [-1, 0, 0]))
+  t.true(compareVectors(ret1[0], [1, 0, 0]))
+  t.true(compareVectors(ret1[1], [-0.7071067690849304, 0.7071067690849304, 0]))
+  t.true(compareVectors(obs1[0], [1, 0, 0]))
+  t.true(compareVectors(obs1[1], [-0.7071067690849304, 0.7071067690849304, 0]))
   ret1 = transform(obs1, identityMatrix, line3)
-  t.true(compareVectors(ret1, [-0.7071067690849304, 0.7071067690849304, 0]))
-  t.true(compareVectors(obs1, [-0.7071067690849304, 0.7071067690849304, 0]))
+  t.true(compareVectors(ret1[0], [-3, -3, -3]))
+  t.true(compareVectors(ret1[1], [0.5773502588272095, 0.5773502588272095, 0.5773502588272095]))
+  t.true(compareVectors(obs1[0], [-3, -3, -3]))
+  t.true(compareVectors(obs1[1], [0.5773502588272095, 0.5773502588272095, 0.5773502588272095]))
 
   const x = 1
   const y = 5
@@ -117,56 +125,25 @@ test('line3: transform() called with three paramerters should update a line3 wit
     x, y, z, 1
   ]
 
-  let obs2 = create()
-  let ret2 = transform(obs2, translationMatrix, line1)
-  t.true(compareVectors(ret2, [0, 1, 5]))
-  t.true(compareVectors(obs2, [0, 1, 5]))
-  ret2 = transform(obs2, translationMatrix, line2)
-  t.true(compareVectors(ret2, [-1, 0, -1]))
-  t.true(compareVectors(obs2, [-1, 0, -1]))
-  ret2 = transform(obs2, translationMatrix, line3)
-  t.true(compareVectors(ret2, [-0.7071066498756409, 0.70710688829422, 2.828427791595459]))
-  t.true(compareVectors(obs2, [-0.7071066498756409, 0.70710688829422, 2.828427791595459]))
-
-  const w = 1
-  const h = 3
-  const d = 5
-  const scaleMatrix = [
-    w, 0, 0, 0,
-    0, h, 0, 0,
-    0, 0, d, 0,
-    0, 0, 0, 1
-  ]
-
-  let obs3 = create()
-  let ret3 = transform(obs3, scaleMatrix, line1)
-  // rounding t.true(compareVectors(ret3, [0, 1, 0]))
-  // rounding t.true(compareVectors(obs3, [0, 1, 0]))
-  ret3 = transform(obs3, scaleMatrix, line2)
-  t.true(compareVectors(ret3, [-1, 0, 0]))
-  t.true(compareVectors(obs3, [-1, 0, 0]))
-  ret3 = transform(obs3, scaleMatrix, line3)
-  t.true(compareVectors(ret3, [-0.9486833214759827, 0.3162277638912201, 0]))
-  t.true(compareVectors(obs3, [-0.9486833214759827, 0.3162277638912201, 0]))
-
-  const r = (90 * 0.017453292519943295)
-  const rotateZMatrix = [
-    Math.cos(r), Math.sin(r), 0, 0,
-   -Math.sin(r), Math.cos(r), 0, 0,
-              0,            0, 1, 0,
-              0,            0, 0, 1
-  ]
-
-  let obs4 = create()
-  let ret4 = transform(obs4, rotateZMatrix, line1)
-  t.true(compareVectors(ret4, [-1, 0, 0]))
-  t.true(compareVectors(obs4, [-1, 0, 0]))
-  ret4 = transform(obs4, rotateZMatrix, line2)
-  // rounding t.true(compareVectors(ret4, [0, -1, 0]))
-  // rounding t.true(compareVectors(obs4, [0, -1, 0]))
-  ret4 = transform(obs4, rotateZMatrix, line3)
-  t.true(compareVectors(ret4, [-0.7071067690849304, -0.7071067690849304, 0]))
-  t.true(compareVectors(obs4, [-0.7071067690849304, -0.7071067690849304, 0]))
+  // transform in place
+  let ret2 = transform(line1, translationMatrix, line1)
+  t.true(compareVectors(ret2[0], [1, 5, 7]))
+  t.true(compareVectors(ret2[1], [0, 0, 1]))
+  t.true(compareVectors(line1[0], [1, 5, 7]))
+  t.true(compareVectors(line1[1], [0, 0, 1]))
+  t.is(ret2, line1)
+  ret2 = transform(line2, translationMatrix, line2)
+  t.true(compareVectors(ret2[0], [2, 5, 7]))
+  t.true(compareVectors(ret2[1], [-0.70710688829422, 0.7071066498756409, 0]))
+  t.true(compareVectors(line2[0], [2, 5, 7]))
+  t.true(compareVectors(line2[1], [-0.70710688829422, 0.7071066498756409, 0]))
+  t.is(ret2, line2)
+  ret2 = transform(line3, translationMatrix, line3)
+  t.true(compareVectors(ret2[0], [-2, 2, 4]))
+  t.true(compareVectors(ret2[1], [0.5773502588272095, 0.5773502588272095, 0.5773502588272095]))
+  t.true(compareVectors(line3[0], [-2, 2, 4]))
+  t.true(compareVectors(line3[1], [0.5773502588272095, 0.5773502588272095, 0.5773502588272095]))
+  t.is(ret2, line3)
 })
 
 

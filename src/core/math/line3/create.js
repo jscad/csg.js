@@ -3,8 +3,7 @@ const vec3 = require('../vec3')
 const fromData = require('./fromData')
 
 /**
- * Create an unbounded 3D line.
- * The line is centered at 0,0,0 and lying on X axis.
+ * Create an unbounded 3D line, centered at 0,0,0 and lying on X axis.
  *
  * @returns {line3} a new unbounded 3D line
  */
