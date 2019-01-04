@@ -5,7 +5,7 @@ module.exports = {
   direction: require('./direction'),
   distanceToPoint: require('./distanceToPoint'),
   equals: require('./equals'),
-  fromData: require('./fromData'),
+  fromPointAndDirection: require('./fromPointAndDirection'),
   fromPlanes: require('./fromPlanes'),
   fromPoints: require('./fromPoints'),
   intersectToPlane: require('./intersectToPlane'),

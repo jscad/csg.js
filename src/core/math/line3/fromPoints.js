@@ -1,6 +1,6 @@
 const vec3 = require('../vec3')
 
-const fromData = require('./fromData')
+const fromPointAndDirection = require('./fromPointAndDirection')
 
 /**
  * Creates a new 3D line that passes through the given points.
@@ -11,7 +11,7 @@ const fromData = require('./fromData')
  */
 const fromPoints = (p1, p2) => {
   let direction = vec3.subtract(p2, p1)
-  return fromData(p1, direction)
+  return fromPointAndDirection(p1, direction)
 }
 
 module.exports = fromPoints

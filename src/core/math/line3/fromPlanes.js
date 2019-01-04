@@ -3,7 +3,7 @@ const vec3 = require('../vec3')
 const { EPS } = require('../../constants')
 const { solve2Linear } = require("../../utils/various")
 
-const fromData = require('./fromData')
+const fromPointAndDirection = require('./fromPointAndDirection')
 
 const fromPlanes = (plane1, plane2) => {
   let direction = vec3.cross(plane1, plane2)
@@ -31,7 +31,7 @@ const fromPlanes = (plane1, plane2) => {
     let r = solve2Linear(plane1[0], plane1[1], plane2[0], plane2[1], plane1[3], plane2[3])
     origin = vec3.fromValues(r[0], r[1], 0)
   }
-  return fromData(origin, direction)
+  return fromPointAndDirection(origin, direction)
 }
 
 module.exports = fromPlanes

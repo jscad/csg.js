@@ -2,7 +2,7 @@ const vec3 = require('../vec3')
 
 const clone = require('./clone')
 const create = require('./create')
-const fromData = require('./fromData')
+const fromPointAndDirection = require('./fromPointAndDirection')
 
 /**
  * Create a new line in the opposite direction as the given.
@@ -24,7 +24,7 @@ const reverse = (...params) => {
 
   let point = vec3.clone(line[0])
   let direction = vec3.negate(line[1])
-  return clone(out, fromData(point, direction))
+  return clone(out, fromPointAndDirection(point, direction))
 }
 
 module.exports = reverse

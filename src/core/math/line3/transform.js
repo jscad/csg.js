@@ -2,7 +2,7 @@ const vec3 = require('../vec3')
 
 const clone = require('./clone')
 const create = require('./create')
-const fromData = require('./fromData')
+const fromPointAndDirection = require('./fromPointAndDirection')
 
 /**
  * Transforms the given 3D line using the given matrix.
@@ -33,7 +33,7 @@ const transform = (...params) => {
   let newPointPlusDirection = vec3.transformMat4(matrix, pointPlusDirection)
   let newdirection = vec3.subtract(newPointPlusDirection, newpoint)
 
-  return clone(out, fromData(newpoint, newdirection))
+  return clone(out, fromPointAndDirection(newpoint, newdirection))
 }
 
 module.exports = transform
