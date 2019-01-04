@@ -14,7 +14,7 @@ const create = require('./create')
  * @param {line2} line the 2D line to transform
  * @returns {line2} a new unbounded 2D line
  */
-const transformMat4 = (...params) => {
+const transform = (...params) => {
   let out
   let matrix
   let line
@@ -37,4 +37,4 @@ const transformMat4 = (...params) => {
   return clone(out, fromPoints(org, dir))
 }
 
-module.exports = transformMat4
+module.exports = transform
