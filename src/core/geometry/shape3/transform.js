@@ -1,9 +1,7 @@
 const mat4 = require('../../math/mat4')
-const vec4 = require('../../math/vec4')
 const vec3 = require('../../math/vec3')
 const plane = require('../../math/plane')
-// const poly3 = require('../poly3')
-// const vert3 = require('../vert3')
+const poly3 = require('../poly3')
 const fromPolygons = require('./fromPolygons')
 
 /**
@@ -19,26 +17,20 @@ const fromPolygons = require('./fromPolygons')
 **/
 const transform = (matrix, shape3) => {
   let ismirror = mat4.isMirroring(matrix)
-  let transformedvertices = {}
-  let transformedplanes = {}
-  let newpolygons = shape3.polygons.map(function (p) {
-    let newplane
-    let plane = p.plane
-    let planetag = plane.getTag()
-    if (planetag in transformedplanes) {
-      newplane = transformedplanes[planetag]
-    } else {
-      newplane = vec4.transform(matrix, plane)
-      transformedplanes[planetag] = newplane
+  let transformedvertices = new WeakMap()
+  let transformedplanes = new WeakMap()
+  let newpolygons = this.polygons.map(function (p) {
+    let oldplane = p.plane
+    let newplane = transformedplanes.get(oldplane)
+    if (newplane == undefined) {
+      newplane = plane.transformMat4(matrix, oldplane)
+      transformedplanes.set(oldplane, newplane)
     }
-    let newvertices = p.vertices.map(function (v) {
-      let newvertex
-      let vertextag = v.getTag()
-      if (vertextag in transformedvertices) {
-        newvertex = transformedvertices[vertextag]
-      } else {
-        newvertex = vert3.transform(matrix, v)
-        transformedvertices[vertextag] = newvertex
+    let newvertices = p.vertices.map(function (oldvertex) {
+      let newvertex = transformedvertices.get(oldvertex)
+      if (newvertex == undefined) {
+        newvertex = vec3.transform(matrix, oldvertex)
+        transformedvertices.set(oldvertex, newvertex)
       }
       return newvertex
     })
@@ -71,7 +63,7 @@ const transform2 = (matrix, shape3) => {
     const plane = polygonData.slice(12, 16) // meh, use a dataview
 
     const transformedPositions = positions.map(position => vec3.transform(matrix, position)) // FIXME use memoizing/ lookups to avoid multiple computation
-    const transformedPlane = vec4.transform(matrix, plane) // FIXME use memoizing/ lookups to avoid multiple computation
+    const transformedPlane = plane.transformMat4(matrix, plane) // FIXME use memoizing/ lookups to avoid multiple computation
 
     // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/set 
     resultData.set(ismirrored ? transformedPositions.reverse() : transformedPositions, i)
