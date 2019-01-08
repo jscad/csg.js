@@ -1,6 +1,5 @@
 const canonicalize = require('./canonicalize')
 
-//const path2 = require('../path2')
 const vec2 = require('../../math/vec2')
 
 /** returns the outline of the given Shape2 as an array of paths
@@ -21,7 +20,7 @@ console.log('  push: ' + side)
     console.log(sideslist.push(side))
     sideslist = vertexMap.get(side[0])
   })
-  let paths = []
+  let outlines = []
   while (true) {
     let startside = undefined
 console.log('  startside: ' + startside)
@@ -85,10 +84,10 @@ console.log('  nextpossiblesides.length: ' + nextpossiblesides.length)
 console.log('  path:')
 console.log(connectedVertexPoints)
     //let path = new Path2D(connectedVertexPoints, true)
-    //paths.push(path)
+    outlines.push(connectedVertexPoints)
   } // outer loop
   vertexMap.clear()
-  return paths
+  return outlines
 }
 
 module.exports = outlineToPaths
