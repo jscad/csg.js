@@ -3,7 +3,7 @@ const vec3 = require('../vec3')
 const fromPointAndDirection = require('./fromPointAndDirection')
 
 /**
- * Create an unbounded 3D line, centered at 0,0,0 and lying on X axis.
+ * Create an unbounded 3D line, positioned at 0,0,0 and lying on the X axis.
  *
  * @returns {line3} a new unbounded 3D line
  */

@@ -1,14 +1,12 @@
 /**
- * Represents a unbounded line in 2D space, centered about an origin.
+ * Represents a unbounded line in 2D space, positioned at a point of origin.
  * A line is parametrized by its normal vector (perpendicular to the line, rotated 90 degrees counter clockwise)
- * and w. The line passes through the point <normal>.times(w).
- * Equation: p is on line if normal.dot(p)==w
- * @param {Vector2D} normal normal must be a unit vector!
- * @returns {Line2D}
+ * and w. The line passes through the point of origin, i.e. scale(w, <normal>).
+ * Equation: a point (P) is on line (L) if dot(L.normal, P) == L.w
 */
 
 /**
- * Creates a new 2D line, running along the X axis.
+ * Create a unbounded 2D line, positioned at 0,0, and running along the X axis.
  *
  * @returns {line2} a new unbounded 2D line
  */
