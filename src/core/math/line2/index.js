@@ -7,7 +7,7 @@ module.exports = {
   equals: require('./equals'),
   fromPoints: require('./fromPoints'),
   fromValues: require('./fromValues'),
-  intersectToLine: require('./intersectToLine'),
+  intersectPointOfLines: require('./intersectPointOfLines'),
   origin: require('./origin'),
   reverse: require('./reverse'),
   toString: require('./toString'),
