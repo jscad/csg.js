@@ -2,14 +2,14 @@ const vec3 = require('../vec3')
 const fromValues = require('../vec4/fromValues')
 
 /**
- * Create a new plane from the given vec3 values
+ * Create a new plane from the given points
  *
- * @param {a} vec3 - vector 3D
- * @param {b} vec3 - vector 3D
- * @param {c} vec3 - vector 3D
+ * @param {a} vec3 - 3D point
+ * @param {b} vec3 - 3D point
+ * @param {c} vec3 - 3D point
  * @returns {Array} a new plane with properly typed values
  */
-const fromVec3s = (a, b, c) => {
+const fromPoints = (a, b, c) => {
   // let n = b.minus(a).cross(c.minus(a)).unit()
   // FIXME optimize later
   const ba = vec3.subtract(b, a)
@@ -20,4 +20,4 @@ const fromVec3s = (a, b, c) => {
   return fromValues(normal[0], normal[1], normal[2], w)
 }
 
-module.exports = fromVec3s
+module.exports = fromPoints

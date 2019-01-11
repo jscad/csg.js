@@ -5,7 +5,7 @@ module.exports = {
   flip: require('./flip'),
   fromNormalAndPoint: require('./fromNormalAndPoint'),
   fromValues: require('../vec4/fromValues'),
-  fromVec3s: require('./fromVec3s'),
+  fromPoints: require('./fromPoints'),
   signedDistanceToPoint: require('./signedDistanceToPoint'),
   toString: require('../vec4/toString'),
   transformMat4: require('./transformMat4'),

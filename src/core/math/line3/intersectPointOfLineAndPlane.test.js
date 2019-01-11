@@ -6,9 +6,9 @@ const { intersectPointOfLineAndPlane, fromPoints } = require('./index')
 const { compareVectors } = require('../../../../test/helpers/index')
 
 test('line3: intersectPointOfLineAndPlane() should return a new line3 with correct values', (t) => {
-  const planeXY = plane.fromVec3s([0, 0, 0], [1, 0, 0], [1, 1, 0]) // flat on XY
-  const planeXZ = plane.fromVec3s([0, 0, 0], [1, 0, 0], [0, 0, 1]) // flat on XZ
-  const planeYZ = plane.fromVec3s([0, 0, 0], [0, 1, 0], [0, 0, 1]) // flat on YZ
+  const planeXY = plane.fromPoints([0, 0, 0], [1, 0, 0], [1, 1, 0]) // flat on XY
+  const planeXZ = plane.fromPoints([0, 0, 0], [1, 0, 0], [0, 0, 1]) // flat on XZ
+  const planeYZ = plane.fromPoints([0, 0, 0], [0, 1, 0], [0, 0, 1]) // flat on YZ
 
   const line1 = fromPoints([0, 0, 0], [1, 0, 0])
   const line2 = fromPoints([1, 0, 0], [1, 1, 0])
