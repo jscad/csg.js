@@ -29,8 +29,8 @@ const transform = (...params) => {
   const direction = line[1]
   const pointPlusDirection = vec3.add(point, direction)
 
-  const newpoint = vec3.transformMat4(matrix, point)
-  const newPointPlusDirection = vec3.transformMat4(matrix, pointPlusDirection)
+  const newpoint = vec3.transform(matrix, point)
+  const newPointPlusDirection = vec3.transform(matrix, pointPlusDirection)
   const newdirection = vec3.subtract(newPointPlusDirection, newpoint)
 
   return clone(out, fromPointAndDirection(newpoint, newdirection))

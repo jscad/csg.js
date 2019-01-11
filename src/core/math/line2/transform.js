@@ -31,8 +31,8 @@ const transform = (...params) => {
   const org = origin(line)
   const dir = direction(line)
 
-  vec2.transformMat4(org, matrix, org)
-  vec2.transformMat4(dir, matrix, dir)
+  vec2.transform(org, matrix, org)
+  vec2.transform(dir, matrix, dir)
 
   return clone(out, fromPoints(org, dir))
 }

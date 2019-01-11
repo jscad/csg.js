@@ -8,6 +8,6 @@ module.exports = {
   fromPoints: require('./fromPoints'),
   signedDistanceToPoint: require('./signedDistanceToPoint'),
   toString: require('../vec4/toString'),
-  transformMat4: require('./transformMat4'),
+  transform: require('./transform'),
   splitLineSegmentByPlane: require('./splitLineSegmentByPlane')
 }

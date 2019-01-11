@@ -8,7 +8,7 @@ const flip = require('./flip')
  * Transform the given plane using the given matrix
  * @return {Array} a new plane with properly typed values
  */
-const transformMat4 = (matrix, plane) => {
+const transform = (matrix, plane) => {
   const ismirror = mat4.isMirroring(matrix)
   // get two vectors in the plane:
   const r = vec3.random(plane)
@@ -19,9 +19,9 @@ const transformMat4 = (matrix, plane) => {
   let point2 = vec3.add(point1, u)
   let point3 = vec3.add(point1, v)
   // transform the points:
-  point1 = vec3.transformMat4(matrix, point1)
-  point2 = vec3.transformMat4(matrix, point2)
-  point3 = vec3.transformMat4(matrix, point3)
+  point1 = vec3.transform(matrix, point1)
+  point2 = vec3.transform(matrix, point2)
+  point3 = vec3.transform(matrix, point3)
   // and create a new plane from the transformed points:
   let newplane = fromPoints(point1, point2, point3)
   if (ismirror) {
@@ -31,4 +31,4 @@ const transformMat4 = (matrix, plane) => {
   return newplane
 }
 
-module.exports = transformMat4
+module.exports = transform
