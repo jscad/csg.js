@@ -1,6 +1,7 @@
 const poly3 = require('../../poly3')
 
 /** create a copy/clone of the input geometry
+ * @typedef  {import('./create').Geom3} Geom3
  * @param  {Geom3} sourceGeometry the geometry to clone
  * @returns {Geom3} the new clone
  */

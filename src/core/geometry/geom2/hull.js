@@ -127,7 +127,7 @@ let ConvexHull = function () {
 
 // FIXME: extract shapes to work with both spread & array
 /** create a convex hull of the given shapes
- * @param {Array} shapes list of Geom2 objects to create a hull around
+ * @param {...Geom2} shapes list of Geom2 objects to create a hull around
  * @returns {Geom2} new Geom2 object , a hull around the given shapes
  *
  * @example
