@@ -6,8 +6,9 @@ const create = require('./create')
  * Originally "Whosa whatsis" suggested "Chain Hull" ,
  * as described at https://plus.google.com/u/0/105535247347788377245/posts/aZGXKFX1ACN
  * essentially hull A+B, B+C, C+D and then union those
- * @param {Array} objects a list of Shape2 objects to create a chainHull around
- * @returns {Shape3} new Shape2 object , a chainHull around the given shapes
+ * @typedef  {import('./create').Shape2} Shape2
+ * @param {Array} shapes a list of Shape2 objects to create a chainHull around
+ * @returns {Shape2} new Shape2 object , a chainHull around the given shapes
  *
  * @example
  * let hulled = chainHull(rectangle(), ellipse())

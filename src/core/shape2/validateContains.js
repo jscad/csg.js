@@ -1,6 +1,7 @@
 const hasPointInside = require('./validateHasPointInside')
 
 /** Check if all points from one Shape2 stay inside another Shape2
+* @typedef  {import('./create').Shape2} Shape2
 * @param {Shape2} shape1 - Shape2 object
 * @param {Object} shape2 - Shape2 object
 * @returns {Boolean}

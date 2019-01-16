@@ -10,6 +10,7 @@ const toArray = require('../utils/toArray')
    * Return a new Shape2 solid representing space in both this solid and
    * in the given solids.
    * Immutable: Neither this solid nor the given solids are modified.
+   * @typedef {import('./create').Shape2} Shape2
    * @param {Shape2[]} shapes - list of Shape2 objects
    * @returns {Shape2} new Shape2 object
    * @example

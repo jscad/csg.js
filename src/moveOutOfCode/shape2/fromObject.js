@@ -1,4 +1,4 @@
-const fromSides = require('./fromSides')
+const fromSides = require('../../core/shape2/fromSides')
 const Side = require('./math/Side')
 
 /** Reconstruct a Shape2 from an object with identical property names.

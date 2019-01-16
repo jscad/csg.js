@@ -7,7 +7,11 @@ module.exports = {
   equals: require('./equals'),
   expand: require('./expand'),
   flip: require('./flip'),
+  fromCompactBinary: require('./fromCompactBinary'),
+  fromFakeGeom3: require('./fromFakeGeom3'),
+  fromPoints: require('./fromPoints'),
   fromSides: require('./fromSides'),
+  hull: require('./hull'),
   intersection: require('./intersection'),
   transform: require('./transform'),
   union: require('./union')
