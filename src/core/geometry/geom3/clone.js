@@ -1,4 +1,4 @@
-const poly3 = require('../../poly3')
+const poly3 = require('../poly3')
 
 /** create a copy/clone of the input geometry
  * @typedef  {import('./create').Geom3} Geom3
