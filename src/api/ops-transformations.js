@@ -3,7 +3,9 @@ const Plane = require('../core/math/Plane')
 const Vector3 = require('../core/math/Vector3')
 const { union } = require('./ops-booleans')
 const { fromPoints } = require('../core/CAGFactories')
-const { isCAG } = require('../core/utils')
+const { isCAG, isCSG } = require('../core/utils')
+const quickhull3d = require('quickhull3d')
+
 // -- 3D transformations (OpenSCAD like notion)
 
 /** translate an object in 2D/3D space
@@ -207,17 +209,79 @@ function minkowski () {
  * let hulled = hull(rect(), circle())
  */
 function hull () {
-  let pts = []
 
   let a = arguments
   if (a[0].length) a = a[0]
+
+  let do3d = false;
+  for(let i = 0; i < a.length; i++) {
+    if(isCSG(a[i])) {
+      do3d = true;
+      break;
+    }
+  }
+  if(do3d)
+    return hull3d(a);
+  return hull2d(a);
+}
+
+const hull3d = shapes => {
+
+  let pts = []
   let done = []
 
-  for (let i = 0; i < a.length; i++) {              // extract all points of the CAG in the argument list
-    let cag = a[i]
-    if (!isCAG(cag)) {
-      throw new Error('ERROR: hull() accepts only 2D forms / CAG')
+  for(let i=0; i<shapes.length; i++) {
+    let cag = shapes[i];
+    if(isCAG(cag)) {
+      for(let j=0; j<cag.sides.length; j++) {
+        let x = cag.sides[j].vertex0.pos.x;
+        let y = cag.sides[j].vertex0.pos.y;
+        if(done[''+x+','+y+",0"])  // avoid some coord to appear multiple times
+          continue;
+        pts.push([x,y,0]);
+        done[''+x+','+y+",0"]++;
+        //echo(x,y);
+      }
+    } else if(isCSG(cag)) {
+      let csg = cag;
+      let polygons = csg.toPolygons();
+      for(let j = 0; j < polygons.length; j++) {
+        let polygon = polygons[j];
+        for(let k = 0; k < polygon.vertices.length; k++) {
+          let x = polygon.vertices[k].pos.x;
+          let y = polygon.vertices[k].pos.y;
+          let z = polygon.vertices[k].pos.z;
+          pts.push([x,y,z]);
+        }
+      }
     }
+  }
+  let faces = new quickhull3d(pts);
+
+  for(let i = 0; i < faces.length; i++) {
+    faces[i].reverse();
+  }
+  let options = {
+    points: pts,
+    polygons: faces
+  };
+  //console.log(options);
+  // forced to import here, otherwise out of order imports mess things up ????????????????????????????????
+  const { polyhedron } = require('./primitives3d-api')
+  return polyhedron(options);
+}
+
+const hull2d = shapes => {
+
+  let pts = []
+  let done = []
+
+  for (let i = 0; i < shapes.length; i++) {              // extract all points of the CAG in the argument list
+    let cag = shapes[i]
+    // already checked
+    //if (!isCAG(cag)) {
+    //  throw new Error('ERROR: hull() accepts only 2D forms / CAG')
+    //}
     for (let j = 0; j < cag.sides.length; j++) {
       let x = cag.sides[j].vertex0.pos.x
       let y = cag.sides[j].vertex0.pos.y
@@ -370,6 +434,7 @@ function hull () {
     return fromPoints(ch)
   }
 }
+
 
 /** create a chain hull of the given shapes
  * Originally "Whosa whatsis" suggested "Chain Hull" ,
