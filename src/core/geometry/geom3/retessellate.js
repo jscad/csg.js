@@ -1,4 +1,4 @@
-const FuzzyCSGFactory = require('../../FuzzyFactory3d')
+const FuzzyCSGFactory = require('../FuzzyFactory3d')
 const reTesselateCoplanarPolygons = require('./reTesselateCoplanarPolygons')
 const fromPolygons = require('../fromPolygons')
 
