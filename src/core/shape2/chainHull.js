@@ -21,7 +21,7 @@ const chainHull = shapes => {
     return newShape
   })
 
-  const newGeometry = geom2.chainHull(shapesWithUpdatedGeoms)
+  const newGeometry = geom2.chainHull({}, shapesWithUpdatedGeoms)
   /* this means that the new shape:
    - has default transforms (reset)
    - does not get any attributes or data from the input shapes

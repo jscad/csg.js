@@ -11,7 +11,8 @@ const toArray = require('../utils/toArray')
    * Return a new Shape2 solid representing space in this solid but
    * not in the given solids.
    * Immutable: Neither this solid nor the given solids are modified.
-   * @param {Shape2[]} Shape2 - list of Shape2 objects
+   * @typedef  {import('./create').Shape2} Shape2
+   * @param {Shape2[]} shapes - list of Shape2 objects
    * @returns {Shape2} new Shape2 object
    * @example
    * let C = difference(A, B)

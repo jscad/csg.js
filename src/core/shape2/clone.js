@@ -3,7 +3,8 @@ const mat4 = require('../math/mat4')
 const geom2 = require('../geometry/geom2')
 
 /** create a copy/clone of the input shape
- * @param  {Shape2} sourceShape the shape to clone
+ * @typedef  {import('./create').Shape2} Shape2
+ * @param {Shape2} sourceShape the shape to clone
  * @returns {Shape2} the new clone
  */
 const clone = (sourceShape) => {
