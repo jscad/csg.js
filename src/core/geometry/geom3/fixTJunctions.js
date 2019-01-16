@@ -1,5 +1,5 @@
-const { EPS } = require('../constants')
-const Plane = require('../math/Plane')
+const { EPS } = require('../../constants')
+const plane = require('../../math/plane')
 const canonicalize = require('./canonicalize')
 const poly3 = require('../../poly3')
 
@@ -264,7 +264,7 @@ const fixTJunctions = function (fromPolygons, csg) {
                       loop(function (a) {
                         loop(function (b) {
                           loop(function (c) {
-                            newpolygon.plane = Plane.fromPoints(a.pos, b.pos, c.pos)
+                            newpolygon.plane = plane.fromPoints(a.pos, b.pos, c.pos)
                             if (!isNaN(newpolygon.plane.w)) {
                               found = true
                             }
