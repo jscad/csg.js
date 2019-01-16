@@ -1,7 +1,8 @@
 const fromPolygons = require('./fromPolygons')
 const retesselate = require('./retesellate')
 const canonicalize = require('./canonicalize')
-const Tree = require('../../trees')
+
+const Tree = require('../trees')
 
 /**
    * Return a new Geom3 solid representing space in both this solid and
@@ -21,13 +22,7 @@ const Tree = require('../../trees')
    *      |       |
    *      +-------+
    */
-const intersect = (otherCsg, geometry)  => {
-  let geometries
-  if (geometry instanceof Array) {
-    geometries = geometry
-  } else {
-    geometries = [geometry]
-  }
+const intersect = (otherCsg, ...geometries)  => {
   let result = otherCsg
   for (let i = 0; i < geometries.length; i++) {
     let islast = (i === (geometries.length - 1))

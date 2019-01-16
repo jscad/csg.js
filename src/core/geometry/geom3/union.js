@@ -1,7 +1,9 @@
 const isOverlapping = require('./isOverlapping')
 const fromPolygons = require('./fromPolygons')
-const retesselate = require('./retesellate')
+const retessellate = require('./retessellate')
 const canonicalize = require('./canonicalize')
+
+const Tree = require('../trees')
 
 // Like union, but when we know that the two solids are not intersecting
 // Do not use if you are not completely sure that the solids do not intersect!
@@ -33,20 +35,20 @@ const unionSub = (otherCsg, csg, doRetesselate, doCanonicalize) => {
     let result = fromPolygons(newpolygons)
     // FIXME: what to do with properties ????
     // result.properties = otherCsg.properties._merge(csg.properties)
-    if (doRetesselate) result = retesselate(result)
+    if (doRetesselate) result = retessellate(result)
     if (doCanonicalize) result = canonicalize(result)
     return result
   }
 }
 
-const union = solids => {
+const union = (...solids) => {
   let csgs = solids
-  let i
   // combine csg pairs in a way that forms a balanced binary tree pattern
+  let i
   for (i = 1; i < csgs.length; i += 2) {
-    csgs.push(unionSub(csgs[i - 1], csgs[i]))
+    csgs.push(unionSub(csgs[i - 1], csgs[i], false, false))
   }
-  return canonicalize(retesselate(csgs[i - 1]))
+  return canonicalize(retessellate(csgs[i - 1]))
 }
 
 module.exports = union
