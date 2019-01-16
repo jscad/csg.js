@@ -8,14 +8,14 @@ const toTriangles = (shape3) => {
   shape3.polygons.forEach(function (poly) {
     let firstVertex = poly.vertices[0]
     for (let i = poly.vertices.length - 3; i >= 0; i--) {
-      const triangle = poly3.fromData(
+      const triangle = poly3.fromPoints(
         [
           firstVertex,
           poly.vertices[i + 1],
           poly.vertices[i + 2]
         ],
-        poly.shared,
         poly.plane
+        // TODO poly.shared,
       )
       polygons.push(triangle)
     }
