@@ -2,7 +2,7 @@ const fromPolygons = require('./fromPolygons')
 const retesselate = require('./retesellate')
 const canonicalize = require('./canonicalize')
 
-const Tree = require('../trees')
+const { Tree } = require('../trees')
 
 /**
    * Return a new Geom3 solid representing space in both this solid and

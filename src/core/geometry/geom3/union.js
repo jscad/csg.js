@@ -3,7 +3,7 @@ const fromPolygons = require('./fromPolygons')
 const retessellate = require('./retessellate')
 const canonicalize = require('./canonicalize')
 
-const Tree = require('../trees')
+const { Tree } = require('../trees')
 
 // Like union, but when we know that the two solids are not intersecting
 // Do not use if you are not completely sure that the solids do not intersect!
