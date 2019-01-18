@@ -1,42 +1,43 @@
 const { EPS, angleEPS } = require('../../constants')
 const canonicalize = require('./canonicalize')
 const fromPoints = require('./fromPoints')
+const fromPointsNoCheck = require('./fromPoints')
+const vec2 = require('../../math/vec2')
+const union = require('./union')
 
-const expand = (_geom2, radius, resolution) => {
+const expand = (geometry, radius, resolution) => {
   resolution = resolution || 8
   if (resolution < 4) resolution = 4
-  let cags = []
+
+  let geometries = []
   let pointmap = {}
-  let cag = canonicalize(_geom2)
-  cag.sides.map(function (side) {
-    let d = side.vertex1.pos.minus(side.vertex0.pos)
-    let dl = d.length()
-    if (dl > EPS) {
-      d = d.times(1.0 / dl)
-      let normal = d.normal().times(radius)
-      let shellpoints = [
-        side.vertex1.pos.plus(normal),
-        side.vertex1.pos.minus(normal),
-        side.vertex0.pos.minus(normal),
-        side.vertex0.pos.plus(normal)
+  let geom = canonicalize(geometry)
+  geom.sides.map(side => {
+    let offset = vec2.subtract(side[1], side[0])
+    const distance = vec2.length(offset)
+    if (distance > EPS) {
+      offset = vec2.scale(1.0 / distance, offset)
+      const normal = vec2.scale(radius, vec2.normal(offset))
+      const shellpoints = [
+        vec2.add(side[1], normal),
+        vec2.subtract(side[1], normal),
+        vec2.subtract(side[0], normal),
+        vec2.add(side[0], normal)
       ]
-      //      let newcag = fromPointsNoCheck(shellpoints);
-      let newcag = fromPoints(shellpoints)
-      cags.push(newcag)
+      // fromPointsNoCheck??
+      geometries.push(fromPoints(shellpoints))
       for (let step = 0; step < 2; step++) {
-        let p1 = (step === 0) ? side.vertex0.pos : side.vertex1.pos
-        let p2 = (step === 0) ? side.vertex1.pos : side.vertex0.pos
-        let tag = p1.x + ' ' + p1.y
+        let p1 = (step === 0) ? side[0] : side[1]
+        let p2 = (step === 0) ? side[1] : side[0]
+        let tag = p1.x + ' ' + p1.y // FIXME: ditch !!
         if (!(tag in pointmap)) {
           pointmap[tag] = []
         }
-        pointmap[tag].push({
-          'p1': p1,
-          'p2': p2
-        })
+        pointmap[tag].push({ p1, p2 })
       }
     }
   })
+
   for (let tag in pointmap) {
     let m = pointmap[tag]
     let angle1, angle2
@@ -44,8 +45,9 @@ const expand = (_geom2, radius, resolution) => {
     if (m.length === 2) {
       let end1 = m[0].p2
       let end2 = m[1].p2
-      angle1 = end1.minus(pcenter).angleDegrees()
-      angle2 = end2.minus(pcenter).angleDegrees()
+      angle1 = vec2.angleDegrees(vec2.subtract(end1, pcenter))
+      angle2 = vec2.angleDegrees(vec2.subtract(end2, pcenter))
+
       if (angle2 < angle1) angle2 += 360
       if (angle2 >= (angle1 + 360)) angle2 -= 360
       if (angle2 < angle1 + 180) {
@@ -74,16 +76,17 @@ const expand = (_geom2, radius, resolution) => {
       for (let step = 0; step <= numsteps; step++) {
         let angle = angle1 + step / numsteps * (angle2 - angle1)
         if (step === numsteps) angle = angle2 // prevent rounding errors
-        let point = pcenter.plus(Vector2D.fromAngleDegrees(angle).times(radius))
+        const point = vec2.add(
+          pcenter,
+          vec2.scale(radius, vec2.fromAngleDegrees(angle))
+        )
         if ((!fullcircle) || (step > 0)) {
           points.push(point)
         }
       }
-      let newcag = fromPointsNoCheck(points)
-      cags.push(newcag)
+      geometries.push(fromPointsNoCheck(points))
     }
   }
-  const result = union(result, cags)
-  return result
+  return union(geometries)
 }
 module.exports = expand

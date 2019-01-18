@@ -1,5 +1,5 @@
 const Path2 = require('../../core/math/Path2')
-const { fromSides } = require('../../core/CAGFactories')
+const fromSides = require('./fromSides')
 const { extrude } = require('./extrusionUtils')
 const { expandedShell } = require('./expand')
 
@@ -13,9 +13,9 @@ const { expandedShell } = require('./expand')
  * @param {Boolean} [options.round=true] - whether to round the extrusion or not
  * @param {Array} basePoints array of points (nested) to extrude from
  * layed out like [ [0,0], [10,0], [5,10], [0,10] ]
- * @returns {CSG} new extruded shape
+ * @returns {Geom3} new extruded shape
  *
- * @example
+ * @example@
  * let revolved = rectangularExtrude({height: 10}, square())
  */
 const rectangularExtrude = (params, basePoints) => {
