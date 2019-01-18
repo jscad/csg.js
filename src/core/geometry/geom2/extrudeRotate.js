@@ -151,3 +151,41 @@ const rotateExtrude = (params, baseShape) => {
 }
 
 module.exports = rotateExtrude
+
+// THIS IS AN OLD untested !!! version of rotate extrude
+/** Extrude to into a 3D solid by rotating the origin around the Y axis.
+ * (and turning everything into XY plane)
+ * @param {Object} options - options for construction
+ * @param {Number} [options.angle=360] - angle of rotation
+ * @param {Number} [options.resolution=defaultResolution3D] - number of polygons per 360 degree revolution
+ * @returns {Geom3} new 3D solid
+ */
+/* const rotateExtrude = function (geometry, options) { // FIXME options should be optional
+  let alpha = parseOptionAsFloat(options, 'angle', 360)
+  let resolution = parseOptionAsInt(options, 'resolution', defaultResolution3D)
+
+  alpha = alpha > 360 ? alpha % 360 : alpha
+  let origin = [0, 0, 0]
+  let axisV = vec3.fromValues(0, 1, 0)
+  let normalV = [0, 0, 1]
+  let polygons = []
+  // planes only needed if alpha > 0
+  let connS = new Connector(origin, axisV, normalV)
+  if (alpha > 0 && alpha < 360) {
+    // we need to rotate negative to satisfy wall function condition of
+    // building in the direction of axis vector
+    let connE = new Connector(origin, axisV.rotateZ(-alpha), normalV)
+    polygons = polygons.concat(shape2.toPlanePolygons(geometry, { toConnector: connS, flipped: true }))
+    polygons = polygons.concat(shape2.toPlanePolygons(geometry, { toConnector: connE }))
+  }
+  let connT1 = connS
+  let connT2
+  let step = alpha / resolution
+  for (let a = step; a <= alpha + EPS; a += step) { // FIXME Should this be angelEPS?
+    connT2 = new Connector(origin, axisV.rotateZ(-a), normalV)
+    polygons = polygons.concat(shape2.toPlanePolygons(geometry,
+      { toConnector1: connT1, toConnector2: connT2 }))
+    connT1 = connT2
+  }
+  return fromPolygons(polygons).reTesselated()
+} */

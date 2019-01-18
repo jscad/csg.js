@@ -1,3 +1,10 @@
+
+/**
+ * @typedef {Object} Geom2 - 2d geometry
+ * @property {Array} sides sides of this geometry, just a nested array of [start, end] points:
+ * @property {Boolean} isCanonicalized boolean flag for canonicalized state
+ */
+
 /** creates an 'empty'/ default 2d geometry Geom2
  * Geom2s are just nested arrays of [start, end] points:
  * [
@@ -10,7 +17,7 @@
  */
 const create = () => {
   return {
-    sides: [], // not sure if sides or curves will be kept (either or)
+    sides: [],
     isCanonicalized: false
   }
 }

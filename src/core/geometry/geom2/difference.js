@@ -1,4 +1,5 @@
 const canonicalize = require('./canonicalize')
+const retesselate = require('./retesselate')
 const toGeom3Wall = require('./toGeom3Wall')
 
 const difference = shapes => {
