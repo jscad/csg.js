@@ -11,14 +11,11 @@ const create = require('./create')
  */
 const hull = shapes => {
   // first we transform all geometries to 'bake in' the transforms
-  const shapesWithUpdatedGeoms = shapes.map(shape => {
-    const transformedGeom = geom2.transform(shape.transforms, shape.geometry)
-    const newShape = clone(shape)
-    newShape.geometry = transformedGeom
-    return newShape
-  })
+  // FIXME: very inneficient, may transform the same geometries multiple times if multiple booleans are applie
+  // to the same shapes
+  const updatedGeoms = shapes.map(shape => geom2.transform(shape.transforms, shape.geometry))
 
-  const newGeometry = geom2.hull(shapesWithUpdatedGeoms)
+  const newGeometry = geom2.hull(updatedGeoms)
   /* this means that the new shape:
    - has default transforms (reset)
    - does not get any attributes or data from the input shapes

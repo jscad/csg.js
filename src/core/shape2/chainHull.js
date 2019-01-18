@@ -15,14 +15,8 @@ const create = require('./create')
  */
 const chainHull = shapes => {
   // first we transform all geometries to 'bake in' the transforms
-  const shapesWithUpdatedGeoms = shapes.map(shape => {
-    const transformedGeom = geom2.transform(shape.transforms, shape.geometry)
-    const newShape = clone(shape)
-    newShape.geometry = transformedGeom
-    return newShape
-  })
-
-  const newGeometry = geom2.chainHull({}, shapesWithUpdatedGeoms)
+  const updatedGeoms = shapes.map(shape => geom2.transform(shape.transforms, shape.geometry))
+  const newGeometry = geom2.chainHull({}, updatedGeoms)
   /* this means that the new shape:
    - has default transforms (reset)
    - does not get any attributes or data from the input shapes
