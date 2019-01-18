@@ -12,7 +12,7 @@ const expand = (geometry, radius, resolution) => {
   let geometries = []
   let pointmap = {}
   let geom = canonicalize(geometry)
-  geom.sides.map(side => {
+  geom.sides.forEach(side => {
     let offset = vec2.subtract(side[1], side[0])
     const distance = vec2.length(offset)
     if (distance > EPS) {
@@ -37,7 +37,7 @@ const expand = (geometry, radius, resolution) => {
       }
     }
   })
-
+  // not clear why there are two passes ?
   for (let tag in pointmap) {
     let m = pointmap[tag]
     let angle1, angle2

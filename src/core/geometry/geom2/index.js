@@ -1,18 +1,33 @@
 module.exports = {
-  canonicalize: require('./canonicalize'),
-  chainHull: require('./chainHull'),
-  clone: require('./clone'),
   create: require('./create'),
-  difference: require('./difference'),
+  clone: require('./clone'),
   equals: require('./equals'),
-  expand: require('./expand'),
+
   flip: require('./flip'),
+  expand: require('./expand'),
+  hull: require('./hull'),
+  chainHull: require('./hullChain'),
+
+  union: require('./union'),
+  difference: require('./difference'),
+  intersection: require('./intersection'),
+  transform: require('./transform'),
+
+  extrudeLinear: require('./extrudeLinear'),
+  extrudeRectangular: require('./extrudeRectangular'),
+  extrudeRotate: require('./extrudeRotate'),
+
+  canonicalize: require('./canonicalize'),
+  measureArea: require('./measureArea'),
+  measureBounds: require('./measureBounds'),
+
   fromCompactBinary: require('./fromCompactBinary'),
   fromFakeGeom3: require('./fromFakeGeom3'),
   fromPoints: require('./fromPoints'),
   fromSides: require('./fromSides'),
-  hull: require('./hull'),
-  intersection: require('./intersection'),
-  transform: require('./transform'),
-  union: require('./union')
+
+  toPoints: require('./toPoints'),
+  toCompactBinary: require('./toCompactBinary'),
+  toString: require('./toString'),
+  toWallPolygons: require('./toWallPolygons')
 }

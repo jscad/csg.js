@@ -130,7 +130,7 @@ let ConvexHull = function () {
  * @param {...Geom2} shapes list of Geom2 objects to create a hull around
  * @returns {Geom2} new Geom2 object , a hull around the given shapes
  *
- * @example
+ * @example:
  * let hulled = hull(rectangle(), ellipse())
  */
 const hull = shapes => {
@@ -142,7 +142,7 @@ const hull = shapes => {
     for (let j = 0; j < shape2.sides.length; j++) {
       const x = shape2.sides[j][0][0]
       const y = shape2.sides[j][0][1]
-      // avoid some coord to appear multiple times
+      // avoid some coordinate from appearing multiple times
       if (done[`${x},${y}`]) {
         continue
       }
