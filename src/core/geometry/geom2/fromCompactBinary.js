@@ -5,7 +5,7 @@ const vec2 = require('../math//vec2')
  * @param {CompactBinary} bin - see toCompactBinary()
  * @returns {CAG} new CAG object
  */
-const fromCompactBinary = function (bin) {
+const fromCompactBinary = bin => {
   if (bin['class'] !== 'CAG') throw new Error('Not a CAG')
   let vertices = []
   let vertexData = bin.vertexData

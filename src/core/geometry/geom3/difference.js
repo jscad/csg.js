@@ -49,4 +49,5 @@ const subtractSub = (otherCsg, geometry, doRetesselate, doCanonicalize) => {
   return result
 }
 
+subtract.subtractSub = subtractSub
 module.exports = subtract

@@ -8,7 +8,7 @@ const equals = (geom, otherGeom) => {
   if (geom.isCanonicalized !== otherGeom.isCanonicalized) {
     return false // FIXME: does this make sense ??
   }
-  for (let i = 0; i < geom.lenth; i++) {
+  for (let i = 0; i < geom.sides.length; i++) {
     for (let j = 0; j < 4; j++) {
       if (geom[i][j] !== otherGeom[i][j]) {
         return false

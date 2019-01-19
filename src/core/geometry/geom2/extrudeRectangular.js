@@ -1,7 +1,6 @@
-const Path2 = require('../../core/math/Path2')
-const fromSides = require('./fromSides')
+const fromPoints = require('../path2/fromPoints')
+const toGeom2 = require('../path2/toGeom2')
 const { extrude } = require('./extrusionUtils')
-const { expandedShell } = require('./expand')
 
 /** rectangular extrusion of the given array of points
  * Extrude the path by following it with a rectangle (upright, perpendicular to the path direction)
@@ -20,44 +19,17 @@ const { expandedShell } = require('./expand')
  */
 const rectangularExtrude = (params, basePoints) => {
   const defaults = {
-    w: 1,
-    h: 1,
+    width: 1,
+    height: 1,
     fn: 8,
     closed: false,
     round: true
   }
   // FIXME ! turns out 'round' is not used
-  const { w, h, fn, closed } = Object.assign({}, defaults, params)
-  const path = new Path2(basePoints, closed)
-  let shape = expandToShape2(path, w / 2, fn)
-  let result = extrude(shape, {
-    offset: [0, 0, h]
-  })
-  return result
-  // return rectangularExtrude(w, h, fn, round)
-}
-
-// Expand the path to a CAG
-// This traces the path with a circle with radius pathradius
-const expandToShape2 = (path, pathradius, resolution) => {
-  let sides = []
-  let numpoints = path.points.length
-  let startIndex = 0
-  if (path.closed && (numpoints > 2)) startIndex = -1
-  let prevPoint
-  for (let i = startIndex; i < numpoints; i++) {
-    let pointIndex = i
-    if (pointIndex < 0) pointIndex = numpoints - 1
-    const point = path.points[pointIndex]
-    if (i > startIndex) {
-      let side = [prevPoint, point]
-      sides.push(side)
-    }
-    prevPoint = point
-  }
-  let shellShape = fromSides(sides)
-  let expanded = expandedShell(shellShape, pathradius, resolution)
-  return expanded
+  const { width, height, fn, closed } = Object.assign({}, defaults, params)
+  const path = fromPoints(basePoints, closed)
+  const geometry = toGeom2(path, width / 2, fn)
+  return extrude(geometry, { offset: [0, 0, height] })
 }
 
 module.exports = rectangularExtrude

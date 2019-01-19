@@ -16,7 +16,7 @@ const retesellate = require('./retesellate')
  * @param {CAG} baseShape input 2d shape
  * @returns {CSG} new extruded shape
  *
- * @example
+ * @example:
  * let revolved = rotateExtrude({fn: 10}, square())
  */
 const rotateExtrude = (params, baseShape) => {

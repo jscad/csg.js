@@ -1,23 +1,23 @@
 const FuzzyCSGFactory = require('../FuzzyFactory3d')
 const reTesselateCoplanarPolygons = require('./reTesselateCoplanarPolygons')
-const fromPolygons = require('../fromPolygons')
+const fromPolygons = require('./fromPolygons')
 
 /*
-  After CSG operations all coplanar polygon fragments are joined by a retesselating
-  operation. shape3.reTesselate(shape).
+  After boolean operations all coplanar polygon fragments are joined by a retesselating
+  operation. geom3.reTesselate(geom).
   Retesselation is done through a linear sweep over the polygon surface.
   The sweep line passes over the y coordinates of all vertices in the polygon.
   Polygons are split at each sweep line, and the fragments are joined horizontally and vertically into larger polygons
   (making sure that we will end up with convex polygons).
 */
-const retessellate = function (csg) {
-  if (csg.isRetesselated) {
-    return csg
+const retessellate = function (geometry) {
+  if (geometry.isRetesselated) {
+    return geometry
   } else {
     let polygonsPerPlane = {}
-    let isCanonicalized = csg.isCanonicalized
+    let isCanonicalized = geometry.isCanonicalized
     let fuzzyfactory = new FuzzyCSGFactory()
-    csg.polygons.map(function (polygon) {
+    geometry.polygons.map(function (polygon) {
       let plane = polygon.plane
       let shared = polygon.shared
       if (!isCanonicalized) {
@@ -46,7 +46,7 @@ const retessellate = function (csg) {
     let result = fromPolygons(destpolygons)
     result.isRetesselated = true
     // result = result.canonicalized();
-    result.properties = csg.properties // keep original properties
+    result.properties = geometry.properties // keep original properties
     return result
   }
 }
