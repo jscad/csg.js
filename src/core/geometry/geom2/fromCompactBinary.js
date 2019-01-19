@@ -1,12 +1,12 @@
 const fromSides = require('./fromSides')
-const vec2 = require('../math//vec2')
+const vec2 = require('../../math/vec2')
 
-/** Reconstruct a CAG from the output of toCompactBinary().
+/** Reconstruct a Geom2 from the output of toCompactBinary().
  * @param {CompactBinary} bin - see toCompactBinary()
- * @returns {CAG} new CAG object
+ * @returns {Geom2} new Geom2 object
  */
 const fromCompactBinary = bin => {
-  if (bin['class'] !== 'CAG') throw new Error('Not a CAG')
+  if (bin['class'] !== 'Geom2') throw new Error('Not a Geom2')
   let vertices = []
   let vertexData = bin.vertexData
   let numvertices = vertexData.length / 2

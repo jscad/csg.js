@@ -5,7 +5,7 @@ const fromPoints = require('../geom2/fromPoints')
 
 // Expand the path to a Geom2
 // This traces the path with a circle with radius pathradius if radius is passed, otherwise just uses the points
-const expandToShape2 = (path, pathradius, resolution) => {
+const toGeom2 = (path, pathradius, resolution) => {
   if (pathradius) {
     if (!path.closed) throw new Error('The path should be closed!')
     return fromPoints(path.points)
@@ -26,8 +26,8 @@ const expandToShape2 = (path, pathradius, resolution) => {
     prevPoint = point
   }
   let shellShape = fromSides(sides)
-  let expanded = expand(shellShape, pathradius, resolution)
+  let expanded = expand({ radius: pathradius, resolution }, shellShape)
   return expanded
 }
 
-module.exports = expandToShape2
+module.exports = toGeom2

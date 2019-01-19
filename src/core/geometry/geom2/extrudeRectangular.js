@@ -4,6 +4,7 @@ const { extrude } = require('./extrusionUtils')
 
 /** rectangular extrusion of the given array of points
  * Extrude the path by following it with a rectangle (upright, perpendicular to the path direction)
+ * @typedef  {import('./create').Geom2} Geom2
  * @param {Object} [options] - options for construction
  * @param {Float} [options.h=1] - height of the extruded shape in the z direction
  * @param {Float} [options.w=10] - width of the extruded shape in the z=0 plane
@@ -14,7 +15,7 @@ const { extrude } = require('./extrusionUtils')
  * layed out like [ [0,0], [10,0], [5,10], [0,10] ]
  * @returns {Geom3} new extruded shape
  *
- * @example@
+ * @example:
  * let revolved = rectangularExtrude({height: 10}, square())
  */
 const rectangularExtrude = (params, basePoints) => {

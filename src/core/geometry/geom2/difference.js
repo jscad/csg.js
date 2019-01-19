@@ -6,7 +6,7 @@ const subtractSub = require('../geom3/difference').subtractSub
 
 // FIXME: double check this algorithm, or even better, swap it out with something not reliant
 // on converting to 3D and back !!!
-// TODO: except for the use of geom2 vs geom3 this is identical to shape3's difference
+// TODO: except for the use of geom2 vs geom3 this is identical to geom3's difference
 /**
  * Return a new Geom2 solid representing space in this solid but
  * not in the given solids.

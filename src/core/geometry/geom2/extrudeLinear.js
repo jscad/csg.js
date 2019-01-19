@@ -4,6 +4,7 @@ const measureBounds = require('./measureBounds')
 const vec2 = require('../../math/vec2')
 
 /** linear extrusion of the input 2d geometry
+ * @typedef  {import('./create').Geom2} Geom2
  * @param {Object} [options] - options for construction
  * @param {Float} [options.height=1] - height of the extruded geometry
  * @param {Integer} [options.slices=10] - number of intermediary steps/slices
@@ -12,10 +13,11 @@ const vec2 = require('../../math/vec2')
  * @param {Geom2} baseGeom input 2d geometry
  * @returns {Geom2} new extruded geometry
  *
- * @example@
- * const revolved = linearExtrude({height: 10}, rectangle())
+ * @example:
+ * const revolved = extrudeLinear({height: 10}, rectangle())
+ *
  */
-const linearExtrude = (params, baseGeom) => {
+const extrudeLinear = (params, baseGeom) => {
   const defaults = {
     height: 1,
     slices: 10,
@@ -33,4 +35,4 @@ const linearExtrude = (params, baseGeom) => {
   return output
 }
 
-module.exports = linearExtrude
+module.exports = extrudeLinear

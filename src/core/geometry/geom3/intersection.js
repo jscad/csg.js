@@ -1,5 +1,5 @@
 const fromPolygons = require('./fromPolygons')
-const retesselate = require('./retesellate')
+const retesselate = require('./retessellate')
 const canonicalize = require('./canonicalize')
 
 const Tree = require('../trees')
@@ -22,8 +22,8 @@ const Tree = require('../trees')
    *      |       |
    *      +-------+
    */
-const intersect = (otherCsg, ...geometries)  => {
-  let result = otherCsg
+const intersect = (otherGeom3, ...geometries)  => {
+  let result = otherGeom3
   for (let i = 0; i < geometries.length; i++) {
     let islast = (i === (geometries.length - 1))
     result = intersectSub(result, geometries[i], islast, islast)

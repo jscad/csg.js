@@ -20,14 +20,14 @@ const Tree = require('../../trees')
    *      |       |
    *      +-------+
    */
-const subtract = (otherCsg, geometry) => {
+const subtract = (otherGeom3, geometry) => {
   let geometries
   if (geometry instanceof Array) {
     geometries = geometry
   } else {
     geometries = [geometry]
   }
-  let result = otherCsg
+  let result = otherGeom3
   for (let i = 0; i < geometries.length; i++) {
     let islast = (i === (geometries.length - 1))
     result = subtractSub(result, geometries[i], islast, islast)
@@ -35,8 +35,8 @@ const subtract = (otherCsg, geometry) => {
   return result
 }
 
-const subtractSub = (otherCsg, geometry, doRetesselate, doCanonicalize) => {
-  let a = new Tree(otherCsg.polygons)
+const subtractSub = (otherGeom3, geometry, doRetesselate, doCanonicalize) => {
+  let a = new Tree(otherGeom3.polygons)
   let b = new Tree(geometry.polygons)
   a.invert()
   a.clipTo(b)

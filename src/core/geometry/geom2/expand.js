@@ -5,8 +5,18 @@ const fromPointsNoCheck = require('./fromPoints')
 const vec2 = require('../../math/vec2')
 const union = require('./union')
 
-const expand = (geometry, radius, resolution) => {
-  resolution = resolution || 8
+/** Expand a Geom2 by the given radius and resolution
+ * @typedef  {import('./create').Geom2} Geom2
+ * @param  {Geom2} geometry
+ * @param  {Object} params parameters
+ * @param {Number} params.radius radius of expansion
+ * @param {Number} params.resolution quality of output shape
+ */
+const expand = (params, geometry) => {
+  const defaults = {
+    resolution: 8
+  }
+  let { resolution, radius } = Object.assign({}, defaults, params)
   if (resolution < 4) resolution = 4
 
   let geometries = []

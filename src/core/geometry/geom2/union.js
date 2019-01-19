@@ -5,11 +5,11 @@ const fromFakeShape3 = require('./fromFakeGeom3')
 const transformGeometry = require('./transformGeometry')
 
 // FIXME: duplicate code in shape3.union
-const unionSub = function (otherCsg, csg, doRetesselate, doCanonicalize) {
-  if (!isOverlapping(otherCsg, csg)) {
-    return unionForNonIntersecting(otherCsg, csg)
+const unionSub = function (otherGeom3, csg, doRetesselate, doCanonicalize) {
+  if (!isOverlapping(otherGeom3, csg)) {
+    return unionForNonIntersecting(otherGeom3, csg)
   } else {
-    let a = new Tree(otherCsg.polygons)
+    let a = new Tree(otherGeom3.polygons)
     let b = new Tree(csg.polygons)
     a.clipTo(b, false)
 
@@ -22,7 +22,7 @@ const unionSub = function (otherCsg, csg, doRetesselate, doCanonicalize) {
     let newpolygons = a.allPolygons().concat(b.allPolygons())
     let result = fromPolygons(newpolygons)
     // FIXME: what to do with properties ????
-    // result.properties = otherCsg.properties._merge(csg.properties)
+    // result.properties = otherGeom3.properties._merge(csg.properties)
     if (doRetesselate) result = retesselate(result)
     if (doCanonicalize) result = canonicalize(result)
     return result

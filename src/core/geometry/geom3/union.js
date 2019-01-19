@@ -7,21 +7,21 @@ const Tree = require('../trees')
 
 // Like union, but when we know that the two solids are not intersecting
 // Do not use if you are not completely sure that the solids do not intersect!
-const unionForNonIntersecting = (otherCsg, csg) => {
-  let newpolygons = otherCsg.polygons.concat(csg.polygons)
+const unionForNonIntersecting = (otherGeom3, csg) => {
+  let newpolygons = otherGeom3.polygons.concat(csg.polygons)
   let result = fromPolygons(newpolygons)
   // FIXME: what to do with properties ????
-  // result.properties = otherCsg.properties._merge(csg.properties)
-  result.isCanonicalized = otherCsg.isCanonicalized && csg.isCanonicalized
-  result.isRetesselated = otherCsg.isRetesselated && csg.isRetesselated
+  // result.properties = otherGeom3.properties._merge(csg.properties)
+  result.isCanonicalized = otherGeom3.isCanonicalized && csg.isCanonicalized
+  result.isRetesselated = otherGeom3.isRetesselated && csg.isRetesselated
   return result
 }
 
-const unionSub = (otherCsg, csg, doRetesselate, doCanonicalize) => {
-  if (!isOverlapping(otherCsg, csg)) {
-    return unionForNonIntersecting(otherCsg, csg)
+const unionSub = (otherGeom3, csg, doRetesselate, doCanonicalize) => {
+  if (!isOverlapping(otherGeom3, csg)) {
+    return unionForNonIntersecting(otherGeom3, csg)
   } else {
-    let a = new Tree(otherCsg.polygons)
+    let a = new Tree(otherGeom3.polygons)
     let b = new Tree(csg.polygons)
     a.clipTo(b, false)
 
@@ -34,7 +34,7 @@ const unionSub = (otherCsg, csg, doRetesselate, doCanonicalize) => {
     let newpolygons = a.allPolygons().concat(b.allPolygons())
     let result = fromPolygons(newpolygons)
     // FIXME: what to do with properties ????
-    // result.properties = otherCsg.properties._merge(csg.properties)
+    // result.properties = otherGeom3.properties._merge(csg.properties)
     if (doRetesselate) result = retessellate(result)
     if (doCanonicalize) result = canonicalize(result)
     return result
