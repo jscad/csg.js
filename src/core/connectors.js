@@ -1,12 +1,8 @@
 const mat4 = require('./math/mat4')
+const vec2 = require('./math/vec2')
 const vec3 = require('./math/vec3')
-
-const Vector3D = require('./math/Vector3')
-const Line3D = require('./math/Line3')
-const Matrix4x4 = require('./math/Matrix4')
+const plane = require('./math/plane/')
 const OrthoNormalBasis = require('./math/OrthoNormalBasis')
-const Plane = require('./math/Plane')
-const { fromVector2 } = require('./math/Vector3Factories')
 
 // A connector allows to attach two objects at predefined positions
 // For example a servo motor and a servo horn:
@@ -67,7 +63,7 @@ const normalize = connector => {
   return fromPointAxisNormal(connector.point, axis, normal)
 }
 
-/** Creates a new Connector, with the connection point moved in the direction of the axisvector
+/** Creates a new Connector, with the connection point moved in the direction of the axis
  * @returns {Connector} a normalized connector
  */
 const extend = (distance, connector) => {
@@ -96,11 +92,10 @@ const transformationBetweenConnectors = (params, from, to) => {
   // shift to the origin:
   let transformation = mat4.translate(vec3.negate(from.point))
   // construct the plane crossing through the origin and the two axes:
-  let axesplane = Plane.anyPlaneFromVector3Ds(
-    new Vector3D(0, 0, 0), us.axisvector, other.axisvector)
+  let axesplane = plane.fromPointsRandom(vec3.create(), us.axis, other.axis)
   let axesbasis = new OrthoNormalBasis(axesplane)
-  let angle1 = axesbasis.to2D(us.axisvector).angle()
-  let angle2 = axesbasis.to2D(other.axisvector).angle()
+  let angle1 = axesbasis.to2D(us.axis).angle()
+  let angle2 = axesbasis.to2D(other.axis).angle()
   let rotation = 180.0 * (angle2 - angle1) / Math.PI
   if (mirror) rotation += 180.0
   transformation = transformation.multiply(axesbasis.getProjectionMatrix())
@@ -109,24 +104,24 @@ const transformationBetweenConnectors = (params, from, to) => {
   let usAxesAligned = transform(transformation, us)
   // Now we have done the transformation for aligning the axes.
   // We still need to align the normals:
-  let normalsplane = Plane.fromNormalAndPoint(other.axisvector, new Vector3D(0, 0, 0))
+  let normalsplane = plane.fromNormalAndPoint(other.axis, vec3.create())
   let normalsbasis = new OrthoNormalBasis(normalsplane)
-  angle1 = normalsbasis.to2D(usAxesAligned.normalvector).angle()
-  angle2 = normalsbasis.to2D(other.normalvector).angle()
+  angle1 = normalsbasis.to2D(usAxesAligned.normal).angle()
+  angle2 = normalsbasis.to2D(other.normal).angle()
   rotation = 180.0 * (angle2 - angle1) / Math.PI
   rotation += normalrotation
   transformation = transformation.multiply(normalsbasis.getProjectionMatrix())
-  transformation = transformation.multiply(Matrix4x4.rotationZ(rotation))
+  transformation = transformation.multiply(mat4.fromZRotation(rotation))
   transformation = transformation.multiply(normalsbasis.getInverseProjectionMatrix())
   // and translate to the destination point:
-  transformation = transformation.multiply(Matrix4x4.translation(other.point))
+  transformation = transformation.multiply(mat4.fromTranslation(other.point))
   // let usAligned = us.transform(transformation);
   return transformation
 }
 
 // FIXME: is this usefull as part of core, or purely visual ?
 /* axisLine: function () {
-  return new Line3D(this.point, this.axisvector)
+  return new Line3D(this.point, this.axis)
 } */
 
 // old 'connectors list' for now only array of connectors
@@ -154,10 +149,9 @@ const fromPath2Tangents = (path, start, end) => {
   let result = [
     fromPointAxisNormal(path.points[0], start, defaultNormal)]
   // middle points
-  path.points.slice(1, pathLen - 1).forEach(function (p2, i) {
-    axis = fromVector2(path.points[i + 2].minus(path.points[i]), 0)
-    result.push(new Connector(fromVector2(p2, 0), axis,
-      defaultNormal))
+  path.points.slice(1, pathLen - 1).forEach((p2, i) => {
+    axis = vec3.fromVec2(vec2.subtract(path.points[i + 2], path.points[i]))
+    result.push(fromPointAxisNormal(vec3.fromVec2(p2), axis, defaultNormal))
   }, this)
   // other points
   result.push(fromPointAxisNormal(path.points[pathLen - 1], end, defaultNormal))
@@ -177,8 +171,8 @@ const fromPath2AndAngle = (path, angleIsh) => {
     return angleIsh
   }
   let result = path.points.map((p2, i) => {
-    const axis = vec3.rotateZ(getAngle(angleIsh, p2, i), vec3.fromValues(1, 0,0))
-    return fromPointAxisNormal(vec3.fromVec2(p2), axis, defaultNormal)  
+    const axis = vec3.rotateZ(getAngle(angleIsh, p2, i), vec3.fromValues(1, 0, 0))
+    return fromPointAxisNormal(vec3.fromVec2(p2), axis, defaultNormal)
   })
   // result.closed = path.closed // FIXME: meh, do we still need this ??
   return result
@@ -190,10 +184,10 @@ const verify = connectors => {
   for (let i = 0; i < connectors.length - 1; i++) {
     connI = connectors[i]
     connI1 = connectors[i + 1]
-    if (connI1.point.minus(connI.point).dot(connI.axisvector) <= 0) {
-      throw new Error('Invalid ConnectorList. Each connectors position needs to be within a <90deg range of previous connectors axisvector')
+    if (connI1.point.minus(connI.point).dot(connI.axis) <= 0) {
+      throw new Error('Invalid ConnectorList. Each connectors position needs to be within a <90deg range of previous connectors axis')
     }
-    if (connI.axisvector.dot(connI1.axisvector) <= 0) {
+    if (connI.axis.dot(connI1.axis) <= 0) {
       throw new Error('invalid ConnectorList. No neighboring connectors axisvectors may span a >=90deg angle')
     }
   }
@@ -213,7 +207,7 @@ ConnectorList.prototype = {
     this.verify()
     function getCag (cagish, connector) {
       if (typeof cagish === 'function') {
-        cagish = cagish(connector.point, connector.axisvector, connector.normalvector)
+        cagish = cagish(connector.point, connector.axis, connector.normal)
       }
       return cagish
     }
