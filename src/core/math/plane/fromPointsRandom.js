@@ -2,10 +2,9 @@ const EPS = require('../../constants')
 const vec3 = require('../vec3')
 const fromValues = require('../vec4/fromValues')
 
-/** like fromPoints, but allow the vectors to be on one point or one line
+/** Create a new plane from the given points like fromPoints, 
+ * but allow the vectors to be on one point or one line
  * in such a case a random plane through the given points is constructed
- * Create a new plane from the given points
- *
  * @param {Vec3} a - 3D point
  * @param {Vec3} b - 3D point
  * @param {Vec3} c - 3D point

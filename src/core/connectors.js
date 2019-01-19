@@ -90,31 +90,33 @@ const transformationBetweenConnectors = (params, from, to) => {
   const us = normalize(from)
   const other = normalize(to)
   // shift to the origin:
-  let transformation = mat4.translate(vec3.negate(from.point))
+  let transformation = mat4.fromTranslation(vec3.negate(from.point))
   // construct the plane crossing through the origin and the two axes:
   let axesplane = plane.fromPointsRandom(vec3.create(), us.axis, other.axis)
   let axesbasis = new OrthoNormalBasis(axesplane)
-  let angle1 = axesbasis.to2D(us.axis).angle()
-  let angle2 = axesbasis.to2D(other.axis).angle()
-  let rotation = 180.0 * (angle2 - angle1) / Math.PI
+
+  let angle1 = vec2.angleRadians(axesbasis.to2D(us.axis))
+  let angle2 = vec2.angleRadians(axesbasis.to2D(other.axis))
+  let rotation = 180.0 * (angle2 - angle1) / Math.PI // TODO: switch back to radians
   if (mirror) rotation += 180.0
-  transformation = transformation.multiply(axesbasis.getProjectionMatrix())
-  transformation = transformation.multiply(mat4.rotateZ(rotation))
-  transformation = transformation.multiply(axesbasis.getInverseProjectionMatrix())
+  // TODO: understand and explain this
+  transformation = mat4.multiply(transformation, axesbasis.getProjectionMatrix())
+  transformation = mat4.multiply(transformation, mat4.fromZRotation(rotation))
+  transformation = mat4.multiply(transformation, axesbasis.getInverseProjectionMatrix())
   let usAxesAligned = transform(transformation, us)
   // Now we have done the transformation for aligning the axes.
   // We still need to align the normals:
   let normalsplane = plane.fromNormalAndPoint(other.axis, vec3.create())
   let normalsbasis = new OrthoNormalBasis(normalsplane)
-  angle1 = normalsbasis.to2D(usAxesAligned.normal).angle()
-  angle2 = normalsbasis.to2D(other.normal).angle()
+  angle1 = vec2.angleRadians(normalsbasis.to2D(usAxesAligned.normal))
+  angle2 = vec2.angleRadians(normalsbasis.to2D(other.normal))
   rotation = 180.0 * (angle2 - angle1) / Math.PI
   rotation += normalrotation
-  transformation = transformation.multiply(normalsbasis.getProjectionMatrix())
-  transformation = transformation.multiply(mat4.fromZRotation(rotation))
-  transformation = transformation.multiply(normalsbasis.getInverseProjectionMatrix())
+  transformation = mat4.multiply(transformation, normalsbasis.getProjectionMatrix())
+  transformation = mat4.multiply(transformation, mat4.fromZRotation(rotation))
+  transformation = mat4.multiply(transformation, normalsbasis.getInverseProjectionMatrix())
   // and translate to the destination point:
-  transformation = transformation.multiply(mat4.fromTranslation(other.point))
+  transformation = mat4.multiply(transformation, mat4.fromTranslation(other.point))
   // let usAligned = us.transform(transformation);
   return transformation
 }
