@@ -66,6 +66,19 @@
   - extrusions of 2d shapes with no edges (sides length === 0) will now throw an error
   - solidFromSlices(polygon, options) => solidFromSlices(options, polygon)
 
+#### UPDATE !!
+
+  after consideration, the naming convention will change to verbNound ie:
+  - rectangular_extrude (basePoints, params) => extrudeRectangular(params, basePoints)
+  - linear_extrude (basePoints, params) => extrudeLinear
+  - rotate_extrude => extrudeRotate
+
+  this makes it easier to find all related operations, and is coherent with some other naming
+  conventions:
+    - toXXX
+    - fromXXX
+    - measureXXX
+
 
 ### Colors
 

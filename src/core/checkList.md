@@ -120,9 +120,9 @@
   - [ ] equals :
     * [ ] implementation: todo: how to deal with properties
     * [x] docstrings
-  - [ ] expand :
-    * [ ] implementation: implement / upgrade
-    * [ ] docstrings
+  - [x] expand :
+    * [x] implementation: implement / upgrade
+    * [x] docstrings
   - [ ] fromCompactBinary :
     * [ ] implementation: review, update, see if this should not be the standard data structure
     * [ ] docstrings
