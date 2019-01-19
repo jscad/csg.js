@@ -1,25 +1,3 @@
-const Vector2D = require('./Vector2')
-const {EPS, angleEPS} = require('../constants')
-const {parseOptionAs2DVector, parseOptionAsFloat, parseOptionAsInt, parseOptionAsBool} = require('../../api/optionParsers')
-const {defaultResolution2D} = require('../constants')
-
-Path2D.prototype = {
-  concat: function (otherpath) {
-    if (this.closed || otherpath.closed) {
-      throw new Error('Paths must not be closed')
-    }
-    let newpoints = this.points.concat(otherpath.points)
-    return new Path2D(newpoints)
-  },
-
-  /**
-   * Get the points that make up the path.
-   * note that this is current internal list of points, not an immutable copy.
-   * @returns {Vector2[]} array of points the make up the path
-   */
-  getPoints: function () {
-    return this.points
-  },
 
   /**
    * Append an point to the end of the path.
@@ -54,6 +32,3 @@ Path2D.prototype = {
   close: function () {
     return new Path2D(this.points, true)
   }
-}
-
-module.exports = Path2D
