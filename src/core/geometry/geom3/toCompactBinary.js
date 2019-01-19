@@ -1,9 +1,9 @@
 const canonicalize = require('./canonicalize')
 
 /** returns a compact binary representation of this csg
-   * usually used to transfer CSG objects to/from webworkes
+   * usually used to transfer Geom3 objects to/from webworkes
    * NOTE: very interesting compact format, with a lot of reusable ideas
-   * @returns {Object} compact binary representation of a CSG
+   * @returns {Object} compact binary representation of a Geom3
    */
 const toCompactBinary = (_csg) => {
   let csg = canonicalize(_csg)
@@ -97,7 +97,7 @@ const toCompactBinary = (_csg) => {
   })
 
   let result = {
-    'class': 'CSG',
+    'class': 'Geom3',
     numPolygons,
     numVerticesPerPolygon,
     polygonPlaneIndices,

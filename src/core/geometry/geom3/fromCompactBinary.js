@@ -4,12 +4,12 @@ const poly3 = require('../poly3')
 const fromPolygons = require('../../shape3/fromPolygons')
 const Plane = require('./math/Plane')
 
-/** Reconstruct a CSG from the output of toCompactBinary().
+/** Reconstruct a Geom3 from the output of toCompactBinary().
  * @param {CompactBinary} bin - see toCompactBinary().
- * @returns {CSG} new CSG object
+ * @returns {Geom3} new Geom3 object
  */
 function fromCompactBinary (bin) {
-  if (bin['class'] !== 'CSG') throw new Error('Not a CSG')
+  if (bin['class'] !== 'Geom3') throw new Error('Not a Geom3')
   let planes = []
   let planeData = bin.planeData
   let numplanes = planeData.length / 4

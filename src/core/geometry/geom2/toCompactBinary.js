@@ -34,7 +34,7 @@ const toCompactBinary = (_cag) => {
     vertexData[verticesArrayIndex++] = pos._y
   })
   let result = {
-    'class': 'CAG',
+    'class': 'Geom2',
     sideVertexIndices: sideVertexIndices,
     vertexData: vertexData
   }

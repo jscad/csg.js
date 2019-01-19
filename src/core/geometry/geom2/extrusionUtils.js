@@ -3,7 +3,7 @@ const OrthoNormalBasis = require('../../math/OrthoNormalBasis')
 
 const { parseOptionAs3DVector, parseOptionAsBool, parseOptionAsFloat, parseOptionAsInt } = require('../../../api/optionParsers')
 const { Connector } = require('../../connectors')
-const { fromPolygons } = require('../../core/CSGFactories')
+const fromPolygons = require('../geom3/fromPolygons')
 
 const vec3 = require('../../math/vec3')
 const poly3 = require('../poly3')
@@ -132,6 +132,5 @@ module.exports = {
   extrudeInOrthonormalBasis,
   extrudeInPlane,
   extrude,
-  rotateExtrude,
   extrudePolygon3
 }

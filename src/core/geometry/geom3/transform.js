@@ -6,7 +6,7 @@ const vec4 = require('../../../math/vec4')
  * This goes over EVERY point of EVERY polygon and applies the given
  * transformation matrix
  * @param {Mat4} matrix - 4x4 matrix (mat4) to be applied
- * @returns {CSG} new CSG object
+ * @returns {Geom3} new Geom3 object
  * @example
  * let m = mat4.create()
  * m = mat4.multiply(mat4.rotateX(40, m))
@@ -79,12 +79,12 @@ const transform2 = (matrix, shape3) => {
 module.exports = transform */
 
 /*
-    // Affine transformation of CSG object. Returns a new CSG object
+    // Affine transformation of Geom3 object. Returns a new Geom3 object
   transform1: function (matrix) {
     let newpolygons = this.polygons.map(function (p) {
       return p.transform(matrix)
     })
-    let result = CSG.fromPolygons(newpolygons)
+    let result = Geom3.fromPolygons(newpolygons)
     result.properties = this.properties._transform(matrix)
     result.isRetesselated = this.isRetesselated
     return result

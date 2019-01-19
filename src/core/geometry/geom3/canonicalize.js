@@ -4,7 +4,7 @@ const fromPolygons = require('./fromPolygons')
 /**
    * Returns a cannoicalized version of the input csg : ie every very close
    * points get deduplicated
-   * @returns {CSG}
+   * @returns {Geom3}
    * @example
    * let rawCSG = someCSGMakingFunction()
    * let canonicalizedCSG = canonicalize(rawCSG)

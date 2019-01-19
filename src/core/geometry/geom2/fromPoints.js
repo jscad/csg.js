@@ -66,7 +66,7 @@ const fromNestedPointsArray = function (points) {
   if (points.length === 1) {
     return fromPoints(points[0])
   }
-  // First pass: create a collection of CAG paths
+  // First pass: create a collection of Geom2 paths
   let paths = []
   points.forEach(path => {
     paths.push(fromPointsArray(path))
@@ -102,7 +102,7 @@ const fromNestedPointsArray = function (points) {
       })
     }
   }
-  // Fourth and last pass: create final CAG object
+  // Fourth and last pass: create final Geom2 object
   let cag = fromSides([])
   for (key in tree) {
     cag = union(cag, paths[key])

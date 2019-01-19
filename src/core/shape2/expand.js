@@ -11,7 +11,7 @@ const expand = ({ radius, resolution }, shape) => {
   // first we transform all geometries to 'bake in' the transforms
   const transformedGeom = geom2.transform(shape.transforms, shape.geometry)
   const newShape = clone(shape)
-  const expandedGeometry = geom2.expand(transformedGeom, radius, resolution)
+  const expandedGeometry = geom2.expand({radius, resolution}transformedGeom)
   newShape.geometry = expandedGeometry
   return newShape
 }

@@ -22,7 +22,7 @@ const toPlanePolygons = (geometry, options) => {
             new Connector(translation, axisVector, normalVector)
   // resulting transform
   let m = thisConnector.getTransformationTo(toConnector, false, 0)
-  // create plane as a (partial non-closed) CSG in XY plane
+  // create plane as a (partial non-closed) Geom3 in XY plane
   const bounds = measureBounds(geometry)
   const expandedBounds = [
     vec2.subtract(bounds[0], [1, 1]),

@@ -96,7 +96,7 @@ function deleteSide (sidemap, vertextag2sidestart, vertextag2sideend, vertex0, v
      This function will return a new solid with ACDB replaced by ACDEB
 
      Note that this can create polygons that are slightly non-convex (due to rounding errors). Therefore the result should
-     not be used for further CSG operations!
+     not be used for further Geom3 operations!
 */
 const fixTJunctions = function (fromPolygons, csg) {
   csg = canonicalize(csg)

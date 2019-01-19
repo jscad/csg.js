@@ -7,8 +7,8 @@ const union = require('./union')
 
 /** Expand a Geom2 by the given radius and resolution
  * @typedef  {import('./create').Geom2} Geom2
- * @param  {Geom2} geometry
- * @param  {Object} params parameters
+ * @param {Geom2} geometry
+ * @param {Object} params parameters
  * @param {Number} params.radius radius of expansion
  * @param {Number} params.resolution quality of output shape
  */

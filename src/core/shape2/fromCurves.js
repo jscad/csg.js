@@ -3,7 +3,7 @@ const curve2 = require('../curves')
 
 /** Construct a Shape2 from a list of curves (line, bezier)
  * @typedef  {import('./create').Shape2} Shape2
- * @param {Side[]} sides - list of curves
+ * @param {Curve[]} curves - list of curves
  * @returns {Shape2} new Shape2 object
  */
 const fromCurves = (curves) => {

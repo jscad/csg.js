@@ -5,11 +5,12 @@ const vec2 = require('../../math/vec2')
 
 /** linear extrusion of the input 2d geometry
  * @typedef  {import('./create').Geom2} Geom2
- * @param {Object} [options] - options for construction
- * @param {Float} [options.height=1] - height of the extruded geometry
- * @param {Integer} [options.slices=10] - number of intermediary steps/slices
- * @param {Integer} [options.twist=0] - angle (in degrees to twist the extusion by)
- * @param {Boolean} [options.center=false] - whether to center extrusion or not
+ * @typedef  {import('../Geom3/create').Geom3} Geom3
+ * @param {Object} params - options for construction
+ * @param {Float} params.height=1 - height of the extruded geometry
+ * @param {Integer} params.slices=10 - number of intermediary steps/slices
+ * @param {Integer} params.twist=0 - angle (in degrees to twist the extusion by)
+ * @param {Boolean} params.center=false - whether to center extrusion or not
  * @param {Geom2} baseGeom input 2d geometry
  * @returns {Geom2} new extruded geometry
  *

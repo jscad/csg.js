@@ -3,7 +3,7 @@ const fromPolygons = require('../fromPolygons')
 /**
  * set the .shared property of all polygons
  * @param  {Object} shared
- * @returns {CSG} Returns a new CSG solid, the original is unmodified!
+ * @returns {Geom3} Returns a new Geom3 solid, the original is unmodified!
  */
 function setShared (shared) {
   let polygons = this.polygons.map(function (p) {

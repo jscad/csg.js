@@ -1,7 +1,8 @@
 
 /**
  * Convert a geom2 to a list of points.
- * @param {Geom2} geometry the geometry to convert
+ * @typedef  {import('./create').Geom2} Geom2
+ * @param {Geom2} input the geometry to convert
  * @return {Vec2[]} array of 2D points
  */
 const toPoints = input => {
