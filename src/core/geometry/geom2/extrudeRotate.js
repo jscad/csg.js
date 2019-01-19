@@ -1,6 +1,6 @@
 const mat4 = require('../../math/mat4')
 const { clamp } = require('../../math/utils')
-const { rightMultiply1x3VectorToArray, polygonFromPoints } = require('../../../api/helpers')
+const poly3 = require('../poly3')
 const fromPoints = require('./fromPoints')
 const toPoints = require('./toPoints')
 const toPlanePolygons = require('./toPlanePolygons')
@@ -100,13 +100,13 @@ const extrudeRotate = (params, baseShape) => {
       const nextPoint = shapePoints[j + 1]
 
       // compute matrix for current and next segment angle
-      let prevMatrix = mat4.rotateZ((i - 1) / segments * angle + startAngle)
-      let curMatrix = mat4.rotateZ(i / segments * angle + startAngle)
+      let prevMatrix = mat4.fromZRotation((i - 1) / segments * angle + startAngle)
+      let curMatrix = mat4.fromZRotation(i / segments * angle + startAngle)
 
-      const pointA = rightMultiply1x3VectorToArray(prevMatrix, [curPoint[0], 0, curPoint[1]])
-      const pointAP = rightMultiply1x3VectorToArray(curMatrix, [curPoint[0], 0, curPoint[1]])
-      const pointB = rightMultiply1x3VectorToArray(prevMatrix, [nextPoint[0], 0, nextPoint[1]])
-      const pointBP = rightMultiply1x3VectorToArray(curMatrix, [nextPoint[0], 0, nextPoint[1]])
+      const pointA = mat4.rightMultiplyVec3([curPoint[0], 0, curPoint[1]], prevMatrix)
+      const pointAP = mat4.rightMultiplyVec3([curPoint[0], 0, curPoint[1]], curMatrix)
+      const pointB = mat4.rightMultiplyVec3([nextPoint[0], 0, nextPoint[1]], prevMatrix)
+      const pointBP = mat4.rightMultiplyVec3([nextPoint[0], 0, nextPoint[1]], curMatrix)
 
       // console.log(`point ${j} edge connecting ${j} to ${j + 1}`)
       let overlappingPoints = false
@@ -123,16 +123,16 @@ const extrudeRotate = (params, baseShape) => {
 
       if (flipped) {
         // CW
-        polygons.push(polygonFromPoints([pointA, pointB, pointBP]))
+        polygons.push(poly3.fromPoints([pointA, pointB, pointBP]))
         if (!overlappingPoints) {
-          polygons.push(polygonFromPoints([pointBP, pointAP, pointA]))
+          polygons.push(poly3.fromPoints([pointBP, pointAP, pointA]))
         }
       } else {
         // CCW
         if (!overlappingPoints) {
-          polygons.push(polygonFromPoints([pointA, pointAP, pointBP]))
+          polygons.push(poly3.fromPoints([pointA, pointAP, pointBP]))
         }
-        polygons.push(polygonFromPoints([pointBP, pointB, pointA]))
+        polygons.push(poly3.fromPoints([pointBP, pointB, pointA]))
       }
     }
     // if we do not do a full extrusion, we want caps at both ends (closed volume)
