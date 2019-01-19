@@ -83,17 +83,18 @@ const extend = (distance, connector) => {
  * @param  {Connector} from connector from which to connect
  * @param  {Connector} to connector to which the first connector should be connected
  */
-const transformationFromTo = (params, from, to) => {
+const transformationBetweenConnectors = (params, from, to) => {
   const defaults = {
     mirror: false,
     normalrotation: 0
   }
-  mirror = !!mirror
-  normalrotation = normalrotation ? Number(normalrotation) : 0
-  let us = this.normalized()
-  other = other.normalized()
+  // mirror = !!mirror
+  // normalrotation = normalrotation ? Number(normalrotation) : 0
+  const { mirror, normalrotation } = Object.assign({}, defaults, params)
+  const us = normalize(from)
+  const other = normalize(to)
   // shift to the origin:
-  let transformation = Matrix4x4.translation(this.point.negated())
+  let transformation = mat4.translate(vec3.negate(from.point))
   // construct the plane crossing through the origin and the two axes:
   let axesplane = Plane.anyPlaneFromVector3Ds(
     new Vector3D(0, 0, 0), us.axisvector, other.axisvector)
@@ -103,9 +104,9 @@ const transformationFromTo = (params, from, to) => {
   let rotation = 180.0 * (angle2 - angle1) / Math.PI
   if (mirror) rotation += 180.0
   transformation = transformation.multiply(axesbasis.getProjectionMatrix())
-  transformation = transformation.multiply(Matrix4x4.rotationZ(rotation))
+  transformation = transformation.multiply(mat4.rotateZ(rotation))
   transformation = transformation.multiply(axesbasis.getInverseProjectionMatrix())
-  let usAxesAligned = us.transform(transformation)
+  let usAxesAligned = transform(transformation, us)
   // Now we have done the transformation for aligning the axes.
   // We still need to align the normals:
   let normalsplane = Plane.fromNormalAndPoint(other.axisvector, new Vector3D(0, 0, 0))
@@ -128,75 +129,77 @@ const transformationFromTo = (params, from, to) => {
   return new Line3D(this.point, this.axisvector)
 } */
 
-// # class Connector
+// old 'connectors list' for now only array of connectors
 
-const ConnectorList = function (connectors) {
-  this.connectors_ = connectors ? connectors.slice() : []
-}
-
-ConnectorList.defaultNormal = [0, 0, 1]
-
-ConnectorList.fromPath2D = function (path2D, arg1, arg2) {
+const fromPath2 = (path, arg1, arg2) => {
   if (arguments.length === 3) {
-    return ConnectorList._fromPath2DTangents(path2D, arg1, arg2)
+    return fromPath2Tangents(path, arg1, arg2)
   } else if (arguments.length === 2) {
-    return ConnectorList._fromPath2DExplicit(path2D, arg1)
+    return fromPath2AndAngle(path, arg1)
   } else {
-    throw new Error('call with path2D and either 2 direction vectors, or a function returning direction vectors')
+    throw new Error('FromPath2 requires either a path and 2 direction vectors, or a function returning direction vectors')
   }
 }
 
 /*
- * calculate the connector axisvectors by calculating the "tangent" for path2D.
+ * calculate the connector axisvectors by calculating the "tangent" for path.
  * This is undefined for start and end points, so axis for these have to be manually
  * provided.
  */
-ConnectorList._fromPath2DTangents = function (path2D, start, end) {
-  // path2D
+const fromPath2Tangents = (path, start, end) => {
+  const defaultNormal = [0, 0, 1]
+  // path
   let axis
-  let pathLen = path2D.points.length
-  let result = new ConnectorList([new Connector(path2D.points[0],
-    start, ConnectorList.defaultNormal)])
+  let pathLen = path.points.length
+  let result = [
+    fromPointAxisNormal(path.points[0], start, defaultNormal)]
   // middle points
-  path2D.points.slice(1, pathLen - 1).forEach(function (p2, i) {
-    axis = fromVector2(path2D.points[i + 2].minus(path2D.points[i]), 0)
-    result.appendConnector(new Connector(fromVector2(p2, 0), axis,
-      ConnectorList.defaultNormal))
+  path.points.slice(1, pathLen - 1).forEach(function (p2, i) {
+    axis = fromVector2(path.points[i + 2].minus(path.points[i]), 0)
+    result.push(new Connector(fromVector2(p2, 0), axis,
+      defaultNormal))
   }, this)
-  result.appendConnector(new Connector(path2D.points[pathLen - 1], end,
-    ConnectorList.defaultNormal))
-  result.closed = path2D.closed
+  // other points
+  result.push(fromPointAxisNormal(path.points[pathLen - 1], end, defaultNormal))
+  // result.closed = path.closed // FIXME: meh, do we still need this ??
   return result
 }
 
 /*
  * angleIsh: either a static angle, or a function(point) returning an angle
  */
-ConnectorList._fromPath2DExplicit = function (path2D, angleIsh) {
-  function getAngle (angleIsh, pt, i) {
+const fromPath2AndAngle = (path, angleIsh) => {
+  const defaultNormal = [0, 0, 1]
+  const getAngle = (angleIsh, pt, i) => {
     if (typeof angleIsh === 'function') {
       angleIsh = angleIsh(pt, i)
     }
     return angleIsh
   }
-  let result = new ConnectorList(
-    path2D.points.map(function (p2, i) {
-      return new Connector(fromVector2(p2, 0),
-        Vector3D.Create(1, 0, 0).rotateZ(getAngle(angleIsh, p2, i)),
-        ConnectorList.defaultNormal)
-    }, this)
-  )
-  result.closed = path2D.closed
+  let result = path.points.map((p2, i) => {
+    const axis = vec3.rotateZ(getAngle(angleIsh, p2, i), vec3.fromValues(1, 0,0))
+    return fromPointAxisNormal(vec3.fromVec2(p2), axis, defaultNormal)  
+  })
+  // result.closed = path.closed // FIXME: meh, do we still need this ??
   return result
 }
 
+const verify = connectors => {
+  let connI
+  let connI1
+  for (let i = 0; i < connectors.length - 1; i++) {
+    connI = connectors[i]
+    connI1 = connectors[i + 1]
+    if (connI1.point.minus(connI.point).dot(connI.axisvector) <= 0) {
+      throw new Error('Invalid ConnectorList. Each connectors position needs to be within a <90deg range of previous connectors axisvector')
+    }
+    if (connI.axisvector.dot(connI1.axisvector) <= 0) {
+      throw new Error('invalid ConnectorList. No neighboring connectors axisvectors may span a >=90deg angle')
+    }
+  }
+}
+
 ConnectorList.prototype = {
-  setClosed: function (closed) {
-    this.closed = !!closed
-  },
-  appendConnector: function (conn) {
-    this.connectors_.push(conn)
-  },
   /*
      * arguments: cagish: a cag or a function(connector) returning a cag
      *            closed: whether the 3d path defined by connectors location
@@ -239,25 +242,12 @@ ConnectorList.prototype = {
       prevConnector = connector
     }, this)
     return CSG.fromPolygons(polygons).reTesselated().canonicalized()
-  },
+  }
   /*
      * general idea behind these checks: connectors need to have smooth transition from one to another
      * TODO: add a check that 2 follow-on CAGs are not intersecting
      */
-  verify: function () {
-    let connI
-    let connI1
-    for (let i = 0; i < this.connectors_.length - 1; i++) {
-      connI = this.connectors_[i]
-      connI1 = this.connectors_[i + 1]
-      if (connI1.point.minus(connI.point).dot(connI.axisvector) <= 0) {
-        throw new Error('Invalid ConnectorList. Each connectors position needs to be within a <90deg range of previous connectors axisvector')
-      }
-      if (connI.axisvector.dot(connI1.axisvector) <= 0) {
-        throw new Error('invalid ConnectorList. No neighboring connectors axisvectors may span a >=90deg angle')
-      }
-    }
-  }
+
 }
 
 module.exports = { Connector, ConnectorList }
