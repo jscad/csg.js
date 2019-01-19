@@ -2,15 +2,15 @@ const toVec3Pairs = require('../../shape2/toVec3Pairs')
 
 /*
 * given 2 connectors, this returns all polygons of a "wall" between 2
-* copies of this cag, positioned in 3d space as "bottom" and
+* copies of this geometry, positioned in 3d space as "bottom" and
 * "top" plane per connectors toConnector1, and toConnector2, respectively
 */
-const toWallPolygons = function (shape2, options) {
+const toWallPolygons = function (input, options) {
   // normals are going to be correct as long as toConn2.point - toConn1.point
-  // points into cag normal direction (check in caller)
-  // arguments: options.toConnector1, options.toConnector2, options.cag
+  // points into geometry normal direction (check in caller)
+  // arguments: options.toConnector1, options.toConnector2, options.geometry
   //     walls go from toConnector1 to toConnector2
-  //     optionally, target cag to point to - cag needs to have same number of sides as this!
+  //     optionally, target geometry to point to - geometry needs to have same number of sides as this!
   let origin = [0, 0, 0]
   let defaultAxis = [0, 0, 1]
   let defaultNormal = [0, 1, 0]
@@ -22,16 +22,16 @@ const toWallPolygons = function (shape2, options) {
   if (!(toConnector1 instanceof Connector && toConnector2 instanceof Connector)) {
     throw new Error('could not parse Connector arguments toConnector1 or toConnector2')
   }
-  if (options.cag) {
-    if (options.cag.sides.length !== this.sides.length) {
-      throw new Error('target cag needs same sides count as start cag')
+  if (options.geometry) {
+    if (options.geometry.sides.length !== this.sides.length) {
+      throw new Error('target geometry needs same sides count as start geometry')
     }
   }
-  // target cag is same as this unless specified
-  let toCag = options.cag || shape2
+  // target geometry is same as this unless specified
+  let toCag = options.geometry || input
   let m1 = thisConnector.getTransformationTo(toConnector1, false, 0)
   let m2 = thisConnector.getTransformationTo(toConnector2, false, 0)
-  let vps1 = toVec3Pairs(shape2, m1)
+  let vps1 = toVec3Pairs(input, m1)
   let vps2 = toVec3Pairs(toCag, m2)
 
   let polygons = []

@@ -4,15 +4,15 @@ const canonicalize = require('./utils/canonicalize')
  * See fromCompactBinary.
  * @return {CompactBinary}
  */
-const toCompactBinary = (_cag) => {
-  let cag = canonicalize(_cag)
-  let numsides = cag.sides.length
+const toCompactBinary = (input) => {
+  let geometry = canonicalize(input)
+  let numsides = geometry.sides.length
   let vertexmap = {}
   let vertices = []
   let numvertices = 0
   let sideVertexIndices = new Uint32Array(2 * numsides)
   let sidevertexindicesindex = 0
-  cag.sides.map(function (side) {
+  geometry.sides.map(function (side) {
     [side.vertex0, side.vertex1].map(function (v) {
       let vertextag = v.getTag()
       let vertexindex
