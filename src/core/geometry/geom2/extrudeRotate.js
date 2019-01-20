@@ -163,7 +163,7 @@ module.exports = extrudeRotate
  * @param {Number} params.resolution=defaultResolution3D - number of polygons per 360 degree revolution
  * @returns {Geom3} new 3D solid
  */
-/* const extrudeRotate = function (geometry, options) { // FIXME options should be optional
+/* const extrudeRotate = (geometry, options) => { // FIXME options should be optional
   let alpha = parseOptionAsFloat(options, 'angle', 360)
   let resolution = parseOptionAsInt(options, 'resolution', defaultResolution3D)
 

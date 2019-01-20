@@ -1,27 +1,28 @@
-const measureBounds = require('./measureBounds')
 const vec2 = require('../../math/vec2')
+const vec3 = require('../../math/vec3')
+const measureBounds = require('./measureBounds')
+
 const fromPolygons = require('../geom3/fromPolygons')
+const toGeom3Wall = require('./toGeom3Wall')
+
+const connector = require('../../connector')
 
 const toPlanePolygons = (geometry, options) => {
   const defaults = {
-    flipped: false
+    flipped: false,
+    origin: [0, 0, 0],
+    normal: [0, 1, 0],
+    axis: [0, 0, 1]
   }
   options = Object.assign({}, defaults, options)
-  let { flipped } = options
+  let { flipped, normal, axis, origin } = options
   // reference connector for transformation
-  let origin = [0, 0, 0]
-  let defaultAxis = [0, 0, 1]
-  let defaultNormal = [0, 1, 0]
-  let thisConnector = new Connector(origin, defaultAxis, defaultNormal)
-  // translated connector per options
-  let translation = options.translation || origin
-  let axisVector = options.axisVector || defaultAxis
-  let normalVector = options.normalVector || defaultNormal
+  let fromConnector = connector.fromPointAxisNormal(defaults.origin, defaults.axis, defaults.normal)
+  // offset origin of connector per options
   // will override above if options has toConnector
-  let toConnector = options.toConnector ||
-            new Connector(translation, axisVector, normalVector)
+  let toConnector = options.toConnector || connector.fromPointAxisNormal(origin, axis, normal)
   // resulting transform
-  let m = thisConnector.getTransformationTo(toConnector, false, 0)
+  let matrix = connector.transformationBetweenConnectors({ mirror: false, normalrotation: 0 }, fromConnector, toConnector)
   // create plane as a (partial non-closed) Geom3 in XY plane
   const bounds = measureBounds(geometry)
   const expandedBounds = [
@@ -29,26 +30,22 @@ const toPlanePolygons = (geometry, options) => {
     vec2.add(bounds[1], [1, 1])
   ]
 
-  let csgshell = toCSGWall(geometry, -1, 1)
-  let csgplane = fromPolygons([new Polygon3([
-    new Vertex3D(new Vector3D(bounds[0].x, bounds[0].y, 0)),
-    new Vertex3D(new Vector3D(bounds[1].x, bounds[0].y, 0)),
-    new Vertex3D(new Vector3D(bounds[1].x, bounds[1].y, 0)),
-    new Vertex3D(new Vector3D(bounds[0].x, bounds[1].y, 0))
+  let shellGeom = toGeom3Wall(geometry, -1, 1)
+  let planeGeom = fromPolygons([new Polygon3([
+    vec3.fromValues(bounds[0][0], bounds[0][1], 0),
+    vec3.fromValues(bounds[1][0], bounds[1][1], 0),
+    vec3.fromValues(bounds[1][0], bounds[1][1], 0),
+    vec3.fromValues(bounds[0][0], bounds[1][1], 0)
   ])])
   if (flipped) {
-    csgplane = csgplane.invert()
+    planeGeom = planeGeom.invert()
   }
-  // intersectSub -> prevent premature retesselate/canonicalize
-  csgplane = intersectSub(csgplane, csgshell)
+  // we do the intersection of the plane with the shell to get an outline on the plane
+  planeGeom = intersectSub(planeGeom, shellGeom) // intersectSub -> prevent premature retesselate/canonicalize
   // only keep the polygons in the z plane:
-  let polys = csgplane.polygons.filter(function (polygon) {
-    return Math.abs(polygon.plane.normal.z) > 0.99
-  })
+  let polys = planeGeom.polygons.filter(polygon => Math.abs(polygon.plane.normal.z) > 0.99)
   // finally, position the plane per passed transformations
-  return polys.map(function (poly) {
-    return poly.transform(m)
-  })
+  return polys.map(poly => poly.transform(matrix))
 }
 
 module.exports = toPlanePolygons

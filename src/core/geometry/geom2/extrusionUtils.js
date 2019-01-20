@@ -1,4 +1,3 @@
-const { EPS, defaultResolution3D } = require('../../constants')
 const OrthoNormalBasis = require('../../math/OrthoNormalBasis')
 
 const { parseOptionAs3DVector, parseOptionAsBool, parseOptionAsFloat, parseOptionAsInt } = require('../../../api/optionParsers')
@@ -19,7 +18,7 @@ const poly3 = require('../poly3')
  * @param  {Object} [options] - options for construction
  * @param {Boolean} [options.symmetrical=true] - extrude symmetrically in two directions about the plane
  */
-const extrudeInOrthonormalBasis = function (geometry, orthonormalbasis, depth, options) {
+const extrudeInOrthonormalBasis = (geometry, orthonormalbasis, depth, options) => {
   // first extrude in the regular Z plane:
   if (!(orthonormalbasis instanceof OrthoNormalBasis)) {
     throw new Error('extrudeInPlane: the first parameter should be a OrthoNormalBasis')
@@ -46,13 +45,13 @@ const extrudeInOrthonormalBasis = function (geometry, orthonormalbasis, depth, o
 * @param  {Object} [options] - options for construction
 * @param {Boolean} [options.symmetrical=true] - extrude symmetrically in two directions about the plane
 */
-const extrudeInPlane = function (geometry, axis1, axis2, depth, options) {
+const extrudeInPlane = (geometry, axis1, axis2, depth, options) => {
   return extrudeInOrthonormalBasis(geometry, OrthoNormalBasis.GetCartesian(axis1, axis2), depth, options)
 }
 
 // Extrude a polygon into the direction offsetvector
 // Returns a Geom3 object
-const extrudePolygon3 = function (offsetvector) {
+const extrudePolygon3 = (offsetvector) => {
   let newpolygons = []
 
   let polygon1 = this

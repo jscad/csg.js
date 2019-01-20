@@ -11,11 +11,11 @@ const direction = () => {
  * @param  {Shape2} shape
  * @returns {Array} array of paths
  */
-const outlineToPaths = function (shape) {
+const outlineToPaths = shape => {
   let cleanShape = canonicalize(shape)
   let sideTagToSideMap = {}
   let startVertexTagToSideTagMap = {}
-  cleanShape.sides.map(function (side) {
+  cleanShape.sides.map(side => {
     let sidetag = side.getTag()
     sideTagToSideMap[sidetag] = side
     let startvertextag = side.vertex0.getTag()

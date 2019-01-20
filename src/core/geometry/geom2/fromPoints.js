@@ -42,7 +42,7 @@ const fromPointsArray = points => {
   }
   let sides = []
   let prevVertex = vec2.fromArray(points[points.length - 1])
-  points.map(function (point) {
+  points.map( point => {
     const vertex = vec2.fromArray(point)
     sides.push([prevVertex, vertex])
     prevVertex = vertex

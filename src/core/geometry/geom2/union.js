@@ -5,7 +5,7 @@ const fromFakeShape3 = require('./fromFakeGeom3')
 const transformGeometry = require('./transformGeometry')
 
 // FIXME: duplicate code in shape3.union
-const unionSub = function (otherGeom3, csg, doRetesselate, doCanonicalize) {
+const unionSub =  (otherGeom3, csg, doRetesselate, doCanonicalize) => {
   if (!isOverlapping(otherGeom3, csg)) {
     return unionForNonIntersecting(otherGeom3, csg)
   } else {

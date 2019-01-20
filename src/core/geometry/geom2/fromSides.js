@@ -5,7 +5,7 @@ const create = require('./create')
  * @param {Side[]} sides - list of sides
  * @returns {geom2} new geom2 object
  */
-const fromSides = function (sides) {
+const fromSides = (sides) => {
   const geom2 = create()
   geom2.sides = sides
   return geom2

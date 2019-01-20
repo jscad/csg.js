@@ -2,14 +2,14 @@ const retesselate = require('./retesselate')
 const canonicalize = require('./canonicalize')
 
 const intersection = (otherCag, geometry) => {
-  let cags
+  let geometries
   if (geometry instanceof Array) {
-    cags = geometry
+    geometries = geometry
   } else {
-    cags = [geometry]
+    geometries = [geometry]
   }
   let r = toShape3Wall(otherCag, -1, 1)
-  cags.map(function (geometry) {
+  geometries.map( geometry => {
     r = intersectSub(r, toShape3Wall(geometry, -1, 1), false, false)
   })
   r = retesselate(r)

@@ -3,7 +3,7 @@ const { min, create, max } = require('../../math/vec2')
 /** get the bounds of the input 2d geometry
  * @param {Geom2} geometry the geometry to measure
  * @return {Array} array of points representing the bounding cube: [minPoint, maxPoint]
- * @example@
+ * @example:
  * const bounds = measureBounds(rectangle())
  */
 const measureBounds = geometry => {

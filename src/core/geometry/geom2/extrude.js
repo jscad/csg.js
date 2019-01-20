@@ -1,11 +1,12 @@
-const { parseOptionAs3DVector, parseOptionAsBool, parseOptionAsFloat, parseOptionAsInt } = require('../../../api/optionParsers')
+const { parseOptionAs3DVector, parseOptionAsFloat, parseOptionAsInt } = require('../../../api/optionParsers')
+const { defaultResolution3D } = require('../../constants')
 
 const vec3 = require('../../math/vec3')
+const connector = require('../../connector')
+
 const toPlanePolygons = require('./toPlanePolygons')
 const toWallPolygons = require('./toWallPolygons')
 const fromPolygons = require('../geom3/fromPolygons')
-
-const connector = require('../../connector')
 
 /** linear extrusion of 2D shape, with optional twist
  * @param  {Geom2} geometry the geometry to extrude
@@ -21,38 +22,40 @@ const extrude = (geometry, options) => {
   if (geometry.sides.length === 0) {
     throw new Error('cannot extrude a 2D shape with no edges !!')
   }
-  let offsetVector = parseOptionAs3DVector(options, 'offset', [0, 0, 1])
+  let offset = parseOptionAs3DVector(options, 'offset', [0, 0, 1])
   let twistangle = parseOptionAsFloat(options, 'twistangle', 0)
   let twiststeps = parseOptionAsInt(options, 'twiststeps', defaultResolution3D)
-  if (offsetVector.z === 0) {
+  if (offset[2] === 0) {
     throw new Error('offset cannot be orthogonal to Z axis')
   }
   if (twistangle === 0 || twiststeps < 1) {
     twiststeps = 1
   }
-  let normalVector = vec3.fromValues(0, 1, 0)
+  let normal = vec3.fromValues(0, 1, 0)
   let polygons = []
-  // bottom and top
+  // bottom ...
   polygons = polygons.concat(toPlanePolygons(geometry, {
     translation: [0, 0, 0],
-    normalVector: normalVector,
-    flipped: !(offsetVector.z < 0) }
+    normal,
+    flipped: !(offset[2] < 0) }
   ))
+  // ... and top, twisted if needed
   polygons = polygons.concat(toPlanePolygons(geometry, {
-    translation: offsetVector,
-    normalVector: normalVector.rotateZ(twistangle),
-    flipped: offsetVector.z < 0 }))
-  // walls
+    translation: offset,
+    normal: vec3.rotateZ(twistangle, normal), // FIXME: deg or rad ??? (was deg)
+    flipped: offset[2] < 0 }))
+
+  // walls : each step of the way, create a connector and build polygons from those
   for (let i = 0; i < twiststeps; i++) {
     let c1 = connector.fromPointAxisNormal(
-      vec3.scale(i / twiststeps, offsetVector),
-      [0, 0, offsetVector[2]],
-      vec3.rotateZ(i * twistangle / twiststeps, normalVector)
+      vec3.scale(i / twiststeps, offset),
+      [0, 0, offset[2]],
+      vec3.rotateZ(i * twistangle / twiststeps, normal)
     )
     let c2 = connector.fromPointAxisNormal(
-      vec3.scale((i + 1) / twiststeps, offsetVector),
-      [0, 0, offsetVector.z],
-      vec3.rotateZ((i + 1) * twistangle / twiststeps, normalVector)
+      vec3.scale((i + 1) / twiststeps, offset),
+      [0, 0, offset[2]],
+      vec3.rotateZ((i + 1) * twistangle / twiststeps, normal)
     )
     polygons = polygons.concat(toWallPolygons(geometry, { toConnector1: c1, toConnector2: c2 }))
   }

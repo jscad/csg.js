@@ -5,7 +5,7 @@ const fromPolygons = require('../geom3/fromPolygons')
  * @param  {} z1
  */
 const toGeom3Wall = (geometry, z0, z1) => {
-  const polygons = geometry.sides.map(function (side) {
+  const polygons = geometry.sides.map( side => {
     return side.toPolygon3D(z0, z1)
   })
   return fromPolygons(polygons)

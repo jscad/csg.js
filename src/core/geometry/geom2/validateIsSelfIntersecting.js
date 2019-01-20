@@ -1,6 +1,6 @@
 const doLinesIntersect = require('../../math/line2/doLinesIntersect')
 
-const isSelfIntersecting = function (shape, debug) {
+const isSelfIntersecting = (shape, debug) => {
   const numsides = shape.sides.length
   for (let i = 0; i < numsides; i++) {
     const side0 = shape.sides[i]
