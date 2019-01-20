@@ -1,5 +1,5 @@
-const { areaEPS } = require('../constants')
-const measureArea = require('./measureArea')
+const { areaEPS } = require('../../constants')
+const measureArea = require('../../shape2/measureArea')
 const isSelfIntersecting = require('./validateIsSelfIntersecting')
 
 // check if we are a valid shape2 (for debugging)

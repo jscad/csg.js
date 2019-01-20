@@ -1,6 +1,6 @@
 const { EPS } = require('../../constants')
-const plane = require('../math/plane')
-const cutByPlane = require('./cutByPlane')
+const plane = require('../../math/plane')
+const cutByPlane = require('../../shape3/cutByPlane')
 
 /** cuts a Shape3 along a orthobasis, returns a 2d shape
  * @param  {Shape3} shape the shape3 object to cut

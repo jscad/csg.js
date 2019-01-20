@@ -1,6 +1,6 @@
-const toVec3Pairs = (cag, m) => {
+const toVec3Pairs = (geom2, m) => {
   // transform m
-  let pairs = cag.sides.map(function (side) {
+  let pairs = geom2.sides.map(function (side) {
     let p0 = side.vertex0.pos
     let p1 = side.vertex1.pos
     return [Vector3D.Create(p0.x, p0.y, 0),

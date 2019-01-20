@@ -1,4 +1,4 @@
-const toVec3Pairs = require('../../shape2/toVec3Pairs')
+const toVec3Pairs = require('./toVec3Pairs')
 
 /*
 * given 2 connectors, this returns all polygons of a "wall" between 2

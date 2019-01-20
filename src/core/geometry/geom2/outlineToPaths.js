@@ -1,6 +1,6 @@
 const Path2D = require('../core/math/Path2')
 const canonicalize = require('./canonicalize')
-const vec2 = require('../math//vec2')
+const vec2 = require('../../math/vec2')
 
 const direction = () => {
 

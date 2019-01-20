@@ -1,5 +1,5 @@
 const poly3 = require('../poly3')
-const { fromPolygons } = require('./fromPolygons')
+const { fromPolygons } = require('../../shape3/fromPolygons')
 // const { fnSortByIndex } = require('../../')
 
 /** Construct a Shape3 solid from a list of pre-generated slices.

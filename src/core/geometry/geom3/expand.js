@@ -12,7 +12,7 @@ const canonicalize = require('../../core/utils/canonicalize')
 const retesselate = require('../../core/utils/retesellate')
 const union = require('../../../api/ops-booleans/union')
 const CAG = require('../../core/CAG')
-const fromPolygons = require('./fromPolygons')
+const fromPolygons = require('../../shape3/fromPolygons')
 
 /**
  * Create the expanded shell of the solid:
@@ -28,16 +28,16 @@ const fromPolygons = require('./fromPolygons')
  */
 const expand = (_csg, radius, resolution, unionWithThis) => {
   // const {sphere} = require('./primitives3d') // FIXME: circular dependency !
-  let csg = retesselate(_csg)
+  let geometry = retesselate(_csg)
   let result
   if (unionWithThis) {
-    result = csg
+    result = geometry
   } else {
     result = shape3.create()
   }
 
   // first extrude all polygons:
-  csg.polygons.map(function (polygon) {
+  geometry.polygons.map(function (polygon) {
     let extrudevector = polygon.plane.normal.unit().times(2 * radius)
     let translatedpolygon = polygon.translate(extrudevector.times(-0.5))
     let extrudedface = extrudePolygon3(translatedpolygon, extrudevector)
@@ -50,7 +50,7 @@ const expand = (_csg, radius, resolution, unionWithThis) => {
   //   v2: second coordinate
   //   planenormals: array of normal vectors of all planes touching this side
   let vertexpairs = {} // map of 'vertex pair tag' to {v1, v2, planenormals}
-  csg.polygons.map(function (polygon) {
+  geometry.polygons.map(function (polygon) {
     let numvertices = polygon.vertices.length
     let prevvertex = polygon.vertices[numvertices - 1]
     let prevvertextag = prevvertex.getTag()
@@ -169,7 +169,7 @@ const expand = (_csg, radius, resolution, unionWithThis) => {
   // make a list of all unique vertices
   // For each vertex we also collect the list of normals of the planes touching the vertices
   let vertexmap = {}
-  csg.polygons.map(function (polygon) {
+  geometry.polygons.map(function (polygon) {
     polygon.vertices.map(function (vertex) {
       let vertextag = vertex.getTag()
       let obj
