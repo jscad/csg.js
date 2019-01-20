@@ -1,17 +1,15 @@
-const toVec3Pairs = (geometry, m) => {
-  // transform m
-  let pairs = geometry.sides.map( side => {
-    let p0 = side.vertex0.pos
-    let p1 = side.vertex1.pos
-    return [Vector3D.Create(p0.x, p0.y, 0),
-      Vector3D.Create(p1.x, p1.y, 0)]
+const vec3 = require('../../math/vec3')
+
+const toVec3Pairs = (geometry, matrix) => {
+  // convert start,end points of sides to 3d points
+  let pairs = geometry.sides.map(side => {
+    let p0 = side[0]
+    let p1 = side[1]
+    return [vec3.fromVec2(p0), vec3.fromVec2(p1)]
   })
-  if (typeof m !== 'undefined') {
-    pairs = pairs.map( pair => {
-      return pair.map( v => {
-        return v.transform(m)
-      })
-    })
+  if (typeof matrix !== 'undefined') {
+    // transform each point by the matrix
+    pairs = pairs.map(pair => pair.map(v => vec3.transform(matrix, v)))
   }
   return pairs
 }

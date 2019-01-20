@@ -35,17 +35,17 @@ const toWallPolygons = (input, options) => {
   }
   // target geometry is same as this unless specified
   let targetGeometry = options.geometry || input
+  // we get the transformation matrices between the connectors
   let m1 = connector.transformationBetweenConnectors(thisConnector, toConnector1, false, 0)
   let m2 = connector.transformationBetweenConnectors(thisConnector, toConnector2, false, 0)
+  // we apply the transformations to 3d versions of each point in the 2d shape
   let vps1 = toVec3Pairs(input, m1)
   let vps2 = toVec3Pairs(targetGeometry, m2)
 
   let polygons = []
   vps1.forEach((vp1, i) => {
-    polygons.push(new Polygon3([
-      new Vertex3D(vps2[i][1]), new Vertex3D(vps2[i][0]), new Vertex3D(vp1[0])]))
-    polygons.push(new Polygon3([
-      new Vertex3D(vps2[i][1]), new Vertex3D(vp1[0]), new Vertex3D(vp1[1])]))
+    polygons.push(new Polygon3([vps2[i][1], vps2[i][0], vp1[0]]))
+    polygons.push(new Polygon3([vps2[i][1], vp1[0], vp1[1]]))
   })
   return polygons
 }
