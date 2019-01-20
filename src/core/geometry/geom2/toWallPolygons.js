@@ -1,13 +1,13 @@
 const toVec3Pairs = require('./toVec3Pairs')
 const connector = require('../../connector')
 
-/**
-* given 2 connectors, this returns all polygons of a "wall" between 2
-* copies of this geometry, positioned in 3d space as "bottom" and
-* "top" plane per connectors toConnector1, and toConnector2, respectively
-* @param input
-* @param options
-**/
+/** given 2 connectors, this returns all polygons of a "wall" between 2
+ * copies of the input geometry, positioned in 3d space as "bottom" and
+ * "top" plane per connectors toConnector1, and toConnector2, respectively
+ * @param  {Geom2|Connector} input
+ * @param  {Object} options
+ * @return {Array<Poly3>} array of 3d polygons
+ */
 const toWallPolygons = (input, options) => {
   const defaults = {
     origin: [0, 0, 0],

@@ -4,7 +4,7 @@ const create = require('./create')
  * @param {Polygon[]} polygons - list of polygons
  * @returns {Geom3} new Geom3 object
  */
-const fromPolygons = function (polygons) {
+const fromPolygons = polygons => {
   let geom3 = create()
   geom3.polygons = polygons
   geom3.isCanonicalized = false

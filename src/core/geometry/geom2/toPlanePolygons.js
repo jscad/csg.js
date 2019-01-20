@@ -7,6 +7,12 @@ const toGeom3Wall = require('./toGeom3Wall')
 
 const connector = require('../../connector')
 
+/** convert a 2d geometry to a set of plane polygons,
+ * by intersecting the outlines of the 2d geometry with a simple plane (a quad)
+ * @param  {Geom2} geometry
+ * @param  {Object} options
+ * @return {Array<Poly3>} polygons
+ */
 const toPlanePolygons = (geometry, options) => {
   const defaults = {
     flipped: false,
@@ -23,7 +29,7 @@ const toPlanePolygons = (geometry, options) => {
   let toConnector = options.toConnector || connector.fromPointAxisNormal(origin, axis, normal)
   // resulting transform
   let matrix = connector.transformationBetweenConnectors({ mirror: false, normalrotation: 0 }, fromConnector, toConnector)
-  // create plane as a (partial non-closed) Geom3 in XY plane
+  // create plane as a (partial non-closed) Geom3 in XY plane, fit to size (using bounds size)
   const bounds = measureBounds(geometry)
   const expandedBounds = [
     vec2.subtract(bounds[0], [1, 1]),
@@ -31,12 +37,12 @@ const toPlanePolygons = (geometry, options) => {
   ]
 
   let shellGeom = toGeom3Wall(geometry, -1, 1)
-  let planeGeom = fromPolygons([new Polygon3([
+  let planeGeom = fromPolygons([[
     vec3.fromValues(bounds[0][0], bounds[0][1], 0),
     vec3.fromValues(bounds[1][0], bounds[1][1], 0),
     vec3.fromValues(bounds[1][0], bounds[1][1], 0),
     vec3.fromValues(bounds[0][0], bounds[1][1], 0)
-  ])])
+  ]])
   if (flipped) {
     planeGeom = planeGeom.invert()
   }

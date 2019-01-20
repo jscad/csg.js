@@ -1,28 +1,28 @@
-const FuzzyCSGFactory = require('../FuzzyFactory3d')
+const FuzzyFactory3d = require('../FuzzyFactory3d')
 const fromPolygons = require('./fromPolygons')
 
 /**
-   * Returns a cannoicalized version of the input csg : ie every very close
+   * Returns a canonicalized version of the input geometry : ie every very close
    * points get deduplicated
    * @returns {Geom3}
    * @example
-   * let rawCSG = someCSGMakingFunction()
-   * let canonicalizedCSG = canonicalize(rawCSG)
+   * let rawGeometry = someGeometryMakingFunction()
+   * let canonicalizedCSG = canonicalize(rawGeometry)
    */
-const canonicalize = function (csg, options) {
-  if (csg.isCanonicalized) {
-    return csg
+const canonicalize = (geometry, options) => {
+  if (geometry.isCanonicalized) {
+    return geometry
   } else {
-    const factory = new FuzzyCSGFactory()
-    let result = CSGFromCSGFuzzyFactory(factory, csg)
+    const factory = new FuzzyFactory3d()
+    let result = Geom3FromFuzzyFactory(factory, geometry)
     result.isCanonicalized = true
-    result.isRetesselated = csg.isRetesselated
-    result.properties = csg.properties // keep original properties
+    result.isRetesselated = geometry.isRetesselated
+    result.properties = geometry.properties // keep original properties
     return result
   }
 }
 
-const CSGFromCSGFuzzyFactory = function (factory, sourcecsg) {
+const Geom3FromFuzzyFactory = (factory, sourcecsg) => {
   let _this = factory
   let newpolygons = []
   sourcecsg.polygons.forEach(function (polygon) {

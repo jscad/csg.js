@@ -8,7 +8,7 @@ const Plane = require('../../math/Plane')
 const Vertex3 = require('../core/math/Vertex3')
 const OrthoNormalBasis = require('../../math/OrthoNormalBasis')
 
-const { extrudePolygon3 } = require('../../../api/ops-extrusions/extrusionUtils')
+const { extrudePolygon3 } = require('../geom2/extrusionUtils')
 
 /** Cut the geometry by a plane. Returns the geometry on the back side of the plane
  * @param  {Plane} plane

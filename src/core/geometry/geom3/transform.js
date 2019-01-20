@@ -1,5 +1,5 @@
-const mat4 = require('../../../math/mat4')
-const vec4 = require('../../../math/vec4')
+const mat4 = require('../../math/mat4')
+const vec4 = require('../../math/vec4')
 
 /**
  * Return a new geometry that is transformed using the given Matrix.
