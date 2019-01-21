@@ -7,10 +7,10 @@ const transform = require('./transform')
 const normalize = require('./normalize')
 
 /** Get the transformation matrix to connect this Connector to another connector
- * @param {Object} params
+ * @param  {Object} params
  * @param  {Boolean} params.mirror=false the 'axis' vectors of the connectors should point in the same direction
  *  true: the 'axis' vectors of the connectors should point in opposite direction
- * @param {Number} params.normalrotation=0 : degrees of rotation between the 'normal' vectors of the two connectors
+ * @param  {Number} params.normalrotation=0 : degrees of rotation between the 'normal' vectors of the two connectors
  * @param  {Connector} from connector from which to connect
  * @param  {Connector} to connector to which the first connector should be connected
  */
@@ -54,6 +54,8 @@ const transformationBetweenConnectors = (params, from, to) => {
   transformation = mat4.multiply(transformation, mat4.fromTranslation(other.point))
   // let usAligned = us.transform(transformation);
   return transformation
+  // alternativeNaming ?
+  // mat4.fromConnectorPair(params, from, to)
 }
 
 module.exports = transformationBetweenConnectors
