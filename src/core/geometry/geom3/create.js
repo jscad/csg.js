@@ -13,7 +13,7 @@
  */
 const create = () => {
   return {
-    //polygonData: new Float32Array(), // experimental !
+    // polygonData: new Float32Array(), // experimental !
     polygons: [],
     isCanonicalized: true,
     isRetesselated: true

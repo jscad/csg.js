@@ -1,4 +1,4 @@
-const FuzzyCSGFactory = require('../FuzzyFactory3d')
+const FuzzyFactory3d = require('../FuzzyFactory3d')
 const reTesselateCoplanarPolygons = require('./reTesselateCoplanarPolygons')
 const fromPolygons = require('./fromPolygons')
 
@@ -10,14 +10,14 @@ const fromPolygons = require('./fromPolygons')
   Polygons are split at each sweep line, and the fragments are joined horizontally and vertically into larger polygons
   (making sure that we will end up with convex polygons).
 */
-const retessellate = function (geometry) {
+const retessellate = geometry => {
   if (geometry.isRetesselated) {
     return geometry
   } else {
     let polygonsPerPlane = {}
     let isCanonicalized = geometry.isCanonicalized
-    let fuzzyfactory = new FuzzyCSGFactory()
-    geometry.polygons.map(function (polygon) {
+    let fuzzyfactory = new FuzzyFactory3d()
+    geometry.polygons.map( polygon => {
       let plane = polygon.plane
       let shared = polygon.shared
       if (!isCanonicalized) {

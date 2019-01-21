@@ -2,8 +2,8 @@
  * @param {Array[]} vertices - list of vertices
  * @param {plane} [plane] - plane of the polygon
  */
-const fromData = (vertices, plane) => {
+const fromPointsAndPlane = (vertices, plane) => {
   return { vertices: vertices, plane: plane }
 }
 
-module.exports = fromData
+module.exports = fromPointsAndPlane

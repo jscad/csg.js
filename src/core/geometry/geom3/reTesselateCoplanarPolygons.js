@@ -1,14 +1,13 @@
-const { EPS } = require('../constants')
-const OrthoNormalBasis = require('./OrthoNormalBasis')
-const { interpolateBetween2DPointsForY, insertSorted, fnNumberSort } = require('../utils')
-const Vertex = require('./Vertex3')
-const Vector2D = require('./Vector2')
-const Line2D = require('./Line2')
-const Polygon = require('./Polygon3')
+const { EPS } = require('../../constants')
+const OrthoNormalBasis = require('../../math/OrthoNormalBasis')
+const { interpolateBetween2DPointsForY, insertSorted, fnNumberSort } = require('../../utils/various')
+const line2 = require('../../math/line2')
+const vec2 = require('../../math/vec2')
+const poly3 = require('../poly3')
 
 // Retesselation function for a set of coplanar polygons. See the introduction at the top of
 // the main csg.js file.
-const reTesselateCoplanarPolygons = function (sourcepolygons) {
+const reTesselateCoplanarPolygons = sourcepolygons => {
   const destpolygons = []
   let numpolygons = sourcepolygons.length
   if (numpolygons > 0) {
@@ -50,7 +49,7 @@ const reTesselateCoplanarPolygons = function (sourcepolygons) {
             newy = pos2d.y
             ycoordinatebins[ycoordinatebin] = pos2d.y
           }
-          pos2d = Vector2D.Create(pos2d.x, newy)
+          pos2d = vec2.fromValues(pos2d.x, newy)
           vertices2d.push(pos2d)
           let y = pos2d.y
           if ((i === 0) || (y < miny)) {
@@ -211,6 +210,7 @@ const reTesselateCoplanarPolygons = function (sourcepolygons) {
         } // for(let polygonindex in startingpolygonindexes)
       } //  yindex < ycoordinates.length-1
       // if( (yindex === ycoordinates.length-1) || (nextycoordinate - ycoordinate > EPS) )
+      // FIXME : what ???
       if (true) {
         // Now activepolygons is up to date
         // Build the output polygons for the next row in newoutpolygonrow:
@@ -221,20 +221,20 @@ const reTesselateCoplanarPolygons = function (sourcepolygons) {
           let numvertices = vertices2d.length
 
           let x = interpolateBetween2DPointsForY(activepolygon.topleft, activepolygon.bottomleft, ycoordinate)
-          let topleft = Vector2D.Create(x, ycoordinate)
+          let topleft = vec2.fromValues(x, ycoordinate)
           x = interpolateBetween2DPointsForY(activepolygon.topright, activepolygon.bottomright, ycoordinate)
-          let topright = Vector2D.Create(x, ycoordinate)
+          let topright = vec2.fromValues(x, ycoordinate)
           x = interpolateBetween2DPointsForY(activepolygon.topleft, activepolygon.bottomleft, nextycoordinate)
-          let bottomleft = Vector2D.Create(x, nextycoordinate)
+          let bottomleft = vec2.fromValues(x, nextycoordinate)
           x = interpolateBetween2DPointsForY(activepolygon.topright, activepolygon.bottomright, nextycoordinate)
-          let bottomright = Vector2D.Create(x, nextycoordinate)
+          let bottomright = vec2.fromValues(x, nextycoordinate)
           let outpolygon = {
             topleft: topleft,
             topright: topright,
             bottomleft: bottomleft,
             bottomright: bottomright,
-            leftline: Line2D.fromPoints(topleft, bottomleft),
-            rightline: Line2D.fromPoints(bottomright, topright)
+            leftline: line2.fromPoints(topleft, bottomleft),
+            rightline: line2.fromPoints(bottomright, topright)
           }
           if (newoutpolygonrow.length > 0) {
             let prevoutpolygon = newoutpolygonrow[newoutpolygonrow.length - 1]
@@ -300,13 +300,8 @@ const reTesselateCoplanarPolygons = function (sourcepolygons) {
               // reverse the left half so we get a counterclockwise circle:
               prevpolygon.outpolygon.leftpoints.reverse()
               let points2d = prevpolygon.outpolygon.rightpoints.concat(prevpolygon.outpolygon.leftpoints)
-              let vertices3d = []
-              points2d.map(function (point2d) {
-                let point3d = orthobasis.to3D(point2d)
-                let vertex3d = new Vertex(point3d)
-                vertices3d.push(vertex3d)
-              })
-              let polygon = new Polygon(vertices3d, shared, plane)
+              let vertices3d = points2d.map(point2d => orthobasis.to3D(point2d))
+              let polygon = poly3.fromPointsAndPlane(vertices3d, plane)// shared ??
               destpolygons.push(polygon)
             }
           }

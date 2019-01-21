@@ -47,4 +47,5 @@ const intersectSub = (ohterCsg, geometry, doRetesselate, doCanonicalize) => {
   return result
 }
 
+intersect.intersectSub = intersectSub
 module.exports = intersect
