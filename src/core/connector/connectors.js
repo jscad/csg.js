@@ -6,7 +6,7 @@ const vec3 = require('../math/vec3')
   return new Line3D(this.point, this.axis)
 } */
 
-// old 'connectors list' for now only array of connectors
+// old 'connectors list' for now only array of connectors, DO NOT REMOVE FOR NOW !!
 
 const fromPath2 = (path, arg1, arg2) => {
   if (arguments.length === 3) {

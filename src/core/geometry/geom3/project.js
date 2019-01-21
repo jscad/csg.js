@@ -23,9 +23,9 @@ const projectPolygon3ToOrthoNormalBasis = (poly3, orthobasis) => {
 }
 
 /** project the Geom3 onto a plane
- * This returns a Shape2 with the 'shadow' shape of the 3D solid when projected onto the
+ * This returns a Geom2 with the 'shadow' shape of the 3D solid when projected onto the
  * plane represented by the orthonormal basis
- * @param  {Geom3} shape the shape3 object to cut
+ * @param  {Geom3} geometry the object to project
  * @param  {Orthobasis} orthobasis the orthobasis to cut along
  */
 const project = (geometry, orthobasis) => {
@@ -34,7 +34,7 @@ const project = (geometry, orthobasis) => {
     // only return polys in plane, others may disturb result
     return p.plane.normal.minus(orthobasis.plane.normal).lengthSquared() < (EPS * EPS)
   })
-    .map(function (polygon) {
+    .map( polygon => {
       let shape2 = projectPolygon3ToOrthoNormalBasis(polygon, orthobasis)
       if (shape2.sides.length > 0) {
         shape2s.push(shape2)
