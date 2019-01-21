@@ -38,7 +38,7 @@
 
 ### Transformations
 
-  - expand/contract is now only expand, with negative values
+  - expand/contract is now only expand, with negative values for contract
   - rotate, translate, scale etc do NOT do implicit UNIONS anymore => array in, array out, single item item in, single item out
 
 ### Primitives
@@ -89,7 +89,7 @@
       * css2Rgb => colorNameToRgb
   
 ### Properties
-  - there is no 'properties' class/ object anymore
+  - there is no 'properties' class/ object anymore: not 100% sure
   - it is a simple array (Object??) attribute on parts/shapes
 
 # Things to fix:
