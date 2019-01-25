@@ -3,7 +3,7 @@ const { toTriangles, create, fromPoints } = require('./index')
 
 const poly3 = require('../poly3')
 
-test('shape3: toTriangles() should return a proper list of triangluated polygons', (t) => {
+test('geom3: toTriangles() should return a proper list of triangluated polygons', (t) => {
   const triangles = [
     [
       [0, 0, 0],

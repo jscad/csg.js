@@ -13,8 +13,7 @@ const toTriangles = (shape3) => {
           firstVertex,
           poly.vertices[i + 1],
           poly.vertices[i + 2]
-        ],
-        poly.plane
+        ]
         // TODO poly.shared,
       )
       polygons.push(triangle)
