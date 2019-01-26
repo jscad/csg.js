@@ -19,8 +19,8 @@ test('geom3: intersection() should create proper intersection from empty geometr
   const ret2 = intersection(obj1, obj2)
   const exp2 = { 
     polygons: [],
-    isCanonicalized: false,
-    isRetesselated: false
+    isCanonicalized: true,
+    isRetesselated: true
   }
   t.deepEqual(ret2, exp2)
 
@@ -28,8 +28,8 @@ test('geom3: intersection() should create proper intersection from empty geometr
   const ret3 = intersection(obj1, obj2, obj3)
   const exp3 = { 
     polygons: [],
-    isCanonicalized: false,
-    isRetesselated: false
+    isCanonicalized: true,
+    isRetesselated: true
   }
   t.deepEqual(ret3, exp3)
 })
@@ -84,11 +84,15 @@ test('geom3: intersection() should create proper intersection from solid geometr
   // two non-overlapping geometries
   const ret2 = intersection(obj1, obj2)
   const exp2 = fromPoints([])
+  exp2.isCanonicalized = true
+  exp2.isRetesselated = true
   t.deepEqual(ret2, exp2)
 
   // two touching geometries (faces)
   const ret3 = intersection(obj1, obj3)
   const exp3 = fromPoints([])
+  exp3.isCanonicalized = true
+  exp3.isRetesselated = true
   t.deepEqual(ret3, exp3)
 
   // two overlapping geometries
@@ -103,7 +107,8 @@ test('geom3: intersection() should create proper intersection from solid geometr
       [[0.0, 0.0, 5.0], [5.0, 0.0, 5.0], [5.0, 5.0, 5.0], [0.0, 5.0, 5.0]]
     ]
   )
-
+  exp4.isCanonicalized = true
+  exp4.isRetesselated = true
   t.deepEqual(ret4, exp4)
 })
 

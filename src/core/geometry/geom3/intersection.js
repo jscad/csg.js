@@ -1,8 +1,8 @@
-const fromPolygons = require('./fromPolygons')
-const retesselate = require('./retessellate')
-const canonicalize = require('./canonicalize')
-
 const Tree = require('../trees')
+
+const fromPolygons = require('./fromPolygons')
+const retessellate = require('./retessellate')
+const canonicalize = require('./canonicalize')
 
 /**
    * Return a new Geom3 solid representing space in both this solid and
@@ -42,10 +42,11 @@ const intersectSub = (ohterCsg, geometry, doRetesselate, doCanonicalize) => {
   a.addPolygons(b.allPolygons())
   a.invert()
   let result = fromPolygons(a.allPolygons())
-  if (doRetesselate) result = retesselate(result)
   if (doCanonicalize) result = canonicalize(result)
+  if (doRetesselate) result = retessellate(result)
   return result
 }
 
 intersect.intersectSub = intersectSub
+
 module.exports = intersect
