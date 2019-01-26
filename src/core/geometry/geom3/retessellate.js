@@ -12,16 +12,13 @@ const fromPolygons = require('./fromPolygons')
   (making sure that we will end up with convex polygons).
 */
 const retessellate = (geometry) => {
-console.log('***** retessellate')
   if (!geometry.isCanonicalized) {
-    new Error('geometry must be canonical, call canonicalize first')
+    throw new Error('geometry must be canonical, call canonicalize first')
   }
 
   if (geometry.isRetesselated) {
     return geometry
   } else {
-    let isCanonicalized = geometry.isCanonicalized
-
     let polygonsPerPlane = new Map()
     geometry.polygons.map( (polygon) => {
       let values = polygonsPerPlane.get(polygon.plane)
@@ -35,7 +32,6 @@ console.log('***** retessellate')
 
     let destpolygons = []
     polygonsPerPlane.forEach( (sourcepolygons) => {
-console.log(sourcepolygons.length)
       if (sourcepolygons.length < 2) {
         destpolygons = destpolygons.concat(sourcepolygons)
       } else {
@@ -45,7 +41,7 @@ console.log(sourcepolygons.length)
     })
 
     let result = fromPolygons(destpolygons)
-    result.isCanonicalized = true
+    result.isCanonicalized = geometry.isCanonicalized
     result.isRetesselated = true
     // TODO result.properties = geometry.properties // keep original properties
 
