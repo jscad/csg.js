@@ -18,16 +18,16 @@ test('geom3: toTriangles() should return a proper list of triangluated polygons'
   ]
   const quads = [
     [
-      [0,  0, 0],
+      [0, 0, 0],
       [0, 10, 0],
       [0, 10, 10],
-      [0,  0, 10]
+      [0, 0, 10]
     ],
     [
       [0, 0, 0],
       [10, 0, 0],
       [10, 0, 10],
-      [0,  0, 10]
+      [0, 0, 10]
     ]
   ]
 
@@ -43,9 +43,10 @@ test('geom3: toTriangles() should return a proper list of triangluated polygons'
 
   const org3 = fromPoints(quads)
   const obs3 = toTriangles(org3)
-  t.deepEqual(obs3, [ poly3.fromPoints([[0,0,0],[0,10,10],[0, 0,10]]),
-                      poly3.fromPoints([[0,0,0],[0,10, 0],[0,10,10]]),
-                      poly3.fromPoints([[0,0,0],[10,0,10],[0,0,10]]),
-                      poly3.fromPoints([[0,0,0],[10,0, 0],[10,0,10]]) ] )
+  t.deepEqual(obs3,
+    [poly3.fromPoints([[0, 0, 0], [0, 10, 10], [0, 0, 10]]),
+      poly3.fromPoints([[0, 0, 0], [0, 10, 0], [0, 10, 10]]),
+      poly3.fromPoints([[0, 0, 0], [10, 0, 10], [0, 0, 10]]),
+      poly3.fromPoints([[0, 0, 0], [10, 0, 0], [10, 0, 10]])])
   t.not(obs3, org3)
 })

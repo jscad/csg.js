@@ -1,5 +1,3 @@
-const FuzzyFactory3 = require('../fuzzyfactory/FuzzyFactory3')
-
 const reTesselateCoplanarPolygons = require('./reTesselateCoplanarPolygons')
 const fromPolygons = require('./fromPolygons')
 
@@ -18,36 +16,36 @@ const retessellate = (geometry) => {
 
   if (geometry.isRetesselated) {
     return geometry
-  } else {
-    let polygonsPerPlane = new Map()
-    geometry.polygons.map( (polygon) => {
-      let values = polygonsPerPlane.get(polygon.plane)
-      if (values === undefined) {
-        values = [polygon]
-        polygonsPerPlane.set(polygon.plane, values)
-      } else {
-        values.push(polygon)
-      }
-    })
-
-    let destpolygons = []
-    polygonsPerPlane.forEach( (sourcepolygons) => {
-      if (sourcepolygons.length < 2) {
-        destpolygons = destpolygons.concat(sourcepolygons)
-      } else {
-        const retesselayedpolygons = reTesselateCoplanarPolygons(sourcepolygons)
-        destpolygons = destpolygons.concat(retesselayedpolygons)
-      }
-    })
-
-    let result = fromPolygons(destpolygons)
-    result.isCanonicalized = geometry.isCanonicalized
-    result.isRetesselated = true
-    // TODO result.properties = geometry.properties // keep original properties
-
-    polygonsPerPlane.clear()
-    return result
   }
+
+  const polygonsPerPlane = new Map()
+  geometry.polygons.forEach((polygon) => {
+    let values = polygonsPerPlane.get(polygon.plane)
+    if (values === undefined) {
+      values = [polygon]
+      polygonsPerPlane.set(polygon.plane, values)
+    } else {
+      values.push(polygon)
+    }
+  })
+
+  let destpolygons = []
+  polygonsPerPlane.forEach((sourcepolygons) => {
+    if (sourcepolygons.length < 2) {
+      destpolygons = destpolygons.concat(sourcepolygons)
+    } else {
+      const retesselayedpolygons = reTesselateCoplanarPolygons(sourcepolygons)
+      destpolygons = destpolygons.concat(retesselayedpolygons)
+    }
+  })
+
+  const result = fromPolygons(destpolygons)
+  result.isCanonicalized = geometry.isCanonicalized
+  result.isRetesselated = true
+  // TODO result.properties = geometry.properties // keep original properties
+
+  polygonsPerPlane.clear()
+  return result
 }
 
 module.exports = retessellate

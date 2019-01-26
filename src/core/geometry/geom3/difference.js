@@ -21,18 +21,9 @@ const canonicalize = require('./canonicalize')
    *      |       |
    *      +-------+
    */
-const subtract = (otherGeom3, ...geometries) => {
-  let result = otherGeom3
-  for (let i = 0; i < geometries.length; i++) {
-    let islast = (i === (geometries.length - 1))
-    result = subtractSub(result, geometries[i], islast, islast)
-  }
-  return result
-}
-
 const subtractSub = (otherGeom3, geometry, doRetesselate, doCanonicalize) => {
-  let a = new Tree(otherGeom3.polygons)
-  let b = new Tree(geometry.polygons)
+  const a = new Tree(otherGeom3.polygons)
+  const b = new Tree(geometry.polygons)
   a.invert()
   a.clipTo(b)
   b.clipTo(a, true)
@@ -41,6 +32,15 @@ const subtractSub = (otherGeom3, geometry, doRetesselate, doCanonicalize) => {
   let result = fromPolygons(a.allPolygons())
   if (doCanonicalize) result = canonicalize(result)
   if (doRetesselate) result = retessellate(result)
+  return result
+}
+
+const subtract = (otherGeom3, ...geometries) => {
+  let result = otherGeom3
+  for (let i = 0; i < geometries.length; i++) {
+    const islast = (i === (geometries.length - 1))
+    result = subtractSub(result, geometries[i], islast, islast)
+  }
   return result
 }
 

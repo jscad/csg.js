@@ -13,25 +13,25 @@ const fromPolygons = require('./fromPolygons')
 const canonicalize = (geometry) => {
   if (geometry.isCanonicalized) {
     return geometry
-  } else {
-    const factory = new FuzzyFactory3()
-
-    let newpolygons = []
-    geometry.polygons.forEach(function (polygon) {
-      let newpolygon = factory.getPolygon(polygon)
-
-      // discard incomplete polygons
-      if (newpolygon.vertices.length >= 3) {
-        newpolygons.push(newpolygon)
-      }
-    })
-
-    let result = fromPolygons(newpolygons)
-    result.isCanonicalized = true
-    result.isRetesselated = geometry.isRetesselated
-    // TODO result.properties = geometry.properties
-    return result
   }
+
+  const factory = new FuzzyFactory3()
+
+  const newpolygons = []
+  geometry.polygons.forEach((polygon) => {
+    const newpolygon = factory.getPolygon(polygon)
+
+    // discard incomplete polygons
+    if (newpolygon.vertices.length >= 3) {
+      newpolygons.push(newpolygon)
+    }
+  })
+
+  const result = fromPolygons(newpolygons)
+  result.isCanonicalized = true
+  result.isRetesselated = geometry.isRetesselated
+  // TODO result.properties = geometry.properties
+  return result
 }
 
 module.exports = canonicalize
