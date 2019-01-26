@@ -35,8 +35,8 @@ const unionSub = (otherGeom3, csg, doRetesselate, doCanonicalize) => {
     let result = fromPolygons(newpolygons)
     // FIXME: what to do with properties ????
     // result.properties = otherGeom3.properties._merge(csg.properties)
-    if (doRetesselate) result = retessellate(result)
     if (doCanonicalize) result = canonicalize(result)
+    if (doRetesselate) result = retessellate(result)
     return result
   }
 }
@@ -48,7 +48,7 @@ const union = (...solids) => {
   for (i = 1; i < csgs.length; i += 2) {
     csgs.push(unionSub(csgs[i - 1], csgs[i], false, false))
   }
-  return canonicalize(retessellate(csgs[i - 1]))
+  return retessellate(canonicalize(csgs[i - 1]))
 }
 
 module.exports = union
