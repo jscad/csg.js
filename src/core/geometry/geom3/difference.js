@@ -1,7 +1,8 @@
-const fromPolygons = require('./fromPolygons')
-const retesselate = require('./retesellate')
-const canonicalize = require('./canonicalize')
 const Tree = require('../trees')
+
+const fromPolygons = require('./fromPolygons')
+const retessellate = require('./retessellate')
+const canonicalize = require('./canonicalize')
 
 /**
    * Return a new geom3 representing space in this solid but
@@ -20,13 +21,7 @@ const Tree = require('../trees')
    *      |       |
    *      +-------+
    */
-const subtract = (otherGeom3, geometry) => {
-  let geometries
-  if (geometry instanceof Array) {
-    geometries = geometry
-  } else {
-    geometries = [geometry]
-  }
+const subtract = (otherGeom3, ...geometries) => {
   let result = otherGeom3
   for (let i = 0; i < geometries.length; i++) {
     let islast = (i === (geometries.length - 1))
@@ -44,10 +39,11 @@ const subtractSub = (otherGeom3, geometry, doRetesselate, doCanonicalize) => {
   a.addPolygons(b.allPolygons())
   a.invert()
   let result = fromPolygons(a.allPolygons())
-  if (doRetesselate) result = retesselate(result)
   if (doCanonicalize) result = canonicalize(result)
+  if (doRetesselate) result = retessellate(result)
   return result
 }
 
 subtract.subtractSub = subtractSub
+
 module.exports = subtract
