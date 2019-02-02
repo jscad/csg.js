@@ -1,29 +1,33 @@
-const geom2 = require('../geometry/geom2')
-const clone = require('./clone')
-const create = require('./create')
+const hull = require('./hull')
+const union = require('./union')
 
-/** create a convex chainHull of the given shapes
+// TODO: This is not a primitive operation. Consider moving it to a library.
+
+/** create a chain hull of the given shapes
  * Originally "Whosa whatsis" suggested "Chain Hull" ,
  * as described at https://plus.google.com/u/0/105535247347788377245/posts/aZGXKFX1ACN
- * essentially hull A+B, B+C, C+D and then union those
- * @typedef  {import('./create').Shape2} Shape2
- * @param {Array} shapes a list of Shape2 objects to create a chainHull around
- * @returns {Shape2} new Shape2 object , a chainHull around the given shapes
+ * essentially chainHull({}, A, B, C) is union(hull(A, B), hull(B, C)),
+ * and chainHull({ closed: true }, A, B, C) is union(hull(A, B), hull(B, C), hull(C, A).
  *
- * @example
- * let hulled = chainHull(rectangle(), ellipse())
+ * @param {options} geometries either a single or multiple Geom2 objects to create a chain hull around
+ * @param {...geometries} a sequence of 
+ * @returns {shape} new shape2, being a union of the chained hull operations.
+ *
+ * @example:
+ * let hulled = chainHull({}, rect({ size: [1, 1] }), circle({ r: 1 }))
  */
-const chainHull = shapes => {
-  // first we transform all geometries to 'bake in' the transforms
-  const updatedGeoms = shapes.map(shape => geom2.transform(shape.transforms, shape.geometry))
-  const newGeometry = geom2.chainHull({}, updatedGeoms)
-  /* this means that the new shape:
-   - has default transforms (reset)
-   - does not get any attributes or data from the input shapes
-  */
-  const newShape = create()
-  newShape.geometry = newGeometry
-  return newShape
+
+const chainHull = ({ closed=false }, ...geometries) => {
+  const hulls = [];
+  const first = 0;
+  const last = geometries.length - 1;
+  for (let nth = 0; nth < last; nth++) {
+    hulls.push(hull(geometries[nth], geometries[nth + 1]));
+  }
+  if (closed) {
+    hulls.push(hull(geometries[last], geometries[first]));
+  }
+  return union(...hulls);
 }
 
 module.exports = chainHull
