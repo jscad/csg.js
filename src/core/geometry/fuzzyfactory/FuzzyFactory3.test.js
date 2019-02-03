@@ -7,7 +7,7 @@ const FuzzyFactory3 = require('./FuzzyFactory3')
 
 const { comparePolygons } = require('../../../../test/helpers/index')
 
-test('FuzzyFactory3: factories for 3D geometries should function properly', (t) => {
+test('FuzzyFactory3: factories should create or lookup polygons correctly', (t) => {
   const delta = (EPS * 0.01)
 
   const p1 = poly3.fromPoints([[0, 0, 0], [1, 0, 0], [1, 1, 0]])

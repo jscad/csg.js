@@ -7,7 +7,7 @@ const { EPS } = require('../../constants')
 // - Only factories with elements containing two(2) and three(3) valies are expected.
 //   In other words, factories supporting vec2 and vec3 objects.
 
-test('FuzzyFactory: factories for elements with two(2) values should function properly', (t) => {
+test('FuzzyFactory: factories for elements with two(2) values should create or lookup properly', (t) => {
   // simple factory based on elements with two values
   const factory2 = new FuzzyFactory(2, EPS)
   t.true((factory2 !== undefined))
@@ -65,7 +65,7 @@ test('FuzzyFactory: factories for elements with two(2) values should function pr
   t.is(found[1], -2.0)
 })
 
-test('FuzzyFactory: factories for elements with three(3) values should function properly', (t) => {
+test('FuzzyFactory: factories for elements with three(3) values should create or lookup properly', (t) => {
   // simple factory based on elements with three values
   const factory3 = new FuzzyFactory(3, EPS)
   t.true((factory3 !== undefined))
