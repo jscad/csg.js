@@ -6,7 +6,6 @@ module.exports = {
   flip: require('./flip'),
   expand: require('./expand'),
   hull: require('./hull'),
-  chainHull: require('./hullChain'),
 
   union: require('./union'),
   difference: require('./difference'),
