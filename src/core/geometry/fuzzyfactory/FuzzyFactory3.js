@@ -15,6 +15,7 @@ const FuzzyFactory3 = function () {
 
 FuzzyFactory3.prototype = {
   getPolygonShared: function (sourceshared) {
+    // TODO : correct this nonsense when color is supported in poly3
     let hash = 'null'
     if (sourceshared && (color in sourceshare)) {
       hash = shared.color.join('/')
@@ -29,17 +30,13 @@ FuzzyFactory3.prototype = {
 
   getVertex: function (sourcevertex) {
     let elements = [sourcevertex[0], sourcevertex[1], sourcevertex[2]]
-    let result = this.vertexfactory.lookupOrCreate(elements, function (els) {
-      return sourcevertex
-    })
+    let result = this.vertexfactory.lookupOrCreate(elements, () => sourcevertex)
     return result
   },
 
   getPlane: function (sourceplane) {
     let elements = [sourceplane[0], sourceplane[1], sourceplane[2], sourceplane[3]]
-    let result = this.planefactory.lookupOrCreate(elements, function (els) {
-      return sourceplane
-    })
+    let result = this.planefactory.lookupOrCreate(elements, () => sourceplane)
     return result
   },
 
@@ -47,27 +44,25 @@ FuzzyFactory3.prototype = {
     let newplane = this.getPlane(sourcepolygon.plane)
     let newshared = this.getPolygonShared(sourcepolygon.shared)
     let _this = this
-    let newvertices = sourcepolygon.vertices.map(function (vertex) {
-      return _this.getVertex(vertex)
-    })
-        // two vertices that were originally very close may now have become
-        // truly identical (referring to the same Vertex object).
-        // Remove duplicate vertices:
-    let newverticesDedup = []
+    let newvertices = sourcepolygon.vertices.map((vertex) => _this.getVertex(vertex))
+    // two vertices that were originally very close may now have become
+    // truly identical (referring to the same Vertex object).
+    // Remove duplicate vertices:
+    let distinctVertices = []
     if (newvertices.length > 0) {
       let prevvertex = newvertices[newvertices.length - 1]
-      newvertices.forEach(function (vertex) {
+      newvertices.forEach((vertex) => {
         if (!vec3.equals(prevvertex, vertex)) {
-          newverticesDedup.push(vertex)
+          distinctVertices.push(vertex)
         }
         prevvertex = vertex
       })
     }
-        // If it's degenerate, remove all vertices:
-    if (newverticesDedup.length < 3) {
-      newverticesDedup = []
+    // If it's degenerate, remove all vertices:
+    if (distinctVertices.length < 3) {
+      distinctVertices = []
     }
-    return poly3.fromPoints(newverticesDedup, newplane)
+    return poly3.fromPoints(distinctVertices, newplane)
     // TODO return poly3.fromPoints(newverticesDedup, newplane, newshared)
   }
 }
