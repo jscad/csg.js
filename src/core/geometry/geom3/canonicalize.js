@@ -30,7 +30,6 @@ const canonicalize = (geometry) => {
   const result = fromPolygons(newpolygons)
   result.isCanonicalized = true
   result.isRetesselated = geometry.isRetesselated
-  // TODO result.properties = geometry.properties
   return result
 }
 

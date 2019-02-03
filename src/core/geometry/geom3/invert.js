@@ -12,7 +12,6 @@ const invert = (geometry) => {
   const flippedpolygons = geometry.polygons.map((polygon) => {
     return poly3.flip(polygon)
   })
-  // TODO: flip properties?
   return fromPolygons(flippedpolygons)
 }
 

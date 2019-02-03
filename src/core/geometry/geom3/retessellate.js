@@ -42,7 +42,6 @@ const retessellate = (geometry) => {
   const result = fromPolygons(destpolygons)
   result.isCanonicalized = geometry.isCanonicalized
   result.isRetesselated = true
-  // TODO result.properties = geometry.properties // keep original properties
 
   polygonsPerPlane.clear()
   return result

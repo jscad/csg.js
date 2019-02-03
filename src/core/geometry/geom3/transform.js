@@ -23,7 +23,6 @@ const transform = (matrix, geometry) => {
   // and retain the same state as the original
   result.isRetesselated = geometry.isRetesselated
   result.isCanonicalized = geometry.isCanonicalized
-  // TODO result.properties = shape.properties._transform(matrix)
   return result
 }
 
