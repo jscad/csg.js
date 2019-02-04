@@ -1,7 +1,7 @@
 const test = require('ava')
 const { canonicalize, create, fromPoints } = require('./index')
 
-test('geom3: canonicalize() should return a geometry with proper values', (t) => {
+test('geom3: canonicalize() should return same geometry or new geometry', (t) => {
   const polygons = [
     [// a simple triangle
       [0, 0, 0],
