@@ -1,5 +1,8 @@
 const Tree = require('../trees')
 
+const flatten = require('../../utils/flatten')
+const toArray = require('../../utils/toArray')
+
 const fromPolygons = require('./fromPolygons')
 const retessellate = require('./retessellate')
 const canonicalize = require('./canonicalize')
@@ -36,6 +39,9 @@ const subtractSub = (otherGeom3, geometry, doRetesselate, doCanonicalize) => {
 }
 
 const subtract = (...geometries) => {
+  geometries = flatten(toArray(geometries))
+  if (geometries.length === 0) throw new Error('difference requires one or more geometries')
+
   let result = geometries.shift()
   for (let i = 0; i < geometries.length; i++) {
     const islast = (i === (geometries.length - 1))

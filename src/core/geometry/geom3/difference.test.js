@@ -2,8 +2,9 @@ const test = require('ava')
 const { difference, create, fromPoints } = require('./index')
 
 test('geom3: difference() with zero geometries should be a no-op', (t) => {
-  const ret1 = difference()
-  t.is(ret1, undefined)
+  t.throws(() => {
+    difference()
+  }, 'difference requires one or more geometries')
 })
 
 test('geom3: difference() with one geometry should return the same', (t) => {
