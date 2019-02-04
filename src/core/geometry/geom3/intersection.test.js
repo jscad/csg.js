@@ -1,6 +1,17 @@
 const test = require('ava')
 const { intersection, create, fromPoints } = require('./index')
 
+test('geom3: intersection() with zero geometries should be a no-op', (t) => {
+  const ret1 = intersection()
+  t.is(ret1, undefined)
+})
+
+test('geom3: intersection() with one geometry should return the same', (t) => {
+  const obj1 = create()
+  const ret1 = intersection(obj1)
+  t.is(obj1, ret1)
+})
+
 test('geom3: intersection() should create proper intersection from empty geometries', (t) => {
   const obj1 = create()
   const obj2 = create()

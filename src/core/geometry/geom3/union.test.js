@@ -1,6 +1,17 @@
 const test = require('ava')
 const { union, create, fromPoints } = require('./index')
 
+test('geom3: union() with zero geometries should be a no-op', (t) => {
+  const ret1 = union()
+  t.is(ret1, undefined)
+})
+
+test('geom3: union() with one geometry should return the same', (t) => {
+  const obj1 = create()
+  const ret1 = union(obj1)
+  t.is(obj1, ret1)
+})
+
 test('geom3: union() should create proper union from empty geometries', (t) => {
   const obj1 = create()
   const obj2 = create()

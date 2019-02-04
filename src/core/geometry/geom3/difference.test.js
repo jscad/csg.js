@@ -1,7 +1,18 @@
 const test = require('ava')
 const { difference, create, fromPoints } = require('./index')
 
-test('geom3: difference() should create proper subtraction from empty geometries', (t) => {
+test('geom3: difference() with zero geometries should be a no-op', (t) => {
+  const ret1 = difference()
+  t.is(ret1, undefined)
+})
+
+test('geom3: difference() with one geometry should return the same', (t) => {
+  const obj1 = create()
+  const ret1 = difference(obj1)
+  t.is(obj1, ret1)
+})
+
+test('geom3: difference() should create proper geometries from empty geometries', (t) => {
   const obj1 = create()
   const obj2 = create()
   const obj3 = create()
@@ -34,7 +45,7 @@ test('geom3: difference() should create proper subtraction from empty geometries
   t.deepEqual(ret3, exp3)
 })
 
-test('geom3: difference() should create proper subtraction from solid geometries', (t) => {
+test('geom3: difference() should create proper geometries from solid geometries', (t) => {
   const box1 = [
     [[-5.0, -5.0, -5.0], [-5.0, -5.0, 5.0], [-5.0, 5.0, 5.0], [-5.0, 5.0, -5.0]],
     [[5.0, -5.0, -5.0], [5.0, 5.0, -5.0], [5.0, 5.0, 5.0], [5.0, -5.0, 5.0]],
