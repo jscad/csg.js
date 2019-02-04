@@ -35,8 +35,8 @@ const subtractSub = (otherGeom3, geometry, doRetesselate, doCanonicalize) => {
   return result
 }
 
-const subtract = (otherGeom3, ...geometries) => {
-  let result = otherGeom3
+const subtract = (...geometries) => {
+  let result = geometries.shift()
   for (let i = 0; i < geometries.length; i++) {
     const islast = (i === (geometries.length - 1))
     result = subtractSub(result, geometries[i], islast, islast)

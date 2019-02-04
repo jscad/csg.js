@@ -38,8 +38,8 @@ const intersectSub = (ohterCsg, geometry, doRetesselate, doCanonicalize) => {
   return result
 }
 
-const intersect = (otherGeom3, ...geometries) => {
-  let result = otherGeom3
+const intersect = (...geometries) => {
+  let result = geometries.shift()
   for (let i = 0; i < geometries.length; i++) {
     const islast = (i === (geometries.length - 1))
     result = intersectSub(result, geometries[i], islast, islast)

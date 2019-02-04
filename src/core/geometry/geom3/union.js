@@ -41,12 +41,14 @@ const unionSub = (otherGeom3, csg, doRetesselate, doCanonicalize) => {
 }
 
 const union = (...solids) => {
+  let result = undefined
   // combine solids in a way that forms a balanced binary tree pattern
   let i
   for (i = 1; i < solids.length; i += 2) {
     solids.push(unionSub(solids[i - 1], solids[i], false, false))
   }
-  return retessellate(canonicalize(solids[i - 1]))
+  if (solids.length > 0) result = retessellate(canonicalize(solids[i - 1]))
+  return result
 }
 
 module.exports = union
