@@ -1,3 +1,6 @@
+const flatten = require('../../utils/flatten')
+const toArray = require('../../utils/toArray')
+
 const Tree = require('../trees')
 
 const fromPolygons = require('./fromPolygons')
@@ -39,6 +42,9 @@ const intersectSub = (ohterCsg, geometry, doRetesselate, doCanonicalize) => {
 }
 
 const intersect = (...geometries) => {
+  geometries = flatten(toArray(geometries))
+  if (geometries.length === 0) throw new Error('intersection requires one or more geometries')
+
   let result = geometries.shift()
   for (let i = 0; i < geometries.length; i++) {
     const islast = (i === (geometries.length - 1))

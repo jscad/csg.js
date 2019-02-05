@@ -1,9 +1,10 @@
 const test = require('ava')
 const { intersection, create, fromPoints } = require('./index')
 
-test('geom3: intersection() with zero geometries should be a no-op', (t) => {
-  const ret1 = intersection()
-  t.is(ret1, undefined)
+test('geom3: intersection() with zero geometries should throw error', (t) => {
+  t.throws(() => {
+    intersection()
+  }, 'intersection requires one or more geometries')
 })
 
 test('geom3: intersection() with one geometry should return the same', (t) => {

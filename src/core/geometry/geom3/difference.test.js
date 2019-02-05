@@ -1,7 +1,7 @@
 const test = require('ava')
 const { difference, create, fromPoints } = require('./index')
 
-test('geom3: difference() with zero geometries should be a no-op', (t) => {
+test('geom3: difference() with zero geometries should throw error', (t) => {
   t.throws(() => {
     difference()
   }, 'difference requires one or more geometries')
