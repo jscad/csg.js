@@ -1,9 +1,12 @@
+const flatten = require('../../utils/flatten')
+const toArray = require('../../utils/toArray')
+
+const Tree = require('../trees')
+
 const isOverlapping = require('./isOverlapping')
 const fromPolygons = require('./fromPolygons')
 const retessellate = require('./retessellate')
 const canonicalize = require('./canonicalize')
-
-const Tree = require('../trees')
 
 // Like union, but when we know that the two solids are not intersecting
 // Do not use if you are not completely sure that the solids do not intersect!
@@ -40,15 +43,16 @@ const unionSub = (otherGeom3, csg, doRetesselate, doCanonicalize) => {
   return result
 }
 
-const union = (...solids) => {
-  let result = undefined
-  // combine solids in a way that forms a balanced binary tree pattern
+const union = (...geometries) => {
+  geometries = flatten(toArray(geometries))
+  if (geometries.length === 0) throw new Error('union requires one or more geometries')
+
+  // combine geometries in a way that forms a balanced binary tree pattern
   let i
-  for (i = 1; i < solids.length; i += 2) {
-    solids.push(unionSub(solids[i - 1], solids[i], false, false))
+  for (i = 1; i < geometries.length; i += 2) {
+    geometries.push(unionSub(geometries[i - 1], geometries[i], false, false))
   }
-  if (solids.length > 0) result = retessellate(canonicalize(solids[i - 1]))
-  return result
+  return retessellate(canonicalize(geometries[i - 1]))
 }
 
 module.exports = union
