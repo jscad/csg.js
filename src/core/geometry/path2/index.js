@@ -1,7 +1,11 @@
 module.exports = {
-  create: require('./create'),
+  appendPoint: require('./appendPoint'),
+  canonicalize: require('./canonicalize'),
   concat: require('./concat'),
-  fromPoints: require('./fromPoints'),
-  toGeom2: require('./toGeom2'),
-  toPoints: require('./toPoints')
+  create: require('./create'),
+  equals: require('./equals'),
+  fromPointArray: require('./fromPointArray'),
+  reverse: require('./reverse'),
+  toPointArray: require('./toPointArray'),
+  transform: require('./transform')
 }

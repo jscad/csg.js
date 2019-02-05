@@ -1,8 +1,11 @@
+const fromPoints = require('./fromPoints')
+const vec2 = require('../../math/vec2')
+
+// Eager transform.
+
 const transform = (matrix, path) => {
-  let newpoints = path.points.map(function (point) {
-    return point.multiply4x4(matrix4x4)
-  })
-  return new Path2D(newpoints, this.closed)
+  return fromPoints({ closed: this.closed },
+                    ...path.points.map(point => vec2.transform(matrix, point)));
 }
 
 module.exports = transform

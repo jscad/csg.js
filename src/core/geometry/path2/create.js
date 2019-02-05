@@ -1,3 +1,5 @@
+const mat4 = require('../../math/mat4')
+
 /**
  * @typedef {Object} Path2 - 2d Path
  * @property {Array} points
@@ -14,7 +16,8 @@
 const create = () => {
   return {
     points: [],
-    closed: false
+    isClosed: false,
+    isCanonicalized: true,
   }
 }
 
