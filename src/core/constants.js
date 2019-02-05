@@ -58,5 +58,6 @@ module.exports = {
   front,
   back,
   staticTag,
-  getTag
+  getTag,
+  spatialResolution
 }

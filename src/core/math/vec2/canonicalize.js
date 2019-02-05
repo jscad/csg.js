@@ -1,4 +1,4 @@
-const spatialResolution = require('../../constants').EPS;
+const { spatialResolution } = require('../../constants')
 const fromValues = require('./fromValues');
 
 const quantize = (value) => (Math.round(value * spatialResolution) / spatialResolution)
