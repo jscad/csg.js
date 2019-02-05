@@ -9,7 +9,7 @@ test('appendPoint: An empty path with a point appended is the same as a path cre
   t.true(equals(appendPoint(empty, [0, 0]), origin))
 })
 
-test('appendPoint: Appending to a closed path fails', async t => {
+test('appendPoint: Appending to a closed path fails', t => {
   t.throws(() => appendPoint(fromPointArray({ closed: true }, []), [1, 1]),
            'Cannot append to closed path')
 })

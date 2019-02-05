@@ -19,13 +19,3 @@ test('canonicalize: A canonicalized path is canonical', t => {
 test('canonicalize: Appending to a canonicalized produces a non-canonical path', t => {
   t.true(appendPoint(canonicalize(fromPointArray({}, [[0, 0]])).isCanonicalized);
 })
-
-test('appendPoint: Appending to a closed path fails', async t => {
-  t.throws(() => appendPoint(fromPointArray({ closed: true }, []), [1, 1]),
-           'Cannot append to closed path')
-})
-
-test('appendPoint: Can append multiple points.', t => {
-  t.true(equals(appendPoint(fromPointArray({}, []), [0, 0], [1, 1]),
-                fromPointArray({}, [[0, 0], [1, 1]])))
-})

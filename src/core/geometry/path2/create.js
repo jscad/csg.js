@@ -1,5 +1,3 @@
-const mat4 = require('../../math/mat4')
-
 /**
  * Produces an empty, open path.
  * @returns {path2} - the empty, open path.

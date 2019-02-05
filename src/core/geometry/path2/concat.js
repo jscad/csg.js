@@ -12,7 +12,7 @@ const fromPointArray = require('./fromPointArray')
  * concat(fromPointArray({}, [[1, 2]]), fromPointArray({}, [[3, 4]]))
  */
 const concat = (...paths) => {
-  // Only the last path can be closed, producing a closed concatenation.
+  // Only the last path can be closed, producing a closed path.
   let isClosed = false;
   for (const path of paths) {
     if (isClosed) {
