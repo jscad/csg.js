@@ -1,11 +1,17 @@
-const fromPoints = require('./fromPoints')
+const fromPointArray = require('./fromPointArray')
 const vec2 = require('../../math/vec2')
 
-// Eager transform.
-
-const transform = (matrix, path) => {
-  return fromPoints({ closed: this.closed },
-                    ...path.points.map(point => vec2.transform(matrix, point)));
-}
+/**
+ * Produces a path by transforming all points in the provided path.
+ * @param {mat4} matrix - the matrix to transform with.
+ * @param {path2} path - the path to transform.
+ * @returns {path2} - the transformed path.
+ * @example
+ * transform(fromZRotation(degToRad(90)), path)
+ */
+const transform = (matrix, path) =>
+    fromPointArray(
+        { closed: this.closed },
+        canonicalize(path).points.map(point => vec2.transform(matrix, point)))
 
 module.exports = transform

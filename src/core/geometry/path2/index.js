@@ -3,6 +3,7 @@ module.exports = {
   canonicalize: require('./canonicalize'),
   concat: require('./concat'),
   create: require('./create'),
+  eachPoint: require('./eachPoint'),
   equals: require('./equals'),
   fromPointArray: require('./fromPointArray'),
   reverse: require('./reverse'),
