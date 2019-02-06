@@ -2,13 +2,15 @@ const create = require('./create')
 
 /**
  * Appends zero or more points to an open path.
+ * @param {Object} options - options to describe the path to point.
+ * @param {vec2} point - the waypoint to append to the path.
  * @param {path2} path - the path appended to
- * @param {Array<vec2>} points - the points to append.
  * @returns {path2}
  * @example
- * appendPoint(path, [1, 0], [2, 0])
+ * appendPoint({}, vec2.fromValues(1, 1), path.fromPointArray([[0, 0]]))
+ * (should produce [[0, 0], [1, 1]])
  */
-const appendPoint = (path, ...points) => {
+const appendPoint = (options, point, path) => {
   if (path.isClosed) {
     throw new Error('Cannot append to closed path')
   }
@@ -16,8 +18,8 @@ const appendPoint = (path, ...points) => {
   created.isClosed = false
   // Perhaps we should eagerly canonicalize the new points if the source is
   // canonical.
-  created.isCanonical = false
-  created.points = path.points.concat(points)
+  created.isCanonicalized = false
+  created.points = path.points.concat([point])
   return created
 }
 

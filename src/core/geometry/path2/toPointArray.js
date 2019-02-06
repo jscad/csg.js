@@ -10,7 +10,7 @@ const canonicalize = require('./canonicalize')
  */
 const toPointArray = (options, path) => {
   // Make a copy, since the caller might modify the point array.
-  return canonicalize(path).points.slice();
+  return canonicalize(path).points.slice()
 }
 
 module.exports = toPointArray

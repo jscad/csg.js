@@ -10,12 +10,12 @@ const vec2 = require('../../math/vec2')
  */
 const canonicalize = (path) => {
   if (path.isCanonicalized) {
-    return path;
+    return path
   }
   // Canonicalize path in-place.
-  path.points = path.points.map(vec2.canonicalize);
-  path.isCanonicalized = true;
-  return path;
+  path.points = path.points.map(vec2.canonicalize)
+  path.isCanonicalized = true
+  return path
 }
 
-module.exports = canonicalize;
+module.exports = canonicalize

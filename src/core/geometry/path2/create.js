@@ -8,7 +8,7 @@ const create = () => {
   return {
     points: [],
     isClosed: false,
-    isCanonicalized: true, // Has no non-canonical points.
+    isCanonicalized: true // Has no non-canonical points.
   }
 }
 

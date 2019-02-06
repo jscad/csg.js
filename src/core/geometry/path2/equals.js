@@ -1,3 +1,4 @@
+const canonicalize = require('./canonicalize')
 const vec2 = require('../../math/vec2')
 
 /** Determine if two geometries are not unequal.
@@ -8,32 +9,34 @@ const vec2 = require('../../math/vec2')
   * @returns {boolean}
   */
 const equals = (a, b) => {
-  if (a.closed != b.closed) {
-    return false;
-  }
-  if (a.points.length != b.points.length) {
+  if (a.isClosed !== b.isClosed) {
     return false
   }
-  let length = a.points.length;
-  let offset = 0;
+  if (a.points.length !== b.points.length) {
+    return false
+  }
+  a = canonicalize(a)
+  b = canonicalize(b)
+  let length = a.points.length
+  let offset = 0
   do {
-    let unequal = false;
+    let unequal = false
     for (let i = 0; i < length; i++) {
       if (!vec2.equals(a.points[i], b.points[(i + offset) % length])) {
-        unequal = true;
-        break;
+        unequal = true
+        break
       }
     }
-    if (unequal == false) {
-      return true;
+    if (unequal === false) {
+      return true
     }
-    if (!a.closed) {
-      return false;
+    if (!a.isClosed) {
+      return false
     }
     // Circular paths might be equal under graph rotation.
     // Try effectively rotating b one step.
-  } while (++offset < length);
-  return false;
+  } while (++offset < length)
+  return false
 }
 
 module.exports = equals
