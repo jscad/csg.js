@@ -1,7 +1,6 @@
 const equals = require('./equals')
 const concat = require('./concat')
 const fromPointArray = require('./fromPointArray')
-const toPointArray = require('./fromPointArray')
 const test = require('ava')
 
 test('concat: No paths produces an empty open path', t => {

@@ -8,7 +8,7 @@ const canonicalize = require('./canonicalize')
  * @example
  * toPointArray(path)
  */
-const toPointArray = path => {
+const toPointArray = (options, path) => {
   // Make a copy, since the caller might modify the point array.
   return canonicalize(path).points.slice();
 }

@@ -1,6 +1,6 @@
 const vec2 = require('../../math/vec2')
 
-/** Determine if two geometries are equal.
+/** Determine if two geometries are not unequal.
   * For closed paths this includes equality under point order rotation.
   * e.g., [[1, 2], [3, 4]] and [[3, 4], [1, 2]] are equal for closed paths.
   * @param {path2} a - the first path to compare.
