@@ -21,6 +21,8 @@ test('union: Union of rectangle with itself produces itself', t => {
 })
 
 test('union: Union of rectangle with itself rotated 90 degrees produces L', t => {
-  t.true(equals(union(rectangle, transform(fromZRotation(degToRad(90)), rectangle)),
-                fromPolygonArray({}, [[[-1, 0], [2, 0], [2, 1], [0, 1], [0, 2], [-1, 2]]])))
+  t.true(equals(union(rectangle,
+                      transform(fromZRotation(degToRad(90)), rectangle)),
+                fromPolygonArray({}, [[[-1, 0], [2, 0], [2, 1], [0, 1], [0, 2],
+                                       [-1, 2]]])))
 })

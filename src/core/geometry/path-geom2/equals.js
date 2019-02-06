@@ -2,13 +2,14 @@ const canonicalize = require('./canonicalize')
 const mat4 = require('../../math/mat4')
 const vec2 = require('../../math/vec2')
 
-/** Determine if two surfaces are not unequal.
-  * Does not detect all isomorphisms, but can confirm
-  *   expectations for tests.
-  * @param  {surface} a - the reference surface.
-  * @param  {surface} b - the surface to compare.
-  * @returns {boolean} true if the surfaces are definitely equal.
-  */
+/**
+ * Determine if two surfaces are not unequal.
+ * Does not detect all isomorphisms, but can confirm
+ *   expectations for tests.
+ * @param  {surface} a - the reference surface.
+ * @param  {surface} b - the surface to compare.
+ * @returns {boolean} true if the surfaces are definitely equal.
+ */
 const equals = (a, b) => {
   if (a.isFlipped != b.isFlipped) {
     return false

@@ -1,7 +1,8 @@
-/** Makes a new copy of the geometry that is initially equal to the old.
-  * @param {surface} surface - the surface to canonicalize.
-  * @returns {surface} a distinct new surface, equal to the old surface.
-  */
+/**
+ * Makes a new copy of the geometry that is initially equal to the old.
+ * @param {surface} surface - the surface to canonicalize.
+ * @returns {surface} a distinct new surface, equal to the old surface.
+ */
 const clone = (surface) => {
   return {
     basePolygons: surface.basePolygons,

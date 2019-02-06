@@ -1,12 +1,13 @@
 const vec2 = require('../../math/vec2')
 
-/** Only canonical geometries have meaningful content.
-  * All operations that access the geometry content (as opposed to dealing
-  *   with the geometry as a whole) must first canonicalize the geometry.
-  * This geometry does in-place canonicalization.
-  * @param {surface} surface - the surface to canonicalize.
-  * @returns {surface} the same surface canonicalized.
-  */
+/**
+ * Only canonical geometries have meaningful content.
+ * All operations that access the geometry content (as opposed to dealing
+ *   with the geometry as a whole) must first canonicalize the geometry.
+ * This geometry does in-place canonicalization.
+ * @param {surface} surface - the surface to canonicalize.
+ * @returns {surface} the same surface canonicalized.
+ */
 const canonicalize = (surface) => {
   if (surface.isCanonicalized) {
     return surface
