@@ -6,7 +6,7 @@ const mat4 = require('../../math/mat4')
 
 // Affine transformation of polygon. Returns a new Polygon3
 const transform = (matrix, poly3) => {
-  const vertices = poly3.vertices.map((vertex) => { return vec3.transform(matrix, vertex) })
+  const vertices = poly3.vertices.map((vertex) => { return vec3.canonicalize(vec3.transform(matrix, vertex)) })
   if (mat4.isMirroring(matrix)) {
     // reverse the order to preserve the orientation
     vertices.reverse()

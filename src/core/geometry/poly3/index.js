@@ -1,4 +1,5 @@
 module.exports = {
+  canonicalize: require('./canonicalize'),
   clone: require('./clone'),
   create: require('./create'),
   flip: require('./flip'),

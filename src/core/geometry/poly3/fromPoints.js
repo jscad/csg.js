@@ -19,7 +19,7 @@ const vec3 = require('../../math/vec3')
  */
 const fromPoints = (points, planeof) => {
   const out = create()
-  out.vertices = points.map((point) => { return vec3.clone(point) })
+  out.vertices = points.map((point) => { return vec3.canonicalize(point) })
   if (planeof !== undefined) out.plane = planeof
 
   // calculate the plane if not provided
