@@ -1,5 +1,5 @@
 const canonicalize = require('./canonicalize')
-const vec2 = require('../../math/vec2')
+const vec3 = require('../../math/vec3')
 
 /** Determine if two geometries are not unequal.
   * For closed paths this includes equality under point order rotation.
@@ -22,7 +22,7 @@ const equals = (a, b) => {
   do {
     let unequal = false
     for (let i = 0; i < length; i++) {
-      if (!vec2.equals(a.points[i], b.points[(i + offset) % length])) {
+      if (!vec3.equals(a.points[i], b.points[(i + offset) % length])) {
         unequal = true
         break
       }

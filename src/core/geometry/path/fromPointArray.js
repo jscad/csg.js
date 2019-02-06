@@ -1,4 +1,5 @@
 const create = require('./create')
+const normalizePoint = require('./normalizePoint')
 
 /**
  * Create a path2 from a point array.
@@ -15,7 +16,7 @@ const fromPointArray = ({ closed = false }, pointArray) => {
     path.isCanonicalized = false // Can't expect these to be canonical points.
   }
   path.isClosed = closed
-  path.points = pointArray.slice() // Can't expect caller not to modify this.
+  path.points = pointArray.map(normalizePoint)
   return path
 }
 

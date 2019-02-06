@@ -2,9 +2,9 @@ const canonicalize = require('./canonicalize')
 
 /**
  * Produces a new array containing the path's point data.
- * This will be an array of canonicalized vec2.
+ * This will be an array of canonicalized vec3.
  * @param {path2} path - the path to canonicalize.
- * @returns {Array<vec2>} - the array of canonicalized vec2.
+ * @returns {Array<vec3>} - the array of canonicalized vec3.
  * @example
  * toPointArray(path)
  */

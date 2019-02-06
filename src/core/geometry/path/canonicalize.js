@@ -1,10 +1,10 @@
-const vec2 = require('../../math/vec2')
+const vec3 = require('../../math/vec3')
 
 /**
  * Produces a canonicalized path by canonicalizing the contains points as
  *   necessary. Must be called before exposing any point data.
- * @param {path2} path - the path to canonicalize.
- * @returns {path2}
+ * @param {path} path - the path to canonicalize.
+ * @returns {path}
  * @example
  * canonicalize(path)
  */
@@ -13,7 +13,7 @@ const canonicalize = (path) => {
     return path
   }
   // Canonicalize path in-place.
-  path.points = path.points.map(vec2.canonicalize)
+  path.points = path.points.map(vec3.canonicalize)
   path.isCanonicalized = true
   return path
 }

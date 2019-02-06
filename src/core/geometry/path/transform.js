@@ -1,6 +1,6 @@
 const canonicalize = require('./canonicalize')
 const fromPointArray = require('./fromPointArray')
-const vec2 = require('../../math/vec2')
+const vec3 = require('../../math/vec3')
 
 /**
  * Produces a path by transforming all points in the provided path.
@@ -13,6 +13,6 @@ const vec2 = require('../../math/vec2')
 const transform = (matrix, path) =>
     fromPointArray(
         { closed: path.isClosed },
-        canonicalize(path).points.map(point => vec2.transform(matrix, point)))
+        canonicalize(path).points.map(point => vec3.transform(matrix, point)))
 
 module.exports = transform
