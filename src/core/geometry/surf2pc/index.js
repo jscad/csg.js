@@ -2,6 +2,7 @@ module.exports = {
   canonicalize: require('./canonicalize'),
   create: require('./create'),
   difference: require('./difference'),
+  eachPoint: require('./eachPoint'),
   equals: require('./equals'),
   flip: require('./flip'),
   fromPolygonArray: require('./fromPolygonArray'),
