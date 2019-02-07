@@ -1,4 +1,5 @@
 const create = require('./create')
+const equals = require('./equals')
 const fromPoly3Array = require('./fromPoly3Array')
 const intersection = require('./intersection')
 const test = require('ava')
