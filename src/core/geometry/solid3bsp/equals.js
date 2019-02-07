@@ -1,11 +1,9 @@
 const canonicalize = require('./canonicalize')
 
 // Checks that a and b are not definitely unequal.
+// Only used in tests.
 const equals = (a, b) => {
-  console.log(`QQ/equals/a: ${JSON.stringify(a)}`)
-  console.log(`QQ/equals/b: ${JSON.stringify(b)}`)
   if (a.basePolygons.length != b.basePolygons.length) {
-    console.log(`QQ/equals/1`)
     return false
   }
   a = canonicalize(a)

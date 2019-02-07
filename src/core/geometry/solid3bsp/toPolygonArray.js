@@ -4,6 +4,6 @@ const canonicalize = require('./canonicalize')
  * @param {Polygon[]} polygons - list of polygons
  * @returns {Geom3} new Geom3 object
  */
-const toPolygonArray = (options, solid) => canonicalize(solid).polygons
+const toPolygonArray = (options, solid) => canonicalize(solid).polygons.map(polygon => polygon.vertices)
 
 module.exports = toPolygonArray
