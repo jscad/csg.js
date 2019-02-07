@@ -9,6 +9,6 @@ const fromPointArray = require('./fromPointArray')
  * @example
  * reverse(path)
  */
-const reverse = (path) => fromPointArray({}, path.points.slice().reverse())
+const reverse = (path) => fromPointArray({ closed: path.isClosed }, path.points.slice().reverse())
 
 module.exports = reverse

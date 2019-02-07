@@ -7,7 +7,7 @@ const canonicalize = require('./canonicalize')
  * @example
  * eachPoint(path, accumulate)
  */
-const eachPoint = (path, thunk) => {
+const eachPoint = (options, thunk, path) => {
   canonicalize(path).points.forEach(thunk)
 }
 
