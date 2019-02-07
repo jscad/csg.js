@@ -3,9 +3,9 @@ const toPointArray = require('./toPointArray')
 const test = require('ava')
 const vec3 = require('../../math/vec3')
 
-test('fromPointArray: Creating a path from no points produces an empty, canonical path', t => {
+test('fromPointArray: Creating a path from no points produces an empty, non-canonical path', t => {
   const created = fromPointArray({}, [])
-  t.true(created.isCanonicalized)
+  t.false(created.isCanonicalized)
   t.deepEqual(toPointArray({}, created), [])
 })
 

@@ -1,4 +1,4 @@
-const fromPointArray = require('./fromPointArray')
+const clone = require('./clone')
 
 /**
  * Reverses the path so that the points are in the opposite order.
@@ -9,6 +9,14 @@ const fromPointArray = require('./fromPointArray')
  * @example
  * reverse(path)
  */
-const reverse = (path) => fromPointArray({ closed: path.isClosed }, path.points.slice().reverse())
+const reverse = (path) => {
+  const cloned = clone(path)
+  // The points don't move, so we can keep the transforms.
+  // Just reverse the base points, and we're good to go.
+  cloned.basePoints = path.basePoints.slice().reverse()
+  cloned.points = undefined
+  cloned.isCanonicalized = false
+  return cloned
+}
 
 module.exports = reverse

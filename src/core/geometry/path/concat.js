@@ -1,3 +1,4 @@
+const canonicalize = require('./canonicalize')
 const fromPointArray = require('./fromPointArray')
 
 /**
@@ -20,8 +21,9 @@ const concat = (...paths) => {
     }
     isClosed = path.isClosed;
   }
-  return fromPointArray({ closed: isClosed },
-                        [].concat(...paths.map(path => path.points)))
+  return fromPointArray(
+             { closed: isClosed },
+             [].concat(...paths.map(path => canonicalize(path).points)))
 }
 
 module.exports = concat

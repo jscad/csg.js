@@ -12,8 +12,10 @@ const canonicalize = (path) => {
   if (path.isCanonicalized) {
     return path
   }
-  // Canonicalize path in-place.
-  path.points = path.points.map(vec3.canonicalize)
+  // canonicalize in-place.
+  path.points = path.basePoints.map(
+                    point => vec3.canonicalize(
+                                 vec3.transform(path.transforms, point)))
   path.isCanonicalized = true
   return path
 }

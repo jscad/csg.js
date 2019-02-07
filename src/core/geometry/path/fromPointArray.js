@@ -11,13 +11,15 @@ const normalizePoint = require('./normalizePoint')
  * path2.fromPointArray({ closed: true }, [[10,10], [-10,10]])
  */
 const fromPointArray = ({ closed = false }, pointArray) => {
-  let path = create()
-  if (pointArray.length > 0) {
-    path.isCanonicalized = false // Can't expect these to be canonical points.
-  }
-  path.isClosed = closed
-  path.points = pointArray.map(normalizePoint)
-  return path
+  let created = create()
+  created.isClosed = closed
+  created.basePoints = pointArray.map(normalizePoint)
+  // If we are feeling trusting we could say path.points = path.basePoints
+  // and make the path canonical at this point. Let's keep basePoints and
+  // points distinct for now.
+  created.points = undefined
+  created.isCanonicalized = false
+  return created
 }
 
 module.exports = fromPointArray

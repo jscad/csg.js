@@ -12,7 +12,7 @@ const equals = (a, b) => {
   if (a.isClosed !== b.isClosed) {
     return false
   }
-  if (a.points.length !== b.points.length) {
+  if (a.basePoints.length !== b.basePoints.length) {
     return false
   }
   a = canonicalize(a)

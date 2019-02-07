@@ -1,3 +1,5 @@
+const mat4 = require('../../math/mat4')
+
 /**
  * Produces an empty, open path.
  * @returns {path2} - the empty, open path.
@@ -6,9 +8,11 @@
  */
 const create = () => {
   return {
-    points: [],
+    basePoints: [],  // Contains canonical, untransformed points.
+    points: [],  // Contains canonical, transformed points.
     isClosed: false,
-    isCanonicalized: true // Has no non-canonical points.
+    isCanonicalized: true, // Has no non-canonical points.
+    transforms: mat4.identity()
   }
 }
 

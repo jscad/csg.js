@@ -1,4 +1,4 @@
-const create = require('./create')
+const clone = require('./clone')
 const normalizePoint = require('./normalizePoint')
 
 /**
@@ -15,12 +15,11 @@ const appendPoint = (options, point, path) => {
   if (path.isClosed) {
     throw new Error('Cannot append to closed path')
   }
-  const created = create()
-  // Perhaps we should eagerly canonicalize the new points if the source is
-  // canonical.
-  created.points = path.points.concat([normalizePoint(point)])
-  created.isCanonicalized = false
-  return created
+  const cloned = clone(path)
+  cloned.basePoints = path.basePoints.concat([normalizePoint(point)])
+  cloned.points = undefined
+  cloned.isCanonicalized = false
+  return cloned
 }
 
 module.exports = appendPoint

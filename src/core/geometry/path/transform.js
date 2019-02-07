@@ -1,18 +1,22 @@
-const canonicalize = require('./canonicalize')
+const clone = require('./clone')
 const fromPointArray = require('./fromPointArray')
+const mat4 = require('../../math/mat4')
 const vec3 = require('../../math/vec3')
 
 /**
- * Produces a path by transforming all points in the provided path.
+ * A lazy transform of all of the points in the path.
  * @param {mat4} matrix - the matrix to transform with.
  * @param {path2} path - the path to transform.
  * @returns {path2} - the transformed path.
  * @example
  * transform(fromZRotation(degToRad(90)), path)
  */
-const transform = (matrix, path) =>
-    fromPointArray(
-        { closed: path.isClosed },
-        canonicalize(path).points.map(point => vec3.transform(matrix, point)))
+const transform = (matrix, path) => {
+  let cloned = clone(path)
+  cloned.transforms = mat4.multiply(cloned.transforms, matrix)
+  cloned.points = undefined
+  cloned.isCanonicalized = false
+  return cloned
+}
 
 module.exports = transform
