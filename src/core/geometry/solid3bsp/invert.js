@@ -1,6 +1,4 @@
-const canonicalize = require('./canonicalize')
 const clone = require('./clone')
-const fromPoly3Array = require('./fromPoly3Array')
 const poly3 = require('../poly3')
 
 /**

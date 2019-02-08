@@ -71,7 +71,7 @@ test('Difference of one solid is that solid', t => {
   t.is(difference(empty), empty)
 })
 
-test('difference() should create proper empty geometries from empty geometries', (t) => {
+test('difference() should create proper empty geometries from empty geometries', t => {
   const empty = fromPolygonArray({}, [])
 
   // Test for one, two and three.

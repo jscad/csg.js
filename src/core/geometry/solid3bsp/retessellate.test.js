@@ -1,4 +1,3 @@
-const equals = require('./equals')
 const fromPolygonArray = require('./fromPolygonArray')
 const test = require('ava')
 const toPolygonArray = require('./toPolygonArray')

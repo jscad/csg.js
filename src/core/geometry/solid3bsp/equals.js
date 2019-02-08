@@ -8,6 +8,7 @@ const equals = (a, b) => {
   }
   a = canonicalize(a)
   b = canonicalize(b)
+  // TODO: This is good enough for tests, but should be replaced.
   if (JSON.stringify(a) != JSON.stringify(b)) {
     return false
   }

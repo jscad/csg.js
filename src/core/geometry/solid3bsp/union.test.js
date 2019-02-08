@@ -84,7 +84,7 @@ test('union() produces empty solid', t => {
   t.true(equals(union(), empty))
 })
 
-test('union(X) is X', (t) => {
+test('union(X) is X', t => {
   const solid = fromPolygonArray({}, [])
 
   t.is(union(solid), solid)

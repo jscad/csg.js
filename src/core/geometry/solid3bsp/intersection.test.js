@@ -13,7 +13,7 @@ test('Intersection() of one solid is that solid', t => {
   t.is(intersection(solid), solid)
 })
 
-test('Intersection() should create proper intersection from empty geometries', (t) => {
+test('Intersection() should create proper intersection from empty geometries', t => {
   // Test for one, two, and three solids.
   t.true(equals(intersection(create()), create()))
   t.true(equals(intersection(create(), create()), create()))

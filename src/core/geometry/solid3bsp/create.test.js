@@ -3,7 +3,7 @@ const mat4 = require('../../math/mat4')
 const test = require('ava')
 const { create } = require('./index')
 
-test('create() should return an empty geometry', (t) => {
+test('create() should return an empty geometry', t => {
   const obs = create()
   const exp = {
     basePolygons: [],
