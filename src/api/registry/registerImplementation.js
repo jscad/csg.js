@@ -11,7 +11,7 @@
  * @params {string} tag - tag associated with the module.
  * @params {Object} module - the module to test the association of with the tag.
  * @example
- * (registerImplementation('foo', bar) === bar
+ * registerImplementation('foo', bar) === bar
  */
  
 // The global registry.
