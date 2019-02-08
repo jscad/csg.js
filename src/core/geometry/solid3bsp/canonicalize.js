@@ -3,9 +3,9 @@ const reTessellateCoplanarPolygons = require('./reTessellateCoplanarPolygons')
 
 // Retessellation should not be triggered by transformation, and happen only once after construction.
 /*
-  After boolean operations all coplanar polygon fragments are joined by a retesselating
-  operation. geom3.reTesselate(geom).
-  Retesselation is done through a linear sweep over the polygon surface.
+  After boolean operations all coplanar polygon fragments are joined by a retessellating
+  operation. geom3.reTessellate(geom).
+  Retessellation is done through a linear sweep over the polygon surface.
   The sweep line passes over the y coordinates of all vertices in the polygon.
   Polygons are split at each sweep line, and the fragments are joined horizontally and vertically into larger polygons
   (making sure that we will end up with convex polygons).
@@ -25,10 +25,10 @@ const retessellate = (solid) => {
   let retessellatedPolygons = []
 
   polygonsPerPlane.forEach(polygons => {
-    if (sourcepolygons.length < 2) {
+    if (polygons.length < 2) {
       retessellatedPolygons = retessellatedPolygons.concat(polygons)
     } else {
-      retessellatedPolygons = retessellatedPolygons.concat(reTesselateCoplanarPolygons(polygons))
+      retessellatedPolygons = retessellatedPolygons.concat(reTessellateCoplanarPolygons(polygons))
     }
   })
 
@@ -51,10 +51,12 @@ const canonicalize = (solid) => {
   }
 
   // We need to canonicalize the sub-geometry before retessellating.
-  console.log(`QQ/canonicalize/basePolygons: ${JSON.stringify(solid)}`)
   // Note: poly3 transform eagerly canonicalizes its vec3s.
   solid.polygons = solid.basePolygons.map(
       polygon => poly3.transform(solid.transforms, polygon))
+
+  // This will be invalidated by transforms.
+  solid.isCanonicalized = true
 
   // This will only happen once per geometry, and should only be lost when a new
   // geometry is constructed (e.g., union).
@@ -63,9 +65,6 @@ const canonicalize = (solid) => {
     retessellate(solid)
     solid.isRetessellated = true
   }
-
-  // This will be invalidated by transforms.
-  solid.isCanonicalized = true
   return solid
 }
 

@@ -24,13 +24,13 @@ const difference = (...geometries) => {
     case 0: return fromPoly3Array([]);
     case 1: return geometries[0];
     default: {
-      let baseGeometry = canonicalize(geometries[0])
+      let baseGeometry = geometries[0]
       // TODO: Figure out why we do not subtract the union of the remainder of
       // the geometries. This approach chains subtractions rather than producing
       // a generational tree.
       for (let i = 1; i < geometries.length; i++) {
         const subtractGeometry = geometries[i];
-        const baseTree = new Tree(baseGeometry.polygons)
+        const baseTree = new Tree(canonicalize(baseGeometry).polygons)
         const subtractTree = new Tree(canonicalize(subtractGeometry).polygons)
         baseTree.invert()
         baseTree.clipTo(subtractTree)

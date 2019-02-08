@@ -1,33 +1,23 @@
+const fromPolygonArray = require('./fromPolygonArray')
+const equals = require('./equals')
+const invert = require('./invert')
 const test = require('ava')
-const { invert, create, fromPoints } = require('./index')
 
-test('geom3: invert() should return correct geometries', (t) => {
-  const polygons = [
-    [// a simple triangle
-      [1, 0, 0],
-      [0, 1, 0],
-      [0, 0, 1]
-    ]
-  ]
-  const reverse = [
-    [// a simple triangle
-      [0, 0, 1],
-      [0, 1, 0],
-      [1, 0, 0]
-    ]
-  ]
+const trianglePoints = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
+const invertedTrianglePoints = [[0, 0, 1], [0, 1, 0], [1, 0, 0]]
 
-  const org1 = create()
-  const exp1 = {
-    polygons: [],
-    isCanonicalized: false,
-    isRetesselated: false
-  }
-  const obs1 = invert(org1)
-  t.deepEqual(obs1, exp1)
+test('Inverting empty geometry produces empty geometry', t => {
+  const empty = fromPolygonArray({}, [])
+  t.true(equals(invert(empty), empty))
+})
 
-  const org2 = fromPoints(polygons)
-  const exp2 = fromPoints(reverse)
-  const obs2 = invert(org2)
-  t.deepEqual(obs2, exp2)
+test('Inverting triangle produces inverted triangle', t => {
+  const triangle = fromPolygonArray({}, [trianglePoints])
+  const invertedTriangle = fromPolygonArray({}, [invertedTrianglePoints])
+  t.true(equals(invert(triangle), invertedTriangle))
+})
+
+test('Inverting an inverted triangle produces triangle shared', t => {
+  const triangle = fromPolygonArray({}, [trianglePoints])
+  t.true(equals(invert(invert(triangle)), triangle))
 })

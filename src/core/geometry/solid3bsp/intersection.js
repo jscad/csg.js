@@ -29,8 +29,8 @@ const intersection = (...geometries) => {
       for (let i = 1; i < geometries.length; i++) {
         // result = intersectSub(result, geometries[i], islast, islast)
         const intersectGeometry = geometries[i]
-        const baseTree = new Tree(baseGeometry.polygons)
-        const intersectTree = new Tree(intersectGeometry.polygons)
+        const baseTree = new Tree(canonicalize(baseGeometry).polygons)
+        const intersectTree = new Tree(canonicalize(intersectGeometry).polygons)
         baseTree.invert()
         intersectTree.clipTo(baseTree)
         intersectTree.invert()

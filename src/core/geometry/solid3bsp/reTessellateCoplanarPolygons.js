@@ -5,9 +5,9 @@ const line2 = require('../../math/line2')
 const vec2 = require('../../math/vec2')
 const poly3 = require('../poly3')
 
-// Retesselation function for a set of coplanar polygons. See the introduction at the top of
+// Retessellation function for a set of coplanar polygons. See the introduction at the top of
 // the main csg.js file.
-const reTesselateCoplanarPolygons = (sourcepolygons) => {
+const reTessellateCoplanarPolygons = (sourcepolygons) => {
   if (sourcepolygons.length === 0) {
     return sourcepolygons
   }
@@ -338,4 +338,4 @@ const reTesselateCoplanarPolygons = (sourcepolygons) => {
   return destpolygons
 }
 
-module.exports = reTesselateCoplanarPolygons
+module.exports = reTessellateCoplanarPolygons

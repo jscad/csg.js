@@ -8,8 +8,9 @@ const test = require('ava')
 const toPolygonArray = require('./toPolygonArray')
 const vec3 = require('../../math/vec3')
 
-const trianglePoints = [vec3.fromValues(0, 0, 0), vec3.fromValues(0, 1, 0), vec3.fromValues(0, 1, 1)]
+const trianglePoints = [[0, 0, 0], [0, 1, 0], [0, 1, 1]]
 
-test('difference: Difference of zero solids is empty solid', t => {
-  t.deepEqual(toPolygonArray({}, fromPolygonArray({}, [trianglePoints])), [trianglePoints])
+test('Can convert from PolygonArray to solid to matching PolygonArray', t => {
+  t.deepEqual(toPolygonArray({}, fromPolygonArray({}, [trianglePoints])),
+              [trianglePoints])
 })

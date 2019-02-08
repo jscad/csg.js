@@ -4,7 +4,7 @@ const mat4 = require('../../math/mat4')
  * @typedef {Object} Geom3 - 3D Geometry
  * @property {Array} polygons - array of 3D polygons
  * @property {Boolean} isCanonicalized have overlapping tris been removed ?
- * @property {Boolean} isRetesselated has triangulation taken place ?
+ * @property {Boolean} isRetessellated has triangulation taken place ?
  */
 
 /** create geom3
@@ -16,8 +16,7 @@ const create = () => {
   return {
     basePolygons: [],
     isCanonicalized: true,
-    isNegative: false,
-    isRetesselated: true,
+    isRetessellated: true,
     polygons: [],
     transforms: mat4.identity(),
   }

@@ -5,13 +5,13 @@ const create = require('./create')
  * @returns {Geom3} new Geom3 object
  */
 const fromPoly3Array = (poly3Array) => {
-  let solid = create()
-  solid.basePolygons = poly3Array
+  let created = create()
+  created.basePolygons = poly3Array
   if (poly3Array.length > 0) {
-    solid.isCanonicalized = false
-    solid.isRetesselated = false
+    created.isCanonicalized = false
+    created.isRetessellated = false
   }
-  return solid
+  return created
 }
 
 module.exports = fromPoly3Array

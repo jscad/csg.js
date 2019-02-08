@@ -4,106 +4,102 @@ const equals = require('./equals')
 const fromPolygonArray = require('./fromPolygonArray')
 const test = require('ava')
 
-if (false) // good
-test('difference: Difference of zero solids is empty solid', t => {
-  t.true(equals(difference(), fromPolygonArray({}, [])))
-})
-
-if (false) // good
-test('difference: Difference of one solid is that solid', t => {
-  const solid = create()
-  const differenced = difference(solid)
-  t.true(equals(solid, differenced))
-})
-
-test('geom3: difference() should create proper empty geometries from empty geometries', (t) => {
-  // Test for one, two and three.
-  t.true(equals(create(), difference(create())))
-  t.true(equals(create(), difference(create(), create())))
-  t.true(equals(create(), difference(create(), create(), create())))
-})
-
-if (false)
-test('geom3: difference() should create proper geometries from solid geometries', (t) => {
-  const box1 = [
-    [[-5.0, -5.0, -5.0], [-5.0, -5.0, 5.0], [-5.0, 5.0, 5.0], [-5.0, 5.0, -5.0]],
-    [[5.0, -5.0, -5.0], [5.0, 5.0, -5.0], [5.0, 5.0, 5.0], [5.0, -5.0, 5.0]],
-    [[-5.0, -5.0, -5.0], [5.0, -5.0, -5.0], [5.0, -5.0, 5.0], [-5.0, -5.0, 5.0]],
-    [[-5.0, 5.0, -5.0], [-5.0, 5.0, 5.0], [5.0, 5.0, 5.0], [5.0, 5.0, -5.0]],
-    [[-5.0, -5.0, -5.0], [-5.0, 5.0, -5.0], [5.0, 5.0, -5.0], [5.0, -5.0, -5.0]],
-    [[-5.0, -5.0, 5.0], [5.0, -5.0, 5.0], [5.0, 5.0, 5.0], [-5.0, 5.0, 5.0]]
-  ]
-
-  const box2 = [
-    [[15.0, 15.0, 15.0], [15.0, 15.0, 25.0], [15.0, 25.0, 25.0], [15.0, 25.0, 15.0]],
-    [[25.0, 15.0, 15.0], [25.0, 25.0, 15.0], [25.0, 25.0, 25.0], [25.0, 15.0, 25.0]],
-    [[15.0, 15.0, 15.0], [25.0, 15.0, 15.0], [25.0, 15.0, 25.0], [15.0, 15.0, 25.0]],
-    [[15.0, 25.0, 15.0], [15.0, 25.0, 25.0], [25.0, 25.0, 25.0], [25.0, 25.0, 15.0]],
-    [[15.0, 15.0, 15.0], [15.0, 25.0, 15.0], [25.0, 25.0, 15.0], [25.0, 15.0, 15.0]],
-    [[15.0, 15.0, 25.0], [25.0, 15.0, 25.0], [25.0, 25.0, 25.0], [15.0, 25.0, 25.0]]
-  ]
-
-  const box3 = [
-    [[-5.0, -5.0, 5.0], [-5.0, -5.0, 15.0], [-5.0, 5.0, 15.0], [-5.0, 5.0, 5.0]],
-    [[5.0, -5.0, 5.0], [5.0, 5.0, 5.0], [5.0, 5.0, 15.0], [5.0, -5.0, 15.0]],
-    [[-5.0, -5.0, 5.0], [5.0, -5.0, 5.0], [5.0, -5.0, 15.0], [-5.0, -5.0, 15.0]],
-    [[-5.0, 5.0, 5.0], [-5.0, 5.0, 15.0], [5.0, 5.0, 15.0], [5.0, 5.0, 5.0]],
-    [[-5.0, -5.0, 5.0], [-5.0, 5.0, 5.0], [5.0, 5.0, 5.0], [5.0, -5.0, 5.0]],
-    [[-5.0, -5.0, 15.0], [5.0, -5.0, 15.0], [5.0, 5.0, 15.0], [-5.0, 5.0, 15.0]]
-  ]
-
-  const box4 = [
-    [[0.0, 0.0, 0.0], [0.0, 0.0, 10.0], [0.0, 10.0, 10.0], [0.0, 10.0, 0.0]],
-    [[10.0, 0.0, 0.0], [10.0, 10.0, 0.0], [10.0, 10.0, 10.0], [10.0, 0.0, 10.0]],
-    [[0.0, 0.0, 0.0], [10.0, 0.0, 0.0], [10.0, 0.0, 10.0], [0.0, 0.0, 10.0]],
-    [[0.0, 10.0, 0.0], [0.0, 10.0, 10.0], [10.0, 10.0, 10.0], [10.0, 10.0, 0.0]],
-    [[0.0, 0.0, 0.0], [0.0, 10.0, 0.0], [10.0, 10.0, 0.0], [10.0, 0.0, 0.0]],
-    [[0.0, 0.0, 10.0], [10.0, 0.0, 10.0], [10.0, 10.0, 10.0], [0.0, 10.0, 10.0]]
-  ]
-
-  const obj1 = fromPolygonArray(box1)
-  const obj2 = fromPolygonArray(box2)
-  const obj3 = fromPolygonArray(box3)
-  const obj4 = fromPolygonArray(box4)
-
-  // one solid geometry
-  const ret1 = difference(obj1)
-  const exp1 = fromPolygonArray(box1)
-  t.deepEqual(ret1, exp1)
-
-  // two non-overlapping geometries
-  const ret2 = difference(obj1, obj2)
-  const exp2 = fromPolygonArray(box1)
-  exp2.isCanonicalized = true
-  exp2.isRetesselated = true
-  t.deepEqual(ret2, exp2)
-
-  // two touching geometries (faces)
-  const ret3 = difference(obj1, obj3)
-  const exp3 = fromPolygonArray(box1)
-  exp3.isCanonicalized = true
-  exp3.isRetesselated = true
-  t.deepEqual(ret3, exp3)
-
-  // two overlapping geometries
-  const ret4 = difference(obj1, obj4)
-  const exp4 = fromPolygonArray(
+const box1Polygons =
     [
-      [[-5.0, -5.0, -5.0], [-5.0, -5.0, 5.0], [-5.0, 5.0, 5.0], [-5.0, 5.0, -5.0]],
-      [[-5.0, -5.0, -5.0], [5.0, -5.0, -5.0], [5.0, -5.0, 5.0], [-5.0, -5.0, 5.0]],
-      [[-5.0, -5.0, -5.0], [-5.0, 5.0, -5.0], [5.0, 5.0, -5.0], [5.0, -5.0, -5.0]],
-      [[0.0, 5.0, 0.0], [0.0, 5.0, 5.0], [0.0, 0.0, 5.0], [0.0, 0.0, 0.0]],
-      [[0.0, 0.0, 5.0], [5.0, 0.0, 5.0], [5.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
-      [[5.0, 0.0, 0.0], [5.0, 5.0, 0.0], [0.0, 5.0, 0.0], [0.0, 0.0, 0.0]],
-      [[5.0, -5.0, -5.0], [5.0, 0.0, -5.0], [5.0, 0.0, 5.0], [5.0, -5.0, 5.0]],
-      [[0.0, 5.0, -5.0], [-5.0, 5.0, -5.0], [-5.0, 5.0, 5.0], [0.0, 5.0, 5.0]],
-      [[-5.0, -5.0, 5.0], [0.0, -5.0, 5.0], [0.0, 5.0, 5.0], [-5.0, 5.0, 5.0]],
-      [[5.0, 0.0, 0.0], [5.0, 0.0, -5.0], [5.0, 5.0, -5.0], [5.0, 5.0, 0.0]],
-      [[0.0, 5.0, -5.0], [0.0, 5.0, 0.0], [5.0, 5.0, 0.0], [5.0, 5.0, -5.0]],
-      [[0.0, 0.0, 5.0], [0.0, -5.0, 5.0], [5.0, -5.0, 5.0], [5.0, 0.0, 5.0]]
+      [[-5, -5, -5], [-5, -5,  5], [-5,  5,  5], [-5,  5, -5]],
+      [[ 5, -5, -5], [ 5,  5, -5], [ 5,  5,  5], [ 5, -5,  5]],
+      [[-5, -5, -5], [ 5, -5, -5], [ 5, -5,  5], [-5, -5,  5]],
+      [[-5,  5, -5], [-5,  5,  5], [ 5,  5,  5], [ 5,  5, -5]],
+      [[-5, -5, -5], [-5,  5, -5], [ 5,  5, -5], [ 5, -5, -5]],
+      [[-5, -5,  5], [ 5, -5,  5], [ 5,  5,  5], [-5,  5,  5]]
     ]
-  )
-  exp4.isCanonicalized = true
-  exp4.isRetesselated = true
-  // TODO need special compare function t.deepEqual(ret4, exp4)
+
+const box2Polygons =
+    [
+      [[15, 15, 15], [15, 15, 25], [15, 25, 25], [15, 25, 15]],
+      [[25, 15, 15], [25, 25, 15], [25, 25, 25], [25, 15, 25]],
+      [[15, 15, 15], [25, 15, 15], [25, 15, 25], [15, 15, 25]],
+      [[15, 25, 15], [15, 25, 25], [25, 25, 25], [25, 25, 15]],
+      [[15, 15, 15], [15, 25, 15], [25, 25, 15], [25, 15, 15]],
+      [[15, 15, 25], [25, 15, 25], [25, 25, 25], [15, 25, 25]]
+    ]
+
+const box3Polygons =
+    [
+      [[-5, -5,  5], [-5, -5, 15], [-5,  5, 15], [-5,  5,  5]],
+      [[ 5, -5,  5], [ 5,  5,  5], [ 5,  5, 15], [ 5, -5, 15]],
+      [[-5, -5,  5], [ 5, -5,  5], [ 5, -5, 15], [-5, -5, 15]],
+      [[-5,  5,  5], [-5,  5, 15], [ 5,  5, 15], [ 5,  5,  5]],
+      [[-5, -5,  5], [-5,  5,  5], [ 5,  5, 5],  [ 5, -5,  5]],
+      [[-5, -5, 15], [ 5, -5, 15], [ 5,  5, 15], [-5,  5, 15]]
+    ]
+
+const box4Polygons =
+    [
+      [[ 0,  0,  0], [ 0,  0, 10], [ 0, 10, 10], [ 0, 10,  0]],
+      [[10,  0,  0], [10, 10,  0], [10, 10, 10], [10,  0, 10]],
+      [[ 0,  0,  0], [10,  0,  0], [10,  0, 10], [ 0,  0, 10]],
+      [[ 0, 10,  0], [ 0, 10, 10], [10, 10, 10], [10, 10,  0]],
+      [[ 0,  0,  0], [ 0, 10,  0], [10, 10,  0], [10,  0,  0]],
+      [[ 0,  0, 10], [10,  0, 10], [10, 10, 10], [ 0, 10, 10]]
+    ]
+
+const box1DifferenceBox4Polygons =
+    [
+      [[-5, -5, -5], [-5, -5, 5], [-5, 5, 5], [-5, 5, -5]],
+      [[-5, -5, -5], [5, -5, -5], [5, -5, 5], [-5, -5, 5]],
+      [[-5, -5, -5], [-5, 5, -5], [5, 5, -5], [5, -5, -5]],
+      [[0, 5, 0], [0, 5, 5], [0, 0, 5], [0, 0, 0]],
+      [[0, 0, 5], [5, 0, 5], [5, 0, 0], [0, 0, 0]],
+      [[5, 0, 0], [5, 5, 0], [0, 5, 0], [0, 0, 0]],
+      [[5, -5, -5], [5, 0, -5], [5, 0, 5], [5, -5, 5]],
+      [[0, 5, -5], [-5, 5, -5], [-5, 5, 5], [0, 5, 5]],
+      [[-5, -5, 5], [0, -5, 5], [0, 5, 5], [-5, 5, 5]],
+      [[5, 0, 0], [5, 0, -5], [5, 5, -5], [5, 5, 0]],
+      [[0, 5, -5], [0, 5, 0], [5, 5, 0], [5, 5, -5]],
+      [[0, 0, 5], [0, -5, 5], [5, -5, 5], [5, 0, 5]]
+    ]
+
+
+test('Difference of zero solids is an empty solid', t => {
+  const empty = fromPolygonArray({}, [])
+  t.true(equals(difference(), empty))
+})
+
+test('Difference of one solid is that solid', t => {
+  const empty = fromPolygonArray({}, [])
+  t.is(difference(empty), empty)
+})
+
+test('difference() should create proper empty geometries from empty geometries', (t) => {
+  const empty = fromPolygonArray({}, [])
+
+  // Test for one, two and three.
+  t.true(equals(empty, difference(empty)))
+  t.true(equals(empty, difference(empty, empty)))
+  t.true(equals(empty, difference(empty, empty, empty)))
+})
+
+
+test('Difference of two non-overlapping solids is the first solid', t => {
+  const box1 = fromPolygonArray({}, box1Polygons)
+  const box2 = fromPolygonArray({}, box2Polygons)
+
+  t.true(equals(difference(box1, box2), box1))
+})
+
+
+test('Difference of two face touching solids is the first solid', t => {
+  const box1 = fromPolygonArray({}, box1Polygons)
+  const box3 = fromPolygonArray({}, box3Polygons)
+
+  t.true(equals(difference(box1, box3), box1))
+})
+
+test('Difference of two overlapping solids is the first solid less the second', t => {
+  const box1 = fromPolygonArray({}, box1Polygons)
+  const box4 = fromPolygonArray({}, box4Polygons)
+  const box1DifferenceBox4 = fromPolygonArray({}, box1DifferenceBox4Polygons)
+
+  t.true(equals(difference(box1, box4), box1DifferenceBox4))
 })
