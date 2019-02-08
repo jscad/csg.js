@@ -27,10 +27,9 @@ const toStlFacet = (normal, triangle) =>
 const convertToFacet = polygon => {
   let result = []
   if (polygon.length >= 3) {
-    let poly = poly3.fromPoints(polygon);
-    // STL requires triangular polygons. If our polygon has more vertices, create multiple triangles:
-    // Build a poly3 to compute the normal.
+    // Build a poly3 for convenience in computing the normal.
     let normal = toStlVector(poly3.fromPoints(polygon).plane)
+    // STL requires triangular polygons. If our polygon has more vertices, create multiple triangles:
     for (let i = 0; i < polygon.length - 2; i++) {
       result.push(
           [
