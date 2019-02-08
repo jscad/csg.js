@@ -1,19 +1,19 @@
 const test = require('ava')
 const { intersection, create, fromPoints } = require('./index')
 
-test('intersection: intersection() with zero geometries should throw error', (t) => {
+test('geom3: intersection() with zero geometries should throw error', (t) => {
   t.throws(() => {
     intersection()
   }, 'intersection requires one or more geometries')
 })
 
-test('intersection: intersection() with one geometry should return the same', (t) => {
+test('geom3: intersection() with one geometry should return the same', (t) => {
   const obj1 = create()
   const ret1 = intersection(obj1)
   t.is(obj1, ret1)
 })
 
-test('intersection: intersection() should create proper intersection from empty geometries', (t) => {
+test('geom3: intersection() should create proper intersection from empty geometries', (t) => {
   const obj1 = create()
   const obj2 = create()
   const obj3 = create()
@@ -46,7 +46,7 @@ test('intersection: intersection() should create proper intersection from empty 
   t.deepEqual(ret3, exp3)
 })
 
-test('intersection: intersection() should create proper intersection from solid geometries', (t) => {
+test('geom3: intersection() should create proper intersection from solid geometries', (t) => {
   const box1 = [
     [[-5.0, -5.0, -5.0], [-5.0, -5.0, 5.0], [-5.0, 5.0, 5.0], [-5.0, 5.0, -5.0]],
     [[5.0, -5.0, -5.0], [5.0, 5.0, -5.0], [5.0, 5.0, 5.0], [5.0, -5.0, 5.0]],
@@ -107,44 +107,6 @@ test('intersection: intersection() should create proper intersection from solid 
   exp3.isRetesselated = true
   t.deepEqual(ret3, exp3)
 
-  // two overlapping geometries
-  const ret4 = intersection(obj1, obj4)
-  const exp4 = fromPoints(
-    [
-      [[0.0, 0.0, 0.0], [0.0, 0.0, 5.0], [0.0, 5.0, 5.0], [0.0, 5.0, 0.0]],
-      [[0.0, 0.0, 0.0], [5.0, 0.0, 0.0], [5.0, 0.0, 5.0], [0.0, 0.0, 5.0]],
-      [[0.0, 0.0, 0.0], [0.0, 5.0, 0.0], [5.0, 5.0, 0.0], [5.0, 0.0, 0.0]],
-      [[5.0, 0.0, 0.0], [5.0, 5.0, 0.0], [5.0, 5.0, 5.0], [5.0, 0.0, 5.0]],
-      [[0.0, 5.0, 0.0], [0.0, 5.0, 5.0], [5.0, 5.0, 5.0], [5.0, 5.0, 0.0]],
-      [[0.0, 0.0, 5.0], [5.0, 0.0, 5.0], [5.0, 5.0, 5.0], [0.0, 5.0, 5.0]]
-    ]
-  )
-  exp4.isCanonicalized = true
-  exp4.isRetesselated = true
-  t.deepEqual(ret4, exp4)
-})
-
-test('intersection: intersection() should create proper intersection from solid geometries', t => {
-  const box1 = [
-    [[-5.0, -5.0, -5.0], [-5.0, -5.0, 5.0], [-5.0, 5.0, 5.0], [-5.0, 5.0, -5.0]],
-    [[5.0, -5.0, -5.0], [5.0, 5.0, -5.0], [5.0, 5.0, 5.0], [5.0, -5.0, 5.0]],
-    [[-5.0, -5.0, -5.0], [5.0, -5.0, -5.0], [5.0, -5.0, 5.0], [-5.0, -5.0, 5.0]],
-    [[-5.0, 5.0, -5.0], [-5.0, 5.0, 5.0], [5.0, 5.0, 5.0], [5.0, 5.0, -5.0]],
-    [[-5.0, -5.0, -5.0], [-5.0, 5.0, -5.0], [5.0, 5.0, -5.0], [5.0, -5.0, -5.0]],
-    [[-5.0, -5.0, 5.0], [5.0, -5.0, 5.0], [5.0, 5.0, 5.0], [-5.0, 5.0, 5.0]]
-  ]
-
-  const box4 = [
-    [[0.0, 0.0, 0.0], [0.0, 0.0, 10.0], [0.0, 10.0, 10.0], [0.0, 10.0, 0.0]],
-    [[10.0, 0.0, 0.0], [10.0, 10.0, 0.0], [10.0, 10.0, 10.0], [10.0, 0.0, 10.0]],
-    [[0.0, 0.0, 0.0], [10.0, 0.0, 0.0], [10.0, 0.0, 10.0], [0.0, 0.0, 10.0]],
-    [[0.0, 10.0, 0.0], [0.0, 10.0, 10.0], [10.0, 10.0, 10.0], [10.0, 10.0, 0.0]],
-    [[0.0, 0.0, 0.0], [0.0, 10.0, 0.0], [10.0, 10.0, 0.0], [10.0, 0.0, 0.0]],
-    [[0.0, 0.0, 10.0], [10.0, 0.0, 10.0], [10.0, 10.0, 10.0], [0.0, 10.0, 10.0]]
-  ]
-
-  const obj1 = fromPoints(box1)
-  const obj4 = fromPoints(box4)
   // two overlapping geometries
   const ret4 = intersection(obj1, obj4)
   const exp4 = fromPoints(
