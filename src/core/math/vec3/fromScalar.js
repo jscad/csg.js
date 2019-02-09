@@ -6,8 +6,6 @@ const fromValues = require('./fromValues')
  * @param  {Float} scalar
  * @returns {Vec3}
  */
-const fromScalar = (scalar) => {
-  return fromValues(scalar, scalar, scalar)
-}
+const fromScalar = scalar => fromValues(scalar, scalar, scalar)
 
 module.exports = fromScalar

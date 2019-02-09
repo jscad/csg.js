@@ -8,19 +8,8 @@ const rotateZ = require('./rotateZ')
  * @param {vec3} vector The vec3 point to rotate
  * @returns {vec3} out
  */
-function rotate (...params) {
-  let out
-  let angle
-  let vector
-  if (params.length === 2) {
-    out = create()
-    angle = params[0]
-    vector = params[1]
-  } else {
-    out = params[0]
-    angle = params[1]
-    vector = params[2]
-  }
+function rotate (angle, vector) {
+  const out = create()
 
   // fIXME: not correct
   console.log('rotate', angle, vector)

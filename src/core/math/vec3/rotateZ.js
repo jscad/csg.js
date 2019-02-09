@@ -8,22 +8,8 @@ const create = require('./create')
  * @param {vec3} vector The vec3 point to rotate
  * @returns {vec3} out
  */
-const rotateZ = (...params) => {
-  let out
-  let angle
-  let vector
-  let origin
-  if (params.length === 3) {
-    out = create()
-    angle = params[0]
-    origin = params[1]
-    vector = params[2]
-  } else {
-    out = params[0]
-    angle = params[1]
-    origin = params[2]
-    vector = params[3]
-  }
+const rotateZ = (angle, origin, vector) => {
+  let out = create()
   const p = []
   const r = []
   // Translate point to the origin

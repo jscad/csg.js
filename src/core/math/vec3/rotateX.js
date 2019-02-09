@@ -2,28 +2,13 @@ const create = require('./create')
 
 /**
  * Rotate vector 3D vector around the x-axis
- * @param {vec3} out The receiving vec3 (optional)
  * @param {Number} angle The angle of rotation
  * @param {vec3} origin The origin of the rotation
  * @param {vec3} vector The vec3 point to rotate
  * @returns {vec3} out
  */
-const rotateX = (...params) => {
-  let out
-  let angle
-  let vector
-  let origin
-  if (params.length === 3) {
-    out = create()
-    angle = params[0]
-    origin = params[1]
-    vector = params[2]
-  } else {
-    out = params[0]
-    angle = params[1]
-    origin = params[2]
-    vector = params[3]
-  }
+const rotateX = (angle, origin, vector) => {
+  const out = create()
   const p = []
   const r = []
 

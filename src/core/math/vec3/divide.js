@@ -8,19 +8,8 @@ const create = require('./create')
  * @param {vec3} b the second operand
  * @returns {vec3} out
  */
-const divide = (...params) => {
-  let out
-  let a
-  let b
-  if (params.length === 2) {
-    out = create()
-    a = params[0]
-    b = params[1]
-  } else {
-    out = params[0]
-    a = params[1]
-    b = params[2]
-  }
+const divide = (a, b) => {
+  const out = create()
   out[0] = a[0] / b[0]
   out[1] = a[1] / b[1]
   out[2] = a[2] / b[2]

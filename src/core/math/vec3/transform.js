@@ -9,20 +9,8 @@ const create = require('./create')
  * @param {vec3} params[2] vector the vector to transform
  * @returns {vec3} out
  */
-const transform = (...params) => {
-  let out
-  let vector
-  let matrix
-  if (params.length === 2) {
-    out = create()
-    matrix = params[0]
-    vector = params[1]
-  } else {
-    out = params[0]
-    matrix = params[1]
-    vector = params[2]
-  }
-
+const transform = (matrix, vector) => {
+  const out = create()
   const x = vector[0]
   const y = vector[1]
   const z = vector[2]
