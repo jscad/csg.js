@@ -3,7 +3,8 @@ const mat4 = require('../math/mat4')
 
 // TODO: deal with properties etc
 const toString = shape => {
-  return ` ${mat4.toString(shape.transforms)}
+  return `Shape3:
+  Transforms: ${mat4.toString(shape.transforms)}
   ${geom3.toString(shape.geometry)}
   `
 }

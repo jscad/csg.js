@@ -9,8 +9,9 @@ const create = require('./create')
 const clone = sourceShape => {
   const newShape = create()
   newShape.geometry = sourceShape.geometry // geom3.clone(sourceShape.geometry)
-  newShape.transforms = mat4.clone(sourceShape.transforms)
-  newShape.properties = { ...sourceShape.properties }
+  mat4.clone(newShape.transforms, sourceShape.transforms)
+  // TODO newShape.properties = sourceShape.properties
+  return newShape
 }
 
 module.exports = clone

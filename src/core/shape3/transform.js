@@ -8,9 +8,8 @@ const clone = require('./clone')
  * @returns {Shape3} a new shape, with updated transformation matrix
  */
 const transform = (matrix, shape) => {
-  const newTransforms = mat4.multiply(shape.transforms, matrix)
   const newShape = clone(shape)
-  newShape.transforms = newTransforms
+  mat4.multiply(newShape.transforms, shape.transforms, matrix)
   return newShape
 }
 module.exports = transform
