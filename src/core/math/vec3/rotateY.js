@@ -2,7 +2,7 @@ const create = require('./create')
 
 /**
  * Rotate vector 3D vector around the y-axis
- * @param {vec3} out The receiving vec3 (optional)
+ *
  * @param {Number} angle The angle of rotation
  * @param {vec3} origin The origin of the rotation
  * @param {vec3} vector The vec3 point to rotate

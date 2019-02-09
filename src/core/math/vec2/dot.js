@@ -1,5 +1,5 @@
 /**
- * Calculates the dot product of two vec2's
+ * Calculates the dot product of two vec2
  *
  * @param {vec2} a the first operand
  * @param {vec2} b the second operand
