@@ -1,4 +1,4 @@
-const vec3 = require('../../math/vec3')
+const vec3 = require('../vec3')
 
 /*
  * Measure the signed volume of the given polygon, which must be convex.
@@ -8,7 +8,7 @@ const vec3 = require('../../math/vec3')
  */
 const measureSignedVolume = (poly3) => {
   let signedVolume = 0
-  const vertices = poly3.vertices
+  const vertices = poly3
   // calculate based on triangluar polygons
   for (let i = 0; i < vertices.length - 2; i++) {
     const cross = vec3.cross(vertices[i + 1], vertices[i + 2])

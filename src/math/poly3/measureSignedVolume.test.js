@@ -2,9 +2,9 @@ const test = require('ava')
 
 const { measureSignedVolume, create, flip, fromPoints, transform } = require('./index')
 
-const mat4 = require('../../math/mat4')
+const mat4 = require('../mat4')
 
-const { nearlyEqual } = require('../../../../test/helpers/index')
+const { nearlyEqual } = require('../../../test/helpers/index')
 
 test('poly3: measureSignedVolume() should return correct values', (t) => {
   let ply1 = create()

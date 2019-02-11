@@ -4,7 +4,6 @@ module.exports = {
   flip: require('./flip'),
   fromPointsAndPlane: require('./fromPointsAndPlane'),
   fromPoints: require('./fromPoints'),
-//  fromObject: require('./fromObject'),
   isConvex: require('./isConvex'),
   measureArea: require('./measureArea'),
   measureSignedVolume: require('./measureSignedVolume'),

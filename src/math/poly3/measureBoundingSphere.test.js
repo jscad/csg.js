@@ -1,9 +1,9 @@
 const test = require('ava')
 const { measureBoundingSphere, create, fromPoints, transform } = require('./index')
 
-const mat4 = require('../../math/mat4')
+const mat4 = require('../mat4')
 
-const { compareVectors, nearlyEqual } = require('../../../../test/helpers/index')
+const { compareVectors, nearlyEqual } = require('../../../test/helpers/index')
 
 test('poly3: measureBoundingSphere() should return correct values', (t) => {
   let ply1 = create()

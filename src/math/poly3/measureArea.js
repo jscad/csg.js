@@ -1,14 +1,14 @@
-const vec3 = require('../../math/vec3')
+const vec3 = require('../vec3')
 
 // measure the area of the given poly3 (3D planar polygon)
 // translated from the orginal C++ code from Dan Sunday
 // 2000 softSurfer http://geomalgorithms.com
 const measureArea = (poly3) => {
-  const n = poly3.vertices.length
+  const n = poly3.length
   if (n < 3) {
     return 0 // degenerate polygon
   }
-  const vertices = poly3.vertices
+  const vertices = poly3
 
   // calculate a real normal
   const a = vertices[0]

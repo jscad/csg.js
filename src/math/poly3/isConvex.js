@@ -1,10 +1,10 @@
-const vec3 = require('../../math/vec3')
+const vec3 = require('../vec3')
 
 /** Check whether the polygon is convex. (it should be, otherwise we will get unexpected results)
  * @returns {boolean}
  */
 const isConvex = (poly3) => {
-  return areVerticesConvex(poly3.vertices, poly3.plane)
+  return areVerticesConvex(poly3, poly3.plane)
 }
 
 const areVerticesConvex = (vertices, plane) => {

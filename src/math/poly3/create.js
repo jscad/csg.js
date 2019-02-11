@@ -1,4 +1,4 @@
-const plane = require('../../math/plane/')
+const map = require('./map')
 
 /**
  * Represents a convex polygon. The vertices used to initialize a polygon must
@@ -27,12 +27,7 @@ const plane = require('../../math/plane/')
  *
  * @returns {poly3} a new poly3
  */
-const create = () => {
-  return {
-    vertices: [],
-    plane: plane.create()
-  }
-}
+const create = () => map()
 
 //    shared: {
 //      color: undefined,
