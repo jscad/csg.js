@@ -1,70 +1,51 @@
-const test = require('ava')
-const { measureBoundingSphere, create, fromPoints, transform } = require('./index')
-
+const create = require('./create')
+const fromPoints = require('./fromPoints')
+const measureBoundingSphere = require('./measureBoundingSphere')
 const mat4 = require('../mat4')
+const test = require('ava')
+const transform = require('./transform')
+const vec3 = require('../vec3')
 
-const { compareVectors, nearlyEqual } = require('../../../test/helpers/index')
+const empty = create()
+const triangle = fromPoints([[0, 0, 0], [0, 10, 0], [0, 10, 10]])
+const square = fromPoints([[0, 0, 0], [0, 10, 0], [0, 10, 10], [0, 0, 10]])
+const vShape = fromPoints([[0, 3, 0], [0, 5, 0], [0, 8, 2], [0, 6, 5],
+                           [0, 8, 6], [0, 5, 6], [0, 5, 2], [0, 2, 5],
+                           [0, 1, 3], [0, 3, 3]])
 
-test('poly3: measureBoundingSphere() should return correct values', (t) => {
-  let ply1 = create()
-  let exp1 = [[0, 0, 0], 0]
-  let ret1 = measureBoundingSphere(ply1)
-  t.true(compareVectors(ret1[0], exp1[0]))
-  nearlyEqual(ret1[1], exp1[1], Number.EPSILON)
+test('poly3: bounding sphere of empty', (t) => {
+  t.deepEqual(measureBoundingSphere(empty), [vec3.fromValues(0, 0, 0), 0])
+})
 
-  // simple triangle
-  let ply2 = fromPoints([[0, 0, 0], [0, 10, 0], [0, 10, 10]])
-  let exp2 = [[0, 5, 5], 7.0710678118654755]
-  let ret2 = measureBoundingSphere(ply2)
-  t.true(compareVectors(ret2[0], exp2[0]))
-  nearlyEqual(ret2[1], exp2[1], Number.EPSILON)
+test('poly3: bounding sphere of triangle', (t) => {
+  t.deepEqual(measureBoundingSphere(triangle), [vec3.fromValues(0, 5, 5), 7.0710678118654755])
+})
 
-  // simple square
-  let ply3 = fromPoints([[0, 0, 0], [0, 10, 0], [0, 10, 10], [0, 0, 10]])
-  let exp3 = [[0, 5, 5], 7.0710678118654755]
-  let ret3 = measureBoundingSphere(ply3)
-  t.true(compareVectors(ret3[0], exp3[0]))
-  nearlyEqual(ret3[1], exp3[1], Number.EPSILON)
+test('poly3: bounding sphere of square', (t) => {
+  t.deepEqual(measureBoundingSphere(square), [vec3.fromValues(0, 5, 5), 7.0710678118654755])
+})
 
-  // V-shape
-  const points = [
-    [0, 3, 0],
-    [0, 5, 0],
-    [0, 8, 2],
-    [0, 6, 5],
-    [0, 8, 6],
-    [0, 5, 6],
-    [0, 5, 2],
-    [0, 2, 5],
-    [0, 1, 3],
-    [0, 3, 3]
-  ]
-  let ply4 = fromPoints(points)
-  let exp4 = [[0, 5, 3], 4.242640687119285]
-  let ret4 = measureBoundingSphere(ply4)
-  t.true(compareVectors(ret4[0], exp4[0]))
-  nearlyEqual(ret4[1], exp4[1], Number.EPSILON)
+test('poly3: bounding sphere of v-shape', (t) => {
+  t.deepEqual(measureBoundingSphere(vShape), [vec3.fromValues(0, 5, 3), 4.242640687119285])
+})
 
-  // rotated to various angles
-  const rotation = mat4.fromZRotation((45 * 0.017453292519943295))
-  ply1 = transform(rotation, ply1)
-  ply2 = transform(rotation, ply2)
-  ply3 = transform(rotation, ply3)
-  ply4 = transform(rotation, ply4)
-  ret1 = measureBoundingSphere(ply1)
-  ret2 = measureBoundingSphere(ply2)
-  ret3 = measureBoundingSphere(ply3)
-  ret4 = measureBoundingSphere(ply4)
-  exp1 = [[0, 0, 0], 0]
-  t.true(compareVectors(ret1[0], exp1[0]))
-  nearlyEqual(ret1[1], exp1[1], Number.EPSILON)
-  exp2 = [[-7.071067810058594, 3.535533905029297, 5], 9.35414346522751]
-  t.true(compareVectors(ret2[0], exp2[0]))
-  nearlyEqual(ret2[1], exp2[1], Number.EPSILON)
-  exp3 = [[-7.071067810058594, 3.535533905029297, 5], 9.35414346522751]
-  t.true(compareVectors(ret3[0], exp3[0]))
-  nearlyEqual(ret3[1], exp3[1], Number.EPSILON)
-  exp4 = [[-6.010407447814941, 3.535533905029297, 3], 6.451743770649038]
-  t.true(compareVectors(ret4[0], exp4[0]))
-  nearlyEqual(ret4[1], exp4[1], Number.EPSILON)
+const rotation = mat4.fromZRotation((45 * 0.017453292519943295))
+
+test('poly3: bounding sphere of rotated empty', (t) => {
+  t.deepEqual(measureBoundingSphere(transform(rotation, empty)), [vec3.fromValues(0, 0, 0), 0])
+})
+
+test('poly3: bounding sphere of rotated triangle', (t) => {
+  t.deepEqual(measureBoundingSphere(transform(rotation, triangle)),
+              [vec3.fromValues(-7.071070194244385, 3.5355350971221924, 5), 9.354145718071434])
+})
+
+test('poly3: bounding sphere of rotated square', (t) => {
+  t.deepEqual(measureBoundingSphere(transform(rotation, square)),
+              [vec3.fromValues(-7.071070194244385, 3.5355350971221924, 5), 9.354145718071434])
+})
+
+test('poly3: bounding sphere of rotated v shape', (t) => {
+  t.deepEqual(measureBoundingSphere(transform(rotation, vShape)),
+              [vec3.fromValues(-6.01040506362915, 3.5355348587036133, 3), 6.451737440533223])
 })

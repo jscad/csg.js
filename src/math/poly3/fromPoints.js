@@ -1,5 +1,4 @@
 const map = require('./map')
-const vec3 = require('../vec3')
 
 /**
  * Create a poly3 from the given points.
@@ -15,9 +14,6 @@ const vec3 = require('../vec3')
  * ]
  * const polygon = createFromPoints(points)
  */
-const fromPoints = (points, planeof) => {
-  const out = map(points, vec3.clone, planeof)
-  return out
-}
+const fromPoints = (points, planeof) => map(points)
 
 module.exports = fromPoints
