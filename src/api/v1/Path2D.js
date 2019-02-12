@@ -1,4 +1,5 @@
-const arc = require('../../algorithm/arc')
+const buildCircleArc = require('../../algorithm/arc/buildCircleArc')
+const buildSvgArc = require('../../algorithm/arc/buildSvgArc')
 const { angleEPS, X, Y } = require('./constants')
 const call = require('../registry/call')
 const vec2 = require('../../math/vec2')
@@ -166,8 +167,7 @@ class Path2D {
   }
 }
 
-// TODO: Does anyone use this function?
-/** Construct an arc.
+/** Construct a path which is an arc of a circle.
  * @param {Object} [options] - options for construction
  * @param {vec3} [options.center=[0,0]] - center of circle
  * @param {Number} [options.radius=1] - radius of circle
@@ -187,38 +187,6 @@ class Path2D {
  *   maketangent: true
  * });
  */
-Path2D.arc = ({ center = [0, 0], radius = 1, startangle = 0, endangle = 360, resolution = defaultResolution2D, maketangent = false }) => {
-  // no need to make multiple turns:
-  while (endangle - startangle >= 720) {
-    endangle -= 360
-  }
-  while (endangle - startangle <= -720) {
-    endangle += 360
-  }
-  let points = []
-  let point
-  let absangledif = Math.abs(endangle - startangle)
-  if (absangledif < angleEPS) {
-    point = vec2.multiply(vec2.fromAngle(startangle / 180.0 * Math.PI), vec2.fromScalar(radius))
-    points.push(vec2.add(point, center))
-  } else {
-    let numsteps = Math.floor(resolution * absangledif / 360) + 1
-    let edgestepsize = numsteps * 0.5 / absangledif // step size for half a degree
-    if (edgestepsize > 0.25) edgestepsize = 0.25
-    let numstepsMod = maketangent ? (numsteps + 2) : numsteps
-    for (let i = 0; i <= numstepsMod; i++) {
-      let step = i
-      if (maketangent) {
-        step = (i - 1) * (numsteps - 2 * edgestepsize) / numsteps + edgestepsize
-        if (step < 0) step = 0
-        if (step > numsteps) step = numsteps
-      }
-      let angle = startangle + step * (endangle - startangle) / numsteps
-      point = vec2.multiply(vec2.fromAngle(angle / 180.0 * Math.PI), vec2.fromScalar(radius))
-      points.push(vec2.add(point, center))
-    }
-  }
-  return new Path2D(points)
-}
+Path2D.arc = (...params) => new Path2D(buildCircleArc(...params))
 
 module.exports = Path2D

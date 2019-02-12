@@ -13,6 +13,7 @@ module.exports = {
 }
 
 // Register an instance of this geometry with this implementation.
-const call = require('../../api/registry/toImplementation')
+const call = require('../../api/registry/call')
 const create = require('./create')
+
 call(create(), module.exports)

@@ -1,5 +1,3 @@
-const registerImplementation = require('./registerImplementation')
-
 /**
  * Returns the module associated with the __jscadTag__ field value of the
  * object passed, registering a module none exists.
