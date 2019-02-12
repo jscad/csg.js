@@ -1,5 +1,5 @@
 const clone = require('./clone')
-const normalizePoint = require('./normalizePoint')
+const vec3 = require('../../math/vec3')
 
 /**
  * Appends a point to an open path.
@@ -16,7 +16,7 @@ const appendPoint = (options, point, path) => {
     throw new Error('Cannot append to closed path')
   }
   const cloned = clone(path)
-  cloned.basePoints = path.basePoints.concat([normalizePoint(point)])
+  cloned.basePoints = path.basePoints.concat([vec3.canonicalize(point)])
   cloned.points = undefined
   cloned.isCanonicalized = false
   return cloned

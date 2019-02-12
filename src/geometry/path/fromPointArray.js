@@ -1,5 +1,5 @@
 const create = require('./create')
-const normalizePoint = require('./normalizePoint')
+const vec3 = require('../../math/vec3')
 
 /**
  * Create a path2 from a point array.
@@ -13,7 +13,7 @@ const normalizePoint = require('./normalizePoint')
 const fromPointArray = ({ closed = false }, pointArray) => {
   let created = create()
   created.isClosed = closed
-  created.basePoints = pointArray.map(normalizePoint)
+  created.basePoints = pointArray.map(vec3.canonicalize)
   // If we are feeling trusting we could say path.points = path.basePoints
   // and make the path canonical at this point. Let's keep basePoints and
   // points distinct for now.
