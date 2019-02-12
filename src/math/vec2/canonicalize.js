@@ -1,8 +1,7 @@
-const { spatialResolution } = require('../constants')
 const fromValues = require('./fromValues');
+const quantizeForSpace = require('../utils/quantizeForSpace')
 
-const quantize = (value) => (Math.round(value * spatialResolution) / spatialResolution)
-
-const canonicalize = (vector) => fromValues(quantize(vector[0]), quantize(vector[1]))
+const canonicalize = (vector) => fromValues(quantizeForSpace(vector[0]),
+                                            quantizeForSpace(vector[1]))
 
 module.exports = canonicalize
