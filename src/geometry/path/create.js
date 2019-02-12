@@ -11,7 +11,7 @@ const create = () => {
     basePoints: [],  // Contains canonical, untransformed points.
     points: [],  // Contains canonical, transformed points.
     isClosed: false,
-    isCanonicalized: true, // Has no non-canonical points.
+    isCanonicalized: false,
     transforms: mat4.identity()
   }
 }

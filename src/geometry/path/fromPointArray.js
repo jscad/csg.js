@@ -18,11 +18,7 @@ const fromPointArray = ({ closed = false }, pointArray) => {
   // and make the path canonical at this point. Let's keep basePoints and
   // points distinct for now.
   created.points = undefined
-  if (created.basePoints == 0) {
-    created.isCanonicalized = true
-  } else {
-    created.isCanonicalized = false
-  }
+  created.isCanonicalized = false
   return created
 }
 

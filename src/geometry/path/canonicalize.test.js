@@ -4,7 +4,7 @@ const equals = require('./equals')
 const fromPointArray = require('./fromPointArray')
 const test = require('ava')
 
-test('canonicalize: An empty path is not canonical on creation', t => {
+test('canonicalize: An empty path is non-canonical on creation', t => {
   t.false(fromPointArray({}, []).isCanonicalized)
 })
 
