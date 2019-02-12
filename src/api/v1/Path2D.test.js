@@ -1,12 +1,12 @@
-const defaultPath = require('./defaultPath')
+const defaultPathGeometry = require('./defaultPathGeometry')
 const path = require('../../geometry/path')
 const mat4 = require('../../math/mat4')
 const test = require('ava')
 const Path2D = require('./Path2D')
-const toImplementation = require('../registry/toImplementation')
+const call = require('../registry/call')
 
 // Hook up geometry/path as the implementation for the v1 api to use by default.
-toImplementation(defaultPath, path)
+call(defaultPath, path)
 
 test('Empty path has no points', t => {
   t.deepEqual(new Path2D().getPoints(), [])

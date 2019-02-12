@@ -1,17 +1,17 @@
 const arc = require('../../algorithm/arc')
 const { angleEPS, X, Y } = require('./constants')
-const call = require('../registry/toImplementation')
+const call = require('../registry/call')
 const vec2 = require('../../math/vec2')
-const defaultPath = require('./defaultPath')
+const defaultPathGeometry = require('./defaultPathGeometry')
 
 class Path2D {
   constructor(points, closed, geometry) {
     if (geometry !== undefined) {
       this.geometry = geometry
     } else if (points !== undefined) {
-      this.geometry = call(defaultPath).fromPointArray({}, points)
+      this.geometry = call(defaultPathGeometry).fromPointArray({}, points)
     } else {
-      this.geometry = call(defaultPath).fromPointArray({}, [])
+      this.geometry = call(defaultPathGeometry).fromPointArray({}, [])
     }
     if (closed === true) {
       this.geometry = call(this.geometry).close(this.geometry)
