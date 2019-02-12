@@ -8,6 +8,7 @@ const mat4 = require('../../math/mat4')
  */
 const create = () => {
   return {
+    __jscadTag__: 'geometry/path',
     basePoints: [],  // Contains canonical, untransformed points.
     points: [],  // Contains canonical, transformed points.
     isClosed: false,

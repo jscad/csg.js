@@ -11,3 +11,8 @@ module.exports = {
   toPointArray: require('./toPointArray'),
   transform: require('./transform')
 }
+
+// Register an instance of this geometry with this implementation.
+const call = require('../../api/registry/toImplementation')
+const create = require('./create')
+call(create(), module.exports)

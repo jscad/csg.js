@@ -16,9 +16,8 @@ const registerImplementation = require('./registerImplementation')
  * implementationOf(box).eachPoint({}, collectBounds, box)
  */
 
-// 
 const nullModule = {}
 
-const toImplementation = geometry => registerImplementation(geometry.__jscadTag__, nullModule)
+const toImplementation = (geometry, module) => registerImplementation(geometry.__jscadTag__, module || nullModule)
 
 module.exports = toImplementation
