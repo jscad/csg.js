@@ -1,5 +1,3 @@
-const api = {
+module.exports = {
   polygonArrayToStla: require('./polygonArrayToStla')
 }
-
-module.exports = api

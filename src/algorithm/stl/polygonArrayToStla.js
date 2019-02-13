@@ -1,4 +1,4 @@
-const poly3 = require('../../../core/geometry/poly3')
+const poly3 = require('../../core/geometry/poly3')
 
 /**
  * Translates a polygon array [[[x, y, z], [x, y, z], ...]] to ascii STL.
