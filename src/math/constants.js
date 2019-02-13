@@ -10,7 +10,17 @@ const spatialResolution = 1e5
  */
 const EPS = 1e-5
 
+// Ranks
+const X = 0
+const Y = 1
+const Z = 2
+const W = 3
+
 module.exports = {
   EPS,
-  spatialResolution
+  spatialResolution,
+  X,
+  Y,
+  Z,
+  W
 }
