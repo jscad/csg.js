@@ -4,6 +4,7 @@
   "description": "Constructive Solid Geometry (CSG) Library",
   "repository": "https://github.com/jscad/csg.js",
   "main": "src/index.js",
+  "types": "csg.d.ts",
   "scripts": {
     "build-docs": "./node_modules/.bin/jsdoc -c jsdoc.json",
     "docs": "jsdoc2md --files src/**/*.js > docs/api.md",
