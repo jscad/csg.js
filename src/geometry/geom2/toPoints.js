@@ -1,4 +1,4 @@
-const canonicalize = require('./canonicalize')
+const toSides = require('./toSides')
 
 /**
  * Produces an array of points from the given geometry.
@@ -9,7 +9,7 @@ const canonicalize = require('./canonicalize')
  * let sharedpoints = toPoints(geometry)
  */
 const toPoints = function (geometry) {
-  let sides = canonicalize(geometry).sides
+  let sides = toSides(geometry)
   let points = sides.map((side) => {
     return side[0]
   })
