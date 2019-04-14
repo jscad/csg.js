@@ -23,5 +23,9 @@ test('canonicalize: Updates a populated geom2 with canonalized sides', (t) => {
   t.is(geometry, updated)
   t.deepEqual(updated, expected)
 
+  const updated2 = canonicalize(updated)
+  t.is(updated, updated2)
+  t.deepEqual(updated, expected)
+
 // TODO : test with mirrored geometry, see transform.js
 })
