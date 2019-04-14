@@ -15,7 +15,7 @@ test('close: closes an empty path', t => {
   t.is(p2, p3)
 })
 
-test.only('close: closes various paths', t => {
+test('close: closes various paths', t => {
   let p1 = create()
   p1 = close(p1)
   t.true(p1.isClosed)
