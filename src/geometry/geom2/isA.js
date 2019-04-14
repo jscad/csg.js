@@ -5,8 +5,10 @@
  */
 const isA = (object) => {
   if (object && typeof object === 'object') {
-    if ('baseSides' in object && Array.isArray(object.baseSides)) {
-      return true
+    if ('baseSides' in object && 'isCanonicalized' in object && 'transforms' in object) {
+      if (Array.isArray(object.baseSides) && 'length' in object.transforms) {
+        return true
+      }
     }
   }
   return false
