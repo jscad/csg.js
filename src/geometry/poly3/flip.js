@@ -1,7 +1,5 @@
 const create = require('./create')
 
-const plane = require('../../math/plane/')
-
 /**
  * Flip the give polygon to face the opposite direction.
  *
@@ -9,10 +7,8 @@ const plane = require('../../math/plane/')
  * @returns {poly3} a new poly3
  */
 const flip = (polygon) => {
-  const out = create()
-  out.vertices = polygon.vertices.reverse()
-  out.plane = plane.flip(polygon.plane)
-  return out
+  const vertices = polygon.vertices.reverse()
+  return create(vertices)
 }
 
 module.exports = flip

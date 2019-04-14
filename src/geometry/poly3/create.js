@@ -27,22 +27,19 @@ const plane = require('../../math/plane/')
  *
  * @returns {poly3} a new poly3
  */
-const create = () => {
+const create = (vertices) => {
+  // FIXME is plane really necessary? only for boolean ops?
+  let polyplane
+  if (vertices === undefined || vertices.length < 3) {
+    vertices = [] // empty contents
+    polyplane = plane.create()
+  } else {
+    polyplane = plane.fromPoints(vertices[0], vertices[1], vertices[2])
+  }
   return {
-    vertices: [],
-    plane: plane.create()
+    vertices: vertices,
+    plane: polyplane
   }
 }
-
-//    shared: {
-//      color: undefined,
-//      getTag: function () {
-//        let result = this.tag
-//        if (!result) {
-//          result = getTag()
-//          this.tag = result
-//        }
-//        return result
-//      }
 
 module.exports = create

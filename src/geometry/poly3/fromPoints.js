@@ -1,13 +1,11 @@
-const create = require('./create')
-
-const plane = require('../../math/plane/')
 const vec3 = require('../../math/vec3')
 
+const create = require('./create')
+
 /**
- * Create a poly3 from the given points.
+ * Create a polygon from the given points.
  *
  * @param {Array[]} points - list of points
- * @param {plane} [planeof] - plane of the polygon
  *
  * @example
  * const points = [
@@ -15,18 +13,15 @@ const vec3 = require('../../math/vec3')
  *   [0, 10, 0],
  *   [0, 10, 10]
  * ]
- * const polygon = createFromPoints(points)
+ * const polygon = fromPoints(points)
  */
 const fromPoints = (points, planeof) => {
-  const out = create()
-  out.vertices = points.map((point) => { return vec3.clone(point) })
-  if (planeof !== undefined) out.plane = planeof
+  if (planeof) throw new Error('use fromPointAndPlane')
+  if (!Array.isArray(points)) throw new Error('the given points must be an array')
+  if (points.length < 3) throw new Error('the given points must contain THREE or more points')
 
-  // calculate the plane if not provided
-  if (planeof === undefined && out.vertices.length > 2) {
-    out.plane = plane.fromPoints(out.vertices[0], out.vertices[1], out.vertices[2])
-  }
-  return out
+  let vertices = points.map((point) => { return vec3.clone(point) })
+  return create(vertices)
 }
 
 module.exports = fromPoints
