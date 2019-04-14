@@ -32,4 +32,8 @@ test('canonicalize: Updates a geom3 with canonalized polygons', (t) => {
   const updated = canonicalize(geometry)
   t.is(geometry, updated)
   t.deepEqual(updated, expected)
+
+  const updated2 = canonicalize(updated)
+  t.is(updated, updated2)
+  t.deepEqual(updated2, expected)
 })

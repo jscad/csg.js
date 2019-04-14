@@ -2,7 +2,7 @@ const test = require('ava')
 
 const poly3 = require('../poly3')
 
-const create = require('./create')
+const {create} = require('./index')
 
 test('create: Creates an empty, uncanonicalized geom3', t => {
   const expected = {basePolygons: [], polygons: [], isCanonicalized: false, isRetesselated: false,
