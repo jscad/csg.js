@@ -11,10 +11,9 @@ const poly3 = require('../poly3')
  * let newgeometry = canonicalize(geometry)
  */
 const canonicalize = (geometry) => {
-  if (geometry.isCanonicalized) {
-    return geometry
-  }
-  // apply transforms to each polygon, and canonicalize
+  if (geometry.isCanonicalized) return geometry
+
+  // apply transforms to each polygon
   const isMirror = mat4.isMirroring(geometry.transforms)
   geometry.polygons = geometry.basePolygons.map((polygon) => {
     // TBD if (isMirror) newvertices.reverse()

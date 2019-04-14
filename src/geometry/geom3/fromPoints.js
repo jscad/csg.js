@@ -15,10 +15,9 @@ const fromPoints = function (listofpoints) {
     throw new Error('the given points must be an array')
   }
 
-  let polygons = listofpoints.map((points, i) => {
+  let polygons = listofpoints.map((points, index) => {
+    // TODO catch the error, and rethrow with index
     let polygon = poly3.fromPoints(points)
-    if (polygon.length < 3) throw new Error('invalid list of points, polygon at '+i)
-    //if (polygon.checkIfConvex() === false) throw new Error('invalid list of points, invalid polygon at '+i)
     return polygon
   })
   let result = create(polygons)
