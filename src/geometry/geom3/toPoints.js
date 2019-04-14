@@ -1,6 +1,6 @@
 const poly3 = require('../poly3')
 
-const canonicalize = require('./canonicalize')
+const toPolygons = require('./toPolygons')
 
 /*
  * Return the given geometry as a list of points, after applying transforms.
@@ -8,7 +8,7 @@ const canonicalize = require('./canonicalize')
  * @return {Array[[points...]...]} list of polygons, represented as a list of points, each point containing 3 numbers
  */
 const toPoints = function (geometry) {
-  let polygons = canonicalize(geometry).polygons
+  let polygons = toPolygons(geometry)
   let listofpoints = polygons.map(function (polygon) {
     return poly3.toPoints(polygon)
   })
