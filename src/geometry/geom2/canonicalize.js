@@ -9,9 +9,8 @@ const vec2 = require('../../math/vec2')
  * let newgeometry = canonicalize(geometry)
  */
 const canonicalize = (geometry) => {
-  if (geometry.isCanonicalized) {
-    return geometry
-  }
+  if (geometry.isCanonicalized) return geometry
+
   // apply transforms to each side, and canonicalize
   geometry.sides = geometry.baseSides.map((side) => {
     const p0 = vec2.canonicalize(vec2.transform(geometry.transforms, side[0]))
