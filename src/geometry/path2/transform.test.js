@@ -4,9 +4,7 @@ const { degToRad } = require('../../math/utils')
 const fromZRotation = require('../../math/mat4/fromZRotation')
 const vec2 = require('../../math/vec2')
 
-const fromPoints = require('./fromPoints')
-const toPoints = require('./toPoints')
-const transform = require('./transform')
+const {transform, fromPoints, toPoints} = require('./index')
 
 const line = fromPoints({}, [[0, 0], [1, 0]])
 

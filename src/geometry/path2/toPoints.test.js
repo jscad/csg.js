@@ -2,8 +2,7 @@ const test = require('ava')
 
 const vec2 = require('../../math/vec2')
 
-const fromPoints = require('./fromPoints')
-const toPoints = require('./toPoints')
+const {toPoints, fromPoints} = require('./index')
 
 test('toPoints: An empty path produces an empty point array', t => {
   t.deepEqual(toPoints(fromPoints({}, [])), [])

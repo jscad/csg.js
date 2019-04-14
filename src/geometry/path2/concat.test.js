@@ -1,8 +1,6 @@
 const test = require('ava')
 
-const equals = require('./equals')
-const concat = require('./concat')
-const fromPoints = require('./fromPoints')
+const {concat, equals, fromPoints} = require('./index')
 
 test('concat: No paths produces an empty open path', t => {
   t.true(equals(concat(), fromPoints({ closed: false }, [])))

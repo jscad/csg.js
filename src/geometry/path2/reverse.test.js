@@ -1,8 +1,6 @@
 const test = require('ava')
 
-const equals = require('./equals')
-const fromPoints = require('./fromPoints')
-const reverse = require('./reverse')
+const {reverse, equals, fromPoints} = require('./index')
 
 test('reverse: The reverse of a path has reversed points', t => {
   const pointArray = [[0, 0], [1, 1]]

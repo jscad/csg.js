@@ -2,8 +2,7 @@ const test = require('ava')
 
 const vec2 = require('../../math/vec2')
 
-const fromPoints = require('./fromPoints')
-const eachPoint = require('./eachPoint')
+const {eachPoint, fromPoints} = require('./index')
 
 test('eachPoint: Each point is emitted', t => {
   const collector = []
