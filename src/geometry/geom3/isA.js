@@ -1,12 +1,14 @@
 /**
  * Determin if the given object is a 3D geometry.
- * @params {geom3} object - the object to interogate
+ * @params {object} object - the object to interogate
  * @returns {true} if the object matches a geom3 based object
  */
 const isA = (object) => {
   if (object && typeof object === 'object') {
-    if ('basePolygons' in object && Array.isArray(object.basePolygons)) {
-      return true
+    if ('basePolygons' in object && 'isCanonicalized' in object && 'transforms' in object) {
+      if (Array.isArray(object.basePolygons) && 'length' in object.transforms) {
+        return true
+      }
     }
   }
   return false
