@@ -1,5 +1,6 @@
 const canonicalize = require('./canonicalize')
 const fromPoints = require('./fromPoints')
+const toPoints = require('./toPoints')
 
 /**
  * Produces a path by concatenating the given paths.
@@ -20,11 +21,11 @@ const concat = (...paths) => {
     }
     isClosed = path.isClosed;
   }
-  let newbasePoints = []
+  let newpoints = []
   paths.forEach((path) => {
-    newbasePoints = newbasePoints.concat(path.basePoints)
+    newpoints = newpoints.concat(toPoints(path))
   })
-  return fromPoints({closed: isClosed}, newbasePoints)
+  return fromPoints({closed: isClosed}, newpoints)
 }
 
 module.exports = concat

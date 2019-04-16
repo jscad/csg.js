@@ -1,4 +1,4 @@
-const canonicalize = require('./canonicalize')
+const toPoints = require('./toPoints')
 
 /**
  * Calls a function for each point in the path in order.
@@ -8,7 +8,7 @@ const canonicalize = require('./canonicalize')
  * eachPoint(path, accumulate)
  */
 const eachPoint = (options, thunk, path) => {
-  canonicalize(path).points.forEach(thunk)
+  toPoints(path).forEach(thunk)
 }
 
 module.exports = eachPoint

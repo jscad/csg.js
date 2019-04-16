@@ -20,12 +20,12 @@ const fromPoints = (options, points) => {
   let {closed} = Object.assign({}, defaults, options)
 
   let created = create()
-  created.basePoints = points.map((point) => vec2.fromArray(point))
+  created.points = points.map((point) => vec2.fromArray(point))
 
   // check if first and last points are equal
-  if (created.basePoints.length > 1) {
-    let p0 = created.basePoints[0]
-    let pn = created.basePoints[created.basePoints.length - 1]
+  if (created.points.length > 1) {
+    let p0 = created.points[0]
+    let pn = created.points[created.points.length - 1]
     if (vec2.distance(p0, pn) < (EPS*EPS)) {
       // and close automatically
       closed = true

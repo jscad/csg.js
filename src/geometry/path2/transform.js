@@ -13,7 +13,6 @@ const clone = require('./clone')
 const transform = (matrix, path) => {
   let cloned = clone(path)
   cloned.transforms = mat4.multiply(cloned.transforms, matrix)
-  cloned.points = undefined
   cloned.isCanonicalized = false
   return cloned
 }

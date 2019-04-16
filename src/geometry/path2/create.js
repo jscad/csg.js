@@ -8,8 +8,7 @@ const mat4 = require('../../math/mat4')
  */
 const create = () => {
   return {
-    basePoints: [],   // Contains canonical, untransformed points
-    points: undefined, // Contains canonical, transformed points
+    points: [],
     isClosed: false,
     isCanonicalized: false,
     transforms: mat4.identity()

@@ -13,7 +13,7 @@ const equals = (a, b) => {
   if (a.isClosed !== b.isClosed) {
     return false
   }
-  if (a.basePoints.length !== b.basePoints.length) {
+  if (a.points.length !== b.points.length) {
     return false
   }
 

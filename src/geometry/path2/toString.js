@@ -18,8 +18,8 @@ const toString = (geometry) => {
     return result
   }
 
-  let result = 'path (' + geometry.basePoints.length + ' basePoints, '+geometry.isClosed+'):\n[\n'
-  geometry.basePoints.forEach((point) => {
+  let result = 'path (' + geometry.points.length + ' points, '+geometry.isClosed+'):\n[\n'
+  geometry.points.forEach((point) => {
     result += '  ' + vec2.toString(point) + ',\n'
   })
   result += ']\n'

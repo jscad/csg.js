@@ -1,7 +1,7 @@
 const vec2 = require('../../math/vec2')
 
 /**
- * Produces a canonicalized geometry by canonicalizing the base points.
+ * Produces a canonicalized geometry by canonicalizing the points.
  * Must be called before exposing any point data.
  * @param {path} geometry - the geometry to canonicalize
  * @returns {path} new geometry
@@ -13,7 +13,7 @@ const canonicalize = (geometry) => {
     return geometry
   }
   // canonicalize in-place.
-  geometry.points = geometry.basePoints.map((point) => vec2.canonicalize(vec2.transform(geometry.transforms, point)))
+  geometry.points = geometry.points.map((point) => vec2.canonicalize(vec2.transform(geometry.transforms, point)))
   geometry.isCanonicalized = true
   return geometry
 }

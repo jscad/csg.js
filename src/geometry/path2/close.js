@@ -13,19 +13,17 @@ const close = (geometry) => {
   if (geometry.isClosed) return geometry
 
   const cloned = clone(geometry)
-  cloned.points = undefined
-  cloned.isCanonicalized = false
   cloned.isClosed = true
  
-  if (cloned.basePoints.length > 1) {
+  if (cloned.points.length > 1) {
     // make sure the paths are formed properly
-    let basePoints = cloned.basePoints
-    let p0 = basePoints[0]
-    let pn = basePoints[basePoints.length - 1]
+    let points = cloned.points
+    let p0 = points[0]
+    let pn = points[points.length - 1]
     while (vec2.distance(p0, pn) < (EPS*EPS)) {
-      basePoints.pop()
-      if (basePoints.length === 1) break
-      pn = basePoints[basePoints.length - 1]
+      points.pop()
+      if (points.length === 1) break
+      pn = points[points.length - 1]
     }
   }
   return cloned

@@ -12,10 +12,7 @@ const clone = require('./clone')
 const reverse = (path) => {
   const cloned = clone(path)
   // The points don't move, so we can keep the transforms.
-  // Just reverse the base points, and we're good to go.
-  cloned.basePoints = path.basePoints.slice().reverse()
-  cloned.points = undefined
-  cloned.isCanonicalized = false
+  cloned.points = path.points.slice().reverse()
   return cloned
 }
 
