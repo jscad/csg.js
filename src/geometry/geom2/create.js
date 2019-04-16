@@ -10,8 +10,7 @@ const create = function (sides) {
     sides = [] // empty contents
   }
   return {
-    baseSides : sides,
-    sides : [],
+    sides : sides,
     isCanonicalized : false,
     transforms : mat4.create()
   }

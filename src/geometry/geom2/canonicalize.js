@@ -12,7 +12,7 @@ const canonicalize = (geometry) => {
   if (geometry.isCanonicalized) return geometry
 
   // apply transforms to each side, and canonicalize
-  geometry.sides = geometry.baseSides.map((side) => {
+  geometry.sides = geometry.sides.map((side) => {
     const p0 = vec2.canonicalize(vec2.transform(geometry.transforms, side[0]))
     const p1 = vec2.canonicalize(vec2.transform(geometry.transforms, side[1]))
     return [p0, p1]

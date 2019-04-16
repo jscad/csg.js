@@ -16,8 +16,8 @@ const toString = function (geometry) {
     return result
   }
 
-  let result = 'geom2 (' + geometry.baseSides.length + ' baseSides):\n[\n'
-  geometry.baseSides.forEach((side) => {
+  let result = 'geom2 (' + geometry.sides.length + ' sides):\n[\n'
+  geometry.sides.forEach((side) => {
     result += '  [' + vec2.toString(side[0]) + ', ' + vec2.toString(side[1]) + ']\n'
   })
   result += ']\n'

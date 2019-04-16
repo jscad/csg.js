@@ -13,7 +13,7 @@ const create = require('./create')
  * transform(fromZRotation(degToRad(90)), geometry)
  */
 const transform = function (matrix, geometry) {
-  let newgeometry = create(geometry.baseSides) // reuse the sides
+  let newgeometry = create(geometry.sides) // reuse the sides
   newgeometry.transforms = mat4.multiply(geometry.transforms, matrix)
   return newgeometry
 
