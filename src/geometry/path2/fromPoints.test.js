@@ -33,5 +33,5 @@ test('fromPoints: creating a path from a closed set of points creates a closed, 
   const created = fromPoints({closed: false}, [[0, 0], [1, 0], [1, 1], [0, 0]])
   t.true(created.isClosed)
   t.false(created.isCanonicalized)
-  t.is(3, created.basePoints.length) // the last given point is dropped
+  t.is(3, created.points.length) // the last given point is dropped
 })
