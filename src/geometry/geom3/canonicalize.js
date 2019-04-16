@@ -15,7 +15,7 @@ const canonicalize = (geometry) => {
 
   // apply transforms to each polygon
   const isMirror = mat4.isMirroring(geometry.transforms)
-  geometry.polygons = geometry.basePolygons.map((polygon) => {
+  geometry.polygons = geometry.polygons.map((polygon) => {
     // TBD if (isMirror) newvertices.reverse()
     return poly3.transform(geometry.transforms, polygon) // .canonicalize()
   })

@@ -15,8 +15,8 @@ const toString = function (geometry) {
     return result
   }
 
-  let result = 'geom3 (' + geometry.basePolygons.length + ' basePolygons):\n'
-  geometry.basePolygons.forEach(function (polygon) {
+  let result = 'geom3 (' + geometry.polygons.length + ' polygons):\n'
+  geometry.polygons.forEach(function (polygon) {
     result += '  ' + poly3.toString(polygon) + '\n'
   })
   return result

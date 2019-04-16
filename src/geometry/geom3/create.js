@@ -9,8 +9,7 @@ const create = function (polygons) {
     polygons = [] // empty contents
   }
   return {
-    basePolygons : polygons,
-    polygons : [],
+    polygons : polygons,
     isCanonicalized : false,
     isRetesselated : false,
     transforms : mat4.create()
