@@ -12,7 +12,7 @@ test('isA: identifies created geom2', t => {
 test('isA: identifies non geom2', t => {
   let p1 = null
   let p2 = {}
-  let p3 = {baseSides: 1, transforms: 1, isCanonicalized: 1}
+  let p3 = {sides: 1, transforms: 1, isCanonicalized: 1}
   t.false(isA(p1))
   t.false(isA(p2))
   t.false(isA(p3))

@@ -10,7 +10,7 @@ test('transform: Adjusts the transforms of a populated geom3', (t) => {
   const rotate90 = mat4.fromZRotation(rotation)
 
   const expected = {
-    basePolygons: [
+    polygons: [
       {
         plane: new Float32Array([0, -1, 0, 0]),
         vertices: [
@@ -20,7 +20,7 @@ test('transform: Adjusts the transforms of a populated geom3', (t) => {
          ]
       }
     ],
-    polygons: [], isCanonicalized: false, isRetesselated: false,
+    isCanonicalized: false, isRetesselated: false,
     transforms: new Float32Array([6.123233995736766e-17, 1, 0, 0, -1, 6.123233995736766e-17, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1])
   }
   const geometry = fromPoints(points)

@@ -4,7 +4,7 @@ const {clone, create, fromPoints} = require('./index')
 
 test('clone: Creates a clone on an empty geom3', t => {
   const expected = {
-    basePolygons: [], polygons: [], isCanonicalized: false, isRetesselated: false,
+    polygons: [], isCanonicalized: false, isRetesselated: false,
     transforms: new Float32Array([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1])
   }
   const geometry = create()
@@ -16,7 +16,7 @@ test('clone: Creates a clone on an empty geom3', t => {
 test('clone: Creates a clone of a populated geom3', t => {
   const points = [[[0, 0, 0], [1, 0, 0], [1, 0, 1]]]
   const expected = {
-    basePolygons: [
+    polygons: [
       {
         plane: new Float32Array([0, -1, 0, 0]),
         vertices: [
@@ -26,7 +26,7 @@ test('clone: Creates a clone of a populated geom3', t => {
          ]
       }
     ],
-    polygons: [], isCanonicalized: false, isRetesselated: false,
+    isCanonicalized: false, isRetesselated: false,
     transforms: new Float32Array([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1])
   }
   const geometry = fromPoints(points)
