@@ -9,12 +9,12 @@ test('transform: adjusts the transforms of geom2', (t) => {
   const rotation = 90 * 0.017453292519943295
   const rotate90 = mat4.fromZRotation(rotation)
 
-  const expected = {baseSides: [
+  const expected = {sides: [
                       [new Float32Array([0, 1]), new Float32Array([0, 0])],
                       [new Float32Array([0, 0]), new Float32Array([1, 0])],
                       [new Float32Array([1, 0]), new Float32Array([0, 1])]
                     ],
-                    sides: [], isCanonicalized: false,
+                    isCanonicalized: false,
                     transforms: new Float32Array([6.123233995736766e-17, 1, 0, 0, -1, 6.123233995736766e-17, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]) }
   const geometry = fromPoints(points)
   const another = transform(rotate90, geometry)
