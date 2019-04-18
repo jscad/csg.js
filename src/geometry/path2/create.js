@@ -6,9 +6,12 @@ const mat4 = require('../../math/mat4')
  * @example
  * let newpath = create()
  */
-const create = () => {
+const create = (points) => {
+  if (points === undefined) {
+    points = []
+  }
   return {
-    points: [],
+    points: points,
     isClosed: false,
     isCanonicalized: false,
     transforms: mat4.identity()
