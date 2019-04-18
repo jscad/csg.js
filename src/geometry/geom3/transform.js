@@ -14,7 +14,10 @@ const create = require('./create')
  */
 const transform = function (matrix, geometry) {
   let newgeometry = create(geometry.polygons) // reuse the polygons
+  newgeometry.isRetesselated = geometry.isRetesselated
+
   newgeometry.transforms = mat4.multiply(geometry.transforms, matrix)
+  newgeometry.isCanonicalized = false
   return newgeometry
 }
 
