@@ -10,8 +10,8 @@ const clone = require('./clone')
  * reverse(path)
  */
 const reverse = (path) => {
+  // NOTE: this only updates the order of the points
   const cloned = clone(path)
-  // The points don't move, so we can keep the transforms.
   cloned.points = path.points.slice().reverse()
   return cloned
 }
