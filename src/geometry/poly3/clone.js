@@ -21,12 +21,9 @@ const clone = (...params) => {
     poly3 = params[1]
   }
   // deep clone of vertices
-  const vecs = poly3.vertices.map((vec) => { return vec3.clone(vec) })
+  out.vertices = poly3.vertices.map((vec) => { return vec3.clone(vec) })
   // deep clone of plane
-  const pln = plane.clone(poly3.plane)
-
-  out.vertices = vecs
-  out.plane = pln
+  out.plane = plane.clone(poly3.plane)
   return out
 }
 
