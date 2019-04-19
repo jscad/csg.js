@@ -13,7 +13,6 @@ const clone = (geometry) => {
   out.sides = geometry.sides.map((side) => {
     return [vec2.clone(side[0]), vec2.clone(side[1])]
   })
-  out.isCanonicalized = geometry.isCanonicalized
   out.transforms = mat4.clone(geometry.transforms)
   return out
 }

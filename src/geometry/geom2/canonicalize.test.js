@@ -10,7 +10,6 @@ test('canonicalize: Updates a populated geom2 with canonalized sides', (t) => {
       [new Float32Array([0, 0]), new Float32Array([1, 0])],
       [new Float32Array([1, 0]), new Float32Array([0, 1])]
     ],
-    isCanonicalized: true,
     transforms: new Float32Array([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1])
   }
   const geometry = fromPoints(points)
@@ -21,6 +20,4 @@ test('canonicalize: Updates a populated geom2 with canonalized sides', (t) => {
   const updated2 = canonicalize(updated)
   t.is(updated, updated2)
   t.deepEqual(updated, expected)
-
-// TODO : test with mirrored geometry, see transform.js
 })

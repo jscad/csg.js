@@ -9,7 +9,7 @@ test('fromPoints: creates populated geom2', (t) => {
                       [new Float32Array([0, 0]), new Float32Array([1, 0])],
                       [new Float32Array([1, 0]), new Float32Array([0, 1])]
                     ],
-                    isCanonicalized: false, transforms: new Float32Array([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]) }
+                    transforms: new Float32Array([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]) }
   t.deepEqual(fromPoints(points), expected)
 })
 

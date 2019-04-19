@@ -5,7 +5,7 @@ const create = require('./create')
 /**
  * Transform the given geometry using the given matrix.
  * This is a lazy transform of the sides, as this function only adjusts the transforms.
- * See canonicalize() for the actual application of the transfroms to the sides.
+ * See canonicalize() for the actual application of the transforms to the sides.
  * @param {mat4} matrix - the matrix to transform with
  * @param {geom2} geometry - the geometry to transform
  * @returns {geom2} - the transformed geometry
@@ -16,7 +16,6 @@ const transform = function (matrix, geometry) {
   let newgeometry = create(geometry.sides) // reuse the sides
 
   newgeometry.transforms = mat4.multiply(geometry.transforms, matrix)
-  newgeometry.isCanonicalized = false
   return newgeometry
 
 //  let isMirror = matrix.isMirroring()

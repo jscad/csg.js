@@ -11,8 +11,7 @@ const create = function (sides) {
   }
   return {
     sides : sides,
-    isCanonicalized : false,
-    transforms : mat4.create()
+    transforms : mat4.identity()
   }
 }
 
