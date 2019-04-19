@@ -40,7 +40,7 @@ test('poly3: measureBoundingSphere() should return correct values', (t) => {
     [0, 3, 3]
   ]
   let ply4 = fromPoints(points)
-  let exp4 = [[0, 5, 3], 4.242640687119285]
+  let exp4 = [[0, 4.5, 3], 4.6097722286464435]
   let ret4 = measureBoundingSphere(ply4)
   t.true(compareVectors(ret4[0], exp4[0]))
   nearlyEqual(ret4[1], exp4[1], Number.EPSILON)
@@ -58,13 +58,13 @@ test('poly3: measureBoundingSphere() should return correct values', (t) => {
   exp1 = [[0, 0, 0], 0]
   t.true(compareVectors(ret1[0], exp1[0]))
   nearlyEqual(ret1[1], exp1[1], Number.EPSILON)
-  exp2 = [[-7.071067810058594, 3.535533905029297, 5], 9.35414346522751]
+  exp2 = [[-3.535533905029297, 3.535533905029297, 5], 7.071067810962035]
   t.true(compareVectors(ret2[0], exp2[0]))
   nearlyEqual(ret2[1], exp2[1], Number.EPSILON)
-  exp3 = [[-7.071067810058594, 3.535533905029297, 5], 9.35414346522751]
+  exp3 = [[-3.535533905029297, 3.535533905029297, 5], 7.071067810962035]
   t.true(compareVectors(ret3[0], exp3[0]))
   nearlyEqual(ret3[1], exp3[1], Number.EPSILON)
-  exp4 = [[-6.010407447814941, 3.535533905029297, 3], 6.451743770649038]
+  exp4 = [[-3.1819803714752197, 3.1819803714752197, 3], 4.609772183167014]
   t.true(compareVectors(ret4[0], exp4[0]))
   nearlyEqual(ret4[1], exp4[1], Number.EPSILON)
 })
