@@ -1,8 +1,10 @@
 const test = require('ava')
 
-const {canonicalize, fromPoints, toString} = require('./index')
+const {fromPoints, toString} = require('./index')
 
-test('canonicalize: Updates a populated geom2 with canonalized sides', (t) => {
+const applyTransforms = require('./applyTransforms')
+
+test('applyTransforms: Updates a populated geom2 with transformed sides', (t) => {
   const points = [[0, 0], [1, 0], [0, 1]]
   const expected = {
     sides: [
@@ -13,11 +15,11 @@ test('canonicalize: Updates a populated geom2 with canonalized sides', (t) => {
     transforms: new Float32Array([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1])
   }
   const geometry = fromPoints(points)
-  const updated = canonicalize(geometry)
+  const updated = applyTransforms(geometry)
   t.is(geometry, updated)
   t.deepEqual(updated, expected)
 
-  const updated2 = canonicalize(updated)
+  const updated2 = applyTransforms(updated)
   t.is(updated, updated2)
   t.deepEqual(updated, expected)
 })

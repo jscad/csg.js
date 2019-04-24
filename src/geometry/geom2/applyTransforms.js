@@ -2,14 +2,14 @@ const mat4 = require('../../math/mat4')
 const vec2 = require('../../math/vec2')
 
 /**
- * Produces a canonicalized geometry by canonicalizing the sides.
- * Must be called before exposing any side data.
- * @param {geom2} geometry - the geometry to canonicalize
- * @returns {geom2} the given geometry with transformed points
+ * Apply the transforms of the given geometry.
+ * NOTE: Must be called before exposing any side data.
+ * @param {geom2} geometry - the geometry to transform
+ * @returns {geom2} the given geometry
  * @example
- * let newgeometry = canonicalize(geometry)
+ * geometry = applyTransforms(geometry)
  */
-const canonicalize = (geometry) => {
+const applyTransforms = (geometry) => {
   if (mat4.equals(geometry.transforms, mat4.identity())) return geometry
 
   // apply transforms to each side
@@ -22,4 +22,4 @@ const canonicalize = (geometry) => {
   return geometry
 }
 
-module.exports = canonicalize
+module.exports = applyTransforms

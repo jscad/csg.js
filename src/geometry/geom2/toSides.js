@@ -1,4 +1,4 @@
-const canonicalize = require('./canonicalize')
+const applyTransforms = require('./applyTransforms')
 
 /**
  * Produces an array of sides from the given geometry.
@@ -9,7 +9,7 @@ const canonicalize = require('./canonicalize')
  * let sharedsides = toSides(geometry)
  */
 const toSides = function (geometry) {
-  return canonicalize(geometry).sides
+  return applyTransforms(geometry).sides
 }
 
 module.exports = toSides

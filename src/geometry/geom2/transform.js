@@ -5,12 +5,12 @@ const create = require('./create')
 /**
  * Transform the given geometry using the given matrix.
  * This is a lazy transform of the sides, as this function only adjusts the transforms.
- * See canonicalize() for the actual application of the transforms to the sides.
+ * The transforms are applied when accessing the sides via toSides().
  * @param {mat4} matrix - the matrix to transform with
  * @param {geom2} geometry - the geometry to transform
  * @returns {geom2} - the transformed geometry
  * @example
- * transform(fromZRotation(degToRad(90)), geometry)
+ * let newgeometry = transform(fromZRotation(degToRad(90)), geometry)
  */
 const transform = function (matrix, geometry) {
   let newgeometry = create(geometry.sides) // reuse the sides
