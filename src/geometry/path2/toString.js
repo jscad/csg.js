@@ -1,6 +1,6 @@
 const vec2 = require('../../math/vec2')
 
-const canonicalize = require('./canonicalize')
+const toPoints = require('./toPoints')
 
 /**
  * Create a string representing the contents of the given path.
@@ -9,17 +9,9 @@ const canonicalize = require('./canonicalize')
  * console.out(toString(path))
  */
 const toString = (geometry) => {
-  if (geometry.isCanonicalized) {
-    let result = 'path (' + geometry.points.length + ' points, '+geometry.isClosed+'):\n[\n'
-    geometry.points.forEach((point) => {
-      result += '  ' + vec2.toString(point) + ',\n'
-    })
-    result += ']\n'
-    return result
-  }
-
-  let result = 'path (' + geometry.points.length + ' points, '+geometry.isClosed+'):\n[\n'
-  geometry.points.forEach((point) => {
+  let points = toPoints(geometry)
+  let result = 'path (' + points.length + ' points, ' + geometry.isClosed + '):\n[\n'
+  points.forEach((point) => {
     result += '  ' + vec2.toString(point) + ',\n'
   })
   result += ']\n'

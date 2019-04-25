@@ -1,14 +1,48 @@
 const test = require('ava')
 
 const { degToRad } = require('../../math/utils')
-const fromZRotation = require('../../math/mat4/fromZRotation')
+const mat4 = require('../../math/mat4')
 const vec2 = require('../../math/vec2')
 
 const {transform, fromPoints, toPoints} = require('./index')
 
-const line = fromPoints({}, [[0, 0], [1, 0]])
+test('transform: adjusts the transforms of path', t => {
+  const points = [[0, 0], [1, 0], [0, 1]]
+  const rotation = 90 * 0.017453292519943295
+  const rotate90 = mat4.fromZRotation(rotation)
 
-test('transform: An populated path produces an populated point array', t => {
-  t.deepEqual(toPoints(transform(fromZRotation(degToRad(90)), line)),
-              [vec2.fromValues(0, 0), vec2.fromValues(0, 1)])
+  // continue with typical user scenario, several itterations of transforms and access
+
+  // expect lazy transform, i.e. only the transforms change
+  let expected = {points: [
+                      new Float32Array([0, 0]),
+                      new Float32Array([1, 0]),
+                      new Float32Array([0, 1])
+                    ],
+                    isClosed: false,
+                    transforms: new Float32Array([6.123233995736766e-17, 1, 0, 0, -1, 6.123233995736766e-17, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]) }
+  const geometry = fromPoints({}, points)
+  let another = transform(rotate90, geometry)
+  t.not(geometry, another)
+  t.deepEqual(another, expected)
+
+  // expect lazy transform, i.e. only the transforms change
+  expected.transforms = new Float32Array([6.123234262925839e-17, 1, 0, 0, -1, 6.123234262925839e-17, 0, 0, 0, 0, 1, 0, -5, 5, 5, 1])
+  another = transform(mat4.fromTranslation([5, 5, 5]), another)
+  t.deepEqual(another, expected)
+
+  // expect application of the transforms to the sides
+  expected.points = [
+    new Float32Array([-5, 5]),
+    new Float32Array([-5, 6]),
+    new Float32Array([-6, 5])
+  ]
+  expected.transforms = mat4.identity()
+  let updatedpoints = toPoints(another)
+  t.deepEqual(another, expected)
+
+  // expect lazy transform, i.e. only the transforms change
+  expected.transforms = new Float32Array([ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 5, 5, 5, 1 ])
+  another = transform(mat4.fromTranslation([5, 5, 5]), another)
+  t.deepEqual(another, expected)
 })

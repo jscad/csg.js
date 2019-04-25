@@ -12,7 +12,6 @@ const clone = (geometry) => {
   let out = create()
   out.points = geometry.points.map((point) => vec2.clone(point))
   out.isClosed = geometry.isClosed
-  out.isCanonicalized = geometry.isCanonicalized
   out.transforms = mat4.clone(geometry.transforms)
   return out
 }

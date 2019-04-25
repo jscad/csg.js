@@ -13,7 +13,6 @@ const create = (points) => {
   return {
     points: points,
     isClosed: false,
-    isCanonicalized: false,
     transforms: mat4.identity()
   }
 }

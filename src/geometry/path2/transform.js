@@ -15,7 +15,6 @@ const transform = (matrix, geometry) => {
   newgeometry.isClosed = geometry.isClosed
 
   newgeometry.transforms = mat4.multiply(geometry.transforms, matrix)
-  newgeometry.isCanonicalized = false
   return newgeometry
 }
 

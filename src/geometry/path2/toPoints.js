@@ -1,17 +1,15 @@
-const canonicalize = require('./canonicalize')
+const applyTransforms = require('./applyTransforms')
 
 /**
  * Produces a new array containing the path's point data.
- * This will be an array of canonicalized vec2.
- * The points returned should not be modified as they may be shared between
- *   callers.
- * @param {path2} path - the path to canonicalize.
- * @returns {Array<vec2>} - the array of canonicalized vec2.
+ * The returned array should not be modified as the data is shared with the geometry.
+ * @param {path2} geometry - the path
+ * @returns {Array} an array of points, each point contains an array of two numbers
  * @example
- * toPoints(path)
+ * let sharedpoints = toPoints(path)
  */
 const toPoints = (geometry) => {
-  return canonicalize(geometry).points
+  return applyTransforms(geometry).points
 }
 
 module.exports = toPoints

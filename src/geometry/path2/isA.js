@@ -6,7 +6,7 @@
 const isA = (object) => {
   if (object && typeof object === 'object') {
     // see create for the required attributes and types
-    if ('points' in object && 'transforms' in object && 'isCanonicalized' in object && 'isClosed' in object) {
+    if ('points' in object && 'transforms' in object && 'isClosed' in object) {
       // NOTE: transforms should be a TypedArray, which has a read-only length
       if (Array.isArray(object.points) && 'length' in object.transforms) {
         return true

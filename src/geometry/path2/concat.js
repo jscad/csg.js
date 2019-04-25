@@ -1,4 +1,3 @@
-const canonicalize = require('./canonicalize')
 const fromPoints = require('./fromPoints')
 const toPoints = require('./toPoints')
 

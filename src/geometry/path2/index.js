@@ -1,5 +1,4 @@
 module.exports = {
-  canonicalize: require('./canonicalize'),
   close: require('./close'),
   concat: require('./concat'),
   create: require('./create'),

@@ -12,7 +12,7 @@ test('isA: identifies created paths', t => {
 test('isA: identifies non paths', t => {
   let p1 = null
   let p2 = {}
-  let p3 = {points: 1, transforms: 1, isCanonicalized: 1, isClosed: 1}
+  let p3 = {points: 1, transforms: 1, isClosed: 1}
   t.false(isA(p1))
   t.false(isA(p2))
   t.false(isA(p3))
