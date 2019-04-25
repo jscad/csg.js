@@ -1,4 +1,4 @@
-const canonicalize = require('./canonicalize')
+const applyTransforms = require('./applyTransforms')
 
 /*
  * Produces an array of polygons from the given geometry.
@@ -9,7 +9,7 @@ const canonicalize = require('./canonicalize')
  * let sharedpolygons = toPolygons(geometry)
  */
 const toPolygons = function (geometry) {
-  return canonicalize(geometry).polygons
+  return applyTransforms(geometry).polygons
 }
 
 module.exports = toPolygons

@@ -5,7 +5,7 @@
  */
 const isA = (object) => {
   if (object && typeof object === 'object') {
-    if ('polygons' in object && 'isCanonicalized' in object && 'transforms' in object) {
+    if ('polygons' in object && 'transforms' in object) {
       if (Array.isArray(object.polygons) && 'length' in object.transforms) {
         return true
       }

@@ -10,7 +10,6 @@ const create = function (polygons) {
   }
   return {
     polygons : polygons,
-    isCanonicalized : false,
     isRetesselated : false,
     transforms : mat4.create()
   }

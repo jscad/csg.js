@@ -5,7 +5,7 @@ const create = require('./create')
 /**
  * Transform the given geometry using the given matrix.
  * This is a lazy transform of the polygons, as this function only adjusts the transforms.
- * See canonicalize() for the actual application of the transfroms to the polygons.
+ * See applyTransforms() for the actual application of the transforms to the polygons.
  * @param {Matrix4x4} matrix - the matrix to transform with
  * @param {geom3} geometry - the geometry to transform
  * @returns {geom3} - the transformed geometry
@@ -17,7 +17,6 @@ const transform = function (matrix, geometry) {
   newgeometry.isRetesselated = geometry.isRetesselated
 
   newgeometry.transforms = mat4.multiply(geometry.transforms, matrix)
-  newgeometry.isCanonicalized = false
   return newgeometry
 }
 

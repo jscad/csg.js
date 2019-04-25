@@ -12,7 +12,6 @@ const create = require('./create')
 const clone = (geometry) => {
   let out = create()
   out.polygons = geometry.polygons.map((polygon) => poly3.clone(polygon))
-  out.isCanonicalized = geometry.isCanonicalized
   out.isRetesselated = geometry.isRetesselated
   out.transforms = mat4.clone(geometry.transforms)
   return out

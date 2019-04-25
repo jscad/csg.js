@@ -1,5 +1,4 @@
 module.exports = {
-  canonicalize: require('./canonicalize'),
   clone: require('./clone'),
   create: require('./create'),
   fromPoints: require('./fromPoints'),

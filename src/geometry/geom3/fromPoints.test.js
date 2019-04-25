@@ -15,7 +15,7 @@ test('fromPoints: Creates a populated geom3', (t) => {
          ]
       }
     ],
-    isCanonicalized: false, isRetesselated: false,
+    isRetesselated: false,
     transforms: new Float32Array([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1])
   }
   let obs = fromPoints(points)
