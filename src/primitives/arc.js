@@ -1,4 +1,6 @@
-const {angleEPS, defaultResolution2D} = require('../core/constants')
+const {EPS, defaultResolution2D} = require('../core/constants')
+
+const {degToRad, radToDeg} = require('../math/utils')
 
 const vec2 = require('../math/vec2')
 
@@ -25,32 +27,47 @@ const arc = function (options) {
   }
   let {center, radius, startangle, endangle, maketangent, resolution} = Object.assign({}, defaults, options)
 
-  // convert to vector in order to perform math
-  centerv = vec2.fromArray(center)
+  if (startangle < 0 || endangle < 0) throw new Error('the start and end angles must be positive')
 
-  let pointArray = []
+  startangle = startangle % 360
+  endangle = endangle % 360
+
+  let rotation = 360
+  if (startangle < endangle) {
+    rotation = endangle - startangle
+  }
+  if (startangle > endangle) {
+    rotation = endangle + (360 - startangle)
+  }
+
+  let minangle = radToDeg(Math.acos(((radius * radius) + (radius * radius) - (EPS * EPS)) / (2 * radius * radius)))
+
+  let centerv = vec2.fromArray(center)
   let point
-  let absangledif = Math.abs(endangle - startangle)
-  if (absangledif < angleEPS) {
-    point = vec3.scale(radius, vec3.fromAngleDegrees(startangle))
+  let pointArray = []
+  if (rotation < minangle) {
+    // there is no rotation, just a single point
+    point = vec2.scale(radius, vec2.fromAngleDegrees(startangle))
     vec2.add(point, point, centerv)
-    pointArray.push([point[0], point[1]])
+    pointArray.push(point)
   } else {
-    let numsteps = Math.floor(resolution * absangledif / 360) + 1
-    let edgestepsize = numsteps * 0.5 / absangledif // step size for half a degree
+    // note: add one additional step to acheive full rotation
+    let numsteps = Math.max(1, Math.floor(resolution * rotation / 360)) + 1
+    let edgestepsize = numsteps * 0.5 / rotation // step size for half a degree
     if (edgestepsize > 0.25) edgestepsize = 0.25
-    let numstepsMod = maketangent ? (numsteps + 2) : numsteps
-    for (let i = 0; i <= numstepsMod; i++) {
+
+    let totalsteps = maketangent ? (numsteps + 2) : numsteps
+    for (let i = 0; i <= totalsteps; i++) {
       let step = i
       if (maketangent) {
         step = (i - 1) * (numsteps - 2 * edgestepsize) / numsteps + edgestepsize
         if (step < 0) step = 0
         if (step > numsteps) step = numsteps
       }
-      let angle = startangle + step * (endangle - startangle) / numsteps
+      let angle = startangle + step * (rotation / numsteps)
       point = vec2.scale(radius, vec2.fromAngleDegrees(angle))
       vec2.add(point, point, centerv)
-      pointArray.push([point[0], point[1]])
+      pointArray.push(point)
     }
   }
   return path2.fromPoints({close: false}, pointArray)
