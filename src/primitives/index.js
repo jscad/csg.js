@@ -15,5 +15,6 @@ module.exports = {
   roundedCylinder: require('./roundedCylinder'),
   sphere: require('./sphere'),
   square: require('./square'),
+  star: require('./star'),
   torus: require('./torus')
 }
