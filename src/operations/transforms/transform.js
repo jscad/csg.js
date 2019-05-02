@@ -11,7 +11,7 @@ const {geom2, geom3, path2} = require('../../geometry')
  * @return {Object|Array} the transform object(s)
  *
  * @example
- * let newsphere = transform(Matrix4x4.rotateX(45), sphere())
+ * const newsphere = transform(Matrix4x4.rotateX(45), sphere())
  */
 const transform = function (matrix, ...objects) {
   // TODO how to check that the matrix is REAL?

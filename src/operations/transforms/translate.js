@@ -11,7 +11,7 @@ const {geom2, geom3, path2} = require('../../geometry')
  * @return {Object|Array} the translated object(s)
  *
  * @example
- * let newsphere = translate({offsets: [5, 0, 10]}, sphere())
+ * const newsphere = translate({offsets: [5, 0, 10]}, sphere())
  */
 const translate = (offsets, ...objects) => {
   if (!Array.isArray(offsets)) throw new Error('offsets must be an array')

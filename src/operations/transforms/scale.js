@@ -11,7 +11,7 @@ const {geom2, geom3, path2} = require('../../geometry')
  * @return {Object|Array} the scaled object(s)
  *
  * @example
- * let newsphere = scale([5, 0, 10], sphere())
+ * const newsphere = scale([5, 0, 10], sphere())
  */
 const scale = (factors, ...objects) => {
   if (!Array.isArray(factors)) throw new Error('factors must be an array')

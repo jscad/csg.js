@@ -15,7 +15,7 @@ const {geom2, geom3, path2} = require('../../geometry')
  * @return {Object|Array} the mirrored object(s)
  *
  * @example
- * let newsphere = mirror({normal: [0,0,10]}, cube({center: [0,0,15], radius: [20, 25, 5]}))
+ * const newsphere = mirror({normal: [0,0,10]}, cube({center: [0,0,15], radius: [20, 25, 5]}))
  */
 const mirror = (options, ...objects) => {
   const defaults = {

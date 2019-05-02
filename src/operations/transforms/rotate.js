@@ -25,14 +25,14 @@ const rotation = (yaw, pitch, roll) => {
 
   // create and populate rotation matrix
   // clockwise rotation
-  //var els = [
+  //const els = [
   //  cp*cy, sr*sp*cy - cr*sy, sr*sy + cr*sp*cy, 0,
   //  cp*sy, cr*cy + sr*sp*sy, cr*sp*sy - sr*cy, 0,
   //  -sp, sr*cp, cr*cp, 0,
   //  0, 0, 0, 1
   //]
   // counter clockwise rotation
-  var els = [
+  const els = [
     cp*cy, cp*sy, -sp, 0,
     sr*sp*cy - cr*sy, cr*cy + sr*sp*sy, sr*cp, 0,
     sr*sy + cr*sp*cy, cr*sp*sy - sr*cy, cr*cp, 0,
@@ -50,7 +50,7 @@ const rotation = (yaw, pitch, roll) => {
  * @return {Object|Array} the rotated object(s)
  *
  * @example
- * let newsphere = rotate({angles: [45,0,0]}, sphere())
+ * const newsphere = rotate({angles: [45,0,0]}, sphere())
  */
 const rotate = (angles, ...objects) => {
   if (!Array.isArray(angles)) throw new Error('angles must be an array')
