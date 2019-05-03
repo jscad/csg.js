@@ -13,6 +13,7 @@ module.exports = {
   rectangle: require('./rectangle'),
   roundedCube: require('./roundedCube'),
   roundedCylinder: require('./roundedCylinder'),
+  roundedRectangle: require('./roundedRectangle'),
   sphere: require('./sphere'),
   square: require('./square'),
   star: require('./star'),

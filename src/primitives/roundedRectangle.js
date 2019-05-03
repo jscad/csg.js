@@ -1,63 +1,57 @@
-const {defaultResolution2D} = require('../../constants')
+const {defaultResolution2D, EPS} = require('../core/constants')
 
-const Vector2D = require('../../math/Vector2')
+const vec2 = require('../math/vec2')
 
-const {parseOptionAs2DVector, parseOptionAsFloat, parseOptionAsInt} = require('../optionParsers')
-
-const expand = require('./expand')
-const rectangle = require('./rectangle')
+const {geom2} = require('../geometry')
 
 /** Construct a rounded rectangle.
  * @param {Object} [options] - options for construction
  * @param {Vector2D} [options.center=[0,0]] - center of rounded rectangle
  * @param {Vector2D} [options.radius=[1,1]] - radius of rounded rectangle, width and height
- * @param {Vector2D} [options.corner1=[0,0]] - bottom left corner of rounded rectangle (alternate)
- * @param {Vector2D} [options.corner2=[0,0]] - upper right corner of rounded rectangle (alternate)
  * @param {Number} [options.roundradius=0.2] - round radius of corners
  * @param {Number} [options.resolution=defaultResolution2D] - number of sides per 360 rotation
- * @returns {CAG} new CAG object
+ * @returns {geom2} new 2D geometry
  *
  * @example
- * let r = roundedRectangle({
- *   center: [0, 0],
- *   radius: [5, 10],
- *   roundradius: 2,
- *   resolution: 36,
- * });
+ * let myrectangle = roundedRectangle({radius: [5, 10], roundradius: 2})
  */
-const roundedRectangle = function (options) {
-  options = options || {}
-  let center, radius
-  if (('corner1' in options) || ('corner2' in options)) {
-    if (('center' in options) || ('radius' in options)) {
-      throw new Error('roundedRectangle: should either give a radius and center parameter, or a corner1 and corner2 parameter')
-    }
-    let corner1 = parseOptionAs2DVector(options, 'corner1', [0, 0])
-    let corner2 = parseOptionAs2DVector(options, 'corner2', [1, 1])
-    center = corner1.plus(corner2).times(0.5)
-    radius = corner2.minus(corner1).times(0.5)
-  } else {
-    center = parseOptionAs2DVector(options, 'center', [0, 0])
-    radius = parseOptionAs2DVector(options, 'radius', [1, 1])
+const roundedRectangle = (options) => {
+  const defaults = {
+    center: [0, 0],
+    radius: [1, 1],
+    roundRadius: 0.2,
+    resolution: defaultResolution2D
   }
-  let roundradius = parseOptionAsFloat(options, 'roundradius', 0.2)
-  let resolution = parseOptionAsInt(options, 'resolution', defaultResolution2D)
+  const {radius, center, roundRadius, resolution} = Object.assign({}, defaults, options)
 
-  radius = radius.abs() // negative radii make no sense
+  if (roundRadius > (radius[0] - EPS) || roundRadius > (radius[1] - EPS)) throw new Error('roundRadius must be smaller then the radius')
 
-  if (roundradius < 0) throw new Error('roundradius must be positive')
+  let segments = Math.floor(resolution / 4)
+  if (segments < 1) throw new Error('resolution must be greater then 4')
 
-  let maxroundradius = Math.min(radius.x, radius.y) - 0.1
-  roundradius = Math.min(roundradius, maxroundradius)
-
-  radius = new Vector2D(radius.x - roundradius, radius.y - roundradius)
-
-  // construct the rectangle
-  let rect = rectangle({center: center, radius: radius})
-  if (roundradius > 0) {
-    rect = expand({radius: roundradius, resolution: resolution}, rect)
+  // create sets of points that define the corners
+  let corner0 = vec2.add(center, [radius[0] - roundRadius, radius[1] - roundRadius])
+  let corner1 = vec2.add(center, [roundRadius - radius[0], radius[1] - roundRadius])
+  let corner2 = vec2.add(center, [roundRadius - radius[0], roundRadius - radius[1]])
+  let corner3 = vec2.add(center, [radius[0] - roundRadius, roundRadius - radius[1]])
+  let corner0Points = []
+  let corner1Points = []
+  let corner2Points = []
+  let corner3Points = []
+  for (let i = 0; i <= segments; i++) {
+    let radians = Math.PI / 2 * i / segments
+    let point = vec2.fromAngleRadians(radians)
+    vec2.scale(point, roundRadius, point)
+    corner0Points.push(vec2.add(corner0, point))
+    vec2.rotate(point, Math.PI / 2, point)
+    corner1Points.push(vec2.add(corner1, point))
+    vec2.rotate(point, Math.PI / 2, point)
+    corner2Points.push(vec2.add(corner2, point))
+    vec2.rotate(point, Math.PI / 2, point)
+    corner3Points.push(vec2.add(corner3, point))
   }
-  return rect
+
+  return geom2.fromPoints(corner0Points.concat(corner1Points, corner2Points, corner3Points))
 }
 
 module.exports = roundedRectangle
