@@ -1,4 +1,4 @@
-const flatten = require('../utils/flatten')
+const flatten = require('../../utils/flatten')
 
 const mat4 = require('../../math/mat4')
 
