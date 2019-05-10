@@ -24,14 +24,14 @@ const rotation = (yaw, pitch, roll) => {
   const cr = Math.cos(roll);
 
   // create and populate rotation matrix
-  // clockwise rotation
+  // left-hand-rule rotation
   //const els = [
   //  cp*cy, sr*sp*cy - cr*sy, sr*sy + cr*sp*cy, 0,
   //  cp*sy, cr*cy + sr*sp*sy, cr*sp*sy - sr*cy, 0,
   //  -sp, sr*cp, cr*cp, 0,
   //  0, 0, 0, 1
   //]
-  // counter clockwise rotation
+  // right-hand-rule rotation
   const els = [
     cp*cy, cp*sy, -sp, 0,
     sr*sp*cy - cr*sy, cr*cy + sr*sp*sy, sr*cp, 0,
@@ -44,13 +44,12 @@ const rotation = (yaw, pitch, roll) => {
 /**
  * Rotate the given object(s) using the given options (if any)
  * @see The paper by D. Rose, Rotations in Three-Dimensions (Tait-Bryan euler angles)
- * @param {Object} options - options for rotate
  * @param {Array} angles - angle of rotations about X, Y, and X axis
  * @param {Object|Array} objects - the objects(s) to rotate
  * @return {Object|Array} the rotated object(s)
  *
  * @example
- * const newsphere = rotate({angles: [45,0,0]}, sphere())
+ * const newsphere = rotate([45,0,0], sphere())
  */
 const rotate = (angles, ...objects) => {
   if (!Array.isArray(angles)) throw new Error('angles must be an array')
