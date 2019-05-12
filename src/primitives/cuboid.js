@@ -1,5 +1,4 @@
-const geom3 = require('../geometry/geom3')
-const poly3 = require('../geometry/poly3')
+const {geom3, poly3} = require('../geometry')
 
 /** Construct an axis-aligned solid cuboid.
  * @param {Object} [options] - options for construction
@@ -8,14 +7,20 @@ const poly3 = require('../geometry/poly3')
  * @returns {geom3} new 3D geometry
  *
  * @example
- * let mycube = cuboid({center: [5, 5, 5], radius: [5, 10, 5]})
+ * let myshape = cuboid({center: [5, 5, 5], radius: [5, 10, 5]})
  */
-const cuboid = function (options) {
+const cuboid = (options) => {
   const defaults = {
     center: [0, 0, 0],
     radius: [1, 1, 1],
   }
   let {center, radius} = Object.assign({}, defaults, options)
+
+  if (!Array.isArray(center)) throw new Error('center must be an array')
+  if (center.length != 3) throw new Error('center must contain X, Y and Z values')
+
+  if (!Array.isArray(radius)) throw new Error('radius must be an array')
+  if (radius.length != 3) throw new Error('radius must contain X, Y and Z values')
 
   let result = geom3.create(
     // adjust a basic shape to center and radius
@@ -41,4 +46,31 @@ const cuboid = function (options) {
   return result
 }
 
-module.exports = cuboid
+/** Construct an axis-aligned solid cube with six square faces.
+ * @see {@link cuboid} for more options, as this is an alias to cuboid
+ * @param {Object} [options] - options for construction
+ * @param {Array} [options.center=[0,0,0]] - center of cube
+ * @param {Number} [options.radius=1 - radius of cube
+ * @returns {geom3} new 3D geometry
+ *
+ * @example
+ * let mycube = cube({center: [5, 5, 5], radius: 5})
+ */
+const cube = (options) => {
+  const defaults = {
+    center: [0, 0, 0],
+    radius: 1,
+  }
+  let {center, radius} = Object.assign({}, defaults, options)
+
+  // TODO check that radius is a number
+
+  radius = [radius, radius, radius]
+
+  return cuboid({center: center, radius: radius})
+}
+
+module.exports = {
+  cube,
+  cuboid
+}
