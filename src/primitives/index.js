@@ -10,12 +10,12 @@ module.exports = {
   line: require('./line'),
   polygon: require('./polygon'),
   polyhedron: require('./polyhedron'),
-  rectangle: require('./rectangle'),
+  rectangle: require('./rectangle').rectangle,
   roundedCube: require('./roundedCube'),
   roundedCylinder: require('./roundedCylinder'),
   roundedRectangle: require('./roundedRectangle'),
   sphere: require('./sphere'),
-  square: require('./square'),
+  square: require('./rectangle').square,
   star: require('./star'),
 //  torus: require('./torus')
 }

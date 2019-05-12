@@ -17,10 +17,10 @@ const cuboid = (options) => {
   let {center, radius} = Object.assign({}, defaults, options)
 
   if (!Array.isArray(center)) throw new Error('center must be an array')
-  if (center.length != 3) throw new Error('center must contain X, Y and Z values')
+  if (center.length < 3) throw new Error('center must contain X, Y and Z values')
 
   if (!Array.isArray(radius)) throw new Error('radius must be an array')
-  if (radius.length != 3) throw new Error('radius must contain X, Y and Z values')
+  if (radius.length < 3) throw new Error('radius must contain X, Y and Z values')
 
   let result = geom3.create(
     // adjust a basic shape to center and radius
