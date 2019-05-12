@@ -1,11 +1,11 @@
 module.exports = {
   arc: require('./arc'),
-  circle: require('./circle'),
+  circle: require('./ellipse').circle,
   cube: require('./cuboid').cube,
   cuboid: require('./cuboid').cuboid,
   cylinder: require('./cylinder'),
   cylinderElliptic: require('./cylinderElliptic'),
-  ellipse: require('./ellipse'),
+  ellipse: require('./ellipse').ellipse,
   geodesicSphere: require('./geodesicSphere'),
   line: require('./line'),
   polygon: require('./polygon'),

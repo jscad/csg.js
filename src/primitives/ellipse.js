@@ -18,7 +18,13 @@ const ellipse = (options) => {
     radius: [1, 1],
     resolution: defaultResolution2D
   }
-  let {radius, resolution, center} = Object.assign({}, defaults, options)
+  let {center, radius, resolution} = Object.assign({}, defaults, options)
+
+  if (!Array.isArray(center)) throw new Error('center must be an array')
+  if (center.length < 2) throw new Error('center must contain X and Y values')
+
+  if (!Array.isArray(radius)) throw new Error('radius must be an array')
+  if (radius.length < 2) throw new Error('radius must contain X and Y values')
 
   const centerv = vec2.fromArray(center)
   const step = 2 * Math.PI / resolution // radians
@@ -32,4 +38,31 @@ const ellipse = (options) => {
   return geom2.fromPoints(points)
 }
 
-module.exports = ellipse
+/**
+ * Construct a circle where are points are at the same distance from the center.
+ * @see {@link ellipse} for additional options, as this is an alias for ellipse
+ * @param {Object} [options] - options for construction
+ * @param {Array} [options.center=[0,0]] - center of circle
+ * @param {Number} [options.radius=1] - radius of circle
+ * @param {Number} [options.resolution=defaultResolution2D] - number of segments per 360 rotation
+ * @returns {geom2} new 2D geometry
+ */
+const circle = (options) => {
+  const defaults = {
+    center: [0, 0],
+    radius: 1,
+    resolution: defaultResolution2D
+  }
+  let {radius, resolution, center} = Object.assign({}, defaults, options)
+
+  // TODO check that radius is a number
+
+  radius = [radius, radius]
+
+  return ellipse({center: center, radius: radius, resolution: resolution})
+}
+
+module.exports = {
+  circle,
+  ellipse
+}
