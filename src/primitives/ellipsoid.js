@@ -5,29 +5,37 @@ const vec3 = require('../math/vec3')
 const geom3 = require('../geometry/geom3')
 const poly3 = require('../geometry/poly3')
 
-/**
- * Construct a solid sphere
+/** Construct an ellipsoid.
  * @param {Object} [options] - options for construction
- * @param {Array} [options.center=[0,0,0]] - center of sphere
- * @param {Number} [options.radius=1] - radius of sphere
+ * @param {Array} [options.center=[0,0,0]] - center of ellipsoid
+ * @param {Array} [options.radius=[1,1,1]] - radius of ellipsoid
  * @param {Number} [options.resolution=defaultResolution3D] - number of polygons per 360 degree revolution
  * @param {Array} [options.axes] -  an array with three vectors for the x, y and z base vectors
  * @returns {geom3} new 3D geometry
+ *
+ * @example
+ * let myshape = ellipsoid({center: [5, 5, 5], radius: [5, 10, 20]})
 */
-const sphere = (options) => {
+const ellipsoid = (options) => {
   const defaults = {
     center: [0, 0, 0],
-    radius: 1,
+    radius: [1, 1, 1],
     resolution: defaultResolution3D,
     axes: [[1, 0, 0], [0, -1, 0], [0, 0, 1]]
   }
   let {center, radius, resolution, axes} = Object.assign({}, defaults, options)
 
-  let xvector = vec3.scale(radius, vec3.unit(axes[0]))
-  let yvector = vec3.scale(radius, vec3.unit(axes[1]))
-  let zvector = vec3.scale(radius, vec3.unit(axes[2]))
+  if (!Array.isArray(center)) throw new Error('center must be an array')
+  if (center.length < 3) throw new Error('center must contain X, Y and Z values')
 
-  if (resolution < 4) resolution = 4
+  if (!Array.isArray(radius)) throw new Error('radius must be an array')
+  if (radius.length < 3) throw new Error('radius must contain X, Y and Z values')
+
+  if (resolution < 4) throw new Error('resolution must be greater then 3')
+
+  let xvector = vec3.scale(radius[0], vec3.unit(axes[0]))
+  let yvector = vec3.scale(radius[1], vec3.unit(axes[1]))
+  let zvector = vec3.scale(radius[2], vec3.unit(axes[2]))
 
   let qresolution = Math.round(resolution / 4)
   let prevcylinderpoint
@@ -36,7 +44,6 @@ const sphere = (options) => {
     let angle = Math.PI * 2.0 * slice1 / resolution
     let cylinderpoint = vec3.add(vec3.scale(Math.cos(angle), xvector), vec3.scale(Math.sin(angle), yvector))
     if (slice1 > 0) {
-      // cylinder vertices:
       let vertices = []
       let prevcospitch, prevsinpitch
       for (let slice2 = 0; slice2 <= qresolution; slice2++) {
@@ -83,4 +90,33 @@ const sphere = (options) => {
   return geom3.create(polygons)
 }
 
-module.exports = sphere
+/**
+ * Construct a sphere where are points are at the same distance from the center.
+ * @see {@link ellipsoid} for additional options, as this is an alias for ellipsoid
+ * @param {Object} [options] - options for construction
+ * @param {Array} [options.center=[0,0,0]] - center of sphere
+ * @param {Number} [options.radius=1] - radius of sphere
+ * @param {Number} [options.resolution=defaultResolution3D] - number of polygons per 360 degree revolution
+ * @param {Array} [options.axes] -  an array with three vectors for the x, y and z base vectors
+ * @returns {geom3} new 3D geometry
+*/
+const sphere = (options) => {
+  const defaults = {
+    center: [0, 0, 0],
+    radius: 1,
+    resolution: defaultResolution3D,
+    axes: [[1, 0, 0], [0, -1, 0], [0, 0, 1]]
+  }
+  let {center, radius, resolution, axes} = Object.assign({}, defaults, options)
+
+  // TODO check that radius is a number
+
+  radius = [radius, radius, radius]
+
+  return ellipsoid({center: center, radius: radius, resolution: resolution, axes: axes})
+}
+
+module.exports = {
+  ellipsoid,
+  sphere
+}

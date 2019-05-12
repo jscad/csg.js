@@ -26,6 +26,8 @@ const ellipse = (options) => {
   if (!Array.isArray(radius)) throw new Error('radius must be an array')
   if (radius.length < 2) throw new Error('radius must contain X and Y values')
 
+  if (resolution < 4) throw new Error('resolution must be greater than 3')
+
   const centerv = vec2.fromArray(center)
   const step = 2 * Math.PI / resolution // radians
 
