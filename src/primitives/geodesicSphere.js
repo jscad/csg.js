@@ -119,7 +119,7 @@ const geodesicSphere = (options) => {
     offset = g.offset
   }
 
-  let geometry = polyhedron({points: points, faces: faces, normals: 'inward'})
+  let geometry = polyhedron({points: points, faces: faces, orientation: 'inward'})
   if (radius !== 1) geometry = geom3.transform(mat4.fromScaling([radius, radius, radius]), geometry)
   return geometry
 }
