@@ -33,8 +33,8 @@ const getPoints = (vertices, radius, startAngle, center) => {
  * @param {Number} [options.vertices=5] - number of vertices (P) on the star
  * @param {Number} [options.density=2] - density (Q) of star
  * @param {Number} [options.outerRadius=1] - outer radius of vertices
- * @param {Number} [options.innerRadius=0] - inner radius of vertices
- * @param {Number} [options.startAngle=0] - starting angle for first point
+ * @param {Number} [options.innerRadius=0] - inner radius of vertices, or zero to calculate
+ * @param {Number} [options.startAngle=0] - starting angle for first vertice
  *
  * @example
  * let star1 = star({vertices: 8, outerRadius: 10}) // star with 8/2 density
@@ -50,6 +50,9 @@ const star = (options) => {
     startAngle: 0
   }
   var {center, vertices, outerRadius, innerRadius, density, startAngle} = Object.assign({}, defaults, options)
+
+  if (!Array.isArray(center)) throw new Error('center must be an array')
+  if (center.length < 2) throw new Error('center must contain X and Y values')
 
   // force integers
   vertices = Math.floor(vertices)
