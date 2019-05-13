@@ -7,19 +7,19 @@ const polyhedron = require('./polyhedron')
 /** Construct a geodesic sphere based on icosahedron symmetry.
  * @param {Object} [options] - options for construction
  * @param {Number} [options.radius=1] - target radius of sphere
- * @param {Number} [options.fn=1] - subdivision frequency per face, multiples of 6
+ * @param {Number} [options.frequency=1] - subdivision frequency per face, multiples of 6
  * @returns {geom3} new 3D geometry
  */
 const geodesicSphere = (options) => {
   const defaults = {
     radius: 1,
-    fn: 6
+    frequency: 6
   }
-  let {radius, fn} = Object.assign({}, defaults, options)
+  let {radius, frequency} = Object.assign({}, defaults, options)
 
   // adjust the frequency to base 6
-  fn = Math.floor(fn / 6)
-  if (fn <= 0) fn = 1
+  frequency = Math.floor(frequency / 6)
+  if (frequency <= 0) frequency = 1
 
   let ci = [ // hard-coded data of icosahedron (20 faces, all triangles)
     [0.850651, 0.000000, -0.525731],
@@ -38,7 +38,7 @@ const geodesicSphere = (options) => {
   let ti = [ [0, 9, 1], [1, 10, 0], [6, 7, 0], [10, 6, 0], [7, 9, 0], [5, 1, 4], [4, 1, 9], [5, 10, 1], [2, 8, 3], [3, 11, 2], [2, 5, 4],
     [4, 8, 2], [2, 11, 5], [3, 7, 6], [6, 11, 3], [8, 7, 3], [9, 8, 4], [11, 10, 5], [10, 11, 6], [8, 9, 7]]
 
-  let geodesicSubDivide = function (p, fn, offset) {
+  let geodesicSubDivide = function (p, frequency, offset) {
     let p1 = p[0]
     let p2 = p[1]
     let p3 = p[2]
@@ -48,20 +48,20 @@ const geodesicSphere = (options) => {
 
     //           p3
     //           /\
-    //          /__\     fn = 3
+    //          /__\     frequency = 3
     //      i  /\  /\
-    //        /__\/__\       total triangles = 9 (fn*fn)
+    //        /__\/__\       total triangles = 9 (frequency*frequency)
     //       /\  /\  /\
     //     0/__\/__\/__\
     //    p1 0   j      p2
 
-    for (let i = 0; i < fn; i++) {
-      for (let j = 0; j < fn - i; j++) {
-        let t0 = i / fn
-        let t1 = (i + 1) / fn
-        let s0 = j / (fn - i)
-        let s1 = (j + 1) / (fn - i)
-        let s2 = fn - i - 1 ? j / (fn - i - 1) : 1
+    for (let i = 0; i < frequency; i++) {
+      for (let j = 0; j < frequency - i; j++) {
+        let t0 = i / frequency
+        let t1 = (i + 1) / frequency
+        let s0 = j / (frequency - i)
+        let s1 = (j + 1) / (frequency - i)
+        let s2 = frequency - i - 1 ? j / (frequency - i - 1) : 1
         let q = []
 
         q[0] = mix3(mix3(p1, p2, s0), p3, t0)
@@ -78,8 +78,8 @@ const geodesicSphere = (options) => {
         c.push(q[0], q[1], q[2])
         f.push([n, n + 1, n + 2]); n += 3
 
-        if (j < fn - i - 1) {
-          let s3 = fn - i - 1 ? (j + 1) / (fn - i - 1) : 1
+        if (j < frequency - i - 1) {
+          let s3 = frequency - i - 1 ? (j + 1) / (frequency - i - 1) : 1
           q[0] = mix3(mix3(p1, p2, s1), p3, t0)
           q[1] = mix3(mix3(p1, p2, s3), p3, t1)
           q[2] = mix3(mix3(p1, p2, s2), p3, t1)
@@ -113,7 +113,7 @@ const geodesicSphere = (options) => {
   let offset = 0
 
   for (let i = 0; i < ti.length; i++) {
-    let g = geodesicSubDivide([ ci[ti[i][0]], ci[ti[i][1]], ci[ti[i][2]]], fn, offset)
+    let g = geodesicSubDivide([ ci[ti[i][0]], ci[ti[i][1]], ci[ti[i][2]]], frequency, offset)
     points = points.concat(g.points)
     faces = faces.concat(g.triangles)
     offset = g.offset
