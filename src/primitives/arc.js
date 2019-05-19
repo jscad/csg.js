@@ -10,35 +10,35 @@ const path2 = require('../geometry/path2')
  * @param {Object} options - options for construction
  * @param {Array} options.center - center of circle
  * @param {Number} options.radius - radius of circle
- * @param {Number} options.startangle - starting angle of the arc, in degrees
- * @param {Number} options.endangle - ending angle of the arc, in degrees
+ * @param {Number} options.startAngle - starting angle of the arc, in degrees
+ * @param {Number} options.endAngle - ending angle of the arc, in degrees
  * @param {Number} options.segments - number of segments to create per 360 rotation
- * @param {Boolean} options.maketangent - adds line segments at both ends of the arc to ensure that the gradients at the edges are tangent
+ * @param {Boolean} options.makeTangent - adds line segments at both ends of the arc to ensure that the gradients at the edges are tangent
  * @returns {path} new path (not closed)
  */
 const arc = function (options) {
   const defaults = {
     center: [0, 0],
     radius: 1,
-    startangle: 0,
-    endangle: 360,
-    maketangent: false,
+    startAngle: 0,
+    endAngle: 360,
+    makeTangent: false,
     segments: defaultResolution2D
   }
-  let {center, radius, startangle, endangle, maketangent, segments} = Object.assign({}, defaults, options)
+  let {center, radius, startAngle, endAngle, makeTangent, segments} = Object.assign({}, defaults, options)
 
-  if (startangle < 0 || endangle < 0) throw new Error('the start and end angles must be positive')
+  if (startAngle < 0 || endAngle < 0) throw new Error('the start and end angles must be positive')
   if (segments < 4) throw new Error('segments must be four or more')
 
-  startangle = startangle % 360
-  endangle = endangle % 360
+  startAngle = startAngle % 360
+  endAngle = endAngle % 360
 
   let rotation = 360
-  if (startangle < endangle) {
-    rotation = endangle - startangle
+  if (startAngle < endAngle) {
+    rotation = endAngle - startAngle
   }
-  if (startangle > endangle) {
-    rotation = endangle + (360 - startangle)
+  if (startAngle > endAngle) {
+    rotation = endAngle + (360 - startAngle)
   }
 
   let minangle = radToDeg(Math.acos(((radius * radius) + (radius * radius) - (EPS * EPS)) / (2 * radius * radius)))
@@ -48,7 +48,7 @@ const arc = function (options) {
   let pointArray = []
   if (rotation < minangle) {
     // there is no rotation, just a single point
-    point = vec2.scale(radius, vec2.fromAngleDegrees(startangle))
+    point = vec2.scale(radius, vec2.fromAngleDegrees(startAngle))
     vec2.add(point, point, centerv)
     pointArray.push(point)
   } else {
@@ -57,15 +57,15 @@ const arc = function (options) {
     let edgestepsize = numsteps * 0.5 / rotation // step size for half a degree
     if (edgestepsize > 0.25) edgestepsize = 0.25
 
-    let totalsteps = maketangent ? (numsteps + 2) : numsteps
+    let totalsteps = makeTangent ? (numsteps + 2) : numsteps
     for (let i = 0; i <= totalsteps; i++) {
       let step = i
-      if (maketangent) {
+      if (makeTangent) {
         step = (i - 1) * (numsteps - 2 * edgestepsize) / numsteps + edgestepsize
         if (step < 0) step = 0
         if (step > numsteps) step = numsteps
       }
-      let angle = startangle + step * (rotation / numsteps)
+      let angle = startAngle + step * (rotation / numsteps)
       point = vec2.scale(radius, vec2.fromAngleDegrees(angle))
       vec2.add(point, point, centerv)
       pointArray.push(point)

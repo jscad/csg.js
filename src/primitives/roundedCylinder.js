@@ -10,7 +10,7 @@ const poly3 = require('../geometry/poly3')
  * @param {Array} [options.start=[0,-1,0]] - start point of cylinder
  * @param {Array} [options.end=[0,1,0]] - end point of cylinder
  * @param {Number} [options.radius=1] - radius of rounded ends, must be scalar
- * @param {Number} [options.roundradius=0.2] - radius of rounded edges
+ * @param {Number} [options.roundRadius=0.2] - radius of rounded edges
  * @param {Number} [options.segments=defaultResolution3D] - number of segments to create per 360 rotation
  * @returns {geom3} new 3D geometry
  *

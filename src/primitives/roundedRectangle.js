@@ -8,12 +8,12 @@ const {geom2} = require('../geometry')
  * @param {Object} [options] - options for construction
  * @param {Array} [options.center=[0,0]] - center of rounded rectangle
  * @param {Array} [options.radius=[1,1]] - radius of rounded rectangle, width and height
- * @param {Number} [options.roundradius=0.2] - round radius of corners
+ * @param {Number} [options.roundRadius=0.2] - round radius of corners
  * @param {Number} [options.segments=defaultResolution2D] - number of segments to create per 360 rotation
  * @returns {geom2} new 2D geometry
  *
  * @example
- * let myrectangle = roundedRectangle({radius: [5, 10], roundradius: 2})
+ * let myrectangle = roundedRectangle({radius: [5, 10], roundRadius: 2})
  */
 const roundedRectangle = (options) => {
   const defaults = {

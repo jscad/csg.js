@@ -86,7 +86,7 @@ test('arc (options)', t => {
   t.deepEqual(obs.length, 17)
   t.true(comparePoints(obs, exp))
 
-  // test startangle
+  // test startAngle
   exp = [
     [ 6.123234262925839e-17, 1 ],
     [ -0.35460489988327026, 0.9350162148475647 ],
@@ -103,13 +103,13 @@ test('arc (options)', t => {
     [ 0.9350162148475647, -0.35460489988327026 ],
     [ 1, -2.4492937051703357e-16 ]
   ]
-  geometry = arc({startangle: 90})
+  geometry = arc({startAngle: 90})
   obs = path2.toPoints(geometry)
 
   t.deepEqual(obs.length, 14)
   t.true(comparePoints(obs, exp))
 
-  // test endangle
+  // test endAngle
   exp = [
     [ 1, 0 ],
     [ 0.9510565400123596, 0.30901700258255005 ],
@@ -118,13 +118,13 @@ test('arc (options)', t => {
     [ 0.30901700258255005, 0.9510565400123596 ],
     [ 6.123234262925839e-17, 1 ]
   ]
-  geometry = arc({endangle: 90})
+  geometry = arc({endAngle: 90})
   obs = path2.toPoints(geometry)
 
   t.deepEqual(obs.length, 6)
   t.true(comparePoints(obs, exp))
 
-  // test maketangent
+  // test makeTangent
   exp = [
     [ 1, 0 ],
     [ 0.9999619126319885, 0.008726535364985466 ],
@@ -146,7 +146,7 @@ test('arc (options)', t => {
     [ 0.9296630620956421, -0.3684109151363373 ],
     [ 0.9999619126319885, -0.008726535364985466 ]
   ]
-  geometry = arc({maketangent: true})
+  geometry = arc({makeTangent: true})
   obs = path2.toPoints(geometry)
 
   t.deepEqual(obs.length, 19)
@@ -180,7 +180,7 @@ test('arc (rotations)', t => {
     [ -0.9510565400123596, 0.30901700258255005 ],
     [ -1, 1.2246468525851679e-16 ]
   ]
-  let geometry = arc({startangle: 90, endangle: 180})
+  let geometry = arc({startAngle: 90, endAngle: 180})
   let obs = path2.toPoints(geometry)
 
   t.deepEqual(obs.length, 6)
@@ -198,7 +198,7 @@ test('arc (rotations)', t => {
     [ 0.9396926164627075, -0.3420201539993286 ],
     [ 1, -2.4492937051703357e-16 ]
   ]
-  geometry = arc({startangle: 180, endangle: 360})
+  geometry = arc({startAngle: 180, endAngle: 360})
   obs = path2.toPoints(geometry)
 
   t.deepEqual(obs.length, 10)
@@ -216,14 +216,14 @@ test('arc (rotations)', t => {
     [ 0.3420201539993286, 0.9396926164627075 ],
     [ 3.0616169991140216e-16, 1 ]
   ]
-  geometry = arc({startangle: 270, endangle: 90})
+  geometry = arc({startAngle: 270, endAngle: 90})
   obs = path2.toPoints(geometry)
 
   t.deepEqual(obs.length, 10)
   t.true(comparePoints(obs, exp))
 
   exp = [ [ -1.8369701465288538e-16, -1 ] ]
-  geometry = arc({startangle: 270, endangle: 270.000000005})
+  geometry = arc({startAngle: 270, endAngle: 270.000000005})
   obs = path2.toPoints(geometry)
 
   t.deepEqual(obs.length, 1)
