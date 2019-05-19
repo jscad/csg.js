@@ -41,14 +41,13 @@ const cylinderElliptic = function (options) {
   let slices = segments
 
   let startv = vec3.fromArray(start)
-  let endv = vec3.fromArray(end)
   let ray = vec3.subtract(end, start)
 
   let axisZ = vec3.unit(ray)
   let axisX = vec3.unit(vec3.random(axisZ))
   let axisY = vec3.unit(vec3.cross(axisX, axisZ))
 
-  function point (stack, slice, radius) {
+  const point = (stack, slice, radius) => {
     let angle = slice * Math.PI * 2
     let out = vec3.add(vec3.scale(radius[0] * Math.cos(angle), axisX), vec3.scale(radius[1] * Math.sin(angle), axisY))
     let pos = vec3.add(vec3.add(vec3.scale(stack, ray), startv), out)

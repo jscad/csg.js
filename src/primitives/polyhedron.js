@@ -38,9 +38,7 @@ const polyhedron = (options) => {
     faces.forEach((face) => face.reverse())
   }
 
-  let polygons = faces.map((face) => {
-    return poly3.fromPoints(face.map((idx) => points[idx]))
-  })
+  let polygons = faces.map((face) => poly3.fromPoints(face.map((idx) => points[idx])))
   return geom3.create(polygons)
 }
 

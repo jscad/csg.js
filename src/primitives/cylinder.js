@@ -49,7 +49,7 @@ const cylinder = function (options) {
   let axisX = vec3.unit(vec3.random(axisZ))
   let axisY = vec3.unit(vec3.cross(axisX, axisZ))
 
-  function point (stack, slice, radius) {
+  const point = (stack, slice, radius) => {
     let angle = slice * Math.PI * alpha / 180 // FIXME this scales the angles to meet the final alpha angle
     let out = vec3.add(vec3.scale(Math.cos(angle), axisX), vec3.scale(Math.sin(angle), axisY))
     let pos = vec3.add(vec3.add(startv, vec3.scale(stack, ray)), vec3.scale(radius, out))
@@ -64,7 +64,10 @@ const cylinder = function (options) {
       let t1 = (i + 1) / segments
       if (endRadius === startRadius) {
         polygons.push(poly3.fromPoints([startv, point(0, t0, endRadius), point(0, t1, endRadius)]))
-        polygons.push(poly3.fromPoints([point(0, t1, endRadius), point(0, t0, endRadius), point(1, t0, endRadius), point(1, t1, endRadius)]))
+        polygons.push(poly3.fromPoints([point(0, t1, endRadius),
+                                        point(0, t0, endRadius),
+                                        point(1, t0, endRadius),
+                                        point(1, t1, endRadius)]))
         polygons.push(poly3.fromPoints([endv, point(1, t1, endRadius), point(1, t0, endRadius)]))
       } else {
         if (startRadius > 0) {

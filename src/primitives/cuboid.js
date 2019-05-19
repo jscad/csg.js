@@ -12,7 +12,7 @@ const {geom3, poly3} = require('../geometry')
 const cuboid = (options) => {
   const defaults = {
     center: [0, 0, 0],
-    radius: [1, 1, 1],
+    radius: [1, 1, 1]
   }
   let {center, radius} = Object.assign({}, defaults, options)
 
@@ -59,7 +59,7 @@ const cuboid = (options) => {
 const cube = (options) => {
   const defaults = {
     center: [0, 0, 0],
-    radius: 1,
+    radius: 1
   }
   let {center, radius} = Object.assign({}, defaults, options)
 

@@ -18,7 +18,7 @@ const circle = require('./circle')
  *   innerRadius: 10
  * })
  */
-function torus (options) {
+const torus = (options) => {
   const defaults = {
     innerRadius: 1,
     innerSegments: defaultResolution2D,

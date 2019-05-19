@@ -44,7 +44,6 @@ const ellipsoid = (options) => {
     let angle = Math.PI * 2.0 * slice1 / segments
     let cylinderpoint = vec3.add(vec3.scale(Math.cos(angle), xvector), vec3.scale(Math.sin(angle), yvector))
     if (slice1 > 0) {
-      let vertices = []
       let prevcospitch, prevsinpitch
       for (let slice2 = 0; slice2 <= qsegments; slice2++) {
         let pitch = 0.5 * Math.PI * slice2 / qsegments

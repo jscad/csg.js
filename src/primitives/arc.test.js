@@ -1,9 +1,5 @@
 const test = require('ava')
 
-const {EPS} = require('../core/constants')
-
-const {degToRad, radToDeg} = require('../math/utils')
-
 const {arc} = require('./index')
 
 const path2 = require('../geometry/path2')

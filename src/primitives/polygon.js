@@ -53,9 +53,7 @@ const polygon = (param1, param2) => {
   }
 
   // convert to list of lists
-  const list = paths.map((path) => {
-    return path.map((i) => points[i])
-  })
+  const list = paths.map((path) => path.map((i) => points[i]))
 
   let sides = []
   list.forEach((setofpoints) => {

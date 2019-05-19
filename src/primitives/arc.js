@@ -1,6 +1,6 @@
 const {EPS, defaultResolution2D} = require('../core/constants')
 
-const {degToRad, radToDeg} = require('../math/utils')
+const {radToDeg} = require('../math/utils')
 
 const vec2 = require('../math/vec2')
 
