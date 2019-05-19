@@ -11,7 +11,7 @@ const poly3 = require('../geometry/poly3')
  * @param {Array} [options.end=[0,1,0]] - end point of cylinder
  * @param {Number} [options.radius=1] - radius of rounded ends, must be scalar
  * @param {Number} [options.roundradius=0.2] - radius of rounded edges
- * @param {Number} [options.resolution=defaultResolution3D] - number of polygons per 360 degree revolution
+ * @param {Number} [options.segments=defaultResolution3D] - number of segments to create per 360 rotation
  * @returns {geom3} new 3D geometry
  *
  * @example
@@ -28,13 +28,13 @@ const roundedCylinder = function (options) {
     end: [0, 1, 0],
     radius: 1,
     roundRadius: 0.2,
-    resolution: defaultResolution3D
+    segments: defaultResolution3D
   }
-  let {start, end, radius, roundRadius, resolution} = Object.assign({}, defaults, options)
+  let {start, end, radius, roundRadius, segments} = Object.assign({}, defaults, options)
 
   if (roundRadius > (radius - EPS)) throw new Error('roundRadius must be smaller then the radius')
 
-  if (resolution < 4) throw new Error('resolution must be four or more')
+  if (segments < 4) throw new Error('segments must be four or more')
 
   let direction = vec3.subtract(end, start)
   let length = vec3.length(direction)
@@ -55,12 +55,12 @@ const roundedCylinder = function (options) {
   vec3.add(start, start, zvector)
   vec3.subtract(end, end, zvector)
 
-  let qresolution = Math.floor(0.25 * resolution)
+  let qsegments = Math.floor(0.25 * segments)
 
   let polygons = []
   let prevcylinderpoint
-  for (let slice1 = 0; slice1 <= resolution; slice1++) {
-    let angle = Math.PI * 2.0 * slice1 / resolution
+  for (let slice1 = 0; slice1 <= segments; slice1++) {
+    let angle = Math.PI * 2.0 * slice1 / segments
     let cylinderpoint = vec3.add(vec3.scale(Math.cos(angle), xvector), vec3.scale(Math.sin(angle), yvector))
     if (slice1 > 0) {
       // cylinder wall
@@ -72,8 +72,8 @@ const roundedCylinder = function (options) {
       polygons.push(poly3.fromPoints(points))
 
       let prevcospitch, prevsinpitch
-      for (let slice2 = 0; slice2 <= qresolution; slice2++) {
-        let pitch = 0.5 * Math.PI * slice2 / qresolution
+      for (let slice2 = 0; slice2 <= qsegments; slice2++) {
+        let pitch = 0.5 * Math.PI * slice2 / qsegments
         let cospitch = Math.cos(pitch)
         let sinpitch = Math.sin(pitch)
         if (slice2 > 0) {
@@ -84,7 +84,7 @@ const roundedCylinder = function (options) {
           points.push(point)
           point = vec3.add(start, vec3.subtract(vec3.scale(prevcospitch, cylinderpoint), vec3.scale(prevsinpitch, zvector)))
           points.push(point)
-          if (slice2 < qresolution) {
+          if (slice2 < qsegments) {
             point = vec3.add(start, vec3.subtract(vec3.scale(cospitch, cylinderpoint), vec3.scale(sinpitch, zvector)))
             points.push(point)
           }
@@ -99,7 +99,7 @@ const roundedCylinder = function (options) {
           points.push(point)
           point = vec3.add(end, vec3.add(vec3.scale(prevcospitch, cylinderpoint), vec3.scale(prevsinpitch, zvector)))
           points.push(point)
-          if (slice2 < qresolution) {
+          if (slice2 < qsegments) {
             point = vec3.add(end, vec3.add(vec3.scale(cospitch, cylinderpoint), vec3.scale(sinpitch, zvector)))
             points.push(point)
           }

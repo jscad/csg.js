@@ -156,7 +156,7 @@ test('arc (options)', t => {
   t.deepEqual(obs.length, 19)
   t.true(comparePoints(obs, exp))
 
-  // test resolution
+  // test segments
   exp = [
     [ 1, 0 ],
     [ 0.7660444378852844, 0.6427876353263855 ],
@@ -168,7 +168,7 @@ test('arc (options)', t => {
     [ 0.1736481785774231, -0.9848077297210693 ],
     [ 0.7660444378852844, -0.6427876353263855 ]
   ]
-  geometry = arc({resolution: 8})
+  geometry = arc({segments: 8})
   obs = path2.toPoints(geometry)
 
   t.deepEqual(obs.length, 9)

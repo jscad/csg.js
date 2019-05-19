@@ -166,8 +166,8 @@ test('cylinderElliptic (options)', t => {
   t.is(pts.length, 48)
   t.true(comparePolygonsAsPoints(pts, exp))
 
-  // test resolution
-  obs = cylinderElliptic({resolution: 8})
+  // test segments
+  obs = cylinderElliptic({segments: 8})
   pts = geom3.toPoints(obs)
 
   t.is(pts.length, 24)

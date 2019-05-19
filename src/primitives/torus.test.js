@@ -16,7 +16,7 @@ test.skip('torus (defaults)', t => {
 })
 
 test.skip('torus (custom inner circle, customer outer circle)', t => {
-  const obs = torus({innerRadius: 0.5, innerResolution: 4, outerRadius: 5, outerResolution: 8})
+  const obs = torus({innerRadius: 0.5, innerSegments: 4, outerRadius: 5, outerSegments: 8})
   const pts = geom3.toPoints(obs)
   const exp = [
   ]

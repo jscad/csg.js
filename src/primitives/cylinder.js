@@ -12,7 +12,7 @@ const poly3 = require('../geometry/poly3')
  * @param {Array} [options.end=[0,1,0]] - end point of cylinder
  * @param {Number} [options.endRadius=1] - radius of cylinder at the end
  * @param {Number} [options.endAngle=360] - end angle of cylinder
- * @param {Number} [options.resolution=defaultResolution3D] - number of polygons per 360 degree revolution
+ * @param {Number} [options.segments=defaultResolution3D] - number of segments to create per 360 rotation
  * @returns {geom3} new geometry
  *
  * @example
@@ -21,7 +21,7 @@ const poly3 = require('../geometry/poly3')
  *   startRadis: 10,
  *   end: [0, 10, 0],
  *   endRadis: 5,
- *   resolution: 16
+ *   segments: 16
  * })
  */
 const cylinder = function (options) {
@@ -31,9 +31,9 @@ const cylinder = function (options) {
     end: [0, 1, 0],
     endRadius: 1,
     endAngle: 360,
-    resolution: defaultResolution3D
+    segments: defaultResolution3D
   }
-  let {start, startRadius, end, endRadius, endAngle, resolution} = Object.assign({}, defaults, options)
+  let {start, startRadius, end, endRadius, endAngle, segments} = Object.assign({}, defaults, options)
 
   let alpha = endAngle > 360 ? endAngle % 360 : endAngle
 
@@ -59,9 +59,9 @@ const cylinder = function (options) {
   let polygons = []
 
   if (alpha > 0) {
-    for (let i = 0; i < resolution; i++) {
-      let t0 = i / resolution
-      let t1 = (i + 1) / resolution
+    for (let i = 0; i < segments; i++) {
+      let t0 = i / segments
+      let t1 = (i + 1) / segments
       if (endRadius === startRadius) {
         polygons.push(poly3.fromPoints([startv, point(0, t0, endRadius), point(0, t1, endRadius)]))
         polygons.push(poly3.fromPoints([point(0, t1, endRadius), point(0, t0, endRadius), point(1, t0, endRadius), point(1, t1, endRadius)]))

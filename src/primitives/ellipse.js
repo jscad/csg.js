@@ -9,16 +9,16 @@ const geom2 = require('../geometry/geom2')
  * @param {Object} [options] - options for construction
  * @param {Array} [options.center=[0,0]] - center of ellipse
  * @param {Array} [options.radius=[1,1]] - radius of ellipse, width and height
- * @param {Number} [options.resolution=defaultResolution2D] - number of sides per 360 rotation
+ * @param {Number} [options.segments=defaultResolution2D] - number of segments to create per 360 rotation
  * @returns {geom2} new 2D geometry
  */
 const ellipse = (options) => {
   const defaults = {
     center: [0, 0],
     radius: [1, 1],
-    resolution: defaultResolution2D
+    segments: defaultResolution2D
   }
-  let {center, radius, resolution} = Object.assign({}, defaults, options)
+  let {center, radius, segments} = Object.assign({}, defaults, options)
 
   if (!Array.isArray(center)) throw new Error('center must be an array')
   if (center.length < 2) throw new Error('center must contain X and Y values')
@@ -26,13 +26,13 @@ const ellipse = (options) => {
   if (!Array.isArray(radius)) throw new Error('radius must be an array')
   if (radius.length < 2) throw new Error('radius must contain X and Y values')
 
-  if (resolution < 4) throw new Error('resolution must be greater than 3')
+  if (segments < 4) throw new Error('segments must be four or more')
 
   const centerv = vec2.fromArray(center)
-  const step = 2 * Math.PI / resolution // radians
+  const step = 2 * Math.PI / segments // radians
 
   let points = []
-  for (var i = 0 ; i < resolution ; i++) {
+  for (var i = 0 ; i < segments ; i++) {
     var point = vec2.fromValues(radius[0] * Math.cos(step * i), radius[1] * Math.sin(step * i))
     vec2.add(point, centerv, point)
     points.push(point)
@@ -46,22 +46,22 @@ const ellipse = (options) => {
  * @param {Object} [options] - options for construction
  * @param {Array} [options.center=[0,0]] - center of circle
  * @param {Number} [options.radius=1] - radius of circle
- * @param {Number} [options.resolution=defaultResolution2D] - number of segments per 360 rotation
+ * @param {Number} [options.segments=defaultResolution2D] - number of segments to create per 360 rotation
  * @returns {geom2} new 2D geometry
  */
 const circle = (options) => {
   const defaults = {
     center: [0, 0],
     radius: 1,
-    resolution: defaultResolution2D
+    segments: defaultResolution2D
   }
-  let {radius, resolution, center} = Object.assign({}, defaults, options)
+  let {radius, segments, center} = Object.assign({}, defaults, options)
 
   // TODO check that radius is a number
 
   radius = [radius, radius]
 
-  return ellipse({center: center, radius: radius, resolution: resolution})
+  return ellipse({center: center, radius: radius, segments: segments})
 }
 
 module.exports = {

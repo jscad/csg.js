@@ -83,8 +83,8 @@ test('ellipse (options)', t => {
   t.deepEqual(obs.length, 16)
   t.true(comparePoints(obs, exp))
 
-  // test resolution
-  geometry = ellipse({resolution: 72})
+  // test segments
+  geometry = ellipse({segments: 72})
   obs = geom2.toPoints(geometry)
   t.deepEqual(obs.length, 72)
 })

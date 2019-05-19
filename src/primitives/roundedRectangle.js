@@ -9,7 +9,7 @@ const {geom2} = require('../geometry')
  * @param {Array} [options.center=[0,0]] - center of rounded rectangle
  * @param {Array} [options.radius=[1,1]] - radius of rounded rectangle, width and height
  * @param {Number} [options.roundradius=0.2] - round radius of corners
- * @param {Number} [options.resolution=defaultResolution2D] - number of sides per 360 rotation
+ * @param {Number} [options.segments=defaultResolution2D] - number of segments to create per 360 rotation
  * @returns {geom2} new 2D geometry
  *
  * @example
@@ -20,14 +20,14 @@ const roundedRectangle = (options) => {
     center: [0, 0],
     radius: [1, 1],
     roundRadius: 0.2,
-    resolution: defaultResolution2D
+    segments: defaultResolution2D
   }
-  const {radius, center, roundRadius, resolution} = Object.assign({}, defaults, options)
+  const {radius, center, roundRadius, segments} = Object.assign({}, defaults, options)
 
   if (roundRadius > (radius[0] - EPS) || roundRadius > (radius[1] - EPS)) throw new Error('roundRadius must be smaller then the radius')
 
-  let segments = Math.floor(resolution / 4)
-  if (segments < 1) throw new Error('resolution must be greater then 4')
+  let cornersegments = Math.floor(segments / 4)
+  if (cornersegments < 1) throw new Error('segments must be four or more')
 
   // create sets of points that define the corners
   let corner0 = vec2.add(center, [radius[0] - roundRadius, radius[1] - roundRadius])
@@ -38,8 +38,8 @@ const roundedRectangle = (options) => {
   let corner1Points = []
   let corner2Points = []
   let corner3Points = []
-  for (let i = 0; i <= segments; i++) {
-    let radians = Math.PI / 2 * i / segments
+  for (let i = 0; i <= cornersegments; i++) {
+    let radians = Math.PI / 2 * i / cornersegments
     let point = vec2.fromAngleRadians(radians)
     vec2.scale(point, roundRadius, point)
     corner0Points.push(vec2.add(corner0, point))

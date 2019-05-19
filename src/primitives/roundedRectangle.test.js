@@ -121,8 +121,8 @@ test('roundedRectangle (options)', t => {
   t.deepEqual(obs.length, 20)
   t.true(comparePoints(obs, exp))
 
-  // test resolution
-  geometry = roundedRectangle({radius: [5, 3], roundRadius: 2, resolution: 64})
+  // test segments
+  geometry = roundedRectangle({radius: [5, 3], roundRadius: 2, segments: 64})
   obs = geom2.toPoints(geometry)
   t.deepEqual(obs.length, 68)
 })

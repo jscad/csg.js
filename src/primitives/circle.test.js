@@ -83,8 +83,8 @@ test('circle (options)', t => {
   t.deepEqual(pts.length, 16)
   t.true(comparePoints(pts, exp))
 
-  // test resolution
-  geometry = circle({radius: 3.5, center: [6.5, 6.5], resolution: 5})
+  // test segments
+  geometry = circle({radius: 3.5, center: [6.5, 6.5], segments: 5})
   pts = geom2.toPoints(geometry)
   exp = [
     [ 10, 6.5 ],

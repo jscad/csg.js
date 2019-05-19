@@ -8,8 +8,8 @@ const circle = require('./circle')
  * @param {Object} [options] - options for construction
  * @param {Float} [options.innerRadius=1] - radius of small (inner) circle
  * @param {Float} [options.outerRadius=4] - radius of large (outer) circle
- * @param {Integer} [options.innerResolution=defaultResolution2D] - number of segments per 360 rotation
- * @param {Integer} [options.outerResolution=defaultResolution3D] - number of segments per 360 rotation
+ * @param {Integer} [options.innerSegments=defaultResolution2D] - number of segments to create per 360 rotation
+ * @param {Integer} [options.outerSegments=defaultResolution3D] - number of segments to create per 360 rotation
  * @param {Integer} [options.roti=0] - rotation angle of base circle
  * @returns {geom3} new 3D geometry
  *
@@ -21,23 +21,23 @@ const circle = require('./circle')
 function torus (options) {
   const defaults = {
     innerRadius: 1,
-    innerResolution: defaultResolution2D,
+    innerSegments: defaultResolution2D,
     outerRadius: 4,
-    outerResolution: defaultResolution3D,
+    outerSegments: defaultResolution3D,
     roti: 0
   }
-  let {innerRadius, innerResolution, outerRadius, outerResolution, roti} = Object.assign({}, defaults, options)
+  let {innerRadius, innerSegments, outerRadius, outerSegments, roti} = Object.assign({}, defaults, options)
 
   if (innerRadius >= outerRadius) throw new Error('inner circle is two large to rotate about the outer circle')
 
-  let innerCircle = circle({radius: innerRadius, center: [outerRadius, 0], resolution: innerResolution})
+  let innerCircle = circle({radius: innerRadius, center: [outerRadius, 0], segments: innerSegments})
 
   //if (roti) innerCircle = innerCircle.transform(Matrix4x4.rotationZ(roti))
 
   options = {
     startAngle: 0,
     angle: 360,
-    resolution: outerResolution
+    segments: outerSegments
   }
   return extrudeRotate(options, innerCircle)
 }

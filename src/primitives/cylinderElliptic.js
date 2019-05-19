@@ -11,7 +11,7 @@ const poly3 = require('../geometry/poly3')
  * @param {Vector2D} [options.startRadius=[1,1]] - radius of rounded start, must be two dimensional array
  * @param {Vector3} [options.end=[0,1,0]] - end point of cylinder
  * @param {Vector2D} [options.endRadius=[1,1]] - radius of rounded end, must be two dimensional array
- * @param {Number} [options.resolution=defaultResolution3D] - number of polygons per 360 degree revolution
+ * @param {Number} [options.segments=defaultResolution3D] - number of segments to create per 360 rotation
  * @returns {geom3} new geometry
  *
  * @example
@@ -28,15 +28,17 @@ const cylinderElliptic = function (options) {
     startRadius: [1,1],
     end: [0, 1, 0],
     endRadius: [1,1],
-    resolution: defaultResolution3D
+    segments: defaultResolution3D
   }
-  let {start, startRadius, end, endRadius, resolution} = Object.assign({}, defaults, options)
+  let {start, startRadius, end, endRadius, segments} = Object.assign({}, defaults, options)
 
   if ((endRadius[0] <= 0) || (startRadius[0] <= 0) || (endRadius[1] <= 0) || (startRadius[1] <= 0)) {
     throw new Error('endRadus and startRadius should be positive')
   }
 
-  let slices = resolution
+  if (segments < 4) throw new Error('segments must be four or more')
+
+  let slices = segments
 
   let startv = vec3.fromArray(start)
   let endv = vec3.fromArray(end)

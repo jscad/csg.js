@@ -14,8 +14,8 @@ test('roundedCylinder (defaults)', t => {
 })
 
 test('roundedCylinder (options)', t => {
-  // test resolution
-  let obs = roundedCylinder({resolution: 5})
+  // test segments
+  let obs = roundedCylinder({segments: 5})
   let pts = geom3.toPoints(obs)
   let exp = [
   ]
@@ -23,7 +23,7 @@ test('roundedCylinder (options)', t => {
   t.is(pts.length, 15)
 
   // test start end
-  obs = roundedCylinder({resolution: 5, start: [0,0,-10], end: [0,0,10]})
+  obs = roundedCylinder({segments: 5, start: [0,0,-10], end: [0,0,10]})
   pts = geom3.toPoints(obs)
   exp = [
     [ [ 0.9510565400123596, 0.30901700258255005, -9.800000190734863 ],
@@ -82,7 +82,7 @@ test('roundedCylinder (options)', t => {
   t.true(comparePolygonsAsPoints(pts, exp))
 
   // test radius
-  obs = roundedCylinder({resolution: 5, radius: 10})
+  obs = roundedCylinder({segments: 5, radius: 10})
   pts = geom3.toPoints(obs)
   exp = [
     [ [ 9.510564804077148, -0.800000011920929, -3.090169906616211 ],
@@ -141,7 +141,7 @@ test('roundedCylinder (options)', t => {
   t.true(comparePolygonsAsPoints(pts, exp))
 
   // test round radius
-  obs = roundedCylinder({resolution: 5, start: [0,0,-10], end: [0,0,10], radius: 5, roundRadius: 2})
+  obs = roundedCylinder({segments: 5, start: [0,0,-10], end: [0,0,10], radius: 5, roundRadius: 2})
   pts = geom3.toPoints(obs)
   exp = [
     [ [ 4.755282402038574, 1.5450849533081055, -8 ],

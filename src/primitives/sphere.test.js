@@ -224,8 +224,8 @@ test('sphere (options)', t => {
   t.is(pts.length, 72)
   //t.true(comparePolygonsAsPoints(pts, exp))
 
-  // test resolution
-  obs = sphere({resolution: 8})
+  // test segments
+  obs = sphere({segments: 8})
   pts = geom3.toPoints(obs)
   exp = [
   ]

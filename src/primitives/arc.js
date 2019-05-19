@@ -12,7 +12,7 @@ const path2 = require('../geometry/path2')
  * @param {Number} options.radius - radius of circle
  * @param {Number} options.startangle - starting angle of the arc, in degrees
  * @param {Number} options.endangle - ending angle of the arc, in degrees
- * @param {Number} options.resolution - number of segments to create, per 360 rotation
+ * @param {Number} options.segments - number of segments to create per 360 rotation
  * @param {Boolean} options.maketangent - adds line segments at both ends of the arc to ensure that the gradients at the edges are tangent
  * @returns {path} new path (not closed)
  */
@@ -23,11 +23,12 @@ const arc = function (options) {
     startangle: 0,
     endangle: 360,
     maketangent: false,
-    resolution: defaultResolution2D
+    segments: defaultResolution2D
   }
-  let {center, radius, startangle, endangle, maketangent, resolution} = Object.assign({}, defaults, options)
+  let {center, radius, startangle, endangle, maketangent, segments} = Object.assign({}, defaults, options)
 
   if (startangle < 0 || endangle < 0) throw new Error('the start and end angles must be positive')
+  if (segments < 4) throw new Error('segments must be four or more')
 
   startangle = startangle % 360
   endangle = endangle % 360
@@ -52,7 +53,7 @@ const arc = function (options) {
     pointArray.push(point)
   } else {
     // note: add one additional step to acheive full rotation
-    let numsteps = Math.max(1, Math.floor(resolution * rotation / 360)) + 1
+    let numsteps = Math.max(1, Math.floor(segments * rotation / 360)) + 1
     let edgestepsize = numsteps * 0.5 / rotation // step size for half a degree
     if (edgestepsize > 0.25) edgestepsize = 0.25
 

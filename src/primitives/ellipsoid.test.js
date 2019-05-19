@@ -488,8 +488,8 @@ test('ellipsoid (options)', t => {
   t.is(pts.length, 72)
   t.true(comparePolygonsAsPoints(pts, exp))
 
-  // test resolution
-  obs = ellipsoid({resolution: 8})
+  // test segments
+  obs = ellipsoid({segments: 8})
   pts = geom3.toPoints(obs)
   exp = [
   ]
