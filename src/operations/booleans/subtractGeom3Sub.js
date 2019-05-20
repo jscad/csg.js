@@ -1,6 +1,6 @@
-const {Tree} = require('./trees')
-
 const {geom3} = require('../../geometry')
+
+const {Tree} = require('./trees')
 
 /**
  * Return a new 3D geometry representing space in the first geometry but not

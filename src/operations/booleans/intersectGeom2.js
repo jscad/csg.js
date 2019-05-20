@@ -1,10 +1,10 @@
-const flatten = require('../utils/flatten')
+const flatten = require('../../utils/flatten')
+
+const {geom3} = require('../../geometry')
 
 const fromFakePolygons = require('./fromFakePolygons')
 const to3DWalls = require('./to3DWalls')
 const intersectGeom3 = require('./intersectGeom3')
-
-const {geom3} = require('../../geometry')
 
 /*
  * Return a new 2D geometry representing space in both the first geometry and

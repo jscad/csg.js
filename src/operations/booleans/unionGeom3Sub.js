@@ -1,8 +1,7 @@
-const {Tree} = require('./trees')
-
 const {geom3} = require('../../geometry')
 
 const mayOverlap = require('./mayOverlap')
+const {Tree} = require('./trees')
 
 /**
  * Return a new 3D geometry representing the space in the given geometries.

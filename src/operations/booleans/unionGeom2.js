@@ -1,4 +1,4 @@
-const flatten = require('../utils/flatten')
+const flatten = require('../../utils/flatten')
 
 const {geom3} = require('../../geometry')
 

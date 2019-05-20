@@ -1,4 +1,4 @@
-const plane = require('../../math/plane')
+const {plane} = require('../../math')
 
 const {geom3, poly3} = require('../../geometry')
 

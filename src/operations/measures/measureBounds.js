@@ -1,12 +1,8 @@
-const vec2 = require('../../math/vec2')
-const vec3 = require('../../math/vec3')
+const flatten = require('../../utils/flatten')
 
-const geom2 = require('../../geometry/geom2')
-const geom3 = require('../../geometry/geom3')
-const path2 = require('../../geometry/path2')
-const poly3 = require('../../geometry/poly3')
+const {vec2, vec3} = require('../../math')
 
-const flatten = require('../utils/flatten')
+const {geom2, geom3, path2, poly3} = require('../../geometry')
 
 /*
  * Measure the min and max bounds of the given (path2) geometry.

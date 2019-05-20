@@ -1,9 +1,8 @@
-const vec2 = require('../../math/vec2')
-const vec3 = require('../../math/vec3')
+const flatten = require('../../utils/flatten')
+
+const {vec2, vec3} = require('../../math')
 
 const {geom2, geom3, path2, poly3} = require('../../geometry')
-
-const flatten = require('../utils/flatten')
 
 /*
  * Measure the area of the given geometry.
