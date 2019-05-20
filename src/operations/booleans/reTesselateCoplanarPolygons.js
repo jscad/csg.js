@@ -219,7 +219,6 @@ const reTesselateCoplanarPolygons = (sourcepolygons) => {
       // Build the output polygons for the next row in newoutpolygonrow:
       for (let activepolygonKey in activepolygons) {
         const activepolygon = activepolygons[activepolygonKey]
-        const polygonindex = activepolygon.polygonindex
 
         let x = interpolateBetween2DPointsForY(activepolygon.topleft, activepolygon.bottomleft, ycoordinate)
         const topleft = vec2.fromValues(x, ycoordinate)
@@ -306,9 +305,7 @@ const reTesselateCoplanarPolygons = (sourcepolygons) => {
             // reverse the left half so we get a counterclockwise circle:
             prevpolygon.outpolygon.leftpoints.reverse()
             const points2d = prevpolygon.outpolygon.rightpoints.concat(prevpolygon.outpolygon.leftpoints)
-            const vertices3d = points2d.map((point2d) => {
-              return orthobasis.to3D(point2d)
-            })
+            const vertices3d = points2d.map((point2d) => orthobasis.to3D(point2d))
             const polygon = poly3.fromPointsAndPlane(vertices3d, plane) // TODO support shared
             destpolygons.push(polygon)
           }

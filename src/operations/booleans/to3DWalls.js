@@ -15,9 +15,8 @@ const toPolygon3D = (z0, z1, side) => {
 const to3DWalls = (options, geometry) => {
   let sides = geom2.toSides(geometry)
 
-  let polygons = sides.map((side) => {
-    return toPolygon3D(options.z0, options.z1, side)
-  })
+  let polygons = sides.map((side) => toPolygon3D(options.z0, options.z1, side))
+
   let result = geom3.create(polygons)
   return result
 }

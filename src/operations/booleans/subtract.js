@@ -1,7 +1,7 @@
 const flatten = require('../../utils/flatten')
 const areAllShapesTheSameType = require('../../utils/areAllShapesTheSameType')
 
-const {geom2, geom3, path2} = require('../../geometry')
+const {geom2, geom3} = require('../../geometry')
 
 const subtractGeom2 = require('./subtractGeom2')
 

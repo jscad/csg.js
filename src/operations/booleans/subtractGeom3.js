@@ -1,7 +1,5 @@
 const flatten = require('../../utils/flatten')
 
-const {geom3} = require('../../geometry')
-
 const retessellate = require('./retessellate')
 const subtractSub = require('./subtractGeom3Sub')
 
@@ -20,7 +18,7 @@ const subtract = (...geometries) => {
   })
 
   newgeometry.isCanonicalized = true // FIXME hack hack hack
-  let newgeomerty = retessellate(newgeometry)
+  newgeometry = retessellate(newgeometry)
   return newgeometry
 }
 

@@ -1,7 +1,5 @@
 const flatten = require('../../utils/flatten')
 
-const {geom3} = require('../../geometry')
-
 const retessellate = require('./retessellate')
 const unionSub = require('./unionGeom3Sub')
 

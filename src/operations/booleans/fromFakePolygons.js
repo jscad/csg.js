@@ -15,10 +15,8 @@ const fromFakePolygon = (polygon) => {
       return true
     }
     return false
-  })
-    .map((vertex) => {
-      return vec2.fromArray(vertex)
-    })
+  }).map((vertex) => vec2.fromArray(vertex))
+
   if (pts2d.length !== 2) {
     throw new Error('Assertion failed: _fromFakePolygon: not enough points found') // TBD remove later
   }
@@ -34,14 +32,10 @@ const fromFakePolygon = (polygon) => {
 }
 
 /** Convert the given polygons to a list of sides.
- * The polygons must have only z coordinates +1 and -1, as constructed by toCSGWall(-1, 1).
+ * The polygons must have only z coordinates +1 and -1, as constructed by to3DWalls().
  */
 const fromFakePolygons = (polygons) => {
-  let sides = polygons.map((polygon) => {
-    return fromFakePolygon(polygon)
-  }).filter(function (s) {
-    return s !== null
-  })
+  let sides = polygons.map((polygon) => fromFakePolygon(polygon)).filter((polygon) => (polygon !== null))
   return geom2.create(sides)
 }
 

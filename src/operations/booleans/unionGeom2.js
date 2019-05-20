@@ -13,9 +13,7 @@ const unionGeom3 = require('./unionGeom3')
  */
 const union = (...geometries) => {
   geometries = flatten(geometries)
-  const newgeometries = geometries.map((geometry) => {
-    return to3DWalls({z0: -1, z1: 1}, geometry)
-  })
+  const newgeometries = geometries.map((geometry) => to3DWalls({z0: -1, z1: 1}, geometry))
 
   let newgeom3 = unionGeom3(newgeometries)
 

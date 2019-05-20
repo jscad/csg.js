@@ -1,19 +1,15 @@
 const flatten = require('../../utils/flatten')
 
-const {vec2, vec3} = require('../../math')
-
 const {geom2, geom3, path2, poly3} = require('../../geometry')
 
 /*
  * Measure the area of the given geometry.
+ * NOTE: paths are infinitely narrow and do not have an area
  *
  * @param {Path2} geometry - geometry to measure
  * @returns {Number} area of the geometry
  */
-const measureAreaOfPath2 = (geometry) => {
-  // NOTE: paths are infinitely narrow and do not have an area
-  return 0;
-}
+const measureAreaOfPath2 = () => 0
 
 /*
  * Measure the area of the given geometry.

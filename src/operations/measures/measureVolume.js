@@ -1,30 +1,24 @@
 const flatten = require('../../utils/flatten')
 
-const {vec2, vec3} = require('../../math')
-
 const {geom2, geom3, path2, poly3} = require('../../geometry')
 
 /*
  * Measure the volume of the given geometry.
+ * NOTE: paths are infinitely narrow and do not have an volume
  *
  * @param {Path2} geometry - geometry to measure
  * @returns {Number} volume of the geometry
  */
-const measureVolumeOfPath2 = (geometry) => {
-  // NOTE: paths are infinitely narrow and do not have an volume
-  return 0
-}
+const measureVolumeOfPath2 = () => 0
 
 /*
  * Measure the volume of the given geometry.
+ * NOTE: 2D geometry are infinitely thin and do not have an volume
  *
  * @param {Geom2} geometry - 2D geometry to measure
  * @returns {Number} volume of the geometry
  */
-const measureVolumeOfGeom2 = (geometry) => {
-  // NOTE: 2D geometry are infinitely thin and do not have an volume
-  return 0
-}
+const measureVolumeOfGeom2 = () => 0
 
 /**
  * Measure the volume of the given geometry.

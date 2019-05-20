@@ -1,6 +1,6 @@
 const test = require('ava')
 
-const {geom2, geom3, path2, poly3} = require('../../geometry')
+const {geom2, geom3, path2} = require('../../geometry')
 
 const {line, rectangle, cuboid} = require('../../primitives')
 
@@ -34,6 +34,10 @@ test('measureArea: single objects', (t) => {
   t.is(larea, 0)
   t.is(rarea, 4) // 2x2
   t.is(carea, 24) // 2x2x6
+
+  t.is(p2area, 0)
+  t.is(g2area, 0)
+  t.is(g3area, 0)
 
   t.is(narea, 0)
   t.is(oarea, 0)

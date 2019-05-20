@@ -1,6 +1,6 @@
 const test = require('ava')
 
-const {geom2, geom3, path2, poly3} = require('../../geometry')
+const {geom2, geom3, path2} = require('../../geometry')
 
 const {line, rectangle, cuboid} = require('../../primitives')
 
@@ -34,6 +34,10 @@ test('measureVolume: single objects', (t) => {
   t.is(lvolume, 0)
   t.is(rvolume, 0)
   t.is(cvolume, 7.999999999999999)
+
+  t.is(p2volume, 0)
+  t.is(g2volume, 0)
+  t.is(g3volume, 0)
 
   t.is(nvolume, 0)
   t.is(ovolume, 0)

@@ -1,7 +1,6 @@
-const { EPS } = require('../../../core/constants')
+const {EPS} = require('../../../core/constants')
 
-const plane = require('../../../math/plane')
-const vec3 = require('../../../math/vec3')
+const {plane, vec3} = require('../../../math')
 
 const {poly3} = require('../../../geometry')
 
@@ -17,7 +16,7 @@ const splitLineSegmentByPlane = require('./splitLineSegmentByPlane')
 // In case the polygon is spanning, returns:
 // .front: a Polygon3 of the front part
 // .back: a Polygon3 of the back part
-function splitPolygonByPlane (splane, polygon) {
+const splitPolygonByPlane = (splane, polygon) => {
   let result = {
     type: null,
     front: null,
