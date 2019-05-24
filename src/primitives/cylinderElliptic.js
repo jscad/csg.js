@@ -1,7 +1,10 @@
-const vec3 = require('../math/vec3')
+const {EPS} = require('../math/constants')
 
-const geom3 = require('../geometry/geom3')
-const poly3 = require('../geometry/poly3')
+const {radToDeg, degToRad} = require('../math/utils')
+
+const {vec3} = require('../math')
+
+const {geom3, poly3} = require('../geometry')
 
 /** Construct an elliptic cylinder.
  * @param {Object} [options] - options for construction
@@ -24,29 +27,49 @@ const cylinderElliptic = function (options) {
   const defaults = {
     start: [0, -1, 0],
     startRadius: [1,1],
+    startAngle: 0,
     end: [0, 1, 0],
     endRadius: [1,1],
+    endAngle: 360,
     segments: 12
   }
-  let {start, startRadius, end, endRadius, segments} = Object.assign({}, defaults, options)
+  let {start, startRadius, startAngle, end, endRadius, endAngle, segments} = Object.assign({}, defaults, options)
 
   if ((endRadius[0] <= 0) || (startRadius[0] <= 0) || (endRadius[1] <= 0) || (startRadius[1] <= 0)) {
     throw new Error('endRadus and startRadius should be positive')
   }
+  if (startAngle < 0 || endAngle < 0) throw new Error('startAngle and endAngle must be positive')
 
   if (segments < 4) throw new Error('segments must be four or more')
 
-  let slices = segments
+  startAngle = degToRad(startAngle % 360)
+  endAngle = degToRad(endAngle % 360)
+
+  let rotation = Math.PI * 2
+  if (startAngle < endAngle) {
+    rotation = endAngle - startAngle
+  }
+  if (startAngle > endAngle) {
+    rotation = endAngle + ((Math.PI * 2) - startAngle)
+  }
+
+  let minradius = Math.min(startRadius[0], startRadius[1], endRadius[0], endRadius[1])
+  let minangle = Math.acos(((minradius * minradius) + (minradius * minradius) - (EPS * EPS)) /
+                            (2 * minradius * minradius))
+  if (rotation < minangle) throw new Error('startAngle and endAngle to not define a significant rotation')
+
+  let slices = Math.floor(segments * (rotation / (Math.PI * 2)))
 
   let startv = vec3.fromArray(start)
-  let ray = vec3.subtract(end, start)
+  let endv = vec3.fromArray(end)
+  let ray = vec3.subtract(endv, startv)
 
   let axisZ = vec3.unit(ray)
   let axisX = vec3.unit(vec3.random(axisZ))
   let axisY = vec3.unit(vec3.cross(axisX, axisZ))
 
   const point = (stack, slice, radius) => {
-    let angle = slice * Math.PI * 2
+    let angle = slice * rotation + startAngle
     let out = vec3.add(vec3.scale(radius[0] * Math.cos(angle), axisX), vec3.scale(radius[1] * Math.sin(angle), axisY))
     let pos = vec3.add(vec3.add(vec3.scale(stack, ray), startv), out)
     return pos
@@ -72,8 +95,62 @@ const cylinderElliptic = function (options) {
       }
     }
   }
+  if (rotation < (Math.PI * 2)) {
+    polygons.push(poly3.fromPoints([startv, endv, point(0, 0, startRadius)]))
+    polygons.push(poly3.fromPoints([point(0, 0, startRadius), endv, point(1, 0, endRadius)]))
+    polygons.push(poly3.fromPoints([startv, point(0, 1, startRadius), endv]))
+    polygons.push(poly3.fromPoints([point(0, 1, startRadius), point(1, 1, endRadius), endv]))
+  }
   let result = geom3.create(polygons)
   return result
 }
 
-module.exports = cylinderElliptic
+/** Construct a solid cylinder.
+ * @param {Object} [options] - options for construction
+ * @param {Array} [options.start=[0,-1,0]] - start point of cylinder
+ * @param {Number} [options.startRadisu=1] - radius of cylinder at the start
+ * @param {Number} [options.startAngle=0] - start angle of cylinder
+ * @param {Array} [options.end=[0,1,0]] - end point of cylinder
+ * @param {Number} [options.endRadius=1] - radius of cylinder at the end
+ * @param {Number} [options.endAngle=360] - end angle of cylinder
+ * @param {Number} [options.segments=12] - number of segments to create per 360 rotation
+ * @returns {geom3} new geometry
+ *
+ * @example
+ * let cylinder = cylinder({
+ *   start: [0, -10, 0],
+ *   startRadis: 10,
+ *   end: [0, 10, 0],
+ *   endRadis: 5,
+ *   segments: 16
+ * })
+ */
+const cylinder = function (options) {
+  const defaults = {
+    start: [0, -1, 0],
+    startRadius: 1,
+    startAngle: 0,
+    end: [0, 1, 0],
+    endRadius: 1,
+    endAngle: 360,
+    segments: 12
+  }
+  let {start, startRadius, startAngle, end, endRadius, endAngle, segments} = Object.assign({}, defaults, options)
+
+  let newoptions = {
+    start: start,
+    startRadius: [startRadius, startRadius],
+    startAngle: startAngle,
+    end: end,
+    endRadius: [endRadius, endRadius],
+    endAngle: endAngle,
+    segments: segments
+  }
+
+  return cylinderElliptic(newoptions)
+}
+
+module.exports = {
+  cylinder,
+  cylinderElliptic
+}
