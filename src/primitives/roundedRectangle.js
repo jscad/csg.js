@@ -7,33 +7,33 @@ const {geom2} = require('../geometry')
 /** Construct a rounded rectangle.
  * @param {Object} [options] - options for construction
  * @param {Array} [options.center=[0,0]] - center of rounded rectangle
- * @param {Array} [options.radius=[1,1]] - radius of rounded rectangle, width and height
+ * @param {Array} [options.size=[1,1]] - size of rounded rectangle, width and height
  * @param {Number} [options.roundRadius=0.2] - round radius of corners
  * @param {Number} [options.segments=defaultResolution2D] - number of segments to create per 360 rotation
  * @returns {geom2} new 2D geometry
  *
  * @example
- * let myrectangle = roundedRectangle({radius: [5, 10], roundRadius: 2})
+ * let myrectangle = roundedRectangle({size: [5, 10], roundRadius: 2})
  */
 const roundedRectangle = (options) => {
   const defaults = {
     center: [0, 0],
-    radius: [1, 1],
+    size: [1, 1],
     roundRadius: 0.2,
     segments: defaultResolution2D
   }
-  const {radius, center, roundRadius, segments} = Object.assign({}, defaults, options)
+  const {size, center, roundRadius, segments} = Object.assign({}, defaults, options)
 
-  if (roundRadius > (radius[0] - EPS) || roundRadius > (radius[1] - EPS)) throw new Error('roundRadius must be smaller then the radius')
+  if (roundRadius > (size[0] - EPS) || roundRadius > (size[1] - EPS)) throw new Error('roundRadius must be smaller then the size')
 
   let cornersegments = Math.floor(segments / 4)
   if (cornersegments < 1) throw new Error('segments must be four or more')
 
   // create sets of points that define the corners
-  let corner0 = vec2.add(center, [radius[0] - roundRadius, radius[1] - roundRadius])
-  let corner1 = vec2.add(center, [roundRadius - radius[0], radius[1] - roundRadius])
-  let corner2 = vec2.add(center, [roundRadius - radius[0], roundRadius - radius[1]])
-  let corner3 = vec2.add(center, [radius[0] - roundRadius, roundRadius - radius[1]])
+  let corner0 = vec2.add(center, [size[0] - roundRadius, size[1] - roundRadius])
+  let corner1 = vec2.add(center, [roundRadius - size[0], size[1] - roundRadius])
+  let corner2 = vec2.add(center, [roundRadius - size[0], roundRadius - size[1]])
+  let corner3 = vec2.add(center, [size[0] - roundRadius, roundRadius - size[1]])
   let corner0Points = []
   let corner1Points = []
   let corner2Points = []

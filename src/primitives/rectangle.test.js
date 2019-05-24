@@ -34,8 +34,8 @@ test('rectangle (options)', t => {
   t.deepEqual(obs.length, 4)
   t.true(comparePoints(obs, exp))
 
-  // test radius
-  geometry = rectangle({radius: [3, 5]})
+  // test size
+  geometry = rectangle({size: [3, 5]})
   obs = geom2.toPoints(geometry)
   exp = [
     [ -3, -5 ],

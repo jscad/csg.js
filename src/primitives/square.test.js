@@ -13,8 +13,8 @@ test('square (defaults)', t => {
 })
 
 test('square (options)', t => {
-  // test radius
-  let obs = square({radius: 3.5})
+  // test size
+  let obs = square({size: 3.5})
   let pts = geom2.toPoints(obs)
   let exp = [
     [ -3.5, -3.5 ],
@@ -27,7 +27,7 @@ test('square (options)', t => {
   t.true(comparePoints(pts, exp))
 
   // test center
-  obs = square({radius: 3.5, center: [6.5, 6.5]})
+  obs = square({size: 3.5, center: [6.5, 6.5]})
   pts = geom2.toPoints(obs)
   exp = [
     [ 3, 3 ],

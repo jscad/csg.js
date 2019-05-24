@@ -13,8 +13,8 @@ test('cube (defaults)', t => {
 })
 
 test('cube (options)', t => {
-  // test radius
-  let obs = cube({radius: 3.5})
+  // test size
+  let obs = cube({size: 3.5})
   let pts = geom3.toPoints(obs)
   let exp = [
     [ [ -3.5, -3.5, -3.5 ], [ -3.5, -3.5, 3.5 ], [ -3.5, 3.5, 3.5 ], [ -3.5, 3.5, -3.5 ] ],
@@ -29,7 +29,7 @@ test('cube (options)', t => {
   t.true(comparePolygonsAsPoints(pts, exp))
 
   // test center
-  obs = cube({radius: 3.5, center: [6.5, 6.5, 6.5]})
+  obs = cube({size: 3.5, center: [6.5, 6.5, 6.5]})
   pts = geom3.toPoints(obs)
   exp = [
     [ [ 3, 3, 3 ], [ 3, 3, 10 ], [ 3, 10, 10 ], [ 3, 10, 3 ] ],
