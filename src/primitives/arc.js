@@ -8,8 +8,8 @@ const path2 = require('../geometry/path2')
 
 /** Construct an arc.
  * @param {Object} options - options for construction
- * @param {Array} options.center - center of circle
- * @param {Number} options.radius - radius of circle
+ * @param {Array} options.center - center of arc
+ * @param {Number} options.radius - radius of arc
  * @param {Number} options.startAngle - starting angle of the arc, in degrees
  * @param {Number} options.endAngle - ending angle of the arc, in degrees
  * @param {Number} options.segments - number of segments to create per 360 rotation

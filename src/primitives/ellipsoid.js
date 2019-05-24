@@ -8,7 +8,7 @@ const poly3 = require('../geometry/poly3')
 /** Construct an ellipsoid.
  * @param {Object} [options] - options for construction
  * @param {Array} [options.center=[0,0,0]] - center of ellipsoid
- * @param {Array} [options.radius=[1,1,1]] - radius of ellipsoid
+ * @param {Array} [options.radius=[1,1,1]] - radius of ellipsoid, along X, Y and Z
  * @param {Number} [options.segments=defaultResolution3D] - number of segements to create per 360 rotation
  * @param {Array} [options.axes] -  an array with three vectors for the x, y and z base vectors
  * @returns {geom3} new 3D geometry

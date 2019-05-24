@@ -8,7 +8,7 @@ const geom2 = require('../geometry/geom2')
  * @see https://en.wikipedia.org/wiki/Ellipse
  * @param {Object} [options] - options for construction
  * @param {Array} [options.center=[0,0]] - center of ellipse
- * @param {Array} [options.radius=[1,1]] - radius of ellipse, width and height
+ * @param {Array} [options.radius=[1,1]] - radius of ellipse, along X and Y
  * @param {Number} [options.segments=defaultResolution2D] - number of segments to create per 360 rotation
  * @returns {geom2} new 2D geometry
  */
