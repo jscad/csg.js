@@ -1,4 +1,4 @@
-const {defaultResolution2D, EPS} = require('../core/constants')
+const {EPS} = require('../math/constants')
 
 const vec2 = require('../math/vec2')
 
@@ -9,7 +9,7 @@ const {geom2} = require('../geometry')
  * @param {Array} [options.center=[0,0]] - center of rounded rectangle
  * @param {Array} [options.size=[1,1]] - size of rounded rectangle, width and height
  * @param {Number} [options.roundRadius=0.2] - round radius of corners
- * @param {Number} [options.segments=defaultResolution2D] - number of segments to create per 360 rotation
+ * @param {Number} [options.segments=16] - number of segments to create per 360 rotation
  * @returns {geom2} new 2D geometry
  *
  * @example
@@ -20,7 +20,7 @@ const roundedRectangle = (options) => {
     center: [0, 0],
     size: [1, 1],
     roundRadius: 0.2,
-    segments: defaultResolution2D
+    segments: 16
   }
   const {size, center, roundRadius, segments} = Object.assign({}, defaults, options)
 

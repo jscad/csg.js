@@ -1,5 +1,3 @@
-const {defaultResolution3D} = require('../core/constants')
-
 const vec3 = require('../math/vec3')
 
 const geom3 = require('../geometry/geom3')
@@ -12,7 +10,7 @@ const poly3 = require('../geometry/poly3')
  * @param {Array} [options.end=[0,1,0]] - end point of cylinder
  * @param {Number} [options.endRadius=1] - radius of cylinder at the end
  * @param {Number} [options.endAngle=360] - end angle of cylinder
- * @param {Number} [options.segments=defaultResolution3D] - number of segments to create per 360 rotation
+ * @param {Number} [options.segments=12] - number of segments to create per 360 rotation
  * @returns {geom3} new geometry
  *
  * @example
@@ -31,7 +29,7 @@ const cylinder = function (options) {
     end: [0, 1, 0],
     endRadius: 1,
     endAngle: 360,
-    segments: defaultResolution3D
+    segments: 12
   }
   let {start, startRadius, end, endRadius, endAngle, segments} = Object.assign({}, defaults, options)
 

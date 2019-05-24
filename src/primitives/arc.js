@@ -1,4 +1,4 @@
-const {EPS, defaultResolution2D} = require('../core/constants')
+const {EPS} = require('../core/constants')
 
 const {radToDeg} = require('../math/utils')
 
@@ -23,7 +23,7 @@ const arc = function (options) {
     startAngle: 0,
     endAngle: 360,
     makeTangent: false,
-    segments: defaultResolution2D
+    segments: 16
   }
   let {center, radius, startAngle, endAngle, makeTangent, segments} = Object.assign({}, defaults, options)
 

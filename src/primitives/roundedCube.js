@@ -3,7 +3,7 @@
  * @param {Vector3} [options.center=[0,0,0]] - center of rounded cube
  * @param {Vector3} [options.size=[1,1,1]] - size of rounded cube, single scalar is possible
  * @param {Number} [options.roundRadius=0.2] - radius of rounded edges
- * @param {Number} [options.segments=defaultResolution3D] - number of segments to create per 360 rotation
+ * @param {Number} [options.segments=12] - number of segments to create per 360 rotation
  * @returns {CSG} new 3D solid
  *
  * @example
@@ -25,7 +25,7 @@ const roundedCube = function (options) {
   center = parseOptionAs3DVector(options, 'center', [0, 0, 0])
   cubesize = parseOptionAs3DVector(options, 'size', [1, 1, 1])
   cubesize = cubesize.abs() // negative size make no sense
-  let segments = parseOptionAsInt(options, 'segments', defaultResolution3D)
+  let segments = parseOptionAsInt(options, 'segments', 12)
   if (segments < 4) segments = 4
   if (segments % 2 === 1 && segments < 8) segments = 8 // avoid ugly
   let roundRadius = parseOptionAs3DVector(options, 'roundRadius', [0.2, 0.2, 0.2])

@@ -1,5 +1,3 @@
-const {defaultResolution2D, defaultResolution3D} = require('../core/constants')
-
 const {extrudeRotate} = require('../operations')
 
 const circle = require('./circle')
@@ -8,8 +6,8 @@ const circle = require('./circle')
  * @param {Object} [options] - options for construction
  * @param {Float} [options.innerRadius=1] - radius of small (inner) circle
  * @param {Float} [options.outerRadius=4] - radius of large (outer) circle
- * @param {Integer} [options.innerSegments=defaultResolution2D] - number of segments to create per 360 rotation
- * @param {Integer} [options.outerSegments=defaultResolution3D] - number of segments to create per 360 rotation
+ * @param {Integer} [options.innerSegments=16] - number of segments to create per 360 rotation
+ * @param {Integer} [options.outerSegments=12] - number of segments to create per 360 rotation
  * @param {Integer} [options.roti=0] - rotation angle of base circle
  * @returns {geom3} new 3D geometry
  *
@@ -21,9 +19,9 @@ const circle = require('./circle')
 const torus = (options) => {
   const defaults = {
     innerRadius: 1,
-    innerSegments: defaultResolution2D,
+    innerSegments: 16,
     outerRadius: 4,
-    outerSegments: defaultResolution3D,
+    outerSegments: 12,
     roti: 0
   }
   let {innerRadius, innerSegments, outerRadius, outerSegments, roti} = Object.assign({}, defaults, options)

@@ -1,5 +1,3 @@
-const {defaultResolution3D} = require('../core/constants')
-
 const vec3 = require('../math/vec3')
 
 const geom3 = require('../geometry/geom3')
@@ -9,7 +7,7 @@ const poly3 = require('../geometry/poly3')
  * @param {Object} [options] - options for construction
  * @param {Array} [options.center=[0,0,0]] - center of ellipsoid
  * @param {Array} [options.radius=[1,1,1]] - radius of ellipsoid, along X, Y and Z
- * @param {Number} [options.segments=defaultResolution3D] - number of segements to create per 360 rotation
+ * @param {Number} [options.segments=12] - number of segements to create per 360 rotation
  * @param {Array} [options.axes] -  an array with three vectors for the x, y and z base vectors
  * @returns {geom3} new 3D geometry
  *
@@ -20,7 +18,7 @@ const ellipsoid = (options) => {
   const defaults = {
     center: [0, 0, 0],
     radius: [1, 1, 1],
-    segments: defaultResolution3D,
+    segments: 12,
     axes: [[1, 0, 0], [0, -1, 0], [0, 0, 1]]
   }
   let {center, radius, segments, axes} = Object.assign({}, defaults, options)
@@ -95,7 +93,7 @@ const ellipsoid = (options) => {
  * @param {Object} [options] - options for construction
  * @param {Array} [options.center=[0,0,0]] - center of sphere
  * @param {Number} [options.radius=1] - radius of sphere
- * @param {Number} [options.segments=defaultResolution3D] - number of segments to create per 360 rotation
+ * @param {Number} [options.segments=12] - number of segments to create per 360 rotation
  * @param {Array} [options.axes] -  an array with three vectors for the x, y and z base vectors
  * @returns {geom3} new 3D geometry
 */
@@ -103,7 +101,7 @@ const sphere = (options) => {
   const defaults = {
     center: [0, 0, 0],
     radius: 1,
-    segments: defaultResolution3D,
+    segments: 12,
     axes: [[1, 0, 0], [0, -1, 0], [0, 0, 1]]
   }
   let {center, radius, segments, axes} = Object.assign({}, defaults, options)
