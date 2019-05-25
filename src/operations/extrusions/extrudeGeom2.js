@@ -6,10 +6,6 @@ const {mat4, vec3} = require('../../math')
 
 const {geom3, poly3} = require('../../geometry')
 
-//const {Connector} = require('../core/connectors')
-
-//const toWallPolygons = require('./toWallPolygons')
-
 const to3DPolygons = require('./to3DPolygons')
 const toVec3Pairs = require('./toVec3Pairs')
 
