@@ -113,14 +113,14 @@ const stitchSides = (bottomCorners, topCorners) => {
  * @returns {geom3} new 3D geometry
  *
  * @example
- * let mycube = roundedCube({
+ * let mycube = roundedCuboid({
  *   center: [2, 0, 2],
  *   size: 15,
  *   roundRadius: 2,
  *   segments: 36,
  * });
  */
-const roundedCube = (options) => {
+const roundedCuboid = (options) => {
   const defaults = {
     center: [0, 0, 0],
     size: [1, 1, 1],
@@ -172,4 +172,4 @@ const roundedCube = (options) => {
   return geom3.create(polygons)
 }
 
-module.exports = roundedCube
+module.exports = roundedCuboid

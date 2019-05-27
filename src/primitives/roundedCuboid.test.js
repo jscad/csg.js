@@ -1,21 +1,21 @@
 const test = require('ava')
 
-const roundedCube = require('./roundedCube')
+const {roundedCuboid} = require('./index')
 
 const geom3 = require('../geometry/geom3')
 
 const comparePoints = require('../../test/helpers/comparePoints')
 
-test.only('roundedCube (defaults)', t => {
-  let obs = roundedCube()
+test.only('roundedCuboid (defaults)', t => {
+  let obs = roundedCuboid()
   let pts = geom3.toPoints(obs)
 
   t.deepEqual(pts.length, 114)
 })
 
-test('roundedCube (options)', t => {
+test('roundedCuboid (options)', t => {
   // test center
-  let geometry = roundedCube({center: [4,5]})
+  let geometry = roundedCuboid({center: [4,5]})
   let obs = geom2.toPoints(geometry)
   let exp = [
     new Float32Array([ 5, 5.800000190734863 ]),
@@ -43,7 +43,7 @@ test('roundedCube (options)', t => {
   t.true(comparePoints(obs, exp))
 
   // test size
-  geometry = roundedCube({size: [5, 3]})
+  geometry = roundedCuboid({size: [5, 3]})
   obs = geom2.toPoints(geometry)
   exp = [
     new Float32Array([ 5, 2.799999952316284 ]),
@@ -71,7 +71,7 @@ test('roundedCube (options)', t => {
   t.true(comparePoints(obs, exp))
 
   // test roundRadius
-  geometry = roundedCube({size: [5, 3], roundRadius: 2})
+  geometry = roundedCuboid({size: [5, 3], roundRadius: 2})
   obs = geom2.toPoints(geometry)
   exp = [
     new Float32Array([ 5, 1 ]),
@@ -99,7 +99,7 @@ test('roundedCube (options)', t => {
   t.true(comparePoints(obs, exp))
 
   // test segments
-  geometry = roundedCube({size: [5, 3], roundRadius: 2, segments: 64})
+  geometry = roundedCuboid({size: [5, 3], roundRadius: 2, segments: 64})
   obs = geom2.toPoints(geometry)
   t.deepEqual(obs.length, 68)
 })

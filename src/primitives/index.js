@@ -12,7 +12,7 @@ module.exports = {
   polygon: require('./polygon'),
   polyhedron: require('./polyhedron'),
   rectangle: require('./rectangle').rectangle,
-  roundedCube: require('./roundedCube'),
+  roundedCuboid: require('./roundedCuboid'),
   roundedCylinder: require('./roundedCylinder'),
   roundedRectangle: require('./roundedRectangle'),
   sphere: require('./ellipsoid').sphere,
