@@ -22,7 +22,7 @@ test('polygon: providing only object.points creates expected geometry', t => {
   t.true(comparePoints(obs, exp))
 })
 
-test.only('polygon: providing object.points (array) and object.path (array) creates expected geometry', t => {
+test('polygon: providing object.points (array) and object.path (array) creates expected geometry', t => {
   let geo = polygon({points: [[0, 0], [100, 0], [130, 50], [30, 50]], paths: [[3, 2, 1, 0]]})
 
   let obs = geom2.toPoints(geo)
