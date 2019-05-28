@@ -25,10 +25,10 @@ const {geom3, poly3} = require('../geometry')
  */
 const cylinderElliptic = function (options) {
   const defaults = {
-    start: [0, -1, 0],
+    start: [0, 0, -1],
     startRadius: [1,1],
     startAngle: 0,
-    end: [0, 1, 0],
+    end: [0, 0, 1],
     endRadius: [1,1],
     endAngle: 360,
     segments: 12

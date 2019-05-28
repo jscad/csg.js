@@ -23,8 +23,8 @@ const {geom3, poly3} = require('../geometry')
  */
 const roundedCylinder = function (options) {
   const defaults = {
-    start: [0, -1, 0],
-    end: [0, 1, 0],
+    start: [0, 0, -1],
+    end: [0, 0, 1],
     radius: 1,
     roundRadius: 0.2,
     segments: 12
