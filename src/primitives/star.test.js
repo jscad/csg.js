@@ -1,5 +1,7 @@
 const test = require('ava')
 
+const {degToRad} = require('../math/utils')
+
 const {star} = require('./index')
 
 const geom2 = require('../geometry/geom2')
@@ -122,7 +124,7 @@ test('star (options)', t => {
   t.true(comparePoints(pts, exp))
 
   // test start angle
-  geometry = star({outerRadius: 5, startAngle: -45})
+  geometry = star({outerRadius: 5, startAngle: degToRad(360-45)})
   pts = geom2.toPoints(geometry)
   exp = [
     [ 3.535533905029297, -3.535533905029297 ],

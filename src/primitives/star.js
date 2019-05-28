@@ -1,4 +1,4 @@
-const {degToRad} = require('../math/utils')
+const {EPS, TWOPI} = require('../math/constants')
 
 const vec2 = require('../math/vec2')
 
@@ -13,12 +13,11 @@ const getRadiusRatio = (vertices, density) => {
 }
 
 const getPoints = (vertices, radius, startAngle, center) => {
-  var a1 = degToRad(startAngle)
-  var a = 2 * Math.PI / vertices
+  var a = TWOPI / vertices
 
   var points = []
   for (var i = 0; i < vertices; i++) {
-    let point = vec2.fromAngleRadians(a * i + a1)
+    let point = vec2.fromAngleRadians(a * i + startAngle)
     vec2.scale(point, radius, point)
     vec2.add(point, center, point)
     points.push(point)
@@ -34,7 +33,7 @@ const getPoints = (vertices, radius, startAngle, center) => {
  * @param {Number} [options.density=2] - density (Q) of star
  * @param {Number} [options.outerRadius=1] - outer radius of vertices
  * @param {Number} [options.innerRadius=0] - inner radius of vertices, or zero to calculate
- * @param {Number} [options.startAngle=0] - starting angle for first vertice
+ * @param {Number} [options.startAngle=0] - starting angle for first vertice, in radians
  *
  * @example
  * let star1 = star({vertices: 8, outerRadius: 10}) // star with 8/2 density
@@ -54,6 +53,10 @@ const star = (options) => {
   if (!Array.isArray(center)) throw new Error('center must be an array')
   if (center.length < 2) throw new Error('center must contain X and Y values')
 
+  if (startAngle < 0) throw new Error('startAngle must be positive')
+
+  startAngle = startAngle % TWOPI
+
   // force integers
   vertices = Math.floor(vertices)
   density = Math.floor(density)
@@ -65,7 +68,7 @@ const star = (options) => {
   const centerv = vec2.fromArray(center)
 
   const outerPoints = getPoints(vertices, outerRadius, startAngle, centerv);
-  const innerPoints = getPoints(vertices, innerRadius, startAngle + 180 / vertices, centerv);
+  const innerPoints = getPoints(vertices, innerRadius, startAngle + Math.PI / vertices, centerv);
 
   const allPoints = []
   for (var i = 0; i < vertices; i++) {

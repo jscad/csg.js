@@ -1,6 +1,4 @@
-const {EPS} = require('../math/constants')
-
-const {radToDeg, degToRad} = require('../math/utils')
+const {EPS, TWOPI} = require('../math/constants')
 
 const {vec3} = require('../math')
 
@@ -10,8 +8,10 @@ const {geom3, poly3} = require('../geometry')
  * @param {Object} [options] - options for construction
  * @param {Vector3} [options.height=2] - height of cylinder
  * @param {Vector2D} [options.startRadius=[1,1]] - radius of rounded start, must be two dimensional array
+ * @param {Number} [options.startAngle=0] - start angle of cylinder, in radians
  * @param {Vector2D} [options.endRadius=[1,1]] - radius of rounded end, must be two dimensional array
- * @param {Number} [options.segments=12] - number of segments to create per 360 rotation
+ * @param {Number} [options.endAngle=TWOPI] - end angle of cylinder, in radians
+ * @param {Number} [options.segments=12] - number of segments to create per full rotation
  * @returns {geom3} new geometry
  *
  * @example
@@ -27,7 +27,7 @@ const cylinderElliptic = function (options) {
     startRadius: [1,1],
     startAngle: 0,
     endRadius: [1,1],
-    endAngle: 360,
+    endAngle: TWOPI,
     segments: 12
   }
   let {height, startRadius, startAngle, endRadius, endAngle, segments} = Object.assign({}, defaults, options)
@@ -41,15 +41,15 @@ const cylinderElliptic = function (options) {
 
   if (segments < 4) throw new Error('segments must be four or more')
 
-  startAngle = degToRad(startAngle % 360)
-  endAngle = degToRad(endAngle % 360)
+  startAngle = startAngle % TWOPI
+  endAngle = endAngle % TWOPI
 
-  let rotation = Math.PI * 2
+  let rotation = TWOPI
   if (startAngle < endAngle) {
     rotation = endAngle - startAngle
   }
   if (startAngle > endAngle) {
-    rotation = endAngle + ((Math.PI * 2) - startAngle)
+    rotation = endAngle + (TWOPI - startAngle)
   }
 
   let minradius = Math.min(startRadius[0], startRadius[1], endRadius[0], endRadius[1])
@@ -57,7 +57,7 @@ const cylinderElliptic = function (options) {
                             (2 * minradius * minradius))
   if (rotation < minangle) throw new Error('startAngle and endAngle to not define a significant rotation')
 
-  let slices = Math.floor(segments * (rotation / (Math.PI * 2)))
+  let slices = Math.floor(segments * (rotation / TWOPI))
 
   let start = [0, 0, -(height/2)]
   let end = [0, 0, height/2]
@@ -96,7 +96,7 @@ const cylinderElliptic = function (options) {
       }
     }
   }
-  if (rotation < (Math.PI * 2)) {
+  if (rotation < TWOPI) {
     polygons.push(poly3.fromPoints([startv, endv, point(0, 0, startRadius)]))
     polygons.push(poly3.fromPoints([point(0, 0, startRadius), endv, point(1, 0, endRadius)]))
     polygons.push(poly3.fromPoints([startv, point(0, 1, startRadius), endv]))
@@ -112,8 +112,8 @@ const cylinderElliptic = function (options) {
  * @param {Number} [options.startRadisu=1] - radius of cylinder at the start
  * @param {Number} [options.startAngle=0] - start angle of cylinder
  * @param {Number} [options.endRadius=1] - radius of cylinder at the end
- * @param {Number} [options.endAngle=360] - end angle of cylinder
- * @param {Number} [options.segments=12] - number of segments to create per 360 rotation
+ * @param {Number} [options.endAngle=TWOPI] - end angle of cylinder
+ * @param {Number} [options.segments=12] - number of segments to create per full rotation
  * @returns {geom3} new geometry
  *
  * @example
@@ -130,7 +130,7 @@ const cylinder = function (options) {
     startRadius: 1,
     startAngle: 0,
     endRadius: 1,
-    endAngle: 360,
+    endAngle: TWOPI,
     segments: 12
   }
   let {height, startRadius, startAngle, endRadius, endAngle, segments} = Object.assign({}, defaults, options)
