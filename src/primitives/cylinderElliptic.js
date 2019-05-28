@@ -8,32 +8,31 @@ const {geom3, poly3} = require('../geometry')
 
 /** Construct an elliptic cylinder.
  * @param {Object} [options] - options for construction
- * @param {Vector3} [options.start=[0,-1,0]] - start point of cylinder
+ * @param {Vector3} [options.height=2] - height of cylinder
  * @param {Vector2D} [options.startRadius=[1,1]] - radius of rounded start, must be two dimensional array
- * @param {Vector3} [options.end=[0,1,0]] - end point of cylinder
  * @param {Vector2D} [options.endRadius=[1,1]] - radius of rounded end, must be two dimensional array
  * @param {Number} [options.segments=12] - number of segments to create per 360 rotation
  * @returns {geom3} new geometry
  *
  * @example
  *     let cylinder = cylinderElliptic({
- *       start: [0, -10, 0],
+ *       height: 2,
  *       startRadius: [10,5],
- *       end: [0, 10, 0],
  *       endRadius: [8,3]
  *     });
  */
 const cylinderElliptic = function (options) {
   const defaults = {
-    start: [0, 0, -1],
+    height: 2,
     startRadius: [1,1],
     startAngle: 0,
-    end: [0, 0, 1],
     endRadius: [1,1],
     endAngle: 360,
     segments: 12
   }
-  let {start, startRadius, startAngle, end, endRadius, endAngle, segments} = Object.assign({}, defaults, options)
+  let {height, startRadius, startAngle, endRadius, endAngle, segments} = Object.assign({}, defaults, options)
+
+  if (height < (EPS*2)) throw new Error('height must be larger then zero')
 
   if ((endRadius[0] <= 0) || (startRadius[0] <= 0) || (endRadius[1] <= 0) || (startRadius[1] <= 0)) {
     throw new Error('endRadus and startRadius should be positive')
@@ -60,6 +59,8 @@ const cylinderElliptic = function (options) {
 
   let slices = Math.floor(segments * (rotation / (Math.PI * 2)))
 
+  let start = [0, 0, -(height/2)]
+  let end = [0, 0, height/2]
   let startv = vec3.fromArray(start)
   let endv = vec3.fromArray(end)
   let ray = vec3.subtract(endv, startv)
@@ -107,10 +108,9 @@ const cylinderElliptic = function (options) {
 
 /** Construct a solid cylinder.
  * @param {Object} [options] - options for construction
- * @param {Array} [options.start=[0,-1,0]] - start point of cylinder
+ * @param {Array} [options.height=2] - height of cylinder
  * @param {Number} [options.startRadisu=1] - radius of cylinder at the start
  * @param {Number} [options.startAngle=0] - start angle of cylinder
- * @param {Array} [options.end=[0,1,0]] - end point of cylinder
  * @param {Number} [options.endRadius=1] - radius of cylinder at the end
  * @param {Number} [options.endAngle=360] - end angle of cylinder
  * @param {Number} [options.segments=12] - number of segments to create per 360 rotation
@@ -118,30 +118,27 @@ const cylinderElliptic = function (options) {
  *
  * @example
  * let cylinder = cylinder({
- *   start: [0, -10, 0],
+ *   height: 2,
  *   startRadis: 10,
- *   end: [0, 10, 0],
  *   endRadis: 5,
  *   segments: 16
  * })
  */
 const cylinder = function (options) {
   const defaults = {
-    start: [0, -1, 0],
+    height: 2,
     startRadius: 1,
     startAngle: 0,
-    end: [0, 1, 0],
     endRadius: 1,
     endAngle: 360,
     segments: 12
   }
-  let {start, startRadius, startAngle, end, endRadius, endAngle, segments} = Object.assign({}, defaults, options)
+  let {height, startRadius, startAngle, endRadius, endAngle, segments} = Object.assign({}, defaults, options)
 
   let newoptions = {
-    start: start,
+    height: height,
     startRadius: [startRadius, startRadius],
     startAngle: startAngle,
-    end: end,
     endRadius: [endRadius, endRadius],
     endAngle: endAngle,
     segments: segments

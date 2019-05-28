@@ -6,35 +6,36 @@ const {geom3, poly3} = require('../geometry')
 
 /** Construct a cylinder with rounded ends.
  * @param {Object} [options] - options for construction
- * @param {Array} [options.start=[0,-1,0]] - start point of cylinder
- * @param {Array} [options.end=[0,1,0]] - end point of cylinder
- * @param {Number} [options.radius=1] - radius of rounded ends, must be scalar
+ * @param {Array} [options.height=2 - height of cylinder
+ * @param {Number} [options.radius=1] - radius of cylinder
  * @param {Number} [options.roundRadius=0.2] - radius of rounded edges
  * @param {Number} [options.segments=12] - number of segments to create per 360 rotation
  * @returns {geom3} new 3D geometry
  *
  * @example
  * let mycylinder = roundedCylinder({
- *   start: [0, -10, 0],
- *   end: [0, 10, 0],
+ *   height: 10,
  *   radius: 2,
  *   roundRadius: 0.5
  * })
  */
 const roundedCylinder = function (options) {
   const defaults = {
-    start: [0, 0, -1],
-    end: [0, 0, 1],
+    height: 2,
     radius: 1,
     roundRadius: 0.2,
     segments: 12
   }
-  let {start, end, radius, roundRadius, segments} = Object.assign({}, defaults, options)
+  let {height, radius, roundRadius, segments} = Object.assign({}, defaults, options)
+
+  if (height < (EPS*2)) throw new Error('height must be larger then zero')
 
   if (roundRadius > (radius - EPS)) throw new Error('roundRadius must be smaller then the radius')
 
   if (segments < 4) throw new Error('segments must be four or more')
 
+  let start = [0, 0, -(height/2)]
+  let end = [0, 0, height/2]
   let direction = vec3.subtract(end, start)
   let length = vec3.length(direction)
 

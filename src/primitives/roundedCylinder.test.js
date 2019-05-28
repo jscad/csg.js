@@ -22,8 +22,8 @@ test('roundedCylinder (options)', t => {
 
   t.is(pts.length, 15)
 
-  // test start end
-  obs = roundedCylinder({segments: 5, start: [0,0,-10], end: [0,0,10]})
+  // test height
+  obs = roundedCylinder({segments: 5, height: 20})
   pts = geom3.toPoints(obs)
   exp = [
     [ [ 0.9510565400123596, 0.30901700258255005, -9.800000190734863 ],
@@ -141,7 +141,7 @@ test('roundedCylinder (options)', t => {
   t.true(comparePolygonsAsPoints(pts, exp))
 
   // test round radius
-  obs = roundedCylinder({segments: 5, start: [0,0,-10], end: [0,0,10], radius: 5, roundRadius: 2})
+  obs = roundedCylinder({segments: 5, height: 20, radius: 5, roundRadius: 2})
   pts = geom3.toPoints(obs)
   exp = [
     [ [ 4.755282402038574, 1.5450849533081055, -8 ],
