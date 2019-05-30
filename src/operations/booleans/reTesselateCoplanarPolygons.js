@@ -7,19 +7,16 @@ const OrthoNormalBasis = require('../../math/OrthoNormalBasis')
 const {poly3} = require('../../geometry')
 
 /**
- * Retesselation for a set of coplanar polygons.
- * NOTE: All planes must have the same plane.
+ * Retesselation for a set of COPLANAR polygons.
  * @param {[poly3]} sourcepolygons - list of polygons
  * @returns {[poly3]} new set of polygons
  */
 const reTesselateCoplanarPolygons = (sourcepolygons) => {
-  if (sourcepolygons.length === 0) {
-    return sourcepolygons
-  }
+  if (sourcepolygons.length < 2) return sourcepolygons
+
   const destpolygons = []
   const numpolygons = sourcepolygons.length
   const plane = sourcepolygons[0].plane
-  // TODO const shared = sourcepolygons[0].shared
   const orthobasis = new OrthoNormalBasis(plane)
   const polygonvertices2d = [] // array of array of Vector2D
   const polygontopvertexindexes = [] // array of indexes of topmost vertex per polygon
