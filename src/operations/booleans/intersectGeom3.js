@@ -17,7 +17,6 @@ const intersect = (...geometries) => {
     newgeometry = intersectSub(newgeometry, geometry)
   })
 
-  newgeometry.isCanonicalized = true // FIXME hack hack hack
   newgeometry = retessellate(newgeometry)
   return newgeometry
 }

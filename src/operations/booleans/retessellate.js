@@ -22,10 +22,6 @@ const coplanar = (plane1, plane2) => {
   (making sure that we will end up with convex polygons).
 */
 const retessellate = (geometry) => {
-  if (!geometry.isCanonicalized) {
-    throw new Error('geometry must be canonical, call canonicalize first')
-  }
-
   if (geometry.isRetesselated) {
     return geometry
   }
@@ -50,7 +46,6 @@ const retessellate = (geometry) => {
   })
 
   const result = geom3.create(destpolygons)
-  result.isCanonicalized = geometry.isCanonicalized
   result.isRetesselated = true
 
   return result

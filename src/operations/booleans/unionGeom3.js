@@ -17,7 +17,6 @@ const union = (...geometries) => {
     geometries.push(unionSub(geometries[i - 1], geometries[i]))
   }
   let newgeometry = geometries[i - 1]
-  newgeometry.isCanonicalized = true // FIXME hack hack hack
   newgeometry = retessellate(newgeometry)
   return newgeometry
 }

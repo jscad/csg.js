@@ -8,13 +8,11 @@ const comparePolygonsAsPoints = require('../../../test/helpers/comparePolygonsAs
 
 test('geom3: retessellate() should create proper geometry from empty geometries', (t) => {
   const obj1 = geom3.create()
-  obj1.isCanonicalized = true
 
   // one empty geometry
   const ret1 = retessellate(obj1)
   const exp1 = {
     polygons: [],
-    isCanonicalized: true,
     isRetesselated: true,
     transforms: new Float32Array([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1])
   }
@@ -85,27 +83,20 @@ test('geom3: retessellate() should create proper geometry from solid geometries'
   ]
 
   const obj1 = geom3.fromPoints(box1)
-  obj1.isCanonicalized = true
   const obj2 = geom3.fromPoints(box1.concat(box2)) // combined geometry
-  obj2.isCanonicalized = true
   const obj3 = geom3.fromPoints(box3)
-  obj3.isCanonicalized = true
   const obj4 = geom3.fromPoints(box4)
-  obj4.isCanonicalized = true
   const obj5 = geom3.fromPoints(box5)
-  obj5.isCanonicalized = true
 
   // one solid geometry
   const ret1 = retessellate(obj1)
   const exp1 = geom3.fromPoints(box1)
-  exp1.isCanonicalized = true
   exp1.isRetesselated = true
   t.deepEqual(ret1, exp1)
 
   // two non-overlapping geometries
   const ret2 = retessellate(obj2)
   const exp2 = geom3.fromPoints(box1.concat(box2))
-  exp2.isCanonicalized = true
   exp2.isRetesselated = true
   t.deepEqual(ret2, exp2)
 

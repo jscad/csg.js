@@ -17,7 +17,6 @@ const subtract = (...geometries) => {
     newgeometry = subtractSub(newgeometry, geometry)
   })
 
-  newgeometry.isCanonicalized = true // FIXME hack hack hack
   newgeometry = retessellate(newgeometry)
   return newgeometry
 }
