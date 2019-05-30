@@ -1,4 +1,4 @@
-const {EPS, TWOPI} = require('../math/constants')
+const {EPS} = require('../math/constants')
 
 const vec2 = require('../math/vec2')
 
@@ -13,7 +13,7 @@ const getRadiusRatio = (vertices, density) => {
 }
 
 const getPoints = (vertices, radius, startAngle, center) => {
-  var a = TWOPI / vertices
+  var a = (Math.PI * 2) / vertices
 
   var points = []
   for (var i = 0; i < vertices; i++) {
@@ -55,7 +55,7 @@ const star = (options) => {
 
   if (startAngle < 0) throw new Error('startAngle must be positive')
 
-  startAngle = startAngle % TWOPI
+  startAngle = startAngle % (Math.PI * 2)
 
   // force integers
   vertices = Math.floor(vertices)

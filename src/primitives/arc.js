@@ -1,4 +1,4 @@
-const {EPS, TWOPI} = require('../math/constants')
+const {EPS} = require('../math/constants')
 
 const {radToDeg, degToRad} = require('../math/utils')
 
@@ -21,7 +21,7 @@ const arc = function (options) {
     center: [0, 0],
     radius: 1,
     startAngle: 0,
-    endAngle: TWOPI,
+    endAngle: (Math.PI * 2),
     makeTangent: false,
     segments: 16
   }
@@ -30,15 +30,15 @@ const arc = function (options) {
   if (startAngle < 0 || endAngle < 0) throw new Error('the start and end angles must be positive')
   if (segments < 4) throw new Error('segments must be four or more')
 
-  startAngle = startAngle % TWOPI
-  endAngle = endAngle % TWOPI
+  startAngle = startAngle % (Math.PI * 2)
+  endAngle = endAngle % (Math.PI * 2)
 
-  let rotation = TWOPI
+  let rotation = (Math.PI * 2)
   if (startAngle < endAngle) {
     rotation = endAngle - startAngle
   }
   if (startAngle > endAngle) {
-    rotation = endAngle + (TWOPI - startAngle)
+    rotation = endAngle + ((Math.PI * 2) - startAngle)
   }
 
   let minangle = Math.acos(((radius * radius) + (radius * radius) - (EPS * EPS)) / (2 * radius * radius))
@@ -53,7 +53,7 @@ const arc = function (options) {
     pointArray.push(point)
   } else {
     // note: add one additional step to acheive full rotation
-    let numsteps = Math.max(1, Math.floor(segments * (rotation / TWOPI))) + 1
+    let numsteps = Math.max(1, Math.floor(segments * (rotation / (Math.PI * 2)))) + 1
     let edgestepsize = numsteps * 0.5 / rotation // step size for half a degree
     if (edgestepsize > 0.25) edgestepsize = 0.25
 
