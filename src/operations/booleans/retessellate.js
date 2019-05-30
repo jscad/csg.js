@@ -1,8 +1,17 @@
-const {plane} = require('../../math')
+const {plane, vec3} = require('../../math')
 
 const {geom3, poly3} = require('../../geometry')
 
 const reTesselateCoplanarPolygons = require('./reTesselateCoplanarPolygons')
+
+const coplanar = (plane1, plane2) => {
+  // expect the same distance from the origin, within tolerance
+  if (Math.abs(plane1[3] - plane2[3]) < 0.00000015) {
+    // expect a zero (0) angle between the normals
+    if (vec3.angle(plane1, plane2) === 0) return true
+  }
+  return false
+}
 
 /*
   After boolean operations all coplanar polygon fragments are joined by a retesselating
@@ -21,36 +30,29 @@ const retessellate = (geometry) => {
     return geometry
   }
 
-  const polygonsPerPlane = new Map()
   const polygons = geom3.toPolygons(geometry)
+  const polygonsPerPlane = [] // elements: [plane, [poly3...]]
   polygons.forEach((polygon) => {
-    let values = polygonsPerPlane.get(polygon.plane)
-    if (values === undefined) {
-      values = [polygon]
-//console.log(poly3.toString(polygon))
-//console.log(plane.toString(polygon.plane))
-      polygonsPerPlane.set(polygon.plane, values)
+    let mapping = polygonsPerPlane.find((element) => coplanar(element[0], polygon.plane))
+    if (mapping) {
+      let polygons = mapping[1]
+      polygons.push(polygon)
     } else {
-      values.push(polygon)
+      polygonsPerPlane.push([polygon.plane, [polygon]])
     }
   })
 
   let destpolygons = []
-  polygonsPerPlane.forEach((sourcepolygons) => {
-//console.log(sourcepolygons.length)
-    if (sourcepolygons.length < 2) {
-      destpolygons = destpolygons.concat(sourcepolygons)
-    } else {
-      const retesselayedpolygons = reTesselateCoplanarPolygons(sourcepolygons)
-      destpolygons = destpolygons.concat(retesselayedpolygons)
-    }
+  polygonsPerPlane.forEach((mapping) => {
+    let sourcepolygons = mapping[1]
+    const retesselayedpolygons = reTesselateCoplanarPolygons(sourcepolygons)
+    destpolygons = destpolygons.concat(retesselayedpolygons)
   })
 
   const result = geom3.create(destpolygons)
   result.isCanonicalized = geometry.isCanonicalized
   result.isRetesselated = true
 
-  polygonsPerPlane.clear()
   return result
 }
 
