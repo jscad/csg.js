@@ -19,7 +19,7 @@ const intersect = require('./intersect')
 //})
 
 test('intersect: intersect of one or more geom2 objects produces expected geometry', t => {
-  let geometry1 = circle({radius: 2, resolution: 8})
+  let geometry1 = circle({radius: 2, segments: 8})
 
   // intersect of one object
   let result1 = intersect(geometry1)
@@ -38,14 +38,14 @@ test('intersect: intersect of one or more geom2 objects produces expected geomet
   t.deepEqual(obs, exp)
 
   // intersect of two non-overlapping objects
-  let geometry2 = rectangle({radius: [2,2], center: [10,10]})
+  let geometry2 = rectangle({size: [2,2], center: [10,10]})
 
   let result2 = intersect(geometry1, geometry2)
   obs = geom2.toPoints(result2)
   t.is(obs.length, 0)
 
   // intersect of two partially overlapping objects
-  let geometry3 = rectangle({radius: [9,9]})
+  let geometry3 = rectangle({size: [9,9]})
 
   let result3 = intersect(geometry2, geometry3)
   obs = geom2.toPoints(result3)
@@ -77,7 +77,7 @@ test('intersect: intersect of one or more geom2 objects produces expected geomet
 
 
 test('intersect: intersect of one or more geom3 objects produces expected geometry', t => {
-  let geometry1 = sphere({radius: 2, resolution: 8})
+  let geometry1 = sphere({radius: 2, segments: 8})
 
   // intersect of one object
   let result1 = intersect(geometry1)
@@ -152,14 +152,14 @@ test('intersect: intersect of one or more geom3 objects produces expected geomet
   t.true(comparePolygonsAsPoints(obs, exp))
 
   // intersect of two non-overlapping objects
-  let geometry2 = cuboid({radius: [2,2,2], center: [10,10,10]})
+  let geometry2 = cuboid({size: [2,2,2], center: [10,10,10]})
 
   let result2 = intersect(geometry1, geometry2)
   obs = geom3.toPoints(result2)
   t.is(obs.length, 0)
 
   // intersect of two partially overlapping objects
-  let geometry3 = cuboid({radius: [9,9,9]})
+  let geometry3 = cuboid({size: [9,9,9]})
 
   let result3 = intersect(geometry2, geometry3)
   obs = geom3.toPoints(result3)

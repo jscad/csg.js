@@ -46,8 +46,8 @@ test('measureArea: single objects', (t) => {
 
 test('measureArea (multiple objects)', t => {
   let aline = line([[10, 10], [15, 15]])
-  let arect = rectangle({radius: [5, 10]})
-  let acube = cuboid({radius: [5, 10, 20]})
+  let arect = rectangle({size: [5, 10]})
+  let acube = cuboid({size: [5, 10, 20]})
   let o = {}
 
   let allarea = measureArea(aline, arect, acube, o)

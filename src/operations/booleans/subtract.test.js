@@ -19,7 +19,7 @@ const subtract = require('./subtract')
 //})
 
 test('subtract: subtract of one or more geom2 objects produces expected geometry', t => {
-  let geometry1 = circle({radius: 2, resolution: 8})
+  let geometry1 = circle({radius: 2, segments: 8})
 
   // subtract of one object
   let result1 = subtract(geometry1)
@@ -38,7 +38,7 @@ test('subtract: subtract of one or more geom2 objects produces expected geometry
   t.deepEqual(obs, exp)
 
   // subtract of two non-overlapping objects
-  let geometry2 = rectangle({radius: [2,2], center: [10,10]})
+  let geometry2 = rectangle({size: [2,2], center: [10,10]})
 
   let result2 = subtract(geometry1, geometry2)
   obs = geom2.toPoints(result2)
@@ -56,7 +56,7 @@ test('subtract: subtract of one or more geom2 objects produces expected geometry
   t.deepEqual(obs, exp)
 
   // subtract of two partially overlapping objects
-  let geometry3 = rectangle({radius: [9,9]})
+  let geometry3 = rectangle({size: [9,9]})
 
   let result3 = subtract(geometry2, geometry3)
   obs = geom2.toPoints(result3)
@@ -82,7 +82,7 @@ test('subtract: subtract of one or more geom2 objects produces expected geometry
 
 
 test('subtract: subtract of one or more geom3 objects produces expected geometry', t => {
-  let geometry1 = sphere({radius: 2, resolution: 8})
+  let geometry1 = sphere({radius: 2, segments: 8})
 
   // subtract of one object
   let result1 = subtract(geometry1)
@@ -157,14 +157,14 @@ test('subtract: subtract of one or more geom3 objects produces expected geometry
   t.true(comparePolygonsAsPoints(obs, exp))
 
   // subtract of two non-overlapping objects
-  let geometry2 = cuboid({radius: [2,2,2], center: [10,10,10]})
+  let geometry2 = cuboid({size: [2,2,2], center: [10,10,10]})
 
   let result2 = subtract(geometry1, geometry2)
   obs = geom3.toPoints(result2)
   t.is(obs.length, 32)
 
   // subtract of two partially overlapping objects
-  let geometry3 = cuboid({radius: [9,9,9]})
+  let geometry3 = cuboid({size: [9,9,9]})
 
   let result3 = subtract(geometry2, geometry3)
   obs = geom3.toPoints(result3)
