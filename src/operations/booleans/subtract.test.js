@@ -6,7 +6,7 @@ const {geom2, geom3} = require('../../geometry')
 
 const {circle, rectangle, sphere, cuboid} = require('../../primitives')
 
-const subtract = require('./subtract')
+const {subtract} = require('./index')
 
 //test('subtract: subtract of a path produces expected changes to points', t => {
 //  let geometry = path.fromPoints({}, [[0, 1, 0], [1, 0, 0]])

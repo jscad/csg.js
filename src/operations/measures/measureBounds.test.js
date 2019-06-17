@@ -4,7 +4,7 @@ const {geom2, geom3, path2} = require('../../geometry')
 
 const {line, rectangle, cuboid} = require('../../primitives')
 
-const measureBounds = require('./measureBounds')
+const {measureBounds} = require('./index')
 
 test('measureBounds (single objects)', t => {
   let aline = line([[10, 10], [15, 15]])
