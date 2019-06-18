@@ -1,6 +1,6 @@
-const {plane, vec3} = require('../../math')
+const {vec3} = require('../../math')
 
-const {geom3, poly3} = require('../../geometry')
+const {geom3} = require('../../geometry')
 
 const reTesselateCoplanarPolygons = require('./reTesselateCoplanarPolygons')
 

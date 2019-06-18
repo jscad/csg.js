@@ -1,16 +1,12 @@
 const test = require('ava')
 
-const {radToDeg, degToRad} = require('../../math/utils')
+const {degToRad} = require('../../math/utils')
 
-const {EPS} = require('../../math/constants')
+const {mat4} = require('../../math')
 
-const {mat4, vec3} = require('../../math')
-
-const {geom2, geom3, poly3} = require('../../geometry')
+const {poly3} = require('../../geometry')
 
 const reTesselateCoplanarPolygons = require('./reTesselateCoplanarPolygons')
-
-const {circle, rectangle} = require('../../primitives')
 
 const translatePoly3 = (offsets, polygon) => {
   const matrix = mat4.fromTranslation(offsets)
@@ -23,17 +19,11 @@ const rotatePoly3 = (angles, polygon) => {
 }
 
 test.only('retessellateCoplanarPolygons: should merge coplanar polygons', (t) => {
-  let points2D = geom2.toPoints(rectangle({radius: [5,5]}))
-  let points3D = points2D.map((point) => vec3.fromVec2(point))
   const polyA = poly3.fromPoints([[-5, -5, 0], [ 5, -5, 0], [ 5,  5, 0], [-5, 5, 0]])
   const polyB = poly3.fromPoints([[ 5, -5, 0], [ 8,  0, 0], [ 5,  5, 0]])
   const polyC = poly3.fromPoints([[-5,  5, 0], [-8,  0, 0], [-5, -5, 0]])
   const polyD = poly3.fromPoints([[-5,  5, 0], [ 5,  5, 0], [ 0,  8, 0]])
   const polyE = poly3.fromPoints([[ 5, -5, 0], [-5, -5, 0], [ 0, -8, 0]])
-  points2D = geom2.toPoints(rectangle({radius: [3,3]}))
-  points3D = points2D.map((point) => vec3.fromVec2(point))
-  const polyZ = poly3.fromPoints(points3D)
-  const polyY = translatePoly3([2, 8, 0], polyZ)
 
   // combine polygons in each direction
   let obs = reTesselateCoplanarPolygons([polyA, polyB])
