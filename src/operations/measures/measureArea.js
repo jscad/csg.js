@@ -6,7 +6,7 @@ const {geom2, geom3, path2, poly3} = require('../../geometry')
  * Measure the area of the given geometry.
  * NOTE: paths are infinitely narrow and do not have an area
  *
- * @param {Path2} geometry - geometry to measure
+ * @param {path2} geometry - geometry to measure
  * @returns {Number} area of the geometry
  */
 const measureAreaOfPath2 = () => 0
@@ -14,8 +14,9 @@ const measureAreaOfPath2 = () => 0
 /*
  * Measure the area of the given geometry.
  * For a counter clockwise rotating geometry (about Z) the area is positive, otherwise negative.
+ *
  * @see http://paulbourke.net/geometry/polygonmesh/
- * @param {Geom2} geometry - 2D geometry to measure
+ * @param {geom2} geometry - 2D geometry to measure
  * @returns {Number} area of the geometry
  */
 const measureAreaOfGeom2 = (geometry) => {
@@ -25,10 +26,10 @@ const measureAreaOfGeom2 = (geometry) => {
   return area
 }
 
-/**
+/*
  * Measure the area of the given geometry.
  *
- * @param {Geom3} geometry - 3D geometry to measure
+ * @param {geom3} geometry - 3D geometry to measure
  * @returns {Number} area of the geometry
  */
 const measureAreaOfGeom3 = (geometry) => {
@@ -39,10 +40,10 @@ const measureAreaOfGeom3 = (geometry) => {
 /**
  * Measure the area of the given geometry(s).
  * @param {...geometries} geometries - the geometry(s) to measure
- * @return {...area} the area for each geometry
+ * @return {Number|Number[]} the area for each geometry
  *
  * @example
- * let bounds = measureArea(sphere())
+ * let area = measureArea(sphere())
  */
 const measureArea = (...geometries) => {
   geometries = flatten(geometries)

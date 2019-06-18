@@ -9,11 +9,15 @@ const intersectGeom3 = require('./intersectGeom3')
 
 /**
  * Return a new geometry representing space in both the first geometry and
- * in the subsequent solids. None of the given geometries are modified.
+ * all subsequent geometries.
+ * Note: None of the given geometries are modified.
+ *
  * @param {...geometries} geometries - list of geometries
- * @returns {geometry | []} new geometries
+ * @returns {geom2|geom3} a new geometry
+ *
  * @example
- * let myslice = intersect(sphere({radius: 10}), cube({radius: [[0.5, 10, 10]}))
+ * let myshape = intersect(cube({size: [5,5,5]}), cube({size: [5,5,5], center: [5,5,5]}))
+ *
  * @example
  * +-------+
  * |       |

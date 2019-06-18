@@ -9,10 +9,13 @@ const unionGeom3 = require('./unionGeom3')
 /**
  * Return a new geometry representing the total space in the given geometries.
  * NOTE: None of the given geometries are modified.
+ *
  * @param {...geometry} geometries - list of geometries to union
- * @returns {geometry} new geometry
+ * @returns {geom2|geom3} a new geometry
+ *
  * @example
- * let C = union(A, B)
+ * let myshape = union(cube({size: [5,5,5]}), cube({size: [5,5,5], center: [5,5,5]}))
+ *
  * @example
  * +-------+            +-------+
  * |       |            |       |

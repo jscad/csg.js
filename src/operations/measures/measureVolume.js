@@ -20,7 +20,7 @@ const measureVolumeOfPath2 = () => 0
  */
 const measureVolumeOfGeom2 = () => 0
 
-/**
+/*
  * Measure the volume of the given geometry.
  *
  * @param {Geom3} geometry - 3D geometry to measure
@@ -34,10 +34,10 @@ const measureVolumeOfGeom3 = (geometry) => {
 /**
  * Measure the volume of the given geometry(s).
  * @param {...geometries} geometries - the geometry(s) to measure
- * @return {...volume} the volume for each geometry
+ * @return {Number|Number[]} the volume for each geometry
  *
  * @example
- * let bounds = measureVolume(sphere())
+ * let volume = measureVolume(sphere())
  */
 const measureVolume = (...geometries) => {
   geometries = flatten(geometries)

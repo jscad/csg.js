@@ -9,11 +9,15 @@ const subtractGeom3 = require('./subtractGeom3')
 
 /**
  * Return a new geometry representing space in the first geometry but
- * not in the subsequent solids. None of the given geometries are modified.
+ * not in all subsequent geometries.
+ * Note: None of the given geometries are modified.
+ *
  * @param {...geometries} geometries - list of geometries
- * @returns {geometry} new geometry
+ * @returns {geom2|geom3} a new geometry
+ *
  * @example
- * let C = subtract(A, B)
+ * let myshape = subtract(cube({size: [5,5,5]}), cube({size: [5,5,5], center: [5,5,5]}))
+ *
  * @example
  * +-------+            +-------+
  * |       |            |       |

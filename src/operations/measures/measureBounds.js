@@ -86,7 +86,7 @@ const measureBoundsOfGeom3 = (geometry) => {
  * Measure the min and max bounds of the given geometry(s),
  * where min and max bounds are an array of [x,y,z]
  * @param {...geometries} geometries - the geometry(s) to measure
- * @return {...[min, max]} the bounds for each geometry
+ * @return {[min, max]|Array[[min, max]]} the bounds for each geometry
  *
  * @example
  * let bounds = measureBounds(sphere())
