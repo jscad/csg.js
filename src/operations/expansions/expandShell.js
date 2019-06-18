@@ -200,9 +200,9 @@ const expandShell = (options, geometry) => {
     let yaxis = vec3.unit(vec3.cross(xaxis, bestzaxis))
     let zaxis = vec3.cross(yaxis, xaxis)
     let corner = sphere({
-      center: vertex,
+      center: [vertex[0], vertex[1], vertex[2]],
       radius: delta,
-      resolution: segments,
+      segments: segments,
       axes: [xaxis, yaxis, zaxis]
     })
     result = unionGeom3Sub(result, corner)

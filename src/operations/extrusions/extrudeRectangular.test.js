@@ -1,6 +1,8 @@
 const test = require('ava')
 
-const {geom2, geom3} = require('../../geometry')
+const {degToRad} = require('../../math/utils')
+
+const {geom2, geom3, path2} = require('../../geometry')
 
 const {arc, rectangle} = require('../../primitives')
 
@@ -9,8 +11,8 @@ const extrudeRectangular = require('./extrudeRectangular')
 const comparePolygonsAsPoints = require('../../../test/helpers/comparePolygonsAsPoints')
 
 test('extrudeRectangular (defaults)', t => {
-  let geometry1 = arc({radius: 5, endangle: 90})
-  let geometry2 = rectangle({radius: [5, 5]})
+  let geometry1 = arc({radius: 5, endAngle: degToRad(90)})
+  let geometry2 = rectangle({size: [5, 5]})
 
   let obs = extrudeRectangular({}, geometry1)
   let pts = geom3.toPoints(obs)
@@ -22,8 +24,8 @@ test('extrudeRectangular (defaults)', t => {
 })
 
 test('extrudeRectangular (segments = 1)', t => {
-  let geometry1 = arc({radius: 5, endangle: 90})
-  let geometry2 = rectangle({radius: [5, 5]})
+  let geometry1 = arc({radius: 5, endAngle: degToRad(90)})
+  let geometry2 = rectangle({size: [5, 5]})
 
   let obs = extrudeRectangular({segments: 1}, geometry1)
   let pts = geom3.toPoints(obs)
@@ -35,8 +37,8 @@ test('extrudeRectangular (segments = 1)', t => {
 })
 
 test('extrudeRectangular (segments = 8)', t => {
-  let geometry1 = arc({radius: 5, endangle: 90})
-  let geometry2 = rectangle({radius: [5, 5]})
+  let geometry1 = arc({radius: 5, endAngle: degToRad(90)})
+  let geometry2 = rectangle({size: [5, 5]})
 
   let obs = extrudeRectangular({segments: 8}, geometry1)
   let pts = geom3.toPoints(obs)

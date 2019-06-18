@@ -78,12 +78,12 @@ test('extrudeFromSlices (same shape, changing dimensions)', t => {
 })
 
 test('extrudeFromSlices (changing shape, changing dimensions)', t => {
-  const base = circle({radius: 4, resolution: 4})
+  const base = circle({radius: 4, segments: 4})
   let geometry3 = extrudeFromSlices(
     {
       numslices: 5,
       callback: function(t, count) {
-        let points = geom2.toPoints(circle({radius: 5+count, resolution: 4+count}))
+        let points = geom2.toPoints(circle({radius: 5+count, segments: 4+count}))
         let slice = poly3.fromPoints(points.map((p) => vec3.fromVec2(p)))
         slice = poly3.transform(mat4.fromTranslation([0, 0, count * 10]), slice)
         return slice
