@@ -1,5 +1,7 @@
 const test = require('ava')
 
+const {degToRad} = require('../../math/utils')
+
 const {geom2, geom3} = require('../../geometry')
 
 const extrudeRotate = require('./extrudeRotate')
@@ -14,7 +16,7 @@ test('extrudeRotate: extruding of a geom2 produces an expected geom3', t => {
   t.is(pts.length, 96)
 
   // test angle
-  geometry3 = extrudeRotate({segments: 4, angle: 45}, geometry2)
+  geometry3 = extrudeRotate({segments: 4, angle: degToRad(45)}, geometry2)
   pts = geom3.toPoints(geometry3)
   let exp = [
     [ [ 10, 0, 8 ], [ 7.071067810058594, 7.071067810058594, 8 ], [ 7.071067810058594, 7.071067810058594, -8 ] ],
@@ -33,16 +35,16 @@ test('extrudeRotate: extruding of a geom2 produces an expected geom3', t => {
   t.is(pts.length, 10)
   t.true(comparePolygonsAsPoints(pts, exp))
 
-  geometry3 = extrudeRotate({segments: 4, angle: -250}, geometry2)
+  geometry3 = extrudeRotate({segments: 4, angle: degToRad(-250)}, geometry2)
   pts = geom3.toPoints(geometry3)
   t.is(pts.length, 26)
 
-  geometry3 = extrudeRotate({segments: 4, angle: 250}, geometry2)
+  geometry3 = extrudeRotate({segments: 4, angle: degToRad(250)}, geometry2)
   pts = geom3.toPoints(geometry3)
   t.is(pts.length, 26)
 
   // test startAngle
-  geometry3 = extrudeRotate({segments: 5, startAngle: 45}, geometry2)
+  geometry3 = extrudeRotate({segments: 5, startAngle: degToRad(45)}, geometry2)
   pts = geom3.toPoints(geometry3)
   exp = [
     new Float32Array([ 7.071067810058594, 7.071067810058594, 8 ]),
@@ -52,7 +54,7 @@ test('extrudeRotate: extruding of a geom2 produces an expected geom3', t => {
   t.is(pts.length, 40)
   t.deepEqual(pts[0], exp)
 
-  geometry3 = extrudeRotate({segments: 5, startAngle: -45}, geometry2)
+  geometry3 = extrudeRotate({segments: 5, startAngle: degToRad(-45)}, geometry2)
   pts = geom3.toPoints(geometry3)
   exp = [
     new Float32Array([ 7.071067810058594, -7.071067810058594, 8 ]),

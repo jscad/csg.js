@@ -4,38 +4,36 @@ const mat4 = require('../../math/mat4')
 
 const {geom2, geom3, poly3} = require('../../geometry')
 
-const {degToRad} = require('../../math/utils')
-
 const to3DPolygons = require('./to3DPolygons')
 
 /**
  * Rotate extrusion the given geometry using the given options.
  *
  * @param {Object} [options] - options for extrusion
- * @param {Float} [options.angle=360] - angle of the extrusion, in degrees
- * @param {Float} [options.startAngle=0] - start angle of the extrusion, in degrees
+ * @param {Float} [options.angle=PI*2] - angle of the extrusion, in radians
+ * @param {Float} [options.startAngle=0] - start angle of the extrusion, in radians
  * @param {Float} [options.overflow='cap'] - what to do with points outside of bounds (+ / - x) :
  * defaults to capping those points to 0 (only supported behaviour for now)
  * @param {Integer} [options.segments=12] - number of segments of the extrusion
- * @param {geom2} geometry the 2D geometry to extrude
+ * @param {geom2} geometry - the 2D geometry to extrude
  * @returns {geom3} new extruded 3D geometry
  */
 const extrudeRotate = (options, geometry) => {
   const defaults = {
     segments: 12,
     startAngle: 0,
-    angle: 360,
+    angle: (Math.PI * 2),
     overflow: 'cap'
   }
   let {segments, startAngle, angle, overflow} = Object.assign({}, defaults, options)
 
   if (segments < 3) throw new Error('segments must be greater then 3')
 
-  startAngle = Math.abs(startAngle) > 360 ? startAngle % 360 : startAngle
-  angle = Math.abs(angle) > 360 ? angle % 360 : angle
+  startAngle = Math.abs(startAngle) > (Math.PI * 2) ? startAngle % (Math.PI * 2) : startAngle
+  angle = Math.abs(angle) > (Math.PI * 2) ? angle % (Math.PI * 2) : angle
 
   let endAngle = startAngle + angle
-  endAngle = Math.abs(endAngle) > 360 ? endAngle % 360 : endAngle
+  endAngle = Math.abs(endAngle) > (Math.PI * 2) ? endAngle % (Math.PI * 2) : endAngle
 
   if (endAngle < startAngle) {
     let x = startAngle
@@ -43,22 +41,19 @@ const extrudeRotate = (options, geometry) => {
     endAngle = x
   }
   let totalRotation = endAngle - startAngle
-  if (totalRotation <= 0.0) totalRotation = 360
+  if (totalRotation <= 0.0) totalRotation = (Math.PI * 2)
 
-  // are we dealing with a positive or negative angle (for normals flipping)
-  const positive = true // angle > 0
-
-  if (Math.abs(totalRotation) < 360) {
+  if (Math.abs(totalRotation) < (Math.PI * 2)) {
     // adjust the segments to achieve the total rotation requested
-    let anglePerSegment = 360 / segments
+    let anglePerSegment = (Math.PI * 2) / segments
     segments = Math.floor(Math.abs(totalRotation) / anglePerSegment)
     if (Math.abs(totalRotation) > (segments * anglePerSegment)) segments++
   }
 
-  // console.log('startAngle: '+startAngle)
-  // console.log('endAngle: '+endAngle)
-  // console.log(totalRotation)
-  // console.log(segments)
+  //console.log('startAngle: '+startAngle)
+  //console.log('endAngle: '+endAngle)
+  //console.log(totalRotation)
+  //console.log(segments)
 
   // convert baseshape to just an array of points, easier to deal with
   let shapePoints = geom2.toPoints(geometry)
@@ -100,8 +95,8 @@ const extrudeRotate = (options, geometry) => {
       const nextPoint = shapePoints[(j + 1) % length]
 
       // compute matrix for current and next segment angle
-      let prevMatrix = mat4.fromZRotation(degToRad(((i - 1) / segments * totalRotation) + startAngle) * -1)
-      let curMatrix = mat4.fromZRotation(degToRad((i / segments * totalRotation) + startAngle) * -1)
+      let prevMatrix = mat4.fromZRotation((((i - 1) / segments * totalRotation) + startAngle) * -1)
+      let curMatrix = mat4.fromZRotation(((i / segments * totalRotation) + startAngle) * -1)
 
       const pointA = mat4.rightMultiplyVec3([curPoint[0], 0, curPoint[1]], prevMatrix)
       const pointAP = mat4.rightMultiplyVec3([curPoint[0], 0, curPoint[1]], curMatrix)
@@ -117,28 +112,21 @@ const extrudeRotate = (options, geometry) => {
       // 1. it does not allow eliminating unneeded triangles in case of overlapping points
       // 2. the current cleanup routines create degenerate shapes from those quads
 
-      if (positive) {
-        if (!overlappingPoints) {
-          polygons.push(poly3.fromPoints([pointA, pointAP, pointBP]))
-        }
-        polygons.push(poly3.fromPoints([pointBP, pointB, pointA]))
-      } else {
-        polygons.push(poly3.fromPoints([pointA, pointB, pointBP]))
-        if (!overlappingPoints) {
-          polygons.push(poly3.fromPoints([pointBP, pointAP, pointA]))
-        }
+      if (!overlappingPoints) {
+        polygons.push(poly3.fromPoints([pointA, pointAP, pointBP]))
       }
+      polygons.push(poly3.fromPoints([pointBP, pointB, pointA]))
     }
   }
   // if we do not do a full extrusion, we want caps at both ends (closed volume)
-  if (Math.abs(totalRotation) < 360) {
+  if (Math.abs(totalRotation) < (Math.PI * 2)) {
     // we need to recreate the side with capped points where applicable
     const sideShape = geom2.fromPoints(shapePoints)
 
-    const startMatrix = mat4.multiply(mat4.fromZRotation(degToRad(startAngle)), mat4.fromXRotation(degToRad(90)))
-    const endMatrix = mat4.multiply(mat4.fromZRotation(degToRad(endAngle)), mat4.fromXRotation(degToRad(90)))
-    let startCap = to3DPolygons({flipped: !positive}, sideShape)
-    let endCap = to3DPolygons({flipped: positive}, sideShape)
+    const startMatrix = mat4.multiply(mat4.fromZRotation(startAngle), mat4.fromXRotation(Math.PI / 2))
+    const endMatrix = mat4.multiply(mat4.fromZRotation(endAngle), mat4.fromXRotation(Math.PI / 2))
+    let startCap = to3DPolygons({flipped: false}, sideShape)
+    let endCap = to3DPolygons({flipped: true}, sideShape)
 
     startCap = startCap.map((polygon) => poly3.transform(startMatrix, polygon))
     endCap = endCap.map((polygon) => poly3.transform(endMatrix, polygon))
