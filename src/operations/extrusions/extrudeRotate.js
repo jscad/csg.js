@@ -1,4 +1,4 @@
-const {defaultResolution3D, EPS} = require('../../core/constants')
+const {EPS} = require('../../core/constants')
 
 const mat4 = require('../../math/mat4')
 
@@ -10,25 +10,26 @@ const to3DPolygons = require('./to3DPolygons')
 
 /**
  * Rotate extrusion the given geometry using the given options.
+ *
  * @param {Object} [options] - options for extrusion
  * @param {Float} [options.angle=360] - angle of the extrusion, in degrees
  * @param {Float} [options.startAngle=0] - start angle of the extrusion, in degrees
  * @param {Float} [options.overflow='cap'] - what to do with points outside of bounds (+ / - x) :
  * defaults to capping those points to 0 (only supported behaviour for now)
- * @param {Integer} [options.resolution=defaultResolution3D] - resolution/number of segments of the extrusion
+ * @param {Integer} [options.segments=12] - number of segments of the extrusion
  * @param {geom2} geometry the 2D geometry to extrude
  * @returns {geom3} new extruded 3D geometry
  */
 const extrudeRotate = (options, geometry) => {
   const defaults = {
-    resolution: defaultResolution3D,
+    segments: 12,
     startAngle: 0,
     angle: 360,
     overflow: 'cap'
   }
-  let {resolution, startAngle, angle, overflow} = Object.assign({}, defaults, options)
+  let {segments, startAngle, angle, overflow} = Object.assign({}, defaults, options)
 
-  if (resolution < 3) throw new Error('resolution must be greater then 3')
+  if (segments < 3) throw new Error('segments must be greater then 3')
 
   startAngle = Math.abs(startAngle) > 360 ? startAngle % 360 : startAngle
   angle = Math.abs(angle) > 360 ? angle % 360 : angle
@@ -47,7 +48,6 @@ const extrudeRotate = (options, geometry) => {
   // are we dealing with a positive or negative angle (for normals flipping)
   const positive = true // angle > 0
 
-  let segments = resolution
   if (Math.abs(totalRotation) < 360) {
     // adjust the segments to achieve the total rotation requested
     let anglePerSegment = 360 / segments

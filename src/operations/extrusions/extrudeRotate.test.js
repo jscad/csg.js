@@ -14,7 +14,7 @@ test('extrudeRotate: extruding of a geom2 produces an expected geom3', t => {
   t.is(pts.length, 96)
 
   // test angle
-  geometry3 = extrudeRotate({resolution: 4, angle: 45}, geometry2)
+  geometry3 = extrudeRotate({segments: 4, angle: 45}, geometry2)
   pts = geom3.toPoints(geometry3)
   let exp = [
     [ [ 10, 0, 8 ], [ 7.071067810058594, 7.071067810058594, 8 ], [ 7.071067810058594, 7.071067810058594, -8 ] ],
@@ -33,16 +33,16 @@ test('extrudeRotate: extruding of a geom2 produces an expected geom3', t => {
   t.is(pts.length, 10)
   t.true(comparePolygonsAsPoints(pts, exp))
 
-  geometry3 = extrudeRotate({resolution: 4, angle: -250}, geometry2)
+  geometry3 = extrudeRotate({segments: 4, angle: -250}, geometry2)
   pts = geom3.toPoints(geometry3)
   t.is(pts.length, 26)
 
-  geometry3 = extrudeRotate({resolution: 4, angle: 250}, geometry2)
+  geometry3 = extrudeRotate({segments: 4, angle: 250}, geometry2)
   pts = geom3.toPoints(geometry3)
   t.is(pts.length, 26)
 
   // test startAngle
-  geometry3 = extrudeRotate({resolution: 5, startAngle: 45}, geometry2)
+  geometry3 = extrudeRotate({segments: 5, startAngle: 45}, geometry2)
   pts = geom3.toPoints(geometry3)
   exp = [
     new Float32Array([ 7.071067810058594, 7.071067810058594, 8 ]),
@@ -52,7 +52,7 @@ test('extrudeRotate: extruding of a geom2 produces an expected geom3', t => {
   t.is(pts.length, 40)
   t.deepEqual(pts[0], exp)
 
-  geometry3 = extrudeRotate({resolution: 5, startAngle: -45}, geometry2)
+  geometry3 = extrudeRotate({segments: 5, startAngle: -45}, geometry2)
   pts = geom3.toPoints(geometry3)
   exp = [
     new Float32Array([ 7.071067810058594, -7.071067810058594, 8 ]),
@@ -62,18 +62,18 @@ test('extrudeRotate: extruding of a geom2 produces an expected geom3', t => {
   t.is(pts.length, 40)
   t.deepEqual(pts[0], exp)
 
-  // test resolution
-  geometry3 = extrudeRotate({resolution: 4}, geometry2)
+  // test segments
+  geometry3 = extrudeRotate({segments: 4}, geometry2)
   pts = geom3.toPoints(geometry3)
   t.is(pts.length, 32)
 
-  geometry3 = extrudeRotate({resolution: 64}, geometry2)
+  geometry3 = extrudeRotate({segments: 64}, geometry2)
   pts = geom3.toPoints(geometry3)
   t.is(pts.length, 512)
 
   // test overlapping edges
   geometry2 = geom2.fromPoints([[0, 0], [2, 1], [1, 2], [1, 3], [3, 4], [0, 5]])
-  geometry3 = extrudeRotate({resolution: 8}, geometry2)
+  geometry3 = extrudeRotate({segments: 8}, geometry2)
   pts = geom3.toPoints(geometry3)
   t.is(pts.length, 88)
 })
