@@ -7,6 +7,7 @@ const { translate, rotate, scale, transform, center, mirror, expand, contract, m
 // TODO: since cube, sphere etc rely on some of the transformations, we should be creating csg objects 'from scratch' instead
 // of using those since it is not a very good independant test otherwise
 
+
 test('translate (single item, 3d)', t => {
   const op1 = cube()
   const obs = translate([0, 10, 0], op1)
@@ -102,6 +103,12 @@ test('scale (single item)', t => {
   const obs = scale([2, 1, 1], op1)
 
   t.deepEqual(obs.properties.cube.center, {_x: 1, _y: 0.5, _z: 0.5})
+})
+
+test('center (single non-uniform item)', t => {
+  const op1 = scale([10, 20, 40], cube() );
+  const obs = center(true, op1);
+  t.deepEqual(obs.properties.cube.center, {_x: 0, _y: 0, _z: 0});
 })
 
 test('scale (multiple items)', t => {
@@ -231,7 +238,7 @@ test('expand (single item)', t => {
   const op1 = cube()
   const obs = expand(10, 5, op1)
 
-  t.deepEqual(obs.polygons[0].vertices[0], {pos: {_x: -10, _y: 0, _z: 0}, tag: 25969})
+  t.deepEqual(obs.polygons[0].vertices[0].pos, {_x: -10, _y: 0, _z: 0})
 })
 
 test.failing('expand (multiple items)', t => {
