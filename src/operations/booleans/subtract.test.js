@@ -13,7 +13,7 @@ const { subtract } = require('./index')
 //
 //   geometry = subtract({normal: [1, 0, 0]}, geometry)
 //   let obs = path.toPoints(geometry)
-//   let exp = [ { _x: 0, _y: 1, _z: 0 }, { _x: -1, _y: 0, _z: 0 } ]
+//   let exp = []
 //
 //   t.deepEqual(obs, exp)
 // })

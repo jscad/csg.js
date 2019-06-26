@@ -16,7 +16,7 @@ const subtractGeom3 = require('./subtractGeom3')
  * @returns {geom2|geom3} a new geometry
  *
  * @example
- * let myshape = subtract(cube({size: [5,5,5]}), cube({size: [5,5,5], center: [5,5,5]}))
+ * let myshape = subtract(cubiod({size: [5,5,5]}), cubiod({size: [5,5,5], center: [5,5,5]}))
  *
  * @example
  * +-------+            +-------+

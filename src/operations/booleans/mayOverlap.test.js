@@ -8,7 +8,7 @@ const { cuboid } = require('../../primitives')
 
 const mayOverlap = require('./mayOverlap')
 
-test.only('mayOverlap: determination of overlap is perfect', t => {
+test.only('mayOverlap: determination of overlap is reliable', t => {
   let geometry1 = cuboid({ size: [2, 2, 2], center: [0, 0, 0] })
   let geometry2 = cuboid({ size: [1, 1, 1], center: [0, 0, 0] })
   t.true(mayOverlap(geometry1, geometry2))

@@ -18,7 +18,7 @@ const fromFakePolygon = (polygon) => {
   }).map((vertex) => vec2.fromArray(vertex))
 
   if (pts2d.length !== 2) {
-    throw new Error('Assertion failed: _fromFakePolygon: not enough points found') // TBD remove later
+    throw new Error('Assertion failed: fromFakePolygon: not enough points found') // TBD remove later
   }
   const d = vert1Indices[1] - vert1Indices[0]
   if (d === 1 || d === 3) {
@@ -26,7 +26,7 @@ const fromFakePolygon = (polygon) => {
       pts2d.reverse()
     }
   } else {
-    throw new Error('Assertion failed: _fromFakePolygon: unknown index ordering')
+    throw new Error('Assertion failed: fromFakePolygon: unknown index ordering')
   }
   return pts2d
 }
