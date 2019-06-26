@@ -1,8 +1,8 @@
 const { _CSGDEBUG, EPS } = require('../../../core/constants')
 
-const {vec3} = require('../../../math')
+const { vec3 } = require('../../../math')
 
-const {poly3} = require('../../../geometry')
+const { poly3 } = require('../../../geometry')
 
 const splitPolygonByPlane = require('./splitPolygonByPlane')
 
@@ -83,12 +83,10 @@ PolygonTreeNode.prototype = {
   },
 
   getPolygons: function (result) {
-//console.log('***** getPolygons')
     let children = [this]
     let queue = [children]
     let i, j, l, node
     for (i = 0; i < queue.length; ++i) { // queue size can change in loop, don't cache length
-//console.log('queue: '+queue.length+', i: '+i)
       children = queue[i]
       for (j = 0, l = children.length; j < l; j++) { // ok to cache length
         node = children[j]
@@ -136,26 +134,16 @@ PolygonTreeNode.prototype = {
   _splitByPlane: function (splane, coplanarfrontnodes, coplanarbacknodes, frontnodes, backnodes) {
     let polygon = this.polygon
     if (polygon) {
-//console.log('***** this._splitByPlane')
-//console.log(plane.toString(splane))
-//console.log(poly3.toString(polygon))
       let bound = poly3.measureBoundingSphere(polygon)
-      let sphereradius = bound[1] + EPS // FIXME Why add imprecision?
+      let sphereradius = bound[1] + EPS // ensure radius is LARGER then polygon
       let spherecenter = bound[0]
-//console.log(sphereradius)
-//console.log(spherecenter)
       let d = vec3.dot(splane, spherecenter) - splane[3]
-//console.log(d)
       if (d > sphereradius) {
-//console.log('front')
         frontnodes.push(this)
       } else if (d < -sphereradius) {
-//console.log('back')
         backnodes.push(this)
       } else {
-//console.log('split')
         let splitresult = splitPolygonByPlane(splane, polygon)
-//console.log(splitresult)
         switch (splitresult.type) {
           case 0:
             // coplanar front:

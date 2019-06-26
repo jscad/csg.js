@@ -1,10 +1,10 @@
 const test = require('ava')
 
-const {geom2, geom3, path2} = require('../../geometry')
+const { geom2, geom3, path2 } = require('../../geometry')
 
-const {line, rectangle, cuboid} = require('../../primitives')
+const { line, rectangle, cuboid } = require('../../primitives')
 
-const {measureBounds} = require('./index')
+const { measureBounds } = require('./index')
 
 test('measureBounds (single objects)', t => {
   let aline = line([[10, 10], [15, 15]])
@@ -46,10 +46,10 @@ test('measureBounds (single objects)', t => {
 
 test('measureBounds (multiple objects)', t => {
   let aline = line([[10, 10], [15, 15]])
-  let arect = rectangle({size: [5, 10]})
+  let arect = rectangle({ size: [5, 10] })
   let acube = cuboid()
   let o = {}
 
   let allbounds = measureBounds(aline, arect, acube, o)
-  t.deepEqual(allbounds, [[[10, 10, 0], [15, 15, 0]], [[-5, -10, 0], [5, 10, 0]], [[-1, -1, -1], [1, 1, 1]], [[0,0,0], [0,0,0]]])
+  t.deepEqual(allbounds, [[[10, 10, 0], [15, 15, 0]], [[-5, -10, 0], [5, 10, 0]], [[-1, -1, -1], [1, 1, 1]], [[0, 0, 0], [0, 0, 0]]])
 })

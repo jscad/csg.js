@@ -1,8 +1,8 @@
-const {EPS} = require('../../../core/constants')
+const { EPS } = require('../../../core/constants')
 
-const {plane, vec3} = require('../../../math')
+const { plane, vec3 } = require('../../../math')
 
-const {poly3} = require('../../../geometry')
+const { poly3 } = require('../../../geometry')
 
 const splitLineSegmentByPlane = require('./splitLineSegmentByPlane')
 
@@ -108,11 +108,9 @@ const splitPolygonByPlane = (splane, polygon) => {
       }
       if (frontvertices.length >= 3) {
         result.front = poly3.fromPointsAndPlane(frontvertices, polygon.plane)
-        //result.front = poly3.fromPoints(frontvertices)
       }
       if (backvertices.length >= 3) {
         result.back = poly3.fromPointsAndPlane(backvertices, polygon.plane)
-        //result.back = poly3.fromPoints(backvertices)
       }
     }
   }

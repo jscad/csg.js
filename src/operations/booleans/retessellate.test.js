@@ -1,6 +1,6 @@
 const test = require('ava')
 
-const {geom3} = require('../../geometry')
+const { geom3 } = require('../../geometry')
 
 const retessellate = require('./retessellate')
 
@@ -14,7 +14,7 @@ test('geom3: retessellate() should create proper geometry from empty geometries'
   const exp1 = {
     polygons: [],
     isRetesselated: true,
-    transforms: new Float32Array([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1])
+    transforms: new Float32Array([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1])
   }
   t.deepEqual(ret1, exp1)
 })
@@ -78,7 +78,7 @@ test('geom3: retessellate() should create proper geometry from solid geometries'
     [ [10.0, 5.0, 5.0], [10.0, 5.0, -5.0], [-5.0, 5.0, -5.0], [-5.0, 5.0, 5.0] ], // side
     [ [10.0, 5.0, -5.0], [10.0, -5.0, -5.0], [-5.0, -5.0, -5.0], [-5.0, 5.0, -5.0] ], // bottom
     [ [10.0, -5.0, 5.0], [10.0, 0.0, 5.0], [-5.0, 0.0, 5.0], [-5.0, -5.0, 5.0] ], // top
-    [ [10.0,  0.0, 5.0], [10.0, 5.0, 5.0], [-5.0, 5.0, 5.0], [-5.0,  0.0, 5.0] ], // top
+    [ [10.0, 0.0, 5.0], [10.0, 5.0, 5.0], [-5.0, 5.0, 5.0], [-5.0, 0.0, 5.0] ], // top
     [ [10.0, -5.0, -5.0], [10.0, 5.0, -5.0], [10.0, 5.0, 5.0], [10.0, -5.0, 5.0] ] // end
   ]
 

@@ -1,6 +1,6 @@
-const {vec3} = require('../../math')
+const { vec3 } = require('../../math')
 
-const {geom2, geom3, poly3} = require('../../geometry')
+const { geom2, geom3, poly3 } = require('../../geometry')
 
 const to3DWall = (z0, z1, side) => {
   const points = [

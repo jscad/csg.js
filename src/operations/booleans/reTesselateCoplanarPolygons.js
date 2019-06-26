@@ -1,10 +1,10 @@
 const { EPS } = require('../../core/constants')
 const { interpolateBetween2DPointsForY, insertSorted, fnNumberSort } = require('../../core/utils/various')
 
-const {line2, vec2} = require('../../math')
+const { line2, vec2 } = require('../../math')
 const OrthoNormalBasis = require('../../math/OrthoNormalBasis')
 
-const {poly3} = require('../../geometry')
+const { poly3 } = require('../../geometry')
 
 /**
  * Retesselation for a set of COPLANAR polygons.
@@ -164,8 +164,8 @@ const reTesselateCoplanarPolygons = (sourcepolygons) => {
       const middleycoordinate = 0.5 * (ycoordinate + nextycoordinate)
       // update activepolygons by adding any polygons that start here:
       const startingpolygonindexes = topy2polygonindexes[ycoordinateasstring]
-      for (let polygonindex_key in startingpolygonindexes) {
-        const polygonindex = startingpolygonindexes[polygonindex_key]
+      for (let polygonindexKey in startingpolygonindexes) {
+        const polygonindex = startingpolygonindexes[polygonindexKey]
         const vertices2d = polygonvertices2d[polygonindex]
         const numvertices = vertices2d.length
         const topvertexindex = polygontopvertexindexes[polygonindex]

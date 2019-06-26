@@ -1,6 +1,6 @@
 const flatten = require('../../utils/flatten')
 
-const {geom2, geom3, path2, poly3} = require('../../geometry')
+const { geom2, geom3, path2, poly3 } = require('../../geometry')
 
 /*
  * Measure the volume of the given geometry.

@@ -1,10 +1,10 @@
 const test = require('ava')
 
-const {geom2, geom3, path2} = require('../../geometry')
+const { geom2, geom3, path2 } = require('../../geometry')
 
-const {line, rectangle, cuboid} = require('../../primitives')
+const { line, rectangle, cuboid } = require('../../primitives')
 
-const {measureArea} = require('./index')
+const { measureArea } = require('./index')
 
 test('measureArea: single objects', (t) => {
   let aline = line([[10, 10], [15, 15]])
@@ -46,8 +46,8 @@ test('measureArea: single objects', (t) => {
 
 test('measureArea (multiple objects)', t => {
   let aline = line([[10, 10], [15, 15]])
-  let arect = rectangle({size: [5, 10]})
-  let acube = cuboid({size: [5, 10, 20]})
+  let arect = rectangle({ size: [5, 10] })
+  let acube = cuboid({ size: [5, 10, 20] })
   let o = {}
 
   let allarea = measureArea(aline, arect, acube, o)

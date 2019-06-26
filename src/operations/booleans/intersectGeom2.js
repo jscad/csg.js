@@ -1,6 +1,6 @@
 const flatten = require('../../utils/flatten')
 
-const {geom3} = require('../../geometry')
+const { geom3 } = require('../../geometry')
 
 const fromFakePolygons = require('./fromFakePolygons')
 const to3DWalls = require('./to3DWalls')
@@ -14,7 +14,7 @@ const intersectGeom3 = require('./intersectGeom3')
  */
 const intersect = (...geometries) => {
   geometries = flatten(geometries)
-  const newgeometries = geometries.map((geometry) => to3DWalls({z0: -1, z1: 1}, geometry))
+  const newgeometries = geometries.map((geometry) => to3DWalls({ z0: -1, z1: 1 }, geometry))
 
   let newgeom3 = intersectGeom3(newgeometries)
 

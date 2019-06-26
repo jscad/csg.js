@@ -39,7 +39,7 @@ Tree.prototype = {
   },
 
   toString: function () {
-    let result = 'Tree: '+this.polygonTree.toString('')
+    let result = 'Tree: ' + this.polygonTree.toString('')
     return result
   }
 }

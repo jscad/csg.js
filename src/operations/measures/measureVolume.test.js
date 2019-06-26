@@ -1,10 +1,10 @@
 const test = require('ava')
 
-const {geom2, geom3, path2} = require('../../geometry')
+const { geom2, geom3, path2 } = require('../../geometry')
 
-const {line, rectangle, cuboid} = require('../../primitives')
+const { line, rectangle, cuboid } = require('../../primitives')
 
-const {measureVolume} = require('./index')
+const { measureVolume } = require('./index')
 
 test('measureVolume: single objects', (t) => {
   let aline = line([[10, 10], [15, 15]])
@@ -46,8 +46,8 @@ test('measureVolume: single objects', (t) => {
 
 test('measureVolume (multiple objects)', t => {
   let aline = line([[10, 10], [15, 15]])
-  let arect = rectangle({size: [5, 10]})
-  let acube = cuboid({size: [5, 10, 20]})
+  let arect = rectangle({ size: [5, 10] })
+  let acube = cuboid({ size: [5, 10, 20] })
   let o = {}
 
   let allvolume = measureVolume(aline, arect, acube, o)

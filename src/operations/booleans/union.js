@@ -1,7 +1,7 @@
 const flatten = require('../../utils/flatten')
 const areAllShapesTheSameType = require('../../utils/areAllShapesTheSameType')
 
-const {geom2, geom3} = require('../../geometry')
+const { geom2, geom3 } = require('../../geometry')
 
 const unionGeom2 = require('./unionGeom2')
 const unionGeom3 = require('./unionGeom3')
@@ -35,7 +35,7 @@ const union = (...geometries) => {
   }
 
   let geometry = geometries[0]
-  //if (path.isA(geometry)) return pathunion(matrix, geometries)
+  // if (path.isA(geometry)) return pathunion(matrix, geometries)
   if (geom2.isA(geometry)) return unionGeom2(geometries)
   if (geom3.isA(geometry)) return unionGeom3(geometries)
   return geometry
