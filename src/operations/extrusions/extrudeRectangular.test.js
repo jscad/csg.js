@@ -2,7 +2,7 @@ const test = require('ava')
 
 const {degToRad} = require('../../math/utils')
 
-const {geom2, geom3, path2} = require('../../geometry')
+const {geom2, geom3} = require('../../geometry')
 
 const {arc, rectangle} = require('../../primitives')
 
@@ -58,7 +58,7 @@ test('extrudeRectangular (holes)', t => {
     [[-5.00000,5.00000], [5.00000,5.00000]],
     [[5.00000,5.00000], [5.00000,-5.00000]],
     [[5.00000,-5.00000], [-5.00000,-5.00000]],
-    [[-5.00000,-5.00000], [-5.00000,5.00000]],
+    [[-5.00000,-5.00000], [-5.00000,5.00000]]
   ])
 
   let obs = extrudeRectangular({radius: 2, offset: [0,0,15], segments: 16}, geometry2)

@@ -1,8 +1,6 @@
 const flatten = require('../../utils/flatten')
 
-const {vec2} = require('../../math')
-
-const {geom2, geom3, path2} = require('../../geometry')
+const {geom2, path2} = require('../../geometry')
 
 const {expand} = require('../expansions')
 
@@ -15,7 +13,7 @@ const extrudeLinear = require('./extrudeLinear')
 const extrudeFromPath2 = (options, geometry) => {
   const defaults = {
     radius: 1,
-    segments: 0,
+    segments: 0
   }
   let {radius, segments} = Object.assign({}, defaults, options)
 
@@ -28,7 +26,7 @@ const extrudeFromPath2 = (options, geometry) => {
 const extrudeFromGeom2 = (options, geometry) => {
   const defaults = {
     radius: 1,
-    segments: 0,
+    segments: 0
   }
   let {radius, segments} = Object.assign({}, defaults, options)
 
@@ -67,7 +65,7 @@ const extrudeFromGeom2 = (options, geometry) => {
 const extrudeRectangular = (options, ...objects) => {
   const defaults = {
     radius: 1,
-    segments: 0,
+    segments: 0
   }
   let {radius, segments} = Object.assign({}, defaults, options)
 

@@ -1,13 +1,13 @@
-const {EPS} = require('../../core/constants')
+const {mat4} = require('../../math')
 
-const mat4 = require('../../math/mat4')
+const {geom2} = require('../../geometry')
 
-const {geom2, geom3, poly3} = require('../../geometry')
+const slice = require('./slice')
 
-const to3DPolygons = require('./to3DPolygons')
+const extrudeFromSlices = require('./extrudeFromSlices')
 
 /**
- * Rotate extrusion the given geometry using the given options.
+ * Rotate extrude the given geometry using the given options.
  *
  * @param {Object} [options] - options for extrusion
  * @param {Float} [options.angle=PI*2] - angle of the extrusion, in radians
@@ -50,13 +50,13 @@ const extrudeRotate = (options, geometry) => {
     if (Math.abs(totalRotation) > (segments * anglePerSegment)) segments++
   }
 
-  //console.log('startAngle: '+startAngle)
-  //console.log('endAngle: '+endAngle)
-  //console.log(totalRotation)
-  //console.log(segments)
+  // console.log('startAngle: '+startAngle)
+  // console.log('endAngle: '+endAngle)
+  // console.log(totalRotation)
+  // console.log(segments)
 
-  // convert baseshape to just an array of points, easier to deal with
-  let shapePoints = geom2.toPoints(geometry)
+  // convert geometry to an array of sides, easier to deal with
+  let shapeSides = geom2.toSides(geometry)
 
   // determine if the rotate extrude can be computed in the first place
   // ie all the points have to be either x > 0 or x < 0
@@ -68,73 +68,47 @@ const extrudeRotate = (options, geometry) => {
 
   // 1. alt : OR : just cap of points at the axis ?
 
-  const pointsWithNegativeX = shapePoints.filter(x => x[0] < 0)
-  const pointsWithPositiveX = shapePoints.filter(x => x[0] >= 0)
+  const pointsWithNegativeX = shapeSides.filter((s) => (s[0][0] < 0))
+  const pointsWithPositiveX = shapeSides.filter((s) => (s[0][0] >= 0))
   const arePointsWithNegAndPosX = pointsWithNegativeX.length > 0 && pointsWithPositiveX.length > 0
 
+  // FIXME actually there are cases where setting X=0 will change the basic shape
+  // - Alternative #1 : don't allow shapes with both negative and positive X values
+  // - Alternative #2 : remove one half of the shape (costly)
   if (arePointsWithNegAndPosX && overflow === 'cap') {
     if (pointsWithNegativeX.length > pointsWithPositiveX.length) {
-      shapePoints = shapePoints.map(function (point) {
-        return [Math.min(point[0], 0), point[1]]
+      shapeSides = shapeSides.map((side) => {
+        let newpoint = [Math.min(side[0][0], 0), side[0][1]]
+        return [[newpoint, side[0][1]], side[1]]
       })
     } else if (pointsWithPositiveX.length >= pointsWithNegativeX.length) {
-      shapePoints = shapePoints.map(function (point) {
-        return [Math.max(point[0], 0), point[1]]
+      shapeSides = shapeSides.map((side) => {
+        let newpoint = [Math.max(side[0][0], 0), side[0][1]]
+        return [[newpoint, side[0][1]], side[1]]
       })
     }
+    // recreate the geometry from the capped points
+    geometry = geom2.create(shapeSides)
   }
 
-  // for each of the intermediary steps in the extrusion
-  let length = shapePoints.length
-  let polygons = []
-  for (let i = 1; i < segments + 1; i++) {
-    // for each side of the 2d shape
-    for (let j = 0; j < length; j++) {
-      // 2 points of a side
-      const curPoint = shapePoints[j]
-      const nextPoint = shapePoints[(j + 1) % length]
+  const rotationPerSlice = totalRotation / segments
+  const isCapped = Math.abs(totalRotation) < (Math.PI * 2)
+  const baseSlice = slice.fromSides(geom2.toSides(geometry))
+  slice.reverse(baseSlice, baseSlice)
 
-      // compute matrix for current and next segment angle
-      let prevMatrix = mat4.fromZRotation((((i - 1) / segments * totalRotation) + startAngle) * -1)
-      let curMatrix = mat4.fromZRotation(((i / segments * totalRotation) + startAngle) * -1)
+  const createSlice = (t, index) => {
+    let Zrotation = rotationPerSlice * index + startAngle
+    let matrix = mat4.multiply(mat4.fromZRotation(Zrotation), mat4.fromXRotation(Math.PI / 2))
 
-      const pointA = mat4.rightMultiplyVec3([curPoint[0], 0, curPoint[1]], prevMatrix)
-      const pointAP = mat4.rightMultiplyVec3([curPoint[0], 0, curPoint[1]], curMatrix)
-      const pointB = mat4.rightMultiplyVec3([nextPoint[0], 0, nextPoint[1]], prevMatrix)
-      const pointBP = mat4.rightMultiplyVec3([nextPoint[0], 0, nextPoint[1]], curMatrix)
-
-      let overlappingPoints = false
-      if (Math.abs(pointA[0] - pointAP[0]) < EPS && Math.abs(pointB[1] - pointBP[1]) < EPS) {
-        overlappingPoints = true
-      }
-
-      // we do not generate a single quad because:
-      // 1. it does not allow eliminating unneeded triangles in case of overlapping points
-      // 2. the current cleanup routines create degenerate shapes from those quads
-
-      if (!overlappingPoints) {
-        polygons.push(poly3.fromPoints([pointA, pointAP, pointBP]))
-      }
-      polygons.push(poly3.fromPoints([pointBP, pointB, pointA]))
-    }
+    return slice.transform(matrix, baseSlice)
   }
-  // if we do not do a full extrusion, we want caps at both ends (closed volume)
-  if (Math.abs(totalRotation) < (Math.PI * 2)) {
-    // we need to recreate the side with capped points where applicable
-    const sideShape = geom2.fromPoints(shapePoints)
 
-    const startMatrix = mat4.multiply(mat4.fromZRotation(startAngle), mat4.fromXRotation(Math.PI / 2))
-    const endMatrix = mat4.multiply(mat4.fromZRotation(endAngle), mat4.fromXRotation(Math.PI / 2))
-    let startCap = to3DPolygons({flipped: false}, sideShape)
-    let endCap = to3DPolygons({flipped: true}, sideShape)
-
-    startCap = startCap.map((polygon) => poly3.transform(startMatrix, polygon))
-    endCap = endCap.map((polygon) => poly3.transform(endMatrix, polygon))
-
-    polygons = polygons.concat(endCap).concat(startCap)
+  options = {
+    numslices : segments + 1,
+    isCapped : isCapped,
+    callback : createSlice
   }
-  let newgeometry = geom3.create(polygons)
-  return newgeometry
+  return extrudeFromSlices(options, baseSlice)
 }
 
 module.exports = extrudeRotate
