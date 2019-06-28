@@ -1,6 +1,6 @@
 const { EPS } = require('../../core/constants')
 
-const measureBounds = require('../measures/measureBounds')
+const measureBounds = require('../measurements/measureBounds')
 
 /**
  * Determine if the given geometries overlap by comparing min and max bounds.
