@@ -8,10 +8,18 @@ test('offset (options): offset of a path2 produces expected offset path2', t => 
   let openline = path2.fromPoints({}, [[0, 0], [5, 0], [0, 5]])
   let closeline = path2.fromPoints({}, [[0, 0], [5, 0], [0, 5], [0, 0]])
 
-  // expand +
-  let obs = offset({delta: 1}, openline)
+  // empty path2
+  let empty = path2.create()
+  let obs = offset({delta: 1}, empty)
   let pts = path2.toPoints(obs)
   let exp = [
+  ]
+  t.deepEqual(pts, exp)
+
+  // expand +
+  obs = offset({delta: 1}, openline)
+  pts = path2.toPoints(obs)
+  exp = [
     new Float32Array([ -6.123234262925839e-17, -1 ]),
     new Float32Array([ 5, -1 ]),
     new Float32Array([ 5.707106590270996, 0.7071067690849304 ]),
@@ -281,10 +289,18 @@ test('offset (segments 16): offset of a CW path2 produces expected offset path2'
 test('offset (options): offsetting of a simple geom2 produces expected offset geom2', t => {
   let geometry = geom2.fromPoints([[-5, -5], [5, -5], [5, 5], [3, 5], [3, 0], [-3, 0], [-3, 5], [-5, 5]])
 
-  // expand +
-  let obs = offset({delta: 1}, geometry)
+  // empty
+  let empty = geom2.create()
+  let obs = offset({delta: 1}, empty)
   let pts = geom2.toPoints(obs)
   let exp = [
+  ]
+  t.deepEqual(pts, exp)
+
+  // expand +
+  obs = offset({delta: 1}, geometry)
+  pts = geom2.toPoints(obs)
+  exp = [
     new Float32Array([ -5, -6 ]),
     new Float32Array([ 5, -6 ]),
     new Float32Array([ 6, -5 ]),
