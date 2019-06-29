@@ -27,6 +27,8 @@ const expandPath2 = (options, geometry) => {
   if (delta <= 0) throw new Error('paths are infinity thin, and cannot contract')
 
   let points = path2.toPoints(geometry)
+  if (points.length === 0) throw new Error('the given geometry cannot be empty')
+
   let offsetopts = {delta: delta, segments: segments, closed: geometry.isClosed}
   let external = offsetFromPoints(offsetopts, points)
 
@@ -76,6 +78,9 @@ const expandPath2 = (options, geometry) => {
  * @returns {geom2} new geometry
  */
 const expandGeom2 = (options, geometry) => {
+  const sides = geom2.toSides(geometry)
+  if (sides.length === 0) throw new Error('the given geometry cannot be empty')
+
   return offsetFromGeom2(options, geometry)
 }
 
@@ -86,6 +91,9 @@ const expandGeom2 = (options, geometry) => {
  * @returns {geom2} new geometry
  */
 const expandGeom3 = (options, geometry) => {
+  const polygons = geom3.toPolygons(geometry)
+  if (polygons.length === 0) throw new Error('the given geometry cannot be empty')
+
   let expanded = expandShell(options, geometry)
   return union(geometry, expanded)
 }
