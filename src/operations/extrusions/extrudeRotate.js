@@ -57,6 +57,7 @@ const extrudeRotate = (options, geometry) => {
 
   // convert geometry to an array of sides, easier to deal with
   let shapeSides = geom2.toSides(geometry)
+  if (shapeSides.length === 0) throw new Error('the given geometry cannot be empty')
 
   // determine if the rotate extrude can be computed in the first place
   // ie all the points have to be either x > 0 or x < 0

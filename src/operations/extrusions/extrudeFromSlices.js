@@ -59,7 +59,10 @@ const extrudeFromSlices = (options, base) => {
     let currentSlice = callback.call(base, s / sMax, s)
 
     if (currentSlice) {
-      if (!slice.isA(currentSlice)) throw new Error('the given callback function must return slice objects')
+      if (!slice.isA(currentSlice)) throw new Error('the callback function must return slice objects')
+
+      let edges = slice.toEdges(currentSlice)
+      if (edges.length === 0) throw new Error('the callback function must return slices with one or more edges')
 
       if (prevSlice) {
         polygons = polygons.concat(extrudeWalls(prevSlice, currentSlice))

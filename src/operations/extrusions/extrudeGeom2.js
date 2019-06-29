@@ -33,7 +33,10 @@ const extrudeGeom2 = (options, geometry) => {
   // convert to vector in order to perform transforms
   let offsetv = vec3.fromArray(offset)
 
-  const baseSlice = slice.fromSides(geom2.toSides(geometry))
+  const baseSides = geom2.toSides(geometry)
+  if (baseSides.length === 0) throw new Error('the given geometry cannot be empty')
+
+  const baseSlice = slice.fromSides(baseSides)
   if (offsetv[2] < 0) slice.reverse(baseSlice, baseSlice)
 
   function createTwist(t, index) {

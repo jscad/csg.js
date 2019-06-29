@@ -8,7 +8,8 @@ const area = require('../expansions/area')
 
 const extrudeLinear = require('./extrudeLinear')
 
-/** Expand and extrude the given path.
+/*
+ * Expand and extrude the given path.
  */
 const extrudeFromPath2 = (options, geometry) => {
   const defaults = {
@@ -19,10 +20,16 @@ const extrudeFromPath2 = (options, geometry) => {
 
   options.delta = radius
 
+  const points = path2.toPoints(geometry)
+  if (points.length === 0) throw new Error('the given geometry cannot be empty')
+
   let newgeometry = expand(options, geometry)
   return extrudeLinear(options, newgeometry)
 }
 
+/*
+ * Expand and extrude the given geom2.
+ */
 const extrudeFromGeom2 = (options, geometry) => {
   const defaults = {
     radius: 1,
@@ -32,8 +39,11 @@ const extrudeFromGeom2 = (options, geometry) => {
 
   options.delta = radius
 
-  // convert the geometry to outlines, and expand the outlines
+  // convert the geometry to outlines
   let outlines = geom2.toOutlines(geometry)
+  if (outlines.length === 0) throw new Error('the given geometry cannot be empty')
+
+  // expand the outlines
   let newparts = outlines.map((outline) => {
     if (area(outline) < 0) outline.reverse() // all outlines must wind counter clockwise
     return expand(options, path2.fromPoints({closed: true}, outline))
