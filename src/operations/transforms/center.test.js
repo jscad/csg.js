@@ -1,14 +1,14 @@
 const test = require('ava')
 
-const {geom2, geom3, path2} = require('../../geometry')
+const { geom2, geom3, path2 } = require('../../geometry')
 
-const {center, centerX, centerY, centerZ} = require('./index')
+const { center, centerX, centerY, centerZ } = require('./index')
 
 test('center: centering of a path2 produces expected changes to points', t => {
   let geometry = path2.fromPoints({}, [[5, 0], [0, 3], [-1, 0]])
 
   // center about X
-  let centered = center({axes: [true, false, false]}, geometry)
+  let centered = center({ axes: [true, false, false] }, geometry)
   let pts = path2.toPoints(centered)
   let exp = [
     new Float32Array([ 3, 0 ]),
@@ -26,7 +26,7 @@ test('center: centering of a geom2 produces expected changes to points', t => {
   let geometry = geom2.fromPoints([[0, 0], [10, 0], [0, 10]])
 
   // center about Y
-  let centered = center({axes: [false, true, false]}, geometry)
+  let centered = center({ axes: [false, true, false] }, geometry)
   let pts = geom2.toPoints(centered)
   let exp = [
     new Float32Array([ 0, -5 ]),
@@ -42,17 +42,17 @@ test('center: centering of a geom2 produces expected changes to points', t => {
 
 test('center: centering of a geom3 produces expected changes to polygons', t => {
   let points = [
-    [ [-2, -7, -12],[-2, -7, 18],[-2, 13, 18],[-2, 13, -12] ],
-    [ [8, -7, -12],[8, 13, -12],[8, 13, 18],[8, -7, 18] ],
-    [ [-2, -7, -12],[8, -7, -12],[8, -7, 18],[-2, -7, 18] ],
-    [ [-2, 13, -12],[-2, 13, 18],[8, 13, 18],[8, 13, -12] ],
-    [ [-2, -7, -12],[-2, 13, -12],[8, 13, -12],[8, -7, -12] ],
-    [ [-2, -7, 18],[8, -7, 18],[8, 13, 18],[-2, 13, 18] ]
+    [ [-2, -7, -12], [-2, -7, 18], [-2, 13, 18], [-2, 13, -12] ],
+    [ [8, -7, -12], [8, 13, -12], [8, 13, 18], [8, -7, 18] ],
+    [ [-2, -7, -12], [8, -7, -12], [8, -7, 18], [-2, -7, 18] ],
+    [ [-2, 13, -12], [-2, 13, 18], [8, 13, 18], [8, 13, -12] ],
+    [ [-2, -7, -12], [-2, 13, -12], [8, 13, -12], [8, -7, -12] ],
+    [ [-2, -7, 18], [8, -7, 18], [8, 13, 18], [-2, 13, 18] ]
   ]
   let geometry = geom3.fromPoints(points)
 
   // center about X
-  let centered = center({axes: [true, false, false]}, geometry)
+  let centered = center({ axes: [true, false, false] }, geometry)
   let pts = geom3.toPoints(centered)
   let exp = [
     [ new Float32Array([ -5, -7, -12 ]),
@@ -87,7 +87,7 @@ test('center: centering of a geom3 produces expected changes to polygons', t => 
   t.deepEqual(pts, exp)
 
   // center about Y
-  centered = center({axes: [false, true, false]}, geometry)
+  centered = center({ axes: [false, true, false] }, geometry)
   pts = geom3.toPoints(centered)
   exp = [
     [ new Float32Array([ -2, -10, -12 ]),
@@ -122,7 +122,7 @@ test('center: centering of a geom3 produces expected changes to polygons', t => 
   t.deepEqual(pts, exp)
 
   // center about Z
-  centered = center({axes: [false, false, true]}, geometry)
+  centered = center({ axes: [false, false, true] }, geometry)
   pts = geom3.toPoints(centered)
   exp = [
     [ new Float32Array([ -2, -7, -15 ]),
@@ -159,10 +159,10 @@ test('center: centering of a geom3 produces expected changes to polygons', t => 
 
 test('center: centering of multiple objects produces expected changes', t => {
   let junk = 'hello'
-  let geometry1 = path2.fromPoints({}, [[-5,5],[5,5],[-5,-5],[10,-5]])
-  let geometry2 = geom2.fromPoints([[-5,-5],[0,5],[10,-5]])
+  let geometry1 = path2.fromPoints({}, [[-5, 5], [5, 5], [-5, -5], [10, -5]])
+  let geometry2 = geom2.fromPoints([[-5, -5], [0, 5], [10, -5]])
 
-  let centered = center({axes: [true, true, false], center: [10, 15, 0]}, junk, geometry1, geometry2)
+  let centered = center({ axes: [true, true, false], center: [10, 15, 0] }, junk, geometry1, geometry2)
 
   t.is(centered[0], junk)
 

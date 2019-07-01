@@ -1,9 +1,8 @@
 const flatten = require('../../utils/flatten')
 
-const mat4 = require('../../math/mat4')
-const plane = require('../../math/plane')
+const { mat4, plane } = require('../../math')
 
-const {geom2, geom3, path2} = require('../../geometry')
+const { geom2, geom3, path2 } = require('../../geometry')
 
 /**
  * Mirror the given object(s) using the given options (if any)
@@ -22,7 +21,7 @@ const mirror = (options, ...objects) => {
     origin: [0, 0, 0],
     normal: [0, 0, 1] // Z axis
   }
-  let {origin, normal} = Object.assign({}, defaults, options)
+  let { origin, normal } = Object.assign({}, defaults, options)
 
   objects = flatten(objects)
   if (objects.length === 0) throw new Error('wrong number of arguments')
@@ -31,7 +30,7 @@ const mirror = (options, ...objects) => {
   const matrix = mat4.mirrorByPlane(planeOfMirror)
 
   // special check to verify the plane, i.e. check that the given normal was valid
-  const validPlane = ! Number.isNaN(planeOfMirror[0])
+  const validPlane = !Number.isNaN(planeOfMirror[0])
 
   const results = objects.map((object) => {
     if (validPlane) {
@@ -44,11 +43,11 @@ const mirror = (options, ...objects) => {
   return results.length === 1 ? results[0] : results
 }
 
-const mirrorX = (...objects) => mirror({normal: [1, 0, 0]}, objects)
+const mirrorX = (...objects) => mirror({ normal: [1, 0, 0] }, objects)
 
-const mirrorY = (...objects) => mirror({normal: [0, 1, 0]}, objects)
+const mirrorY = (...objects) => mirror({ normal: [0, 1, 0] }, objects)
 
-const mirrorZ = (...objects) => mirror({normal: [0, 0, 1]}, objects)
+const mirrorZ = (...objects) => mirror({ normal: [0, 0, 1] }, objects)
 
 module.exports = {
   mirror,

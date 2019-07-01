@@ -1,10 +1,10 @@
 const flatten = require('../../utils/flatten')
 
-const {geom2, geom3, path2} = require('../../geometry')
+const { geom2, geom3, path2 } = require('../../geometry')
 
-const measureBounds = require('../measurements/measureBounds')
+const { measureBounds } = require('../measurements')
 
-const {translate} = require('./translate')
+const { translate } = require('./translate')
 
 const centerGeometry = (options, object) => {
   const defaults = {
@@ -57,11 +57,11 @@ const center = function (options, ...geometries) {
   return results.length === 1 ? results[0] : results
 }
 
-const centerX = (...objects) => center({axes: [true, false, false]}, objects)
+const centerX = (...objects) => center({ axes: [true, false, false] }, objects)
 
-const centerY = (...objects) => center({axes: [false, true, false]}, objects)
+const centerY = (...objects) => center({ axes: [false, true, false] }, objects)
 
-const centerZ = (...objects) => center({axes: [false, false, true]}, objects)
+const centerZ = (...objects) => center({ axes: [false, false, true] }, objects)
 
 module.exports = {
   center,
