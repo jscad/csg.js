@@ -2,7 +2,7 @@ const test = require('ava')
 
 const {geom2, geom3, path2} = require('../../geometry')
 
-const {rotate, rotateX, rotateY, rotateZ} = require('./rotate')
+const {rotate, rotateX, rotateY, rotateZ} = require('./index')
 
 const comparePoints = require('../../../test/helpers/comparePoints')
 

@@ -2,7 +2,7 @@ const test = require('ava')
 
 const {geom2, geom3, path2} = require('../../geometry')
 
-const {translate, translateX, translateY, translateZ} = require('./translate')
+const {translate, translateX, translateY, translateZ} = require('./index')
 
 test('translate: translating of a path2 produces expected changes to points', t => {
   let line = path2.fromPoints({}, [[0, 0], [1, 0]])

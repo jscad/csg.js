@@ -2,7 +2,7 @@ const test = require('ava')
 
 const {geom2, geom3, path2} = require('../../geometry')
 
-const {scale, scaleX, scaleY, scaleZ} = require('./scale')
+const {scale, scaleX, scaleY, scaleZ} = require('./index')
 
 test('scale: scaling of a path2 produces expected changes to points', t => {
   let geometry = path2.fromPoints({}, [[0, 4], [1, 0]])

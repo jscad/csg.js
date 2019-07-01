@@ -4,7 +4,7 @@ const mat4 = require('../../math/mat4')
 
 const {geom2, geom3, path2} = require('../../geometry')
 
-const transform = require('./transform')
+const {transform} = require('./index')
 
 test('transform: transforming of a path2 produces expected changes to points', t => {
   let matrix = mat4.fromTranslation([2, 2, 0])
