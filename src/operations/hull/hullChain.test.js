@@ -1,6 +1,6 @@
 const test = require('ava')
 
-const {geom2} = require('../../geometry')
+const { geom2 } = require('../../geometry')
 
 const hullChain = require('./hullChain')
 
@@ -27,13 +27,13 @@ test('hullChain (three)', t => {
   let geometry3 = geom2.fromPoints([[-6, 6], [-3, 6], [-3, 9], [-6, 9]])
 
   // closed = false
-  let obs = hullChain({closed: false}, geometry1, geometry2, geometry3)
+  let obs = hullChain({ closed: false }, geometry1, geometry2, geometry3)
   let pts = geom2.toPoints(obs)
 
   t.is(pts.length, 10)
 
   // closed = true
-  obs = hullChain({closed: true}, geometry1, geometry2, geometry3)
+  obs = hullChain({ closed: true }, geometry1, geometry2, geometry3)
   pts = geom2.toPoints(obs)
 
   t.is(pts.length, 10)

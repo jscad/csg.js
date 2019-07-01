@@ -1,6 +1,6 @@
-const {vec2} = require('../../math')
+const { vec2 } = require('../../math')
 
-const {geom2} = require('../../geometry')
+const { geom2 } = require('../../geometry')
 
 const flatten = require('../../utils/flatten')
 
@@ -71,7 +71,6 @@ const ConvexHull = function () {
         min = i
       }
     })
-    let minpoint = this.points[min]
 
     // Calculate angles and distances from the lowest point
     let al = []
@@ -86,7 +85,7 @@ const ConvexHull = function () {
         angle += Math.PI
       }
       dist = this.distance(min, i)
-      al.push({index: i, angle: angle, distance: dist})
+      al.push({ index: i, angle: angle, distance: dist })
     }
 
     al.sort(function (a, b) { return compareIndex(a, b) })
@@ -140,7 +139,7 @@ const hull = (...geometries) => {
   geometries.forEach((geometry) => {
     let sides = geom2.toSides(geometry)
     sides.forEach((side) => {
-      let index = uniquepoints.findIndex((unique) => vec2.equals(unique, side[0]) )
+      let index = uniquepoints.findIndex((unique) => vec2.equals(unique, side[0]))
       if (index < 0) uniquepoints.push(side[0])
     })
   })
