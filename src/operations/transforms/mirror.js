@@ -30,10 +30,15 @@ const mirror = (options, ...objects) => {
   const planeOfMirror = plane.fromNormalAndPoint(normal, origin)
   const matrix = mat4.mirrorByPlane(planeOfMirror)
 
+  // special check to verify the plane, i.e. check that the given normal was valid
+  const validPlane = ! Number.isNaN(planeOfMirror[0])
+
   const results = objects.map((object) => {
-    if (path2.isA(object)) return path2.transform(matrix, object)
-    if (geom2.isA(object)) return geom2.transform(matrix, object)
-    if (geom3.isA(object)) return geom3.transform(matrix, object)
+    if (validPlane) {
+      if (path2.isA(object)) return path2.transform(matrix, object)
+      if (geom2.isA(object)) return geom2.transform(matrix, object)
+      if (geom3.isA(object)) return geom3.transform(matrix, object)
+    }
     return object
   })
   return results.length === 1 ? results[0] : results

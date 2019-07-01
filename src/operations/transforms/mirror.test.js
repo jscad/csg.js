@@ -2,7 +2,7 @@ const test = require('ava')
 
 const {geom2, geom3, path2} = require('../../geometry')
 
-const {mirror, mirrorX, mirrorY, mirrorZ} = require('./mirror')
+const {mirror, mirrorX, mirrorY, mirrorZ} = require('./index')
 
 test('mirror: mirroring of path2 about X/Y produces expected changes to points', t => {
   let geometry = path2.fromPoints({}, [[-5,5],[5,5],[-5,-5],[10,-5]])
@@ -175,4 +175,15 @@ test('mirror: mirroring of multiple objects produces an array of mirrored object
     new Float32Array([10, 5])
   ]
   t.deepEqual(obs, exp)
+})
+
+test('mirror: mirroring about NO axis should return original objects', t => {
+  let junk = 'hello'
+  let geometry1 = path2.fromPoints({}, [[-5,5],[5,5],[-5,-5],[10,-5]])
+  let geometry2 = geom2.fromPoints([[-5,-5],[0,5],[10,-5]])
+
+  let mirrored = mirror({normal: [0, 0, 0]}, junk, geometry1, geometry2)
+  t.is(mirrored[0], junk)
+  t.is(mirrored[1], geometry1)
+  t.is(mirrored[2], geometry2)
 })
