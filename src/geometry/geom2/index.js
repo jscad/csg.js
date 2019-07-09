@@ -5,6 +5,7 @@ module.exports = {
   isA: require('./isA'),
   reverse: require('./reverse'),
   toPoints: require('./toPoints'),
+  toOutlines: require('./toOutlines'),
   toSides: require('./toSides'),
   toString: require('./toString'),
   transform: require('./transform')
