@@ -7,8 +7,8 @@ const hull = require('./hull')
 /** Create a chain of hulled geometries from the given gemetries.
  * Essentially hull A+B, B+C, C+D, etc., then union the results.
  * Originally "Whosa whatsis" suggested "Chain Hull"
- * @param {...geom2} geometries - list of geometries from which to create hulls
- * @returns {geom2} new geometry
+ * @param {...geometries} geometries - list of geometries from which to create hulls
+ * @returns {geometry} new geometry
  *
  * @example:
  * let newshape = hullChain(rectangle({center: [-5,-5]}), circle({center: [0,0]}), rectangle({center: [5,5]}))

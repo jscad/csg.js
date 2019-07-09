@@ -94,9 +94,9 @@ const compute = (points) => {
   return indices
 }
 
-/** Create a convex hull of the given points (2D vectors).
- * @param {[vec2]} uniquepoints - list of UNIQUE points from which to create a hull
- * @returns {[vec2]} points of the resulting hull
+/** Create a convex hull of the given set of points,  where each point is an array of [x,y].
+ * @param {Array} uniquepoints - list of UNIQUE points from which to create a hull
+ * @returns {Array} a list of points that form the hull
  */
 const hull2DPoints = (uniquepoints) => {
   let indices = compute(uniquepoints)
