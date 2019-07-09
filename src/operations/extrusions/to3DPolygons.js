@@ -1,4 +1,4 @@
-const {geom3} = require('../../geometry')
+const { geom3 } = require('../../geometry')
 
 const measureBounds = require('../measures/measureBounds')
 
@@ -9,10 +9,10 @@ const to3DPolygons = (options, geometry2) => {
   const defaults = {
     flipped: false
   }
-  const {flipped} = Object.assign({}, defaults, options)
+  const { flipped } = Object.assign({}, defaults, options)
 
   // convert the 2D geometry to 3D walls
-  const walls = to3DWalls({z0: -1, z1: 1}, geometry2)
+  const walls = to3DWalls({ z0: -1, z1: 1 }, geometry2)
 
   // create one HUGE polygon to encompass the 2D geometry
   const bounds = measureBounds(geometry2)

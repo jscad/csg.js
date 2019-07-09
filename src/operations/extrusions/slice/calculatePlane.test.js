@@ -1,6 +1,6 @@
 const test = require('ava')
 
-const {mat4} = require('../../../math')
+const { mat4 } = require('../../../math')
 
 const { calculatePlane, fromPoints, transform } = require('./index')
 
@@ -8,8 +8,8 @@ const { compareVectors } = require('../../../../test/helpers/index')
 
 test('slice: calculatePlane() returns correct plans for various slices', (t) => {
   // do not do this... it's an error
-  //const slice1 = create()
-  //const plane1 = calculatePlane(slice1)
+  // const slice1 = create()
+  // const plane1 = calculatePlane(slice1)
 
   const slice2 = fromPoints([[0, 0], [1, 0], [1, 1]])
   const plane2 = calculatePlane(slice2)

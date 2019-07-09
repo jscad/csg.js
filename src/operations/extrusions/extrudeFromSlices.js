@@ -1,18 +1,12 @@
-'use strict';
+const { mat4 } = require('../../math')
 
-const {mat4, vec3} = require('../../math')
-
-const {geom2, geom3, poly3} = require('../../geometry')
+const { geom2, geom3, poly3 } = require('../../geometry')
 
 const slice = require('./slice')
 
 const extrudeWalls = require('./extrudeWalls')
 
-const fnSortByIndex = (a, b) => {
-  return a.index - b.index
-}
-
-function defaultCallback(t, index) {
+function defaultCallback (t, index) {
   let baseSlice = null
   if (geom2.isA(this)) baseSlice = slice.fromSides(geom2.toSides(this))
   if (poly3.isA(this)) baseSlice = slice.fromPoints(poly3.toPoints(this))
@@ -42,7 +36,7 @@ const extrudeFromSlices = (options, base) => {
     isCapped: true,
     callback: defaultCallback
   }
-  let {numslices, isCapped, callback} = Object.assign({}, defaults, options)
+  let { numslices, isCapped, callback } = Object.assign({ }, defaults, options)
 
   if (numslices < 2) throw new Error('numslices must be 2 or more')
 
@@ -91,123 +85,6 @@ const extrudeFromSlices = (options, base) => {
     }
   }
   return geom3.create(polygons)
-}
-
-/**
- * @param walls Array of wall polygons
- * @param bottom Bottom polygon
- * @param top Top polygon
- */
-const _addWalls = (walls, bottom, top, bFlipped) => {
-  let bottomPoints = poly3.toPoints(bottom).slice(0) // make a shallow copy
-  let topPoints = poly3.toPoints(top).slice(0) // make a shallow copy
-
-  // close both set of points, allowing easy wall creation
-  if (!vec3.equals(bottomPoints[0], bottomPoints[bottomPoints.length - 1])) {
-    bottomPoints.push(bottomPoints[0])
-  }
-  if (!vec3.equals(topPoints[0], topPoints[topPoints.length - 1])) {
-    topPoints.push(topPoints[0])
-  }
-
-  if (bFlipped) {
-    bottomPoints = bottomPoints.reverse()
-    topPoints = topPoints.reverse()
-  }
-
-  let iTopLen = topPoints.length - 1
-  let iBotLen = bottomPoints.length - 1
-  let iExtra = iTopLen - iBotLen // how many extra triangles we need
-  let bMoreTops = iExtra > 0
-  let bMoreBottoms = iExtra < 0
-
-  // indexes to start extra triangles (polygon with minimal square)
-  // exactly iExtra small triangles
-  let aMin = []
-  for (let i = Math.abs(iExtra); i > 0; i--) {
-    aMin.push({
-      len: Infinity,
-      index: -1
-    })
-  }
-
-  let len
-  if (bMoreBottoms) {
-    for (let i = 0; i < iBotLen; i++) {
-      len = vec3.squaredDistance(bottomPoints[i], bottomPoints[i + 1])
-      // find the element to replace
-      for (let j = aMin.length - 1; j >= 0; j--) {
-        if (aMin[j].len > len) {
-          aMin[j].len = len
-          aMin.index = j
-          break
-        }
-      } // for
-    }
-  } else if (bMoreTops) {
-    for (let i = 0; i < iTopLen; i++) {
-      len = vec3.squaredDistance(topPoints[i], topPoints[i + 1])
-      // find the element to replace
-      for (let j = aMin.length - 1; j >= 0; j--) {
-        if (aMin[j].len > len) {
-          aMin[j].len = len
-          aMin.index = j
-          break
-        }
-      } // for
-    }
-  } // if
-
-  // sort by index
-  aMin.sort(fnSortByIndex)
-
-  let getTriangle = (vertexA, vertexB, vertexC) => {
-    return poly3.fromPoints([vertexA, vertexB, vertexC])
-  }
-
-  let bpoint = bottomPoints[0]
-  let tpoint = topPoints[0]
-  let secondPoint
-  let nBotFacet
-  let nTopFacet // length of triangle facet side
-  for (let iB = 0, iT = 0, iMax = iTopLen + iBotLen; iB + iT < iMax;) {
-    if (aMin.length) {
-      if (bMoreTops && iT === aMin[0].index) { // one vertex is on the bottom, 2 - on the top
-        secondPoint = topPoints[++iT]
-        walls.push(getTriangle(secondPoint, tpoint, bpoint))
-        tpoint = secondPoint
-        aMin.shift()
-        continue
-      } else if (bMoreBottoms && iB === aMin[0].index) {
-        secondPoint = bottomPoints[++iB]
-        walls.push(getTriangle(tpoint, bpoint, secondPoint))
-        bpoint = secondPoint
-        aMin.shift()
-        continue
-      }
-    }
-    // choose the shortest path
-    if (iB < iBotLen) { // one vertex is on the top, 2 - on the bottom
-      nBotFacet = vec3.squaredDistance(tpoint, bottomPoints[iB + 1])
-    } else {
-      nBotFacet = Infinity
-    }
-    if (iT < iTopLen) { // one vertex is on the bottom, 2 - on the top
-      nTopFacet = vec3.squaredDistance(bpoint, topPoints[iT + 1])
-    } else {
-      nTopFacet = Infinity
-    }
-    if (nBotFacet <= nTopFacet) {
-      secondPoint = bottomPoints[++iB]
-      walls.push(getTriangle(tpoint, bpoint, secondPoint))
-      bpoint = secondPoint
-    } else if (iT < iTopLen) { // nTopFacet < Infinity
-      secondPoint = topPoints[++iT]
-      walls.push(getTriangle(secondPoint, tpoint, bpoint))
-      tpoint = secondPoint
-    }
-  }
-  return walls
 }
 
 module.exports = extrudeFromSlices

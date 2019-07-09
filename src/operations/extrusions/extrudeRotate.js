@@ -1,6 +1,6 @@
-const {mat4} = require('../../math')
+const { mat4 } = require('../../math')
 
-const {geom2} = require('../../geometry')
+const { geom2 } = require('../../geometry')
 
 const slice = require('./slice')
 
@@ -25,7 +25,7 @@ const extrudeRotate = (options, geometry) => {
     angle: (Math.PI * 2),
     overflow: 'cap'
   }
-  let {segments, startAngle, angle, overflow} = Object.assign({}, defaults, options)
+  let { segments, startAngle, angle, overflow } = Object.assign({}, defaults, options)
 
   if (segments < 3) throw new Error('segments must be greater then 3')
 
@@ -105,9 +105,9 @@ const extrudeRotate = (options, geometry) => {
   }
 
   options = {
-    numslices : segments + 1,
-    isCapped : isCapped,
-    callback : createSlice
+    numslices: segments + 1,
+    isCapped: isCapped,
+    callback: createSlice
   }
   return extrudeFromSlices(options, baseSlice)
 }

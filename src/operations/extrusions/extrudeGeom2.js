@@ -1,6 +1,6 @@
-const {mat4, vec3} = require('../../math')
+const { mat4, vec3 } = require('../../math')
 
-const {geom2} = require('../../geometry')
+const { geom2 } = require('../../geometry')
 
 const slice = require('./slice')
 
@@ -22,7 +22,7 @@ const extrudeGeom2 = (options, geometry) => {
     twistangle: 0,
     twiststeps: 12
   }
-  let {offset, twistangle, twiststeps} = Object.assign({}, defaults, options)
+  let { offset, twistangle, twiststeps } = Object.assign({ }, defaults, options)
 
   if (twiststeps < 1) throw new Error('twiststeps must be 1 or more')
 
@@ -39,7 +39,7 @@ const extrudeGeom2 = (options, geometry) => {
   const baseSlice = slice.fromSides(baseSides)
   if (offsetv[2] < 0) slice.reverse(baseSlice, baseSlice)
 
-  function createTwist(t, index) {
+  function createTwist (t, index) {
     let Zrotation = index / twiststeps * twistangle
     let Zoffset = vec3.scale(index / twiststeps, offsetv)
     let matrix = mat4.multiply(mat4.fromZRotation(Zrotation), mat4.fromTranslation(Zoffset))
@@ -48,9 +48,9 @@ const extrudeGeom2 = (options, geometry) => {
   }
 
   options = {
-     numslices : twiststeps + 1,
-     isCapped : true,
-     callback : createTwist
+    numslices: twiststeps + 1,
+    isCapped: true,
+    callback: createTwist
   }
   return extrudeFromSlices(options, baseSlice)
 }

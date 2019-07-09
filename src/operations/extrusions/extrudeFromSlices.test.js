@@ -1,12 +1,12 @@
 const test = require('ava')
 
-const {degToRad} = require('../../math/utils')
+const { degToRad } = require('../../math/utils')
 
-const {mat4, vec3} = require('../../math')
+const { mat4 } = require('../../math')
 
-const {geom2, geom3, poly3} = require('../../geometry')
+const { geom2, geom3, poly3 } = require('../../geometry')
 
-const {circle} = require('../../primitives')
+const { circle } = require('../../primitives')
 
 const extrudeFromSlices = require('./extrudeFromSlices')
 const slice = require('./slice')
@@ -16,7 +16,7 @@ const comparePolygonsAsPoints = require('../../../test/helpers/comparePolygonsAs
 test('extrudeFromSlices (defaults)', t => {
   let geometry2 = geom2.fromPoints([[10, 10], [-10, 10], [-10, -10], [10, -10]])
 
-  let geometry3 = extrudeFromSlices({}, geometry2)
+  let geometry3 = extrudeFromSlices({ }, geometry2)
   let pts = geom3.toPoints(geometry3)
   let exp = [
     [[10.0, -10.0, 0.0], [10.0, 10.0, 0.0], [10.0, 10.0, 1.0]],
@@ -34,7 +34,7 @@ test('extrudeFromSlices (defaults)', t => {
   t.true(comparePolygonsAsPoints(pts, exp))
 
   let poly2 = poly3.fromPoints([[10, 10, 0], [-10, 10, 0], [-10, -10, 0], [10, -10, 0]])
-  geometry3 = extrudeFromSlices({}, poly2)
+  geometry3 = extrudeFromSlices({ }, poly2)
   pts = geom3.toPoints(geometry3)
 
   t.is(pts.length, 10)
@@ -42,8 +42,8 @@ test('extrudeFromSlices (defaults)', t => {
 })
 
 test('extrudeFromSlices (torus)', t => {
-  var sqrt3 = Math.sqrt(3) / 2;
-  var radius = 10;
+  var sqrt3 = Math.sqrt(3) / 2
+  var radius = 10
 
   var hex = poly3.fromPoints([
     [radius, 0, 0],
@@ -52,16 +52,16 @@ test('extrudeFromSlices (torus)', t => {
     [-radius, 0, 0],
     [-radius / 2, -radius * sqrt3, 0],
     [radius / 2, -radius * sqrt3, 0]
-  ]);
+  ])
   hex = poly3.transform(mat4.fromTranslation([0, 20, 0]), hex)
   hex = slice.fromPoints(poly3.toPoints(hex))
 
-  var angle = 45;
+  var angle = 45
   let geometry3 = extrudeFromSlices(
     {
       numslices: 360 / angle,
       isCapped: false,
-      callback: function(t, index) {
+      callback: function (t, index) {
         return slice.transform(mat4.fromXRotation(degToRad(angle * index)), this)
       }
     }, hex
@@ -75,9 +75,9 @@ test('extrudeFromSlices (same shape, changing dimensions)', t => {
   let geometry3 = extrudeFromSlices(
     {
       numslices: 4,
-      callback: function(t, count) {
+      callback: function (t, count) {
         let newslice = slice.transform(mat4.fromTranslation([0, 0, count * 2]), this)
-        newslice = slice.transform(mat4.fromScaling([1 + count, 1 + (count/2), 1]), newslice)
+        newslice = slice.transform(mat4.fromScaling([1 + count, 1 + (count / 2), 1]), newslice)
         return newslice
       }
     }, base
@@ -87,12 +87,12 @@ test('extrudeFromSlices (same shape, changing dimensions)', t => {
 })
 
 test('extrudeFromSlices (changing shape, changing dimensions)', t => {
-  const base = circle({radius: 4, segments: 4})
+  const base = circle({ radius: 4, segments: 4 })
   let geometry3 = extrudeFromSlices(
     {
       numslices: 5,
-      callback: function(t, count) {
-        let newshape = circle({radius: 5+count, segments: 4+count})
+      callback: function (t, count) {
+        let newshape = circle({ radius: 5 + count, segments: 4 + count })
         let newslice = slice.fromSides(geom2.toSides(newshape))
         newslice = slice.transform(mat4.fromTranslation([0, 0, count * 10]), newslice)
         return newslice
@@ -106,17 +106,17 @@ test('extrudeFromSlices (changing shape, changing dimensions)', t => {
 test('extrudeFromSlices (holes)', t => {
   let geometry2 = geom2.create(
     [
-      [[-10.0,  10.0], [-10.0, -10.0]],
-      [[-10.0, -10.0], [ 10.0, -10.0]],
-      [[ 10.0, -10.0], [ 10.0,  10.0]],
-      [[ 10.0,  10.0], [-10.0,  10.0]],
-      [[ -5.0,  -5.0], [ -5.0,   5.0]],
-      [[  5.0,  -5.0], [ -5.0,  -5.0]],
-      [[  5.0,   5.0], [  5.0,  -5.0]],
-      [[ -5.0,   5.0], [  5.0,   5.0]]
+      [[-10.0, 10.0], [-10.0, -10.0]],
+      [[-10.0, -10.0], [10.0, -10.0]],
+      [[10.0, -10.0], [10.0, 10.0]],
+      [[10.0, 10.0], [-10.0, 10.0]],
+      [[-5.0, -5.0], [-5.0, 5.0]],
+      [[5.0, -5.0], [-5.0, -5.0]],
+      [[5.0, 5.0], [5.0, -5.0]],
+      [[-5.0, 5.0], [5.0, 5.0]]
     ]
   )
-  let geometry3 = extrudeFromSlices({}, geometry2)
+  let geometry3 = extrudeFromSlices({ }, geometry2)
   let pts = geom3.toPoints(geometry3)
   let exp = [
     [[-10.0, 10.0, 0.0], [-10.0, -10.0, 0.0], [-10.0, -10.0, 1.0]],

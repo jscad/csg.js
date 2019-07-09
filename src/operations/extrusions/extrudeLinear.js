@@ -1,6 +1,6 @@
 const flatten = require('../../utils/flatten')
 
-const {geom2} = require('../../geometry')
+const { geom2 } = require('../../geometry')
 
 const extrudeGeom2 = require('./extrudeGeom2')
 
@@ -22,7 +22,7 @@ const extrudeLinear = (options, ...objects) => {
     twistangle: 0,
     twiststeps: 1
   }
-  let {offset, twistangle, twiststeps} = Object.assign({}, defaults, options)
+  let { offset, twistangle, twiststeps } = Object.assign({ }, defaults, options)
 
   if ((!Array.isArray(offset)) || offset.length < 3) throw new Error('offset must be a array of three values')
   if (offset[2] === 0) throw new Error('offset must define a direction above or below the Z axis')
@@ -30,12 +30,12 @@ const extrudeLinear = (options, ...objects) => {
   objects = flatten(objects)
   if (objects.length === 0) throw new Error('wrong number of arguments')
 
-  options = {offset: offset, twistangle: twistangle, twiststeps: twiststeps}
+  options = { offset: offset, twistangle: twistangle, twiststeps: twiststeps }
 
   const results = objects.map((object) => {
-    //if (path.isA(object)) return pathextrude(options, object)
+    // if (path.isA(object)) return pathextrude(options, object)
     if (geom2.isA(object)) return extrudeGeom2(options, object)
-    //if (geom3.isA(object)) return geom3.extrude(options, object)
+    // if (geom3.isA(object)) return geom3.extrude(options, object)
     return object
   })
   return results.length === 1 ? results[0] : results

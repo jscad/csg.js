@@ -1,4 +1,4 @@
-const {mat4, vec3} = require('../../../math')
+const { mat4, vec3 } = require('../../../math')
 
 const create = require('./create')
 const toEdges = require('./toEdges')

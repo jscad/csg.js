@@ -47,9 +47,9 @@ test('slice: transform() should return a new slice with correct values', (t) => 
   const r = (90 * 0.017453292519943295)
   const rotateZMatrix = [
     Math.cos(r), -Math.sin(r), 0, 0,
-    Math.sin(r),  Math.cos(r), 0, 0,
-              0,            0, 1, 0,
-              0,            0, 0, 1
+    Math.sin(r), Math.cos(r), 0, 0,
+    0, 0, 1, 0,
+    0, 0, 0, 1
   ]
 
   const org3 = fromPoints([[0, 0], [1, 0], [1, 1]])

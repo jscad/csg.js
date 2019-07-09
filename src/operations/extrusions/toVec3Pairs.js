@@ -1,6 +1,6 @@
-const {vec3} = require('../../math')
+const { vec3 } = require('../../math')
 
-const {geom2} = require('../../geometry')
+const { geom2 } = require('../../geometry')
 
 const toVec3Pairs = (matrix, geometry) => {
   const sides = geom2.toSides(geometry)

@@ -1,4 +1,4 @@
-const {plane, vec3} = require('../../../math')
+const { plane, vec3 } = require('../../../math')
 
 const toEdges = require('./toEdges')
 

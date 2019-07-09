@@ -1,11 +1,11 @@
-const {vec3} = require('../../math')
+const { vec3 } = require('../../math')
 
-const {poly3} = require('../../geometry')
+const { poly3 } = require('../../geometry')
 
 const slice = require('./slice')
 
 // https://en.wikipedia.org/wiki/Greatest_common_divisor#Using_Euclid's_algorithm
-function gcd(a, b) {
+const gcd = (a, b) => {
   if (a === b) { return a }
   if (a < b) { return gcd(b, a) }
   if (b === 1) { return 1 }
@@ -13,7 +13,7 @@ function gcd(a, b) {
   return gcd(b, a % b)
 }
 
-function lcm(a, b) {
+const lcm = (a, b) => {
   return (a * b) / gcd(a, b)
 }
 
@@ -58,8 +58,6 @@ const extrudeWalls = (slice0, slice1) => {
   edges0.forEach((edge0, i) => {
     let edge1 = edges1[i]
 
-    //let poly0 = poly3.fromPoints([edge1[1], edge0[1], edge0[0]])
-    //let poly1 = poly3.fromPoints([edge1[0], edge1[1], edge0[0]])
     let poly0 = poly3.fromPoints([edge0[0], edge0[1], edge1[1]])
     let poly1 = poly3.fromPoints([edge0[0], edge1[1], edge1[0]])
 

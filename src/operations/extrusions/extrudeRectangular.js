@@ -1,8 +1,8 @@
 const flatten = require('../../utils/flatten')
 
-const {geom2, path2} = require('../../geometry')
+const { geom2, path2 } = require('../../geometry')
 
-const {expand} = require('../expansions')
+const { expand } = require('../expansions')
 
 const area = require('../expansions/area')
 
@@ -16,9 +16,10 @@ const extrudeFromPath2 = (options, geometry) => {
     radius: 1,
     segments: 0
   }
-  let {radius, segments} = Object.assign({}, defaults, options)
+  let { radius, segments } = Object.assign({ }, defaults, options)
 
   options.delta = radius
+  options.segments = segments
 
   const points = path2.toPoints(geometry)
   if (points.length === 0) throw new Error('the given geometry cannot be empty')
@@ -35,9 +36,10 @@ const extrudeFromGeom2 = (options, geometry) => {
     radius: 1,
     segments: 0
   }
-  let {radius, segments} = Object.assign({}, defaults, options)
+  let { radius, segments } = Object.assign({ }, defaults, options)
 
   options.delta = radius
+  options.segments = segments
 
   // convert the geometry to outlines
   let outlines = geom2.toOutlines(geometry)
@@ -46,7 +48,7 @@ const extrudeFromGeom2 = (options, geometry) => {
   // expand the outlines
   let newparts = outlines.map((outline) => {
     if (area(outline) < 0) outline.reverse() // all outlines must wind counter clockwise
-    return expand(options, path2.fromPoints({closed: true}, outline))
+    return expand(options, path2.fromPoints({ closed: true }, outline))
   })
 
   // create a composite geometry
@@ -77,7 +79,7 @@ const extrudeRectangular = (options, ...objects) => {
     radius: 1,
     segments: 0
   }
-  let {radius, segments} = Object.assign({}, defaults, options)
+  let { radius, segments } = Object.assign({}, defaults, options)
 
   objects = flatten(objects)
   if (objects.length === 0) throw new Error('wrong number of arguments')
@@ -88,7 +90,7 @@ const extrudeRectangular = (options, ...objects) => {
   const results = objects.map((object) => {
     if (path2.isA(object)) return extrudeFromPath2(options, object)
     if (geom2.isA(object)) return extrudeFromGeom2(options, object)
-    //if (geom3.isA(object)) return geom3.transform(matrix, object)
+    // if (geom3.isA(object)) return geom3.transform(matrix, object)
     return object
   })
   return results.length === 1 ? results[0] : results
