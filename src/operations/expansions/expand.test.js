@@ -1,6 +1,6 @@
 const test = require('ava')
 
-const {geom2, geom3, path2} = require('../../geometry')
+const { geom2, geom3, path2 } = require('../../geometry')
 
 const expand = require('./expand')
 
@@ -13,10 +13,10 @@ test('expand: expanding of a path2 produces an expected geom2', t => {
     [3.0901699437494745, 9.510565162951535],
     [6.123233995736766e-16, 10]
   ]
-  let geometry = path2.fromPoints({}, points)
+  let geometry = path2.fromPoints({ }, points)
 
   // test counter clock wise winding paths
-  let obs = expand({delta: 2, segments: 8}, geometry)
+  let obs = expand({ delta: 2, segments: 8 }, geometry)
   let pts = geom2.toPoints(obs)
   let exp = [
     new Float32Array([ 11.97537612915039, 0.3128691613674164 ]),
@@ -45,8 +45,8 @@ test('expand: expanding of a path2 produces an expected geom2', t => {
   t.deepEqual(pts, exp)
 
   // test clock wise winding paths
-  geometry = path2.fromPoints({}, points.reverse())
-  obs = expand({delta: 2, segments: 8}, geometry)
+  geometry = path2.fromPoints({ }, points.reverse())
+  obs = expand({ delta: 2, segments: 8 }, geometry)
   pts = geom2.toPoints(obs)
   exp = [
     new Float32Array([ 0.3128691613674164, 11.97537612915039 ]),
@@ -78,7 +78,7 @@ test('expand: expanding of a path2 produces an expected geom2', t => {
 test('expand: expanding of a geom2 produces expected changes to points', t => {
   let geometry = geom2.fromPoints([[-8, -8], [8, -8], [8, 8], [-8, 8]])
 
-  let obs = expand({delta: 2, segments: 8}, geometry)
+  let obs = expand({ delta: 2, segments: 8 }, geometry)
   let pts = geom2.toPoints(obs)
   let exp = [
     new Float32Array([ -9.414213180541992, -9.414213180541992 ]),
@@ -99,16 +99,16 @@ test('expand: expanding of a geom2 produces expected changes to points', t => {
 
 test('expand: expanding of a geom3 produces expected changes to polygons', t => {
   let polygonsAsPoints = [
-    [[-5,-5,-5],[-5,-5,15],[-5,15,15],[-5,15,-5]],
-    [[15,-5,-5],[15,15,-5],[15,15,15],[15,-5,15]],
-    [[-5,-5,-5],[15,-5,-5],[15,-5,15],[-5,-5,15]],
-    [[-5,15,-5],[-5,15,15],[15,15,15],[15,15,-5]],
-    [[-5,-5,-5],[-5,15,-5],[15,15,-5],[15,-5,-5]],
-    [[-5,-5,15],[15,-5,15],[15,15,15],[-5,15,15]]
+    [[-5, -5, -5], [-5, -5, 15], [-5, 15, 15], [-5, 15, -5]],
+    [[15, -5, -5], [15, 15, -5], [15, 15, 15], [15, -5, 15]],
+    [[-5, -5, -5], [15, -5, -5], [15, -5, 15], [-5, -5, 15]],
+    [[-5, 15, -5], [-5, 15, 15], [15, 15, 15], [15, 15, -5]],
+    [[-5, -5, -5], [-5, 15, -5], [15, 15, -5], [15, -5, -5]],
+    [[-5, -5, 15], [15, -5, 15], [15, 15, 15], [-5, 15, 15]]
   ]
   let geometry = geom3.fromPoints(polygonsAsPoints)
 
-  let obs = expand({delta: 2, segments: 8}, geometry)
+  let obs = expand({ delta: 2, segments: 8 }, geometry)
   let pts = geom3.toPoints(obs)
   let exp0 = [
     new Float32Array([ -7, -5, -5 ]),

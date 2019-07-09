@@ -1,6 +1,6 @@
-const {mat4, vec3} = require('../../math')
+const { mat4, vec3 } = require('../../math')
 
-const {geom3, poly3} = require('../../geometry')
+const { geom3, poly3 } = require('../../geometry')
 
 // Extrude a polygon in the direction of the offsetvector.
 // Returns (geom3) a new geometry

@@ -4,11 +4,11 @@ const flatten = require('../../utils/flatten')
 
 const intersect = require('../../math/utils/intersect')
 
-const {line2, vec2} = require('../../math')
+const { line2, vec2 } = require('../../math')
 
-const {geom2, geom3, path2} = require('../../geometry')
+const { geom2, path2 } = require('../../geometry')
 
-const {arePointsInside} = require('./inside')
+const { arePointsInside } = require('./inside')
 const area = require('./area')
 
 /*
@@ -23,9 +23,9 @@ const offsetFromPoints = (options, points) => {
   const defaults = {
     delta: 1,
     closed: false,
-    segments: 0,
+    segments: 0
   }
-  let {delta, closed, segments} = Object.assign({}, defaults, options)
+  let { delta, closed, segments } = Object.assign({ }, defaults, options)
 
   if (Math.abs(delta) < EPS) return points
 
@@ -39,7 +39,7 @@ const offsetFromPoints = (options, points) => {
   let prevsegment = null
   const newpoints = []
   const corners = []
-  let n =  points.length
+  let n = points.length
   for (let i = 0; i < n; i++) {
     let j = (i + 1) % n
     let p0 = points[i]
@@ -55,7 +55,7 @@ const offsetFromPoints = (options, points) => {
 
     let cursegment = [n0, n1]
     if (prevsegment != null) {
-      if (closed || (!closed && j != 0)) {
+      if (closed || (!closed && j !== 0)) {
         // check for intersection of new line segments
         let ip = intersect(prevsegment[0], prevsegment[1], cursegment[0], cursegment[1])
         if (ip) {
@@ -64,7 +64,7 @@ const offsetFromPoints = (options, points) => {
           // adjust current points
           cursegment[0] = ip
         } else {
-          corners.push({c: p0, s0: prevsegment, s1: cursegment})
+          corners.push({ c: p0, s0: prevsegment, s1: cursegment })
         }
       }
     }
@@ -89,7 +89,7 @@ const offsetFromPoints = (options, points) => {
     } else {
       let p0 = points[0]
       let cursegment = [n0, n1]
-      corners.push({c: p0, s0: prevsegment, s1: cursegment})
+      corners.push({ c: p0, s0: prevsegment, s1: cursegment })
     }
   }
 
@@ -157,9 +157,9 @@ const offsetFromPath2 = (options, geometry) => {
   const defaults = {
     delta: 1,
     closed: geometry.isClosed,
-    segments: 0,
+    segments: 0
   }
-  let {delta, closed, segments} = Object.assign({}, defaults, options)
+  let { delta, closed, segments } = Object.assign({ }, defaults, options)
 
   options = {
     delta: delta,
@@ -167,7 +167,7 @@ const offsetFromPath2 = (options, geometry) => {
     segments: segments
   }
   let newpoints = offsetFromPoints(options, path2.toPoints(geometry))
-  return path2.fromPoints({closed: closed}, newpoints)
+  return path2.fromPoints({ closed: closed }, newpoints)
 }
 
 /*
@@ -181,9 +181,9 @@ const offsetFromPath2 = (options, geometry) => {
 const offsetFromGeom2 = (options, geometry) => {
   const defaults = {
     delta: 1,
-    segments: 0,
+    segments: 0
   }
-  let {delta, segments} = Object.assign({}, defaults, options)
+  let { delta, segments } = Object.assign({ }, defaults, options)
 
   // convert the geometry to outlines, and generate offsets from each
   let outlines = geom2.toOutlines(geometry)
@@ -191,7 +191,7 @@ const offsetFromGeom2 = (options, geometry) => {
     let level = outlines.reduce((acc, polygon) => {
       return acc + arePointsInside(outline, polygon)
     }, 0)
-    let outside = (level % 2) == 0
+    let outside = (level % 2) === 0
 
     options = {
       delta: outside ? delta : -delta,
@@ -223,7 +223,7 @@ const offset = (options, ...objects) => {
   const results = objects.map((object) => {
     if (path2.isA(object)) return offsetFromPath2(options, object)
     if (geom2.isA(object)) return offsetFromGeom2(options, object)
-    //if (geom3.isA(object)) return geom3.transform(matrix, object)
+    // if (geom3.isA(object)) return geom3.transform(matrix, object)
     return object
   })
   return results.length === 1 ? results[0] : results

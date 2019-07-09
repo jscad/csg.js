@@ -1,23 +1,23 @@
 const test = require('ava')
 
-const {geom2, geom3, path2} = require('../../geometry')
+const { geom2, path2 } = require('../../geometry')
 
-const {offset} = require('./offset')
+const { offset } = require('./offset')
 
 test('offset (options): offset of a path2 produces expected offset path2', t => {
-  let openline = path2.fromPoints({}, [[0, 0], [5, 0], [0, 5]])
-  let closeline = path2.fromPoints({}, [[0, 0], [5, 0], [0, 5], [0, 0]])
+  let openline = path2.fromPoints({ }, [[0, 0], [5, 0], [0, 5]])
+  let closeline = path2.fromPoints({ }, [[0, 0], [5, 0], [0, 5], [0, 0]])
 
   // empty path2
   let empty = path2.create()
-  let obs = offset({delta: 1}, empty)
+  let obs = offset({ delta: 1 }, empty)
   let pts = path2.toPoints(obs)
   let exp = [
   ]
   t.deepEqual(pts, exp)
 
   // expand +
-  obs = offset({delta: 1}, openline)
+  obs = offset({ delta: 1 }, openline)
   pts = path2.toPoints(obs)
   exp = [
     new Float32Array([ -6.123234262925839e-17, -1 ]),
@@ -27,7 +27,7 @@ test('offset (options): offset of a path2 produces expected offset path2', t => 
   ]
   t.deepEqual(pts, exp)
 
-  obs = offset({delta: 1}, closeline)
+  obs = offset({ delta: 1 }, closeline)
   pts = path2.toPoints(obs)
   exp = [
     new Float32Array([ -6.123234262925839e-17, -1 ]),
@@ -40,7 +40,7 @@ test('offset (options): offset of a path2 produces expected offset path2', t => 
   t.deepEqual(pts, exp)
 
   // contract -
-  obs = offset({delta: -1}, openline)
+  obs = offset({ delta: -1 }, openline)
   pts = path2.toPoints(obs)
   exp = [
     new Float32Array([ 6.123234262925839e-17, 1 ]),
@@ -49,7 +49,7 @@ test('offset (options): offset of a path2 produces expected offset path2', t => 
   ]
   t.deepEqual(pts, exp)
 
-  obs = offset({delta: -1}, closeline)
+  obs = offset({ delta: -1 }, closeline)
   pts = path2.toPoints(obs)
   exp = [
     new Float32Array([ 1, 1 ]),
@@ -60,10 +60,10 @@ test('offset (options): offset of a path2 produces expected offset path2', t => 
 })
 
 test('offset (segments 1): offset of a path2 produces expected offset path2', t => {
-  let openline = path2.fromPoints({}, [[-5, -5], [5, -5], [5, 5], [3, 5], [3, 0], [-3, 0], [-3, 5], [-5, 5]])
-  let closeline = path2.fromPoints({}, [[-5, -5], [5, -5], [5, 5], [3, 5], [3, 0], [-3, 0], [-3, 5], [-5, 5], [-5, -5]])
+  let openline = path2.fromPoints({ }, [[-5, -5], [5, -5], [5, 5], [3, 5], [3, 0], [-3, 0], [-3, 5], [-5, 5]])
+  let closeline = path2.fromPoints({ }, [[-5, -5], [5, -5], [5, 5], [3, 5], [3, 0], [-3, 0], [-3, 5], [-5, 5], [-5, -5]])
 
-  let obs = offset({delta: 1, segments: 1}, openline)
+  let obs = offset({ delta: 1, segments: 1 }, openline)
   let pts = path2.toPoints(obs)
   let exp = [
     new Float32Array([ -5, -6 ]),
@@ -85,7 +85,7 @@ test('offset (segments 1): offset of a path2 produces expected offset path2', t 
   ]
   t.deepEqual(pts, exp)
 
-  obs = offset({delta: 1, segments: 1}, closeline)
+  obs = offset({ delta: 1, segments: 1 }, closeline)
   pts = path2.toPoints(obs)
   exp = [
     new Float32Array([ -6, -6 ]),
@@ -111,7 +111,7 @@ test('offset (segments 1): offset of a path2 produces expected offset path2', t 
   ]
   t.deepEqual(pts, exp)
 
-  obs = offset({delta: -0.5, segments: 1}, openline)
+  obs = offset({ delta: -0.5, segments: 1 }, openline)
   pts = path2.toPoints(obs)
   exp = [
     new Float32Array([ -5, -4.5 ]),
@@ -129,7 +129,7 @@ test('offset (segments 1): offset of a path2 produces expected offset path2', t 
   ]
   t.deepEqual(pts, exp)
 
-  obs = offset({delta: -0.5, segments: 1}, closeline)
+  obs = offset({ delta: -0.5, segments: 1 }, closeline)
   pts = path2.toPoints(obs)
   exp = [
     new Float32Array([ -4.5, -4.5 ]),
@@ -149,10 +149,10 @@ test('offset (segments 1): offset of a path2 produces expected offset path2', t 
 })
 
 test('offset (segments 16): offset of a path2 produces expected offset path2', t => {
-  let openline = path2.fromPoints({}, [[-5, -5], [5, -5], [5, 5], [3, 5], [3, 0], [-3, 0], [-3, 5], [-5, 5]])
-  let closeline = path2.fromPoints({}, [[-5, -5], [5, -5], [5, 5], [3, 5], [3, 0], [-3, 0], [-3, 5], [-5, 5], [-5, -5]])
+  let openline = path2.fromPoints({ }, [[-5, -5], [5, -5], [5, 5], [3, 5], [3, 0], [-3, 0], [-3, 5], [-5, 5]])
+  let closeline = path2.fromPoints({ }, [[-5, -5], [5, -5], [5, 5], [3, 5], [3, 0], [-3, 0], [-3, 5], [-5, 5], [-5, -5]])
 
-  let obs = offset({delta: 1, segments: 16}, openline)
+  let obs = offset({ delta: 1, segments: 16 }, openline)
   let pts = path2.toPoints(obs)
   let exp = [
     new Float32Array([ -5, -6 ]),
@@ -182,7 +182,7 @@ test('offset (segments 16): offset of a path2 produces expected offset path2', t
   ]
   t.deepEqual(pts, exp)
 
-  obs = offset({delta: 1, segments: 16}, closeline)
+  obs = offset({ delta: 1, segments: 16 }, closeline)
   pts = path2.toPoints(obs)
   exp = [
     new Float32Array([ -5.923879623413086, -5.382683277130127 ]),
@@ -222,10 +222,10 @@ test('offset (segments 16): offset of a path2 produces expected offset path2', t
 })
 
 test('offset (segments 16): offset of a CW path2 produces expected offset path2', t => {
-  let openline = path2.fromPoints({}, [[-5, -5], [5, -5], [5, 5], [3, 5], [3, 0], [-3, 0], [-3, 5], [-5, 5]].reverse())
-  let closeline = path2.fromPoints({}, [[-5, -5], [5, -5], [5, 5], [3, 5], [3, 0], [-3, 0], [-3, 5], [-5, 5], [-5, -5]].reverse())
+  let openline = path2.fromPoints({ }, [[-5, -5], [5, -5], [5, 5], [3, 5], [3, 0], [-3, 0], [-3, 5], [-5, 5]].reverse())
+  let closeline = path2.fromPoints({ }, [[-5, -5], [5, -5], [5, 5], [3, 5], [3, 0], [-3, 0], [-3, 5], [-5, 5], [-5, -5]].reverse())
 
-  let obs = offset({delta: -0.5, segments: 16}, openline)
+  let obs = offset({ delta: -0.5, segments: 16 }, openline)
   let pts = path2.toPoints(obs)
   let exp = [
     new Float32Array([ -5, 4.5 ]),
@@ -247,7 +247,7 @@ test('offset (segments 16): offset of a CW path2 produces expected offset path2'
   ]
   t.deepEqual(pts, exp)
 
-  obs = offset({delta: 1, segments: 16}, closeline)
+  obs = offset({ delta: 1, segments: 16 }, closeline)
   pts = path2.toPoints(obs)
   exp = [
     new Float32Array([ -5.382683277130127, -5.923879623413086 ]),
@@ -291,14 +291,14 @@ test('offset (options): offsetting of a simple geom2 produces expected offset ge
 
   // empty
   let empty = geom2.create()
-  let obs = offset({delta: 1}, empty)
+  let obs = offset({ delta: 1 }, empty)
   let pts = geom2.toPoints(obs)
   let exp = [
   ]
   t.deepEqual(pts, exp)
 
   // expand +
-  obs = offset({delta: 1}, geometry)
+  obs = offset({ delta: 1 }, geometry)
   pts = geom2.toPoints(obs)
   exp = [
     new Float32Array([ -5, -6 ]),
@@ -319,7 +319,7 @@ test('offset (options): offsetting of a simple geom2 produces expected offset ge
   t.deepEqual(pts, exp)
 
   // contract -
-  obs = offset({delta: -0.5}, geometry)
+  obs = offset({ delta: -0.5 }, geometry)
   pts = geom2.toPoints(obs)
   exp = [
     new Float32Array([ -4.5, -4.5 ]),
@@ -337,7 +337,7 @@ test('offset (options): offsetting of a simple geom2 produces expected offset ge
   t.deepEqual(pts, exp)
 
   // segments 1 - sharp points at corner
-  obs = offset({delta: 1, segments: 1}, geometry)
+  obs = offset({ delta: 1, segments: 1 }, geometry)
   pts = geom2.toPoints(obs)
   exp = [
     new Float32Array([ -6, -6 ]),
@@ -364,7 +364,7 @@ test('offset (options): offsetting of a simple geom2 produces expected offset ge
   t.deepEqual(pts, exp)
 
   // segments 16 - rounded corners
-  obs = offset({delta: -0.5, segments: 16}, geometry)
+  obs = offset({ delta: -0.5, segments: 16 }, geometry)
   pts = geom2.toPoints(obs)
   exp = [
     new Float32Array([ -4.5, -4.5 ]),
@@ -406,14 +406,14 @@ test('offset (options): offsetting of a complex geom2 produces expected offset g
     [[-8.00000, -25.00000], [-8.00000, -40.00000]],
     [[8.00000, -25.00000], [-8.00000, -25.00000]],
     [[8.00000, -40.00000], [8.00000, -25.00000]],
-    [[-2.00000,-15.00000], [-2.00000,-19.00000]],
-    [[-2.00000,-19.00000], [2.00000,-19.00000]],
-    [[2.00000,-19.00000], [2.00000,-15.00000]],
-    [[2.00000,-15.00000], [-2.00000,-15.00000]]
+    [[-2.00000, -15.00000], [-2.00000, -19.00000]],
+    [[-2.00000, -19.00000], [2.00000, -19.00000]],
+    [[2.00000, -19.00000], [2.00000, -15.00000]],
+    [[2.00000, -15.00000], [-2.00000, -15.00000]]
   ])
 
   // expand +
-  let obs = offset({delta: 2, segments: 1}, geometry)
+  let obs = offset({ delta: 2, segments: 1 }, geometry)
   let pts = geom2.toPoints(obs)
   let exp = [
     new Float32Array([ -77, -77 ]),

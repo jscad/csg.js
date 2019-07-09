@@ -1,10 +1,10 @@
-const {EPS} = require('../../math/constants')
+const { EPS } = require('../../math/constants')
 
-const {mat4, vec3} = require('../../math')
+const { mat4, vec3 } = require('../../math')
 
-const {geom3, poly3} = require('../../geometry')
+const { geom3, poly3 } = require('../../geometry')
 
-const {sphere} = require('../../primitives')
+const { sphere } = require('../../primitives')
 
 const retessellate = require('../booleans/retessellate')
 const unionGeom3Sub = require('../booleans/unionGeom3Sub')
@@ -29,8 +29,8 @@ const mapPlaneToVertex = (map, vertex, plane) => {
 
 const mapPlaneToEdge = (map, edge, plane) => {
   let i = map.findIndex((item) => {
-    return (vec3.equals(item[0], edge[0]) && vec2.equals(item[1], edge[1])) ||
-           (vec3.equals(item[0], edge[1]) && vec2.equals(item[1], edge[0]))
+    return (vec3.equals(item[0], edge[0]) && vec3.equals(item[1], edge[1])) ||
+           (vec3.equals(item[0], edge[1]) && vec3.equals(item[1], edge[0]))
   })
   if (i < 0) {
     let entry = [edge, [plane]]
@@ -43,7 +43,7 @@ const mapPlaneToEdge = (map, edge, plane) => {
 }
 
 const addUniqueAngle = (map, angle) => {
-  let i = map.findIndex((item) => item == angle)
+  let i = map.findIndex((item) => item === angle)
   if (i < 0) {
     map.push(angle)
     return map.length
@@ -63,9 +63,9 @@ const addUniqueAngle = (map, angle) => {
 const expandShell = (options, geometry) => {
   const defaults = {
     delta: 1,
-    segments: 12,
+    segments: 12
   }
-  let {delta, segments} = Object.assign({}, defaults, options)
+  let { delta, segments } = Object.assign({ }, defaults, options)
 
   let result = geom3.create()
   let vertices2planes = [] // contents: [vertex, [plane, ...]]

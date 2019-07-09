@@ -8,7 +8,7 @@ const arePointsInside = (points, polygon) => {
   let sum = points.reduce((acc, point) => {
     return acc + isPointInside(point, polygon)
   }, 0)
-  return sum == polygon.length ? 1 : 0
+  return sum === polygon.length ? 1 : 0
 }
 
 /* Determine if the given point is inside the polygon.
@@ -20,17 +20,18 @@ const arePointsInside = (points, polygon) => {
  */
 const isPointInside = (point, polygon) => {
   let n = polygon.length
-  let counter = 0;
-  let p1 = polygon[0];
+  let counter = 0
+  let p1 = polygon[0]
   for (let i = 1; i <= n; i++) {
-    let p2 = polygon[i % n];
+    let p2 = polygon[i % n]
     if (point[1] > Math.min(p1[1], p2[1])) {
       if (point[1] <= Math.max(p1[1], p2[1])) {
         if (point[0] <= Math.max(p1[0], p2[0])) {
-          if (p1[1] != p2[1]) {
+          if (p1[1] !== p2[1]) {
             let xinters = (point[1] - p1[1]) * (p2[0] - p1[0]) / (p2[1] - p1[1]) + p1[0]
-            if (p1[0] == p2[0] || point[0] <= xinters)
+            if (p1[0] === p2[0] || point[0] <= xinters) {
               counter++
+            }
           }
         }
       }
@@ -38,7 +39,7 @@ const isPointInside = (point, polygon) => {
     p1 = p2
   }
 
-  if ((counter % 2) == 0) return 0
+  if ((counter % 2) === 0) return 0
   return 1
 }
 

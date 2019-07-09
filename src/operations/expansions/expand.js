@@ -1,12 +1,10 @@
-const {defaultResolution2D} = require('../../core/constants')
-
 const flatten = require('../../utils/flatten')
 
-const {vec2} = require('../../math')
+const { vec2 } = require('../../math')
 
-const {geom2, geom3, path2} = require('../../geometry')
+const { geom2, geom3, path2 } = require('../../geometry')
 
-const {offsetFromGeom2, offsetFromPoints} = require('./offset')
+const { offsetFromGeom2, offsetFromPoints } = require('./offset')
 const area = require('./area')
 const expandShell = require('./expandShell')
 const union = require('../booleans/union')
@@ -20,26 +18,26 @@ const union = require('../booleans/union')
 const expandPath2 = (options, geometry) => {
   const defaults = {
     delta: 1,
-    segments: 0,
+    segments: 0
   }
-  let {delta, segments} = Object.assign({}, defaults, options)
+  let { delta, segments } = Object.assign({ }, defaults, options)
 
   if (delta <= 0) throw new Error('paths are infinity thin, and cannot contract')
 
   let points = path2.toPoints(geometry)
   if (points.length === 0) throw new Error('the given geometry cannot be empty')
 
-  let offsetopts = {delta: delta, segments: segments, closed: geometry.isClosed}
+  let offsetopts = { delta: delta, segments: segments, closed: geometry.isClosed }
   let external = offsetFromPoints(offsetopts, points)
 
-  offsetopts = {delta: -delta, segments: segments, closed: geometry.isClosed}
+  offsetopts = { delta: -delta, segments: segments, closed: geometry.isClosed }
   let internal = offsetFromPoints(offsetopts, points)
 
   let newgeometry = null
   if (geometry.isClosed) {
     // NOTE: creating path2 from the points insures proper closure
-    let epath = path2.fromPoints({closed: true}, external)
-    let ipath = path2.fromPoints({closed: true}, internal.reverse())
+    let epath = path2.fromPoints({ closed: true }, external)
+    let ipath = path2.fromPoints({ closed: true }, internal.reverse())
     let esides = geom2.toSides(geom2.fromPoints(path2.toPoints(epath)))
     let isides = geom2.toSides(geom2.fromPoints(path2.toPoints(ipath)))
     newgeometry = geom2.create(esides.concat(isides))
@@ -59,7 +57,7 @@ const expandPath2 = (options, geometry) => {
         let radians = e2iStart + (step * i)
         let point = vec2.add(eCorner, vec2.scale(delta, vec2.fromAngleRadians(radians)))
         e2iCap.push(point)
-  
+
         radians = i2eStart + (step * i)
         point = vec2.add(iCorner, vec2.scale(delta, vec2.fromAngleRadians(radians)))
         i2eCap.push(point)
