@@ -2,7 +2,7 @@ const test = require('ava')
 
 const { geom2, path2 } = require('../../geometry')
 
-const { offset } = require('./offset')
+const { offset } = require('./index')
 
 test('offset (options): offset of a path2 produces expected offset path2', t => {
   let openline = path2.fromPoints({ }, [[0, 0], [5, 0], [0, 5]])

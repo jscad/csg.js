@@ -1,6 +1,6 @@
 const { geom2 } = require('../../geometry')
 
-const { offsetFromGeom2 } = require('./offset')
+const offsetGeom2 = require('./offsetGeom2')
 
 /**
  * Expand the given geometry (geom2) using the given options (if any).
@@ -14,7 +14,7 @@ const expandGeom2 = (options, geometry) => {
   const sides = geom2.toSides(geometry)
   if (sides.length === 0) throw new Error('the given geometry cannot be empty')
 
-  return offsetFromGeom2(options, geometry)
+  return offsetGeom2(options, geometry)
 }
 
 module.exports = expandGeom2
