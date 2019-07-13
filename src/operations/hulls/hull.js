@@ -5,7 +5,7 @@ const { vec2 } = require('../../math')
 
 const { geom2, geom3 } = require('../../geometry')
 
-const hullVectors2 = require('./hullVectors2')
+const hullPoints2 = require('./hullPoints2')
 
 /*
  * Create a convex hull of the given geom2 geometries.
@@ -25,7 +25,7 @@ const hullGeom2 = (...geometries) => {
     })
   })
 
-  let hullpoints = hullVectors2(uniquepoints)
+  let hullpoints = hullPoints2(uniquepoints)
 
   // NOTE: more then three points are required to create a new geometry
   if (hullpoints.length < 3) return geom2.create()

@@ -20,15 +20,15 @@ const compareIndex = (index1, index2) => {
 }
 
 // Ported from https://github.com/bkiers/GrahamScan
-const compute = (vectors) => {
-  if (vectors.length < 3) {
+const compute = (points) => {
+  if (points.length < 3) {
     return null
   }
 
   // Find the lowest point
   let min = 0
-  vectors.forEach((point, i) => {
-    let minpoint = vectors[min]
+  points.forEach((point, i) => {
+    let minpoint = points[min]
     if (point[1] === minpoint[1]) {
       if (point[0] < minpoint[0]) {
         min = i
@@ -42,41 +42,41 @@ const compute = (vectors) => {
   let al = []
   let angle = 0.0
   let dist = 0.0
-  for (let i = 0; i < vectors.length; i++) {
+  for (let i = 0; i < points.length; i++) {
     if (i === min) {
       continue
     }
-    angle = angleBetweenPoints(vectors[min], vectors[i])
+    angle = angleBetweenPoints(points[min], points[i])
     if (angle < 0) {
       angle += Math.PI
     }
-    dist = vec2.squaredDistance(vectors[min], vectors[i])
+    dist = vec2.squaredDistance(points[min], points[i])
     al.push({ index: i, angle: angle, distance: dist })
   }
 
   al.sort(function (a, b) { return compareIndex(a, b) })
 
-  // Wind around the vectors CCW, removing interior vectors
-  let stack = new Array(vectors.length + 1)
+  // Wind around the points CCW, removing interior points
+  let stack = new Array(points.length + 1)
   let j = 2
-  for (let i = 0; i < vectors.length; i++) {
+  for (let i = 0; i < points.length; i++) {
     if (i === min) {
       continue
     }
     stack[j] = al[j - 2].index
     j++
   }
-  stack[0] = stack[vectors.length]
+  stack[0] = stack[points.length]
   stack[1] = min
 
   const ccw = (i1, i2, i3) => {
-    return (vectors[i2][0] - vectors[i1][0]) * (vectors[i3][1] - vectors[i1][1]) -
-           (vectors[i2][1] - vectors[i1][1]) * (vectors[i3][0] - vectors[i1][0])
+    return (points[i2][0] - points[i1][0]) * (points[i3][1] - points[i1][1]) -
+           (points[i2][1] - points[i1][1]) * (points[i3][0] - points[i1][0])
   }
 
   let tmp
   let M = 2
-  for (let i = 3; i <= vectors.length; i++) {
+  for (let i = 3; i <= points.length; i++) {
     while (ccw(stack[M - 1], stack[M], stack[i]) < 1e-5) {
       M--
     }
@@ -86,7 +86,7 @@ const compute = (vectors) => {
     stack[M] = tmp
   }
 
-  // Return the indices to the vectors
+  // Return the indices to the points
   const indices = new Array(M)
   for (let i = 0; i < M; i++) {
     indices[i] = stack[i + 1]
@@ -94,18 +94,18 @@ const compute = (vectors) => {
   return indices
 }
 
-/** Create a convex hull of the given set of vectors,  where each vector is an array of [x,y].
- * @param {Array} uniquevectors - list of UNIQUE vectors from which to create a hull
- * @returns {Array} a list of vectors that form the hull
+/** Create a convex hull of the given set of points,  where each point is an array of [x,y].
+ * @param {Array} uniquepoints - list of UNIQUE points from which to create a hull
+ * @returns {Array} a list of points that form the hull
  */
-const hullVectors2 = (uniquevectors) => {
-  let indices = compute(uniquevectors)
+const hullPoints2 = (uniquepoints) => {
+  let indices = compute(uniquepoints)
 
-  let hullvectors = []
+  let hullpoints = []
   if (Array.isArray(indices)) {
-    hullvectors = indices.map((index) => uniquevectors[index])
+    hullpoints = indices.map((index) => uniquepoints[index])
   }
-  return hullvectors
+  return hullpoints
 }
 
-module.exports = hullVectors2
+module.exports = hullPoints2
