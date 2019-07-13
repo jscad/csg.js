@@ -4,7 +4,7 @@ const { geom2 } = require('../../geometry')
 
 const hull = require('./hull')
 
-test('hull (single)', t => {
+test('hull (single, geom2)', t => {
   let geometry = geom2.create()
 
   let obs = hull(geometry)
@@ -37,7 +37,7 @@ test('hull (single)', t => {
   t.is(pts.length, 7)
 })
 
-test('hull (multiple, overlaping)', t => {
+test('hull (multiple, overlaping, geom2)', t => {
   let geometry1 = geom2.fromPoints([[5, 5], [-5, 5], [-5, -5], [5, -5]])
   let geometry2 = geom2.fromPoints([[3, 3], [-3, 3], [-3, -3], [3, -3]])
   let geometry3 = geom2.fromPoints([[6, 3], [-6, 3], [-6, -3], [6, -3]])
@@ -80,7 +80,7 @@ test('hull (multiple, overlaping)', t => {
   t.is(pts.length, 7)
 })
 
-test('hull (multiple, various)', t => {
+test('hull (multiple, various, geom2)', t => {
   let geometry1 = geom2.fromPoints([[6, 6], [0, 6], [0, 0], [6, 0]])
   let geometry2 = geom2.fromPoints([[6, 3], [-6, 3], [-6, -3], [6, -3]])
   let geometry3 = geom2.fromPoints([[-10, -10], [0, -20], [10, -10]])

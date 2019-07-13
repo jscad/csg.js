@@ -4,7 +4,7 @@ const { geom2 } = require('../../geometry')
 
 const hullChain = require('./hullChain')
 
-test('hullChain (two)', t => {
+test('hullChain (two, geom2)', t => {
   let geometry1 = geom2.fromPoints([[6, 6], [3, 6], [3, 3], [6, 3]])
   let geometry2 = geom2.fromPoints([[-6, -6], [-9, -6], [-9, -9], [-6, -9]])
 
@@ -21,7 +21,7 @@ test('hullChain (two)', t => {
   t.is(pts.length, 6)
 })
 
-test('hullChain (three)', t => {
+test('hullChain (three, geom2)', t => {
   let geometry1 = geom2.fromPoints([[6, 6], [3, 6], [3, 3], [6, 3]])
   let geometry2 = geom2.fromPoints([[-6, -6], [-9, -6], [-9, -9], [-6, -9]])
   let geometry3 = geom2.fromPoints([[-6, 6], [-3, 6], [-3, 9], [-6, 9]])
