@@ -22,7 +22,7 @@ const compareIndex = (index1, index2) => {
 // Ported from https://github.com/bkiers/GrahamScan
 const compute = (points) => {
   if (points.length < 3) {
-    return null
+    return points
   }
 
   // Find the lowest point
