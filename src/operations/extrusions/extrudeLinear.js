@@ -2,7 +2,7 @@ const flatten = require('../../utils/flatten')
 
 const { geom2 } = require('../../geometry')
 
-const extrudeGeom2 = require('./extrudeGeom2')
+const extrudeLinearGeom2 = require('./extrudeLinearGeom2')
 
 /**
  * Extrude the given object(s) in a linear direction using the given options.
@@ -34,7 +34,7 @@ const extrudeLinear = (options, ...objects) => {
 
   const results = objects.map((object) => {
     // if (path.isA(object)) return pathextrude(options, object)
-    if (geom2.isA(object)) return extrudeGeom2(options, object)
+    if (geom2.isA(object)) return extrudeLinearGeom2(options, object)
     // if (geom3.isA(object)) return geom3.extrude(options, object)
     return object
   })
