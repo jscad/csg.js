@@ -6,14 +6,14 @@ const { comparePoints } = require('../../../test/helpers')
 
 const toOutlines = require('./toOutlines')
 
-test('geom2: toOutlines() should return no paths for empty geom2', (t) => {
+test('geom2: toOutlines() should return no outlines for empty geom2', (t) => {
   let shp1 = create()
   let exp1 = []
   let ret1 = toOutlines(shp1)
   t.true(comparePoints(exp1, ret1))
 })
 
-test('geom2: toOutlines() should return paths for one or more outlines', (t) => {
+test('geom2: toOutlines() should return one or more outlines', (t) => {
   let shp1 = create([[[-1, -1], [ 1, -1]],
                     [[ 1, -1], [ 1,  1]],
                     [[ 1,  1], [-1, -1]]])
@@ -37,7 +37,7 @@ test('geom2: toOutlines() should return paths for one or more outlines', (t) => 
   t.true(comparePoints(exp2, ret2))
 })
 
-test('geom2: toOutlines() should return paths for holes in geom2', (t) => {
+test('geom2: toOutlines() should return outlines for holes in geom2', (t) => {
   let shp1 = create([ [[ 10,  10], [-10, -10]],
                       [[-10, -10], [ 10, -10]],
                       [[ 10, -10], [ 10,  10]],
