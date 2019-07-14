@@ -6,6 +6,7 @@ const slice = require('./slice')
 
 const extrudeWalls = require('./extrudeWalls')
 
+// NOTE: function definition is required in order to access 'this'
 function defaultCallback (t, index) {
   let baseSlice = null
   if (geom2.isA(this)) baseSlice = slice.fromSides(geom2.toSides(this))

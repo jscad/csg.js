@@ -11,7 +11,7 @@ const unionGeom3Sub = require('../booleans/unionGeom3Sub')
 
 const extrudePolygon = require('./extrudePolygon')
 
-function fnNumberSort (a, b) {
+const fnNumberSort = (a, b) => {
   return a - b
 }
 

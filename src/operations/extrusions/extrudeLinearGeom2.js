@@ -39,6 +39,7 @@ const extrudeGeom2 = (options, geometry) => {
   const baseSlice = slice.fromSides(baseSides)
   if (offsetv[2] < 0) slice.reverse(baseSlice, baseSlice)
 
+  // NOTE: function definition is required in order to access 'this'
   function createTwist (t, index) {
     let Zrotation = index / twiststeps * twistangle
     let Zoffset = vec3.scale(index / twiststeps, offsetv)

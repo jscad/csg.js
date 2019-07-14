@@ -17,11 +17,11 @@ const expandPath2 = require('./expandPath2')
  * @example
  * let newsphere = expand({delta: 2}, cube({center: [0,0,15], size: [20, 25, 5]}))
  */
-const expand = function (options, ...objects) {
+const expand = (options, ...objects) => {
   objects = flatten(objects)
   if (objects.length === 0) throw new Error('wrong number of arguments')
 
-  const results = objects.map(function (object) {
+  const results = objects.map((object) => {
     if (path2.isA(object)) return expandPath2(options, object)
     if (geom2.isA(object)) return expandGeom2(options, object)
     if (geom3.isA(object)) return expandGeom3(options, object)

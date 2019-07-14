@@ -91,7 +91,7 @@ test('extrudeFromSlices (changing shape, changing dimensions)', t => {
   let geometry3 = extrudeFromSlices(
     {
       numslices: 5,
-      callback: function (t, count) {
+      callback: (t, count) => {
         let newshape = circle({ radius: 5 + count, segments: 4 + count })
         let newslice = slice.fromSides(geom2.toSides(newshape))
         newslice = slice.transform(mat4.fromTranslation([0, 0, count * 10]), newslice)
