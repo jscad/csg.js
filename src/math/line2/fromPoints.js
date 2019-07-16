@@ -10,9 +10,9 @@ const fromValues = require('./fromValues')
  * @returns {line2} a new unbounded 2D line
  */
 const fromPoints = (p1, p2) => {
-  const direction = vec2.subtract(p2, p1)
+  const normal = vec2.subtract(p2, p1)
 
-  const normal = vec2.normal(direction)
+  vec2.normal(normal, normal)
   vec2.normalize(normal, normal)
 
   const distance = vec2.dot(p1, normal)
