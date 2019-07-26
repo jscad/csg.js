@@ -27,7 +27,7 @@ const appendBezier = (options, geometry) => {
   const defaults = {
     segments: 16
   }
-  let {controlPoints, segments} = Object.assign({}, defaults, options)
+  let { controlPoints, segments } = Object.assign({}, defaults, options)
 
   // validate the given options
   if (!Array.isArray(controlPoints)) throw new Error('controlPoints must be an array of one or more points')
@@ -94,9 +94,9 @@ const appendBezier = (options, geometry) => {
     let point = vec2.create() // 0, 0, 0
     for (let k = 0; k <= bezierOrder; ++k) {
       if (k === bezierOrder) one_minus_t_n_minus_k = 1
-      let bernstein_coefficient = binomials[k] * t_k * one_minus_t_n_minus_k
-      let controlpoint = vec2.scale(bernstein_coefficient, controlPoints[k])
-      vec2.add(point, point, controlpoint)
+      let bernsteinCoefficient = binomials[k] * t_k * one_minus_t_n_minus_k
+      let derivativePoint = vec2.scale(bernsteinCoefficient, controlPoints[k])
+      vec2.add(point, point, derivativePoint)
       t_k *= t
       one_minus_t_n_minus_k *= inv_1_minus_t
     }
@@ -104,13 +104,13 @@ const appendBezier = (options, geometry) => {
   }
 
   let newpoints = []
-  let newpoints_t = []
+  let newpointsT = []
   let numsteps = bezierOrder + 1
   for (let i = 0; i < numsteps; ++i) {
     let t = i / (numsteps - 1)
     let point = getPointForT(t)
     newpoints.push(point)
-    newpoints_t.push(t)
+    newpointsT.push(t)
   }
 
   // subdivide each segment until the angle at each vertex becomes small enough:
@@ -123,15 +123,15 @@ const appendBezier = (options, geometry) => {
     let sinangle = vec2.cross(dir1, dir2) // the sine of the angle
     if (Math.abs(sinangle[2]) > maxsinangle) {
       // angle is too big, we need to subdivide
-      let t0 = newpoints_t[subdivideBase - 1]
-      let t1 = newpoints_t[subdivideBase + 1]
-      let t0_new = t0 + (t1 - t0) * 1 / 3
-      let t1_new = t0 + (t1 - t0) * 2 / 3
-      let point0_new = getPointForT(t0_new)
-      let point1_new = getPointForT(t1_new)
+      let t0 = newpointsT[subdivideBase - 1]
+      let t1 = newpointsT[subdivideBase + 1]
+      let newt0 = t0 + (t1 - t0) * 1 / 3
+      let newt1 = t0 + (t1 - t0) * 2 / 3
+      let point0 = getPointForT(newt0)
+      let point1 = getPointForT(newt1)
       // remove the point at subdivideBase and replace with 2 new points:
-      newpoints.splice(subdivideBase, 1, point0_new, point1_new)
-      newpoints_t.splice(subdivideBase, 1, t0_new, t1_new)
+      newpoints.splice(subdivideBase, 1, point0, point1)
+      newpointsT.splice(subdivideBase, 1, newt0, newt1)
       // re - evaluate the angles, starting at the previous junction since it has changed:
       subdivideBase--
       if (subdivideBase < 1) subdivideBase = 1

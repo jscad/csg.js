@@ -1,32 +1,32 @@
 const test = require('ava')
 
-const {appendArc, equals, fromPoints, toPoints} = require('./index')
+const { appendArc, fromPoints, toPoints } = require('./index')
 
 test('appendArc: appending to an empty path produces an error', t => {
   let p1 = fromPoints({}, [])
-  t.throws(() => appendArc({endpoint: [12, 12]}, p1),
-           'the given path must contain one or more points (as the starting point for the arc)')
+  t.throws(() => appendArc({ endpoint: [12, 12] }, p1),
+    'the given path must contain one or more points (as the starting point for the arc)')
 })
 
 test('appendArc: appending to a path produces a new path', t => {
   let p1 = fromPoints({}, [[1, 1], [2, 2]])
-  let obs = appendArc({endpoint: [-2, 2]}, p1)
+  let obs = appendArc({ endpoint: [-2, 2] }, p1)
   let pts = toPoints(obs)
   t.is(pts.length, 3)
 
   // test radius
   let p2 = fromPoints({}, [[27, -22], [27, -3]])
-  obs = appendArc({endpoint: [12, -22], radius: [15, -20]}, p2)
+  obs = appendArc({ endpoint: [12, -22], radius: [15, -20] }, p2)
   pts = toPoints(obs)
   t.is(pts.length, 7)
 
   // test segments
-  obs = appendArc({endpoint: [12, -22], radius: [15, -20], segments: 64}, p2)
+  obs = appendArc({ endpoint: [12, -22], radius: [15, -20], segments: 64 }, p2)
   pts = toPoints(obs)
   t.is(pts.length, 19)
 
   // test clockwise
-  obs = appendArc({endpoint: [12, -22], radius: [15, -20], clockwise: true}, p2)
+  obs = appendArc({ endpoint: [12, -22], radius: [15, -20], clockwise: true }, p2)
   pts = toPoints(obs)
   let exp = [
     new Float32Array([ 27, -22 ]),
@@ -41,12 +41,12 @@ test('appendArc: appending to a path produces a new path', t => {
   t.deepEqual(pts, exp)
 
   // test large
-  obs = appendArc({endpoint: [12, -22], radius: [15, -20], large: true}, p2)
+  obs = appendArc({ endpoint: [12, -22], radius: [15, -20], large: true }, p2)
   pts = toPoints(obs)
   t.is(pts.length, 16)
 
   // test xaxisrotation
-  obs = appendArc({endpoint: [12, -22], radius: [15, -20], xaxisrotation: Math.PI / 2}, p2)
+  obs = appendArc({ endpoint: [12, -22], radius: [15, -20], xaxisrotation: Math.PI / 2 }, p2)
   pts = toPoints(obs)
   exp = [
     new Float32Array([ 27, -22 ]),
@@ -62,7 +62,7 @@ test('appendArc: appending to a path produces a new path', t => {
   t.deepEqual(pts, exp)
 
   // test small arc between far points
-  obs = appendArc({endpoint: [120, -220], radius: [5, -5]}, p2)
+  obs = appendArc({ endpoint: [120, -220], radius: [5, -5] }, p2)
   pts = toPoints(obs)
   t.is(pts.length, 2)
 })

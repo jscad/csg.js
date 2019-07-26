@@ -30,7 +30,7 @@ const appendArc = (options, geometry) => {
     large: false,
     segments: 16
   }
-  let {endpoint, radius, xaxisrotation, clockwise, large, segments} = Object.assign({}, defaults, options)
+  let { endpoint, radius, xaxisrotation, clockwise, large, segments } = Object.assign({}, defaults, options)
 
   // validate the given options
   if (!Array.isArray(endpoint)) throw new Error('endpoint must be an array of X and Y values')

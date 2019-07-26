@@ -1,6 +1,6 @@
 const test = require('ava')
 
-const {appendPoints, fromPoints, toPoints} = require('./index')
+const { appendPoints, fromPoints, toPoints } = require('./index')
 
 test('appendPoints: appending to an empty path produces a new path with expected points', t => {
   let p1 = fromPoints({}, [])

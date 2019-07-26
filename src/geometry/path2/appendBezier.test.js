@@ -1,16 +1,16 @@
 const test = require('ava')
 
-const {appendBezier, equals, fromPoints, toPoints} = require('./index')
+const { appendBezier, fromPoints, toPoints } = require('./index')
 
 test('appendBezier: appending to an empty path produces an error', t => {
   let p1 = fromPoints({}, [])
-  t.throws(() => appendBezier({controlPoints: [[12, 12]]}, p1),
-           'the given path must contain one or more points (as the starting point for the bezier curve)')
+  t.throws(() => appendBezier({ controlPoints: [[12, 12]] }, p1),
+    'the given path must contain one or more points (as the starting point for the bezier curve)')
 })
 
 test('appendBezier: appending to a path produces a new path', t => {
   let p1 = fromPoints({}, [[10, -20]])
-  let obs1 = appendBezier({controlPoints: [[10, -10], [25, -10], [25, -20]], segments: 16}, p1)
+  let obs1 = appendBezier({ controlPoints: [[10, -10], [25, -10], [25, -20]], segments: 16 }, p1)
   let pts = toPoints(obs1)
   let exp = [
     new Float32Array([ 10, -20 ]),
@@ -28,7 +28,7 @@ test('appendBezier: appending to a path produces a new path', t => {
   t.is(pts.length, 11)
   t.deepEqual(pts, exp)
 
-  let obs2 = appendBezier({controlPoints: [null, [25, -30], [40, -30], [40, -20]], segments: 16}, obs1)
+  let obs2 = appendBezier({ controlPoints: [null, [25, -30], [40, -30], [40, -20]], segments: 16 }, obs1)
   let pts2 = toPoints(obs2)
   t.is(pts2.length, 23)
 })
