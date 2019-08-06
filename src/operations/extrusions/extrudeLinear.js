@@ -19,10 +19,10 @@ const extrudeLinearGeom2 = require('./extrudeLinearGeom2')
 const extrudeLinear = (options, ...objects) => {
   const defaults = {
     offset: [0, 0, 1],
-    twistangle: 0,
-    twiststeps: 1
+    twistAngle: 0,
+    twistSteps: 1
   }
-  let { offset, twistangle, twiststeps } = Object.assign({ }, defaults, options)
+  let { offset, twistAngle, twistSteps } = Object.assign({ }, defaults, options)
 
   if ((!Array.isArray(offset)) || offset.length < 3) throw new Error('offset must be a array of three values')
   if (offset[2] === 0) throw new Error('offset must define a direction above or below the Z axis')
@@ -30,7 +30,7 @@ const extrudeLinear = (options, ...objects) => {
   objects = flatten(objects)
   if (objects.length === 0) throw new Error('wrong number of arguments')
 
-  options = { offset: offset, twistangle: twistangle, twiststeps: twiststeps }
+  options = { offset: offset, twistAngle: twistAngle, twistSteps: twistSteps }
 
   const results = objects.map((object) => {
     // if (path.isA(object)) return pathextrude(options, object)

@@ -11,23 +11,23 @@ const extrudeFromSlices = require('./extrudeFromSlices')
  *
  * @param {Object} [options] - options for extrude
  * @param {Array} [options.offset] - the direction of the extrusion as a 3D vector
- * @param {Number} [options.twistangle] - the final rotation (radians) about the origin of the shape
- * @param {Integer} [options.twiststeps] - the resolution of the twist (if any) about the axis
+ * @param {Number} [options.twistAngle] - the final rotation (radians) about the origin
+ * @param {Integer} [options.twistSteps] - the number of steps created to produce the twist (if any)
  * @param {geom2} geometry - the geometry to extrude
  * @returns {geom3} the extruded 3D geometry
 */
 const extrudeGeom2 = (options, geometry) => {
   const defaults = {
     offset: [0, 0, 1],
-    twistangle: 0,
-    twiststeps: 12
+    twistAngle: 0,
+    twistSteps: 12
   }
-  let { offset, twistangle, twiststeps } = Object.assign({ }, defaults, options)
+  let { offset, twistAngle, twistSteps } = Object.assign({ }, defaults, options)
 
-  if (twiststeps < 1) throw new Error('twiststeps must be 1 or more')
+  if (twistSteps < 1) throw new Error('twistSteps must be 1 or more')
 
-  if (twistangle === 0) {
-    twiststeps = 1
+  if (twistAngle === 0) {
+    twistSteps = 1
   }
 
   // convert to vector in order to perform transforms
@@ -41,15 +41,15 @@ const extrudeGeom2 = (options, geometry) => {
 
   // NOTE: function definition is required in order to access 'this'
   function createTwist (t, index) {
-    let Zrotation = index / twiststeps * twistangle
-    let Zoffset = vec3.scale(index / twiststeps, offsetv)
+    let Zrotation = index / twistSteps * twistAngle
+    let Zoffset = vec3.scale(index / twistSteps, offsetv)
     let matrix = mat4.multiply(mat4.fromZRotation(Zrotation), mat4.fromTranslation(Zoffset))
 
     return slice.transform(matrix, this)
   }
 
   options = {
-    numberOfSlices: twiststeps + 1,
+    numberOfSlices: twistSteps + 1,
     isCapped: true,
     callback: createTwist
   }
