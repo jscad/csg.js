@@ -49,7 +49,7 @@ const extrudeGeom2 = (options, geometry) => {
   }
 
   options = {
-    numslices: twiststeps + 1,
+    numberOfSlices: twiststeps + 1,
     isCapped: true,
     callback: createTwist
   }

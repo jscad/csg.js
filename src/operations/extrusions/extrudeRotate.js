@@ -105,7 +105,7 @@ const extrudeRotate = (options, geometry) => {
   }
 
   options = {
-    numslices: segments + 1,
+    numberOfSlices: segments + 1,
     isCapped: isCapped,
     callback: createSlice
   }
