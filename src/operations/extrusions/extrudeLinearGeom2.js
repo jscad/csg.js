@@ -11,7 +11,7 @@ const extrudeFromSlices = require('./extrudeFromSlices')
  *
  * @param {Object} [options] - options for extrude
  * @param {Array} [options.offset] - the direction of the extrusion as a 3D vector
- * @param {Number} [options.twistAngle] - the final rotation (radians) about the origin
+ * @param {Number} [options.twistAngle] - the final rotation (RADIANS) about the origin
  * @param {Integer} [options.twistSteps] - the number of steps created to produce the twist (if any)
  * @param {geom2} geometry - the geometry to extrude
  * @returns {geom3} the extruded 3D geometry

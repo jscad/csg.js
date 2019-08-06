@@ -8,7 +8,7 @@ const extrudeLinearGeom2 = require('./extrudeLinearGeom2')
  * Extrude the given object(s) in a linear direction using the given options.
  * @param {Object} [options] - options for extrude
  * @param {Array} [options.offset=[0,0,1]] the direction of the extrusion as a 3D vector
- * @param {Number} [options.twistAngle=0] the final rotation (radians) about the origin of the shape (if any)
+ * @param {Number} [options.twistAngle=0] the final rotation (RADIANS) about the origin of the shape (if any)
  * @param {Integer} [options.twistSteps=1] the resolution of the twist about the axis (if any)
  * @param {Object|Array} objects - the objects(s) to extrude
  * @return {Object|Array} the extruded object(s)

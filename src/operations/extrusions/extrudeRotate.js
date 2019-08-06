@@ -10,8 +10,8 @@ const extrudeFromSlices = require('./extrudeFromSlices')
  * Rotate extrude the given geometry using the given options.
  *
  * @param {Object} [options] - options for extrusion
- * @param {Float} [options.angle=PI*2] - angle of the extrusion, in radians
- * @param {Float} [options.startAngle=0] - start angle of the extrusion, in radians
+ * @param {Float} [options.angle=PI*2] - angle of the extrusion (RADIANS)
+ * @param {Float} [options.startAngle=0] - start angle of the extrusion (RADIANS)
  * @param {Float} [options.overflow='cap'] - what to do with points outside of bounds (+ / - x) :
  * defaults to capping those points to 0 (only supported behaviour for now)
  * @param {Integer} [options.segments=12] - number of segments of the extrusion
