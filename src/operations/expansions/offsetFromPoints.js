@@ -80,7 +80,6 @@ const offsetFromPoints = (options, points) => {
       // adjust the previous points
       newpoints[0] = ip
       newpoints.pop()
-      newpoints.push(ip)
     } else {
       let p0 = points[0]
       let cursegment = [n0, n1]

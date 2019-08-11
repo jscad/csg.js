@@ -4,6 +4,8 @@ const { geom2, path2 } = require('../../geometry')
 
 const { offset } = require('./index')
 
+const { comparePoints } = require('../../../test/helpers')
+
 test('offset (options): offset of a path2 produces expected offset path2', t => {
   let openline = path2.fromPoints({ }, [[0, 0], [5, 0], [0, 5]])
   let closeline = path2.fromPoints({ }, [[0, 0], [5, 0], [0, 5], [0, 0]])
@@ -14,49 +16,49 @@ test('offset (options): offset of a path2 produces expected offset path2', t => 
   let pts = path2.toPoints(obs)
   let exp = [
   ]
-  t.deepEqual(pts, exp)
+  t.true(comparePoints(pts, exp))
 
   // expand +
   obs = offset({ delta: 1 }, openline)
   pts = path2.toPoints(obs)
   exp = [
-    new Float32Array([ -6.123234262925839e-17, -1 ]),
-    new Float32Array([ 5, -1 ]),
-    new Float32Array([ 5.707106590270996, 0.7071067690849304 ]),
-    new Float32Array([ 0.7071067690849304, 5.707106590270996 ])
+    [ -6.123234262925839e-17, -1 ],
+    [ 5, -1 ],
+    [ 5.707106590270996, 0.7071067690849304 ],
+    [ 0.7071067690849304, 5.707106590270996 ]
   ]
-  t.deepEqual(pts, exp)
+  t.true(comparePoints(pts, exp))
 
   obs = offset({ delta: 1 }, closeline)
   pts = path2.toPoints(obs)
   exp = [
-    new Float32Array([ -6.123234262925839e-17, -1 ]),
-    new Float32Array([ 5, -1 ]),
-    new Float32Array([ 5.707106590270996, 0.7071067690849304 ]),
-    new Float32Array([ 0.7071067690849304, 5.707106590270996 ]),
-    new Float32Array([ -1, 5 ]),
-    new Float32Array([ -1, 6.123234262925839e-17 ])
+    [ -6.123234262925839e-17, -1 ],
+    [ 5, -1 ],
+    [ 5.707106590270996, 0.7071067690849304 ],
+    [ 0.7071067690849304, 5.707106590270996 ],
+    [ -1, 5 ],
+    [ -1, 6.123234262925839e-17 ]
   ]
-  t.deepEqual(pts, exp)
+  t.true(comparePoints(pts, exp))
 
   // contract -
   obs = offset({ delta: -1 }, openline)
   pts = path2.toPoints(obs)
   exp = [
-    new Float32Array([ 6.123234262925839e-17, 1 ]),
-    new Float32Array([ 2.5857865810394287, 1 ]),
-    new Float32Array([ -0.7071067690849304, 4.292893409729004 ])
+    [ 6.123234262925839e-17, 1 ],
+    [ 2.5857865810394287, 1 ],
+    [ -0.7071067690849304, 4.292893409729004 ]
   ]
-  t.deepEqual(pts, exp)
+  t.true(comparePoints(pts, exp))
 
   obs = offset({ delta: -1 }, closeline)
   pts = path2.toPoints(obs)
   exp = [
-    new Float32Array([ 1, 1 ]),
-    new Float32Array([ 2.5857865810394287, 1 ]),
-    new Float32Array([ 1, 2.5857865810394287 ])
+    [ 1, 1 ],
+    [ 2.5857865810394287, 1 ],
+    [ 1, 2.5857865810394287 ]
   ]
-  t.deepEqual(pts, exp)
+  t.true(comparePoints(pts, exp))
 })
 
 test('offset (segments 1): offset of a path2 produces expected offset path2', t => {
@@ -66,86 +68,86 @@ test('offset (segments 1): offset of a path2 produces expected offset path2', t 
   let obs = offset({ delta: 1, segments: 1 }, openline)
   let pts = path2.toPoints(obs)
   let exp = [
-    new Float32Array([ -5, -6 ]),
-    new Float32Array([ 5, -6 ]),
-    new Float32Array([ 6, -6 ]),
-    new Float32Array([ 6, -5 ]),
-    new Float32Array([ 6, 5 ]),
-    new Float32Array([ 6, 6 ]),
-    new Float32Array([ 5, 6 ]),
-    new Float32Array([ 3, 6 ]),
-    new Float32Array([ 2, 6 ]),
-    new Float32Array([ 2, 5 ]),
-    new Float32Array([ 2, 1 ]),
-    new Float32Array([ -2, 1 ]),
-    new Float32Array([ -2, 5 ]),
-    new Float32Array([ -2, 6 ]),
-    new Float32Array([ -3, 6 ]),
-    new Float32Array([ -5, 6 ])
+    [ -5, -6 ],
+    [ 5, -6 ],
+    [ 6, -6 ],
+    [ 6, -5 ],
+    [ 6, 5 ],
+    [ 6, 6 ],
+    [ 5, 6 ],
+    [ 3, 6 ],
+    [ 2, 6 ],
+    [ 2, 5 ],
+    [ 2, 1 ],
+    [ -2, 1 ],
+    [ -2, 5 ],
+    [ -2, 6 ],
+    [ -3, 6 ],
+    [ -5, 6 ]
   ]
-  t.deepEqual(pts, exp)
+  t.true(comparePoints(pts, exp))
 
   obs = offset({ delta: 1, segments: 1 }, closeline)
   pts = path2.toPoints(obs)
   exp = [
-    new Float32Array([ -6, -6 ]),
-    new Float32Array([ -5, -6 ]),
-    new Float32Array([ 5, -6 ]),
-    new Float32Array([ 6, -6 ]),
-    new Float32Array([ 6, -5 ]),
-    new Float32Array([ 6, 5 ]),
-    new Float32Array([ 6, 6 ]),
-    new Float32Array([ 5, 6 ]),
-    new Float32Array([ 3, 6 ]),
-    new Float32Array([ 2, 6 ]),
-    new Float32Array([ 2, 5 ]),
-    new Float32Array([ 2, 1 ]),
-    new Float32Array([ -2, 1 ]),
-    new Float32Array([ -2, 5 ]),
-    new Float32Array([ -2, 6 ]),
-    new Float32Array([ -3, 6 ]),
-    new Float32Array([ -5, 6 ]),
-    new Float32Array([ -6, 6 ]),
-    new Float32Array([ -6, 5 ]),
-    new Float32Array([ -6, -5 ])
+    [ -6, -6 ],
+    [ -5, -6 ],
+    [ 5, -6 ],
+    [ 6, -6 ],
+    [ 6, -5 ],
+    [ 6, 5 ],
+    [ 6, 6 ],
+    [ 5, 6 ],
+    [ 3, 6 ],
+    [ 2, 6 ],
+    [ 2, 5 ],
+    [ 2, 1 ],
+    [ -2, 1 ],
+    [ -2, 5 ],
+    [ -2, 6 ],
+    [ -3, 6 ],
+    [ -5, 6 ],
+    [ -6, 6 ],
+    [ -6, 5 ],
+    [ -6, -5 ]
   ]
-  t.deepEqual(pts, exp)
+  t.true(comparePoints(pts, exp))
 
   obs = offset({ delta: -0.5, segments: 1 }, openline)
   pts = path2.toPoints(obs)
   exp = [
-    new Float32Array([ -5, -4.5 ]),
-    new Float32Array([ 4.5, -4.5 ]),
-    new Float32Array([ 4.5, 4.5 ]),
-    new Float32Array([ 3.5, 4.5 ]),
-    new Float32Array([ 3.5, -3.0616171314629196e-17 ]),
-    new Float32Array([ 3.5, -0.5 ]),
-    new Float32Array([ 3, -0.5 ]),
-    new Float32Array([ -3, -0.5 ]),
-    new Float32Array([ -3.5, -0.5 ]),
-    new Float32Array([ -3.5, 3.0616171314629196e-17 ]),
-    new Float32Array([ -3.5, 4.5 ]),
-    new Float32Array([ -5, 4.5 ])
+    [ -5, -4.5 ],
+    [ 4.5, -4.5 ],
+    [ 4.5, 4.5 ],
+    [ 3.5, 4.5 ],
+    [ 3.5, -3.0616171314629196e-17 ],
+    [ 3.5, -0.5 ],
+    [ 3, -0.5 ],
+    [ -3, -0.5 ],
+    [ -3.5, -0.5 ],
+    [ -3.5, 3.0616171314629196e-17 ],
+    [ -3.5, 4.5 ],
+    [ -5, 4.5 ]
   ]
-  t.deepEqual(pts, exp)
+  t.true(comparePoints(pts, exp))
 
   obs = offset({ delta: -0.5, segments: 1 }, closeline)
   pts = path2.toPoints(obs)
   exp = [
-    new Float32Array([ -4.5, -4.5 ]),
-    new Float32Array([ 4.5, -4.5 ]),
-    new Float32Array([ 4.5, 4.5 ]),
-    new Float32Array([ 3.5, 4.5 ]),
-    new Float32Array([ 3.5, -3.0616171314629196e-17 ]),
-    new Float32Array([ 3.5, -0.5 ]),
-    new Float32Array([ 3, -0.5 ]),
-    new Float32Array([ -3, -0.5 ]),
-    new Float32Array([ -3.5, -0.5 ]),
-    new Float32Array([ -3.5, 3.0616171314629196e-17 ]),
-    new Float32Array([ -3.5, 4.5 ]),
-    new Float32Array([ -4.5, 4.5 ])
+    [ -4.5, -4.5 ],
+    [ 4.5, -4.5 ],
+    [ 4.5, 4.5 ],
+    [ 3.5, 4.5 ],
+    [ 3.5, -3.0616171314629196e-17 ],
+    [ 3.5, -0.5 ],
+    [ 3, -0.5 ],
+    [ -3, -0.5 ],
+    [ -3.5, -0.5 ],
+    [ -3.5, 3.0616171314629196e-17 ],
+    [ -3.5, 4.5 ],
+    [ -4.5, 4.5 ]
   ]
-  t.deepEqual(pts, exp)
+  t.true(comparePoints(pts, exp))
 })
 
 test('offset (segments 16): offset of a path2 produces expected offset path2', t => {
@@ -155,70 +157,70 @@ test('offset (segments 16): offset of a path2 produces expected offset path2', t
   let obs = offset({ delta: 1, segments: 16 }, openline)
   let pts = path2.toPoints(obs)
   let exp = [
-    new Float32Array([ -5, -6 ]),
-    new Float32Array([ 5, -6 ]),
-    new Float32Array([ 5.382683277130127, -5.923879623413086 ]),
-    new Float32Array([ 5.707106590270996, -5.707106590270996 ]),
-    new Float32Array([ 5.923879623413086, -5.382683277130127 ]),
-    new Float32Array([ 6, -5 ]),
-    new Float32Array([ 6, 5 ]),
-    new Float32Array([ 5.923879623413086, 5.382683277130127 ]),
-    new Float32Array([ 5.707106590270996, 5.707106590270996 ]),
-    new Float32Array([ 5.382683277130127, 5.923879623413086 ]),
-    new Float32Array([ 5, 6 ]),
-    new Float32Array([ 3, 6 ]),
-    new Float32Array([ 2.617316484451294, 5.923879623413086 ]),
-    new Float32Array([ 2.292893171310425, 5.707106590270996 ]),
-    new Float32Array([ 2.076120376586914, 5.382683277130127 ]),
-    new Float32Array([ 2, 5 ]),
-    new Float32Array([ 2, 1 ]),
-    new Float32Array([ -2, 1 ]),
-    new Float32Array([ -2, 5 ]),
-    new Float32Array([ -2.076120376586914, 5.382683277130127 ]),
-    new Float32Array([ -2.292893171310425, 5.707106590270996 ]),
-    new Float32Array([ -2.617316484451294, 5.923879623413086 ]),
-    new Float32Array([ -3, 6 ]),
-    new Float32Array([ -5, 6 ])
+    [ -5, -6 ],
+    [ 5, -6 ],
+    [ 5.382683277130127, -5.923879623413086 ],
+    [ 5.707106590270996, -5.707106590270996 ],
+    [ 5.923879623413086, -5.382683277130127 ],
+    [ 6, -5 ],
+    [ 6, 5 ],
+    [ 5.923879623413086, 5.382683277130127 ],
+    [ 5.707106590270996, 5.707106590270996 ],
+    [ 5.382683277130127, 5.923879623413086 ],
+    [ 5, 6 ],
+    [ 3, 6 ],
+    [ 2.617316484451294, 5.923879623413086 ],
+    [ 2.292893171310425, 5.707106590270996 ],
+    [ 2.076120376586914, 5.382683277130127 ],
+    [ 2, 5 ],
+    [ 2, 1 ],
+    [ -2, 1 ],
+    [ -2, 5 ],
+    [ -2.076120376586914, 5.382683277130127 ],
+    [ -2.292893171310425, 5.707106590270996 ],
+    [ -2.617316484451294, 5.923879623413086 ],
+    [ -3, 6 ],
+    [ -5, 6 ]
   ]
-  t.deepEqual(pts, exp)
+  t.true(comparePoints(pts, exp))
 
   obs = offset({ delta: 1, segments: 16 }, closeline)
   pts = path2.toPoints(obs)
   exp = [
-    new Float32Array([ -5.923879623413086, -5.382683277130127 ]),
-    new Float32Array([ -5.707106590270996, -5.707106590270996 ]),
-    new Float32Array([ -5.382683277130127, -5.923879623413086 ]),
-    new Float32Array([ -5, -6 ]),
-    new Float32Array([ 5, -6 ]),
-    new Float32Array([ 5.382683277130127, -5.923879623413086 ]),
-    new Float32Array([ 5.707106590270996, -5.707106590270996 ]),
-    new Float32Array([ 5.923879623413086, -5.382683277130127 ]),
-    new Float32Array([ 6, -5 ]),
-    new Float32Array([ 6, 5 ]),
-    new Float32Array([ 5.923879623413086, 5.382683277130127 ]),
-    new Float32Array([ 5.707106590270996, 5.707106590270996 ]),
-    new Float32Array([ 5.382683277130127, 5.923879623413086 ]),
-    new Float32Array([ 5, 6 ]),
-    new Float32Array([ 3, 6 ]),
-    new Float32Array([ 2.617316484451294, 5.923879623413086 ]),
-    new Float32Array([ 2.292893171310425, 5.707106590270996 ]),
-    new Float32Array([ 2.076120376586914, 5.382683277130127 ]),
-    new Float32Array([ 2, 5 ]),
-    new Float32Array([ 2, 1 ]),
-    new Float32Array([ -2, 1 ]),
-    new Float32Array([ -2, 5 ]),
-    new Float32Array([ -2.076120376586914, 5.382683277130127 ]),
-    new Float32Array([ -2.292893171310425, 5.707106590270996 ]),
-    new Float32Array([ -2.617316484451294, 5.923879623413086 ]),
-    new Float32Array([ -3, 6 ]),
-    new Float32Array([ -5, 6 ]),
-    new Float32Array([ -5.382683277130127, 5.923879623413086 ]),
-    new Float32Array([ -5.707106590270996, 5.707106590270996 ]),
-    new Float32Array([ -5.923879623413086, 5.382683277130127 ]),
-    new Float32Array([ -6, 5 ]),
-    new Float32Array([ -6, -5 ])
+    [ -5.923879623413086, -5.382683277130127 ],
+    [ -5.707106590270996, -5.707106590270996 ],
+    [ -5.382683277130127, -5.923879623413086 ],
+    [ -5, -6 ],
+    [ 5, -6 ],
+    [ 5.382683277130127, -5.923879623413086 ],
+    [ 5.707106590270996, -5.707106590270996 ],
+    [ 5.923879623413086, -5.382683277130127 ],
+    [ 6, -5 ],
+    [ 6, 5 ],
+    [ 5.923879623413086, 5.382683277130127 ],
+    [ 5.707106590270996, 5.707106590270996 ],
+    [ 5.382683277130127, 5.923879623413086 ],
+    [ 5, 6 ],
+    [ 3, 6 ],
+    [ 2.617316484451294, 5.923879623413086 ],
+    [ 2.292893171310425, 5.707106590270996 ],
+    [ 2.076120376586914, 5.382683277130127 ],
+    [ 2, 5 ],
+    [ 2, 1 ],
+    [ -2, 1 ],
+    [ -2, 5 ],
+    [ -2.076120376586914, 5.382683277130127 ],
+    [ -2.292893171310425, 5.707106590270996 ],
+    [ -2.617316484451294, 5.923879623413086 ],
+    [ -3, 6 ],
+    [ -5, 6 ],
+    [ -5.382683277130127, 5.923879623413086 ],
+    [ -5.707106590270996, 5.707106590270996 ],
+    [ -5.923879623413086, 5.382683277130127 ],
+    [ -6, 5 ],
+    [ -6, -5 ]
   ]
-  t.deepEqual(pts, exp)
+  t.true(comparePoints(pts, exp))
 })
 
 test('offset (segments 16): offset of a CW path2 produces expected offset path2', t => {
@@ -228,62 +230,62 @@ test('offset (segments 16): offset of a CW path2 produces expected offset path2'
   let obs = offset({ delta: -0.5, segments: 16 }, openline)
   let pts = path2.toPoints(obs)
   let exp = [
-    new Float32Array([ -5, 4.5 ]),
-    new Float32Array([ -3.5, 4.5 ]),
-    new Float32Array([ -3.5, 3.0616171314629196e-17 ]),
-    new Float32Array([ -3.461939811706543, -0.19134171307086945 ]),
-    new Float32Array([ -3.353553295135498, -0.3535533845424652 ]),
-    new Float32Array([ -3.1913416385650635, -0.4619397521018982 ]),
-    new Float32Array([ -3, -0.5 ]),
-    new Float32Array([ 3, -0.5 ]),
-    new Float32Array([ 3.1913416385650635, -0.4619397521018982 ]),
-    new Float32Array([ 3.353553295135498, -0.3535533845424652 ]),
-    new Float32Array([ 3.461939811706543, -0.19134171307086945 ]),
-    new Float32Array([ 3.5, -3.0616171314629196e-17 ]),
-    new Float32Array([ 3.5, 4.5 ]),
-    new Float32Array([ 4.5, 4.5 ]),
-    new Float32Array([ 4.5, -4.5 ]),
-    new Float32Array([ -5, -4.5 ])
+    [ -5, 4.5 ],
+    [ -3.5, 4.5 ],
+    [ -3.5, 3.0616171314629196e-17 ],
+    [ -3.461939811706543, -0.19134171307086945 ],
+    [ -3.353553295135498, -0.3535533845424652 ],
+    [ -3.1913416385650635, -0.4619397521018982 ],
+    [ -3, -0.5 ],
+    [ 3, -0.5 ],
+    [ 3.1913416385650635, -0.4619397521018982 ],
+    [ 3.353553295135498, -0.3535533845424652 ],
+    [ 3.461939811706543, -0.19134171307086945 ],
+    [ 3.5, -3.0616171314629196e-17 ],
+    [ 3.5, 4.5 ],
+    [ 4.5, 4.5 ],
+    [ 4.5, -4.5 ],
+    [ -5, -4.5 ]
   ]
-  t.deepEqual(pts, exp)
+  t.true(comparePoints(pts, exp))
 
   obs = offset({ delta: 1, segments: 16 }, closeline)
   pts = path2.toPoints(obs)
   exp = [
-    new Float32Array([ -5.382683277130127, -5.923879623413086 ]),
-    new Float32Array([ -5.707106590270996, -5.707106590270996 ]),
-    new Float32Array([ -5.923879623413086, -5.382683277130127 ]),
-    new Float32Array([ -6, -5 ]),
-    new Float32Array([ -6, 5 ]),
-    new Float32Array([ -5.923879623413086, 5.382683277130127 ]),
-    new Float32Array([ -5.707106590270996, 5.707106590270996 ]),
-    new Float32Array([ -5.382683277130127, 5.923879623413086 ]),
-    new Float32Array([ -5, 6 ]),
-    new Float32Array([ -3, 6 ]),
-    new Float32Array([ -2.617316484451294, 5.923879623413086 ]),
-    new Float32Array([ -2.292893171310425, 5.707106590270996 ]),
-    new Float32Array([ -2.076120376586914, 5.382683277130127 ]),
-    new Float32Array([ -2, 5 ]),
-    new Float32Array([ -2, 1 ]),
-    new Float32Array([ 2, 1 ]),
-    new Float32Array([ 2, 5 ]),
-    new Float32Array([ 2.076120376586914, 5.382683277130127 ]),
-    new Float32Array([ 2.292893171310425, 5.707106590270996 ]),
-    new Float32Array([ 2.617316484451294, 5.923879623413086 ]),
-    new Float32Array([ 3, 6 ]),
-    new Float32Array([ 5, 6 ]),
-    new Float32Array([ 5.382683277130127, 5.923879623413086 ]),
-    new Float32Array([ 5.707106590270996, 5.707106590270996 ]),
-    new Float32Array([ 5.923879623413086, 5.382683277130127 ]),
-    new Float32Array([ 6, 5 ]),
-    new Float32Array([ 6, -5 ]),
-    new Float32Array([ 5.923879623413086, -5.382683277130127 ]),
-    new Float32Array([ 5.707106590270996, -5.707106590270996 ]),
-    new Float32Array([ 5.382683277130127, -5.923879623413086 ]),
-    new Float32Array([ 5, -6 ]),
-    new Float32Array([ -5, -6 ])
+    [ -5.382683277130127, -5.923879623413086 ],
+    [ -5.707106590270996, -5.707106590270996 ],
+    [ -5.923879623413086, -5.382683277130127 ],
+    [ -6, -5 ],
+    [ -6, 5 ],
+    [ -5.923879623413086, 5.382683277130127 ],
+    [ -5.707106590270996, 5.707106590270996 ],
+    [ -5.382683277130127, 5.923879623413086 ],
+    [ -5, 6 ],
+    [ -3, 6 ],
+    [ -2.617316484451294, 5.923879623413086 ],
+    [ -2.292893171310425, 5.707106590270996 ],
+    [ -2.076120376586914, 5.382683277130127 ],
+    [ -2, 5 ],
+    [ -2, 1 ],
+    [ 2, 1 ],
+    [ 2, 5 ],
+    [ 2.076120376586914, 5.382683277130127 ],
+    [ 2.292893171310425, 5.707106590270996 ],
+    [ 2.617316484451294, 5.923879623413086 ],
+    [ 3, 6 ],
+    [ 5, 6 ],
+    [ 5.382683277130127, 5.923879623413086 ],
+    [ 5.707106590270996, 5.707106590270996 ],
+    [ 5.923879623413086, 5.382683277130127 ],
+    [ 6, 5 ],
+    [ 6, -5 ],
+    [ 5.923879623413086, -5.382683277130127 ],
+    [ 5.707106590270996, -5.707106590270996 ],
+    [ 5.382683277130127, -5.923879623413086 ],
+    [ 5, -6 ],
+    [ -5, -6 ]
   ]
-  t.deepEqual(pts, exp)
+  t.true(comparePoints(pts, exp))
 })
 
 test('offset (options): offsetting of a simple geom2 produces expected offset geom2', t => {
@@ -295,97 +297,95 @@ test('offset (options): offsetting of a simple geom2 produces expected offset ge
   let pts = geom2.toPoints(obs)
   let exp = [
   ]
-  t.deepEqual(pts, exp)
+  t.true(comparePoints(pts, exp))
 
   // expand +
   obs = offset({ delta: 1 }, geometry)
   pts = geom2.toPoints(obs)
   exp = [
-    new Float32Array([ -5, -6 ]),
-    new Float32Array([ 5, -6 ]),
-    new Float32Array([ 6, -5 ]),
-    new Float32Array([ 6, 5 ]),
-    new Float32Array([ 5, 6 ]),
-    new Float32Array([ 3, 6 ]),
-    new Float32Array([ 2, 5 ]),
-    new Float32Array([ 2, 1 ]),
-    new Float32Array([ -2, 1 ]),
-    new Float32Array([ -2, 5 ]),
-    new Float32Array([ -3, 6 ]),
-    new Float32Array([ -5, 6 ]),
-    new Float32Array([ -6, 5 ]),
-    new Float32Array([ -6, -5 ])
+    [ -5, -6 ],
+    [ 5, -6 ],
+    [ 6, -5 ],
+    [ 6, 5 ],
+    [ 5, 6 ],
+    [ 3, 6 ],
+    [ 2, 5 ],
+    [ 2, 1 ],
+    [ -2, 1 ],
+    [ -2, 5 ],
+    [ -3, 6 ],
+    [ -5, 6 ],
+    [ -6, 5 ],
+    [ -6, -5 ]
   ]
-  t.deepEqual(pts, exp)
+  t.true(comparePoints(pts, exp))
 
   // contract -
   obs = offset({ delta: -0.5 }, geometry)
   pts = geom2.toPoints(obs)
   exp = [
-    new Float32Array([ -4.5, -4.5 ]),
-    new Float32Array([ 4.5, -4.5 ]),
-    new Float32Array([ 4.5, 4.5 ]),
-    new Float32Array([ 3.5, 4.5 ]),
-    new Float32Array([ 3.5, -3.0616171314629196e-17 ]),
-    new Float32Array([ 3, -0.5 ]),
-    new Float32Array([ -3, -0.5 ]),
-    new Float32Array([ -3.5, 3.0616171314629196e-17 ]),
-    new Float32Array([ -3.5, 4.5 ]),
-    new Float32Array([ -4.5, 4.5 ]),
-    new Float32Array([ -4.5, -4.5 ])
+    [ -4.5, -4.5 ],
+    [ 4.5, -4.5 ],
+    [ 4.5, 4.5 ],
+    [ 3.5, 4.5 ],
+    [ 3.5, -3.0616171314629196e-17 ],
+    [ 3, -0.5 ],
+    [ -3, -0.5 ],
+    [ -3.5, 3.0616171314629196e-17 ],
+    [ -3.5, 4.5 ],
+    [ -4.5, 4.5 ]
   ]
-  t.deepEqual(pts, exp)
+  t.true(comparePoints(pts, exp))
 
   // segments 1 - sharp points at corner
   obs = offset({ delta: 1, segments: 1 }, geometry)
   pts = geom2.toPoints(obs)
   exp = [
-    new Float32Array([ -6, -6 ]),
-    new Float32Array([ -5, -6 ]),
-    new Float32Array([ 5, -6 ]),
-    new Float32Array([ 6, -6 ]),
-    new Float32Array([ 6, -5 ]),
-    new Float32Array([ 6, 5 ]),
-    new Float32Array([ 6, 6 ]),
-    new Float32Array([ 5, 6 ]),
-    new Float32Array([ 3, 6 ]),
-    new Float32Array([ 2, 6 ]),
-    new Float32Array([ 2, 5 ]),
-    new Float32Array([ 2, 1 ]),
-    new Float32Array([ -2, 1 ]),
-    new Float32Array([ -2, 5 ]),
-    new Float32Array([ -2, 6 ]),
-    new Float32Array([ -3, 6 ]),
-    new Float32Array([ -5, 6 ]),
-    new Float32Array([ -6, 6 ]),
-    new Float32Array([ -6, 5 ]),
-    new Float32Array([ -6, -5 ])
+    [ -6, -6 ],
+    [ -5, -6 ],
+    [ 5, -6 ],
+    [ 6, -6 ],
+    [ 6, -5 ],
+    [ 6, 5 ],
+    [ 6, 6 ],
+    [ 5, 6 ],
+    [ 3, 6 ],
+    [ 2, 6 ],
+    [ 2, 5 ],
+    [ 2, 1 ],
+    [ -2, 1 ],
+    [ -2, 5 ],
+    [ -2, 6 ],
+    [ -3, 6 ],
+    [ -5, 6 ],
+    [ -6, 6 ],
+    [ -6, 5 ],
+    [ -6, -5 ]
   ]
-  t.deepEqual(pts, exp)
+  t.true(comparePoints(pts, exp))
 
   // segments 16 - rounded corners
   obs = offset({ delta: -0.5, segments: 16 }, geometry)
   pts = geom2.toPoints(obs)
   exp = [
-    new Float32Array([ -4.5, -4.5 ]),
-    new Float32Array([ 4.5, -4.5 ]),
-    new Float32Array([ 4.5, 4.5 ]),
-    new Float32Array([ 3.5, 4.5 ]),
-    new Float32Array([ 3.5, -3.0616171314629196e-17 ]),
-    new Float32Array([ 3.461939811706543, -0.19134171307086945 ]),
-    new Float32Array([ 3.353553295135498, -0.3535533845424652 ]),
-    new Float32Array([ 3.1913416385650635, -0.4619397521018982 ]),
-    new Float32Array([ 3, -0.5 ]),
-    new Float32Array([ -3, -0.5 ]),
-    new Float32Array([ -3.1913416385650635, -0.4619397521018982 ]),
-    new Float32Array([ -3.353553295135498, -0.3535533845424652 ]),
-    new Float32Array([ -3.461939811706543, -0.19134171307086945 ]),
-    new Float32Array([ -3.5, 3.0616171314629196e-17 ]),
-    new Float32Array([ -3.5, 4.5 ]),
-    new Float32Array([ -4.5, 4.5 ]),
-    new Float32Array([ -4.5, -4.5 ])
+    [ -4.5, -4.5 ],
+    [ 4.5, -4.5 ],
+    [ 4.5, 4.5 ],
+    [ 3.5, 4.5 ],
+    [ 3.5, -3.0616171314629196e-17 ],
+    [ 3.461939811706543, -0.19134171307086945 ],
+    [ 3.353553295135498, -0.3535533845424652 ],
+    [ 3.1913416385650635, -0.4619397521018982 ],
+    [ 3, -0.5 ],
+    [ -3, -0.5 ],
+    [ -3.1913416385650635, -0.4619397521018982 ],
+    [ -3.353553295135498, -0.3535533845424652 ],
+    [ -3.461939811706543, -0.19134171307086945 ],
+    [ -3.5, 3.0616171314629196e-17 ],
+    [ -3.5, 4.5 ],
+    [ -4.5, 4.5 ]
   ]
-  t.deepEqual(pts, exp)
+  t.true(comparePoints(pts, exp))
 })
 
 test('offset (options): offsetting of a complex geom2 produces expected offset geom2', t => {
@@ -416,52 +416,95 @@ test('offset (options): offsetting of a complex geom2 produces expected offset g
   let obs = offset({ delta: 2, segments: 1 }, geometry)
   let pts = geom2.toPoints(obs)
   let exp = [
-    new Float32Array([ -77, -77 ]),
-    new Float32Array([ -75, -77 ]),
-    new Float32Array([ 75, -77 ]),
-    new Float32Array([ 77, -77 ]),
-    new Float32Array([ 77, -75 ]),
-    new Float32Array([ 77, 75 ]),
-    new Float32Array([ 77, 77 ]),
-    new Float32Array([ 75, 77 ]),
-    new Float32Array([ 40, 77 ]),
-    new Float32Array([ 38, 77 ]),
-    new Float32Array([ 38, 75 ]),
-    new Float32Array([ 38, 2 ]),
-    new Float32Array([ -38, 2 ]),
-    new Float32Array([ -38, 75 ]),
-    new Float32Array([ -38, 77 ]),
-    new Float32Array([ -40, 77 ]),
-    new Float32Array([ -75, 77 ]),
-    new Float32Array([ -77, 77 ]),
-    new Float32Array([ -77, 75 ]),
-    new Float32Array([ 13, -38 ]),
-    new Float32Array([ 13, -38 ]),
-    new Float32Array([ 10, -38 ]),
-    new Float32Array([ 10, -25 ]),
-    new Float32Array([ 10, -23 ]),
-    new Float32Array([ 8, -23 ]),
-    new Float32Array([ -8, -23 ]),
-    new Float32Array([ -10, -23 ]),
-    new Float32Array([ -10, -25 ]),
-    new Float32Array([ -10, -38 ]),
-    new Float32Array([ -13, -38 ]),
-    new Float32Array([ -13, -12 ]),
-    new Float32Array([ 13, -12 ]),
-    new Float32Array([ -4, -19 ]),
-    new Float32Array([ -4, -21 ]),
-    new Float32Array([ -2, -21 ]),
-    new Float32Array([ 2, -21 ]),
-    new Float32Array([ 4, -21 ]),
-    new Float32Array([ 4, -19 ]),
-    new Float32Array([ 4, -15 ]),
-    new Float32Array([ 4, -13 ]),
-    new Float32Array([ 2, -13 ]),
-    new Float32Array([ -2, -13 ]),
-    new Float32Array([ -4, -13 ]),
-    new Float32Array([ -4, -15 ]),
-    new Float32Array([ -77, -75 ])
+    [ -77, -77 ],
+    [ -75, -77 ],
+    [ 75, -77 ],
+    [ 77, -77 ],
+    [ 77, -75 ],
+    [ 77, 75 ],
+    [ 77, 77 ],
+    [ 75, 77 ],
+    [ 40, 77 ],
+    [ 38, 77 ],
+    [ 38, 75 ],
+    [ 38, 2 ],
+    [ -38, 2 ],
+    [ -38, 75 ],
+    [ -38, 77 ],
+    [ -40, 77 ],
+    [ -75, 77 ],
+    [ -77, 77 ],
+    [ -77, 75 ],
+    [ 13, -12 ],
+    [ 13, -38 ],
+    [ 10, -38 ],
+    [ 10, -25 ],
+    [ 10, -23 ],
+    [ 8, -23 ],
+    [ -8, -23 ],
+    [ -10, -23 ],
+    [ -10, -25 ],
+    [ -10, -38 ],
+    [ -13, -38 ],
+    [ -13, -12 ],
+    [ -4, -19 ],
+    [ -4, -21 ],
+    [ -2, -21 ],
+    [ 2, -21 ],
+    [ 4, -21 ],
+    [ 4, -19 ],
+    [ 4, -15 ],
+    [ 4, -13 ],
+    [ 2, -13 ],
+    [ -2, -13 ],
+    [ -4, -13 ],
+    [ -4, -15 ],
+    [ -77, -75 ]
   ]
-  t.is(pts.length, 45)
-  t.deepEqual(pts, exp)
+  t.is(pts.length, 44)
+  t.true(comparePoints(pts, exp))
+})
+
+test('offset (options): offsetting of round geom2 produces expected offset geom2', t => {
+  let geometry = geom2.fromPoints([
+    [10.00000, 0.00000],
+    [9.23880, 3.82683],
+    [7.07107, 7.07107],
+    [3.82683, 9.23880],
+    [0.00000, 10.00000],
+    [-3.82683, 9.23880],
+    [-7.07107, 7.07107],
+    [-9.23880, 3.82683],
+    [-10.00000, 0.00000],
+    [-9.23880, -3.82683],
+    [-7.07107, -7.07107],
+    [-3.82683, -9.23880],
+    [-0.00000, -10.00000],
+    [3.82683, -9.23880],
+    [7.07107, -7.07107],
+    [9.23880, -3.82683]
+  ])
+
+  let obs = offset({ delta: -0.5 }, geometry)
+  let pts = geom2.toPoints(obs)
+  let exp = [
+    [ 9.490204811096191, 0 ],
+    [ 8.767810821533203, 3.631739377975464 ],
+    [ 6.710590362548828, 6.710590362548828 ],
+    [ 3.631739377975464, 8.767810821533203 ],
+    [ 0, 9.490204811096191 ],
+    [ -3.631739377975464, 8.767810821533203 ],
+    [ -6.710590362548828, 6.710590362548828 ],
+    [ -8.767810821533203, 3.631739377975464 ],
+    [ -9.490204811096191, 0 ],
+    [ -8.767810821533203, -3.631739377975464 ],
+    [ -6.710590362548828, -6.710590362548828 ],
+    [ -3.631739377975464, -8.767810821533203 ],
+    [ 0, -9.490204811096191 ],
+    [ 3.631739377975464, -8.767810821533203 ],
+    [ 6.710590362548828, -6.710590362548828 ],
+    [ 8.767810821533203, -3.631739377975464 ]
+  ]
+  t.is(pts.length, 16)
+  t.true(comparePoints(pts, exp))
 })
