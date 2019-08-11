@@ -69,6 +69,48 @@ test('geom2: toOutlines() should return outlines for holes in geom2', (t) => {
   t.true(comparePoints(exp2, ret2))
 })
 
-// touching edges
+test('geom2: toOutlines() should return outlines for edges that touch in geom2', (t) => {
+  let shp1 = create([
+    [[5, 15], [5, 5]],
+    [[5, 5], [15, 5]],
+    [[15, 5], [15, 15]],
+    [[15, 15], [5, 15]],
+    [[-5, 5], [-5, -5]],
+    [[-5, -5], [5, -5]],
+    [[5, -5], [5, 5]],
+    [[5, 5], [-5, 5]]
+  ])
+  let ret1 = toOutlines(shp1)
+  let exp1 = [
+    [ [ 5, 5 ], [ 15, 5 ], [ 15, 15 ], [ 5, 15 ] ],
+    [ [ -5, 5 ], [ -5, -5 ], [ 5, -5 ], [ 5, 5 ] ]
+  ]
+  t.true(comparePoints(exp1, ret1))
+})
+
+test('geom2: toOutlines() should return outlines for holes that touch in geom2', (t) => {
+  let shp1 = create([
+    [[-20, 20], [-20, -20]],
+    [[-20, -20], [20, -20]],
+    [[20, -20], [20, 20]],
+    [[20, 20], [-20, 20]],
+    [[5, 5], [5, 15]],
+    [[15, 5], [5, 5]],
+    [[15, 15], [15, 5]],
+    [[5, 15], [15, 15]],
+    [[-5, -5], [-5, 5]],
+    [[5, -5], [-5, -5]],
+    [[5, 5], [5, -5]],
+    [[-5, 5], [5, 5]]
+  ])
+  let ret1 = toOutlines(shp1)
+  let exp1 = [
+    [ [ -20, -20 ], [ 20, -20 ], [ 20, 20 ], [ -20, 20 ] ],
+    [ [ 5, 15 ], [ 15, 15 ], [ 15, 5 ], [ 5, 5 ] ],
+    [ [ 5, -5 ], [ -5, -5 ], [ -5, 5 ], [ 5, 5 ] ]
+  ]
+  t.true(comparePoints(exp1, ret1))
+})
+
 // touching holes
 

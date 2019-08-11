@@ -68,13 +68,12 @@ const toOutlines = (geometry) => {
         nextsideindex = 0
       } else {
         // more than one side starting at the same vertex
-        let bestangle = null
-        let cagangle = vec2.angleDegrees(direction(startside))
+        let bestangle = undefined
+        let startangle = vec2.angleDegrees(vec2.subtract(startside[1], startside[0]))
         for (let sideindex = 0; sideindex < nextpossiblesides.length; sideindex++) {
           let nextpossibleside = nextpossiblesides[sideindex]
-          let possibleside = nextpossiblesidetag
-          let angle = vec2.angleDegrees(direction(possibleside))
-          let angledif = angle - cagangle
+          let nextangle = vec2.angleDegrees(vec2.subtract(nextpossibleside[1], nextpossibleside[0]))
+          let angledif = nextangle - startangle
           if (angledif < -180) angledif += 360
           if (angledif >= 180) angledif -= 360
           if ((nextsideindex < 0) || (angledif > bestangle)) {
