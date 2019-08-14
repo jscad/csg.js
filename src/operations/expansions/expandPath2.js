@@ -1,10 +1,10 @@
+const { area } = require('../../math/utils')
+
 const { vec2 } = require('../../math')
 
 const { geom2, path2 } = require('../../geometry')
 
 const offsetFromPoints = require('./offsetFromPoints')
-
-const area = require('./area')
 
 /**
  * Expand the given geometry (path2) using the given options (if any).
