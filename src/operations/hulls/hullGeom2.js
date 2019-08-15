@@ -22,7 +22,7 @@ const hullGeom2 = (...geometries) => {
      for (let s = 0; s < sides.length; s++) {
        let side = sides[s]
        let point = side[0]
-       let id = ''+point[0]+','+point[1]
+       let id = `${point[0]},${point[1]}`
        if (found[id]) continue
        uniquepoints.push(point)
        found[id] = true
