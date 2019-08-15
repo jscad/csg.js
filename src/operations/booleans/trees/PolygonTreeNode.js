@@ -246,9 +246,9 @@ PolygonTreeNode.prototype = {
       let prefix = ' '.repeat(i)
       for (j = 0, l = children.length; j < l; j++) { // ok to cache length
         node = children[j]
-        result += prefix + 'PolygonTreeNode (' + node.isRootNode() + '): ' + node.children.length
+        result += `${prefix}PolygonTreeNode (${node.isRootNode()}): ${node.children.length}`
         if (node.polygon) {
-          result += '\n ' + prefix + 'poly3\n'
+          result += `\n ${prefix}poly3\n`
         } else {
           result += '\n'
         }
