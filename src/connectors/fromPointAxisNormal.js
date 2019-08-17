@@ -10,11 +10,11 @@ const create = require('./create')
  * @returns {connector} a new connector
  */
 const fromPointAxisNormal = (point, axis, normal) => {
-  let created = create()
-  created.point = vec3.fromArray(point)
-  created.axis = vec3.unit(axis)
-  created.normal = vec3.unit(normal)
-  return created
+  let connector = create()
+  connector.point = vec3.fromArray(point)
+  connector.axis = vec3.unit(axis)
+  connector.normal = vec3.unit(normal)
+  return connector
 }
 
 module.exports = fromPointAxisNormal
