@@ -17,4 +17,9 @@ test('hslToRgb', t => {
   exp = [1, 0, 0.5000000000000002]
 
   t.deepEqual(obs, exp)
+
+  obs = hslToRgb([0.9166666666666666, 0, 0.5])
+  exp = [0.5, 0.5, 0.5]
+
+  t.deepEqual(obs, exp)
 })

@@ -13,6 +13,10 @@ test('color (rgb on objects)', t => {
   t.is(obs.length, 3)
   t.deepEqual(obs[0], exp1)
   t.deepEqual(obs[1], exp2)
+
+  const obs3 = color([1, 0, 0], obj1)
+  const exp3 = { color: [ 1, 0, 0, 1 ] }
+  t.deepEqual(obs3, exp3)
 })
 
 test('color (rgba on objects)', t => {
