@@ -2,8 +2,10 @@ const {vec2} = require('../../math')
 
 const toSides = require('./toSides')
 
-// create a list of edges (sides) which share vertices
-// which allows traversal of the edges
+/*
+ * Create a list of edges which SHARE vertices.
+ * This allows the edges to be traversed in order.
+ */
 const toEdges = (sides) => {
   let uniquevertices = []
   const getUniqueVertex = (vertex) => {
@@ -24,9 +26,13 @@ const toEdges = (sides) => {
   return edges
 }
 
-/** returns the outline(s) of the given 2D geometry as an array of points
+/**
+ * Create the outline(s) of the given geometry.
  * @param  {geom2} geometry
- * @returns {Array} array of point sets, where each set is an array of points
+ * @returns {Array} an array of outlines, where each outline is an array of ordered points
+ * @example
+ * let geometry = subtract(rectangle({size: [5, 5]}), rectangle({size: [3, 3]}))
+ * let outlines = toOutlines(geometry) // returns two outlines
  */
 const toOutlines = (geometry) => {
   let vertexMap = new Map()
