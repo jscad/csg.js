@@ -2,6 +2,8 @@ const { EPS } = require('../../math/constants')
 
 const { mat4, vec3 } = require('../../math')
 
+const { fnNumberSort } = require('../../utils')
+
 const { geom3, poly3 } = require('../../geometry')
 
 const { sphere } = require('../../primitives')
@@ -10,10 +12,6 @@ const retessellate = require('../booleans/retessellate')
 const unionGeom3Sub = require('../booleans/unionGeom3Sub')
 
 const extrudePolygon = require('./extrudePolygon')
-
-const fnNumberSort = (a, b) => {
-  return a - b
-}
 
 const mapPlaneToVertex = (map, vertex, plane) => {
   let i = map.findIndex((item) => vec3.equals(item[0], vertex))
