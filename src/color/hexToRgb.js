@@ -1,18 +1,23 @@
 /**
- * Converts a HTML5 color value (string) to RGB values.
- * Conversion formula:
- * - split the string; "#RRGGBB" into RGB components
- * - convert the HEX value into RGB values
- * @see the color input type of HTML5 forms
+ * Converts CSS color notations (string of hex values) to RGB values.
+ *
+ * @see https://www.w3.org/TR/css-color-3/
+ * @param {String} notation - color notation
+ * @return {Array} RGB color values
+ *
+ * @example
+ * let mysphere = color(hexToRgb('#000080'), sphere()) // navy blue
  */
-const hexToRgb = (value) => {
-  let r = 0
-  let g = 0
-  let b = 0
-  if (value && value.length === 7) {
-    r = parseInt('0x' + value.slice(1, 3)) / 255
-    g = parseInt('0x' + value.slice(3, 5)) / 255
-    b = parseInt('0x' + value.slice(5, 7)) / 255
+const hexToRgb = (notation) => {
+  notation = notation.replace('#', '')
+  if (notation.length < 6) throw new Error('the given notation must contain 3 or more hex values')
+
+  const r = parseInt(notation.substring(0, 2), 16) / 255
+  const g = parseInt(notation.substring(2, 4), 16) / 255
+  const b = parseInt(notation.substring(4, 6), 16) / 255
+  if (notation.length >= 8) {
+    const a = parseInt(notation.substring(6, 8), 16) / 255
+    return [r, g, b, a]
   }
   return [r, g, b]
 }
