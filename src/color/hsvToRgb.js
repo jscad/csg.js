@@ -1,20 +1,21 @@
 /**
- * Converts an HSV color value to RGB.
- * Assumes h, s, and v are contained in the set [0, 1] and
- * returns r, g, and b in the set [0, 1].
+ * Converts HSV color values to RGB color values.
  *
  * @see http://en.wikipedia.org/wiki/HSV_color_space.
- * @param Number h - hue
- * @param Number s - saturation
- * @param Number v - value
- * @return Array the RGB representation
+ * @param {Array} values - HSV color values
+ * @return {Array} RGB color values
+ *
+ * @example
+ * let mysphere = color(hsvToRgb([0.9166666666666666, 1, 1]), sphere())
  */
-const hsvToRgb = (h, s, v) => {
-  if (Array.isArray(h)) {
-    v = h[2]
-    s = h[1]
-    h = h[0]
-  }
+const hsvToRgb = (values) => {
+  if (!Array.isArray(values)) throw new Error('values must be an array')
+  if (values.length < 3) throw new Error('values must contain H, S and V values')
+
+  let h = values[0]
+  let s = values[1]
+  let v = values[2]
+
   let r = 0
   let g = 0
   let b = 0
@@ -58,6 +59,11 @@ const hsvToRgb = (h, s, v) => {
       break
   }
 
+  if (values.length > 3) {
+    // add alpha value if provided
+    let a = values[3]
+    return [r, g, b, a]
+  }
   return [r, g, b]
 }
 
