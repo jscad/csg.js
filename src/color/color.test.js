@@ -31,16 +31,3 @@ test('color (rgba on objects)', t => {
   t.deepEqual(obs[0], exp1)
   t.deepEqual(obs[1], exp2)
 })
-
-test('color (name on objects)', t => {
-  const obj1 = {}
-  const obj2 = [{id: 'a'}, {id: 'b'}]
-
-  const obs = color('lightblue', obj1, obj2)
-  const exp1 = { color: [ 0.6784313725490196, 0.8470588235294118, 0.9019607843137255, 1 ] }
-  const exp2 = { id: 'a', color: [ 0.6784313725490196, 0.8470588235294118, 0.9019607843137255, 1 ] }
-
-  t.is(obs.length, 3)
-  t.deepEqual(obs[0], exp1)
-  t.deepEqual(obs[1], exp2)
-})
