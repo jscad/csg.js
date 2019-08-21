@@ -1,21 +1,19 @@
 /**
- * Converts an RGB color value to HSL. Conversion formula
- * adapted from http://en.wikipedia.org/wiki/HSL_color_space.
- * Assumes r, g, and b are contained in the set [0, 1] and
- * returns h, s, and l in the set [0, 1].
+ * Converts an RGB color value to HSL.
  *
+ * @see http://en.wikipedia.org/wiki/HSL_color_space.
  * @see http://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
- * @param Number r - red color value
- * @param Number g - green color value
- * @param Number b - blue color value
- * @return Array the HSL representation
+ * @param {Array} values - RGB color values
+ * @return Array HSL color values
  */
-const rgbToHsl = (r, g, b) => {
-  if (Array.isArray(r)) {
-    b = r[2]
-    g = r[1]
-    r = r[0]
-  }
+const rgbToHsl = (values) => {
+  if (!Array.isArray(values)) throw new Error('values must be an array')
+  if (values.length < 3) throw new Error('values must contain R, G and B values')
+
+  let r = values[0]
+  let g = values[1]
+  let b = values[2]
+
   let max = Math.max(r, g, b)
   let min = Math.min(r, g, b)
   let h
@@ -41,6 +39,11 @@ const rgbToHsl = (r, g, b) => {
     h /= 6
   }
 
+  if (values.length > 3) {
+    // add alpha value if provided
+    let a = values[3]
+    return [h, s, l, a]
+  }
   return [h, s, l]
 }
 

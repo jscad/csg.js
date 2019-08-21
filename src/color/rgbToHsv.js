@@ -1,20 +1,18 @@
 /**
  * Converts an RGB color value to HSV.
- * Assumes r, g, and b are contained in the set [0, 1] and
- * returns h, s, and v in the set [0, 1].
  *
  * @see http://en.wikipedia.org/wiki/HSV_color_space.
- * @param Number r - the red color value
- * @param Number g - the green color value
- * @param Number b - the blue color value
- * @return Array the HSV representation
+ * @param {Array} values - RGB color values
+ * @return Array HSV color values
  */
-const rgbToHsv = (r, g, b) => {
-  if (Array.isArray(r)) {
-    b = r[2]
-    g = r[1]
-    r = r[0]
-  }
+const rgbToHsv = (values) => {
+  if (!Array.isArray(values)) throw new Error('values must be an array')
+  if (values.length < 3) throw new Error('values must contain R, G and B values')
+
+  let r = values[0]
+  let g = values[1]
+  let b = values[2]
+
   let max = Math.max(r, g, b)
   let min = Math.min(r, g, b)
   let h
@@ -41,6 +39,11 @@ const rgbToHsv = (r, g, b) => {
     h /= 6
   }
 
+  if (values.length > 3) {
+    // add alpha if provided
+    let a = values[3]
+    return [h, s, v, a]
+  }
   return [h, s, v]
 }
 
