@@ -1,10 +1,12 @@
 const cssColors = require('./cssColors')
 
 /**
- * Converts an CSS color name to RGB color.
+ * Converts a CSS color name to RGB color.
  *
- * @param   String  s       The CSS color name
- * @return  Array           The RGB representation, or [0,0,0] default
+ * @param String s - the CSS color name
+ * @return Array - the RGB color, or undefined if not found
+ * @example
+ * let mysphere = color(colorNameToRgb('lightblue'), sphere())
  */
 const colorNameToRgb = s => {
   return cssColors[s.toLowerCase()]
