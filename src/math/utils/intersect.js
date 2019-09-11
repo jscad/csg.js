@@ -1,7 +1,13 @@
-// Calculate the intersect point of the two line segments (p1-p2 and p3-p4), end points included.
-// @see http://paulbourke.net/geometry/pointlineplane/
-// Note: If the line segments do NOT intersect then undefined is returned
-// Return the intersection point of two line segments
+/*
+ * Calculate the intersect point of the two line segments (p1-p2 and p3-p4), end points included.
+ * Note: If the line segments do NOT intersect then undefined is returned.
+ * @see http://paulbourke.net/geometry/pointlineplane/
+ * @param {vec2} p1 - first point of first line segment
+ * @param {vec2} p2 - second point of first line segment
+ * @param {vec2} p3 - first point of second line segment
+ * @param {vec2} p4 - second point of second line segment
+ * @returns {vec2} intersection point of the two line segments, or undefined
+ */
 const intersect = (p1, p2, p3, p4) => {
   // Check if none of the lines are of length 0
   if ((p1[0] === p2[0] && p1[1] === p2[1]) || (p3[0] === p4[0] && p3[1] === p4[1])) {
