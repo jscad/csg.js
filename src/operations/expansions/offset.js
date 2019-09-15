@@ -9,9 +9,10 @@ const offsetPath2 = require('./offsetPath2')
  * Create offset geometry(s) from the given object(s) using the given options (if any).
  * @param {Object} options - options for offset
  * @param {Float} [options.delta=1] - delta of offset (+ to exterior, - from interior)
- * @param {Integer} [options.segments=0] - segments of rounded ends, or zero for chamfer
+ * @param {String} [options.corners='round'] - type corner to create during of expansion; edge, chamfer, round
+ * @param {Integer} [options.segments=16] - number of segments when creating round corners
  * @param {Object|Array} objects - object(s) to offset
- * @return {Object|Array} the offset geometry(s)
+ * @return {Object|Array} the offset objects(s)
  */
 const offset = (options, ...objects) => {
   objects = flatten(objects)

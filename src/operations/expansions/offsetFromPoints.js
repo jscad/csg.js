@@ -8,17 +8,19 @@ const { line2, vec2 } = require('../../math')
  * Create a set of offset points from the given points using the given options (if any).
  * @param {Object} options - options for offset
  * @param {Float} [options.delta=1] - delta of offset (+ to exterior, - from interior)
- * @param {Integer} [options.segments=0] - segments of rounded ends, or zero for chamfer
+ * @param {String} [options.corners='round'] - type corner to create during of expansion; edge, chamfer, round
+ * @param {Integer} [options.segments=16] - number of segments when creating round corners
  * @param {Array} points - array of 2D points
  * @returns {Array} new set of offset points, plus points for each rounded corner
  */
 const offsetFromPoints = (options, points) => {
   const defaults = {
     delta: 1,
+    corners: 'round',
     closed: false,
-    segments: 0
+    segments: 16
   }
-  let { delta, closed, segments } = Object.assign({ }, defaults, options)
+  let { delta, corners, closed, segments } = Object.assign({ }, defaults, options)
 
   if (Math.abs(delta) < EPS) return points
 
@@ -31,7 +33,7 @@ const offsetFromPoints = (options, points) => {
 
   let prevsegment = null
   const newpoints = []
-  const corners = []
+  const newcorners = []
   let n = points.length
   for (let i = 0; i < n; i++) {
     let j = (i + 1) % n
@@ -57,7 +59,7 @@ const offsetFromPoints = (options, points) => {
           // adjust current points
           cursegment[0] = ip
         } else {
-          corners.push({ c: p0, s0: prevsegment, s1: cursegment })
+          newcorners.push({ c: p0, s0: prevsegment, s1: cursegment })
         }
       }
     }
@@ -81,58 +83,58 @@ const offsetFromPoints = (options, points) => {
     } else {
       let p0 = points[0]
       let cursegment = [n0, n1]
-      corners.push({ c: p0, s0: prevsegment, s1: cursegment })
+      newcorners.push({ c: p0, s0: prevsegment, s1: cursegment })
     }
   }
 
-  // add corners
-  if (segments > 0) {
+  // generate corners if necessary
+
+  if (corners === 'edge') {
+    // create edge corners
+    newcorners.forEach((corner) => {
+      let line0 = line2.fromPoints(corner.s0[0], corner.s0[1])
+      let line1 = line2.fromPoints(corner.s1[0], corner.s1[1])
+      let ip = line2.intersectPointOfLines(line0, line1)
+      let p0 = corner.s0[1]
+      let i = newpoints.findIndex((point) => vec2.equals(p0, point))
+      i = (i + 1) % newpoints.length
+      newpoints.splice(i, 0, ip)
+    })
+  }
+
+  if (corners === 'round') {
+    // create rounded corners
     let cornersegments = Math.floor(segments / 4)
-    if (cornersegments === 0) {
-      // create pointed corners
-      corners.forEach((corner) => {
-        let line0 = line2.fromPoints(corner.s0[0], corner.s0[1])
-        let line1 = line2.fromPoints(corner.s1[0], corner.s1[1])
-        let ip = line2.intersectPointOfLines(line0, line1)
+    newcorners.forEach((corner) => {
+      // calculate angle of rotation
+      let rotation = vec2.angle(vec2.subtract(corner.s1[0], corner.c))
+      rotation -= vec2.angle(vec2.subtract(corner.s0[1], corner.c))
+      if (orientation && rotation < 0) {
+        rotation = rotation + Math.PI
+        if (rotation < 0) rotation = rotation + Math.PI
+      }
+      if ((!orientation) && rotation > 0) {
+        rotation = rotation - Math.PI
+        if (rotation > 0) rotation = rotation - Math.PI
+      }
+
+      // generate the segments
+      cornersegments = Math.floor(segments * (Math.abs(rotation) / (2 * Math.PI)))
+      let step = rotation / cornersegments
+      let start = vec2.angle(vec2.subtract(corner.s0[1], corner.c))
+      let cornerpoints = []
+      for (let i = 1; i < cornersegments; i++) {
+        let radians = start + (step * i)
+        let point = vec2.add(corner.c, vec2.scale(delta, vec2.fromAngleRadians(radians)))
+        cornerpoints.push(point)
+      }
+      if (cornerpoints.length > 0) {
         let p0 = corner.s0[1]
         let i = newpoints.findIndex((point) => vec2.equals(p0, point))
         i = (i + 1) % newpoints.length
-        newpoints.splice(i, 0, ip)
-      })
-    }
-    if (cornersegments > 1) {
-      // create rounded corners
-      corners.forEach((corner) => {
-        // calculate angle of rotation
-        let rotation = vec2.angle(vec2.subtract(corner.s1[0], corner.c))
-        rotation -= vec2.angle(vec2.subtract(corner.s0[1], corner.c))
-        if (orientation && rotation < 0) {
-          rotation = rotation + Math.PI
-          if (rotation < 0) rotation = rotation + Math.PI
-        }
-        if ((!orientation) && rotation > 0) {
-          rotation = rotation - Math.PI
-          if (rotation > 0) rotation = rotation - Math.PI
-        }
-
-        // generate the segments
-        cornersegments = Math.floor(segments * (Math.abs(rotation) / (2 * Math.PI)))
-        let step = rotation / cornersegments
-        let start = vec2.angle(vec2.subtract(corner.s0[1], corner.c))
-        let cornerpoints = []
-        for (let i = 1; i < cornersegments; i++) {
-          let radians = start + (step * i)
-          let point = vec2.add(corner.c, vec2.scale(delta, vec2.fromAngleRadians(radians)))
-          cornerpoints.push(point)
-        }
-        if (cornerpoints.length > 0) {
-          let p0 = corner.s0[1]
-          let i = newpoints.findIndex((point) => vec2.equals(p0, point))
-          i = (i + 1) % newpoints.length
-          newpoints.splice(i, 0, ...cornerpoints)
-        }
-      })
-    }
+        newpoints.splice(i, 0, ...cornerpoints)
+      }
+    })
   }
   return newpoints
 }

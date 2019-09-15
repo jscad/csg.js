@@ -9,9 +9,10 @@ const expandPath2 = require('./expandPath2')
 /**
  * Expand the given object(s) using the given options (if any)
  * @param {Object} options - options for expand
- * @param {Number} options.delta=1 - delta (+/-) of expansion
- * @param {Integer} [options.segments] - number of segments when creating rounded corners, or zero for chamfer
- * @param {Object|Array} objects - the objects(s) to expand
+ * @param {Number} [options.delta=1] - delta (+/-) of expansion
+ * @param {String} [options.corners='round'] - type corner to create during of expansion; edge, chamfer, round
+ * @param {Integer} [options.segments] - number of segments when creating rounded corners
+ * @param {Object|Array} objects - the object(s) to expand
  * @return {Object|Array} the expanded object(s)
  *
  * @example

@@ -6,7 +6,7 @@ const { offset } = require('./index')
 
 const { comparePoints } = require('../../../test/helpers')
 
-test('offset (options): offset of a path2 produces expected offset path2', t => {
+test('offset (corners: chamfer): offset of a path2 produces expected offset path2', t => {
   let openline = path2.fromPoints({ }, [[0, 0], [5, 0], [0, 5]])
   let closeline = path2.fromPoints({ }, [[0, 0], [5, 0], [0, 5], [0, 0]])
 
@@ -19,7 +19,7 @@ test('offset (options): offset of a path2 produces expected offset path2', t => 
   t.true(comparePoints(pts, exp))
 
   // expand +
-  obs = offset({ delta: 1 }, openline)
+  obs = offset({ delta: 1, corners: 'chamfer' }, openline)
   pts = path2.toPoints(obs)
   exp = [
     [ -6.123234262925839e-17, -1 ],
@@ -29,7 +29,7 @@ test('offset (options): offset of a path2 produces expected offset path2', t => 
   ]
   t.true(comparePoints(pts, exp))
 
-  obs = offset({ delta: 1 }, closeline)
+  obs = offset({ delta: 1, corners: 'chamfer' }, closeline)
   pts = path2.toPoints(obs)
   exp = [
     [ -6.123234262925839e-17, -1 ],
@@ -42,7 +42,7 @@ test('offset (options): offset of a path2 produces expected offset path2', t => 
   t.true(comparePoints(pts, exp))
 
   // contract -
-  obs = offset({ delta: -1 }, openline)
+  obs = offset({ delta: -1, corners: 'chamfer' }, openline)
   pts = path2.toPoints(obs)
   exp = [
     [ 6.123234262925839e-17, 1 ],
@@ -51,7 +51,7 @@ test('offset (options): offset of a path2 produces expected offset path2', t => 
   ]
   t.true(comparePoints(pts, exp))
 
-  obs = offset({ delta: -1 }, closeline)
+  obs = offset({ delta: -1, corners: 'chamfer' }, closeline)
   pts = path2.toPoints(obs)
   exp = [
     [ 1, 1 ],
@@ -61,11 +61,11 @@ test('offset (options): offset of a path2 produces expected offset path2', t => 
   t.true(comparePoints(pts, exp))
 })
 
-test('offset (segments 1): offset of a path2 produces expected offset path2', t => {
+test('offset (corners: edge): offset of a path2 produces expected offset path2', t => {
   let openline = path2.fromPoints({ }, [[-5, -5], [5, -5], [5, 5], [3, 5], [3, 0], [-3, 0], [-3, 5], [-5, 5]])
   let closeline = path2.fromPoints({ }, [[-5, -5], [5, -5], [5, 5], [3, 5], [3, 0], [-3, 0], [-3, 5], [-5, 5], [-5, -5]])
 
-  let obs = offset({ delta: 1, segments: 1 }, openline)
+  let obs = offset({ delta: 1, corners: 'edge' }, openline)
   let pts = path2.toPoints(obs)
   let exp = [
     [ -5, -6 ],
@@ -87,7 +87,7 @@ test('offset (segments 1): offset of a path2 produces expected offset path2', t 
   ]
   t.true(comparePoints(pts, exp))
 
-  obs = offset({ delta: 1, segments: 1 }, closeline)
+  obs = offset({ delta: 1, corners: 'edge' }, closeline)
   pts = path2.toPoints(obs)
   exp = [
     [ -6, -6 ],
@@ -113,7 +113,7 @@ test('offset (segments 1): offset of a path2 produces expected offset path2', t 
   ]
   t.true(comparePoints(pts, exp))
 
-  obs = offset({ delta: -0.5, segments: 1 }, openline)
+  obs = offset({ delta: -0.5, corners: 'edge' }, openline)
   pts = path2.toPoints(obs)
   exp = [
     [ -5, -4.5 ],
@@ -131,7 +131,7 @@ test('offset (segments 1): offset of a path2 produces expected offset path2', t 
   ]
   t.true(comparePoints(pts, exp))
 
-  obs = offset({ delta: -0.5, segments: 1 }, closeline)
+  obs = offset({ delta: -0.5, corners: 'edge' }, closeline)
   pts = path2.toPoints(obs)
   exp = [
     [ -4.5, -4.5 ],
@@ -150,11 +150,11 @@ test('offset (segments 1): offset of a path2 produces expected offset path2', t 
   t.true(comparePoints(pts, exp))
 })
 
-test('offset (segments 16): offset of a path2 produces expected offset path2', t => {
+test('offset (corners: round): offset of a path2 produces expected offset path2', t => {
   let openline = path2.fromPoints({ }, [[-5, -5], [5, -5], [5, 5], [3, 5], [3, 0], [-3, 0], [-3, 5], [-5, 5]])
   let closeline = path2.fromPoints({ }, [[-5, -5], [5, -5], [5, 5], [3, 5], [3, 0], [-3, 0], [-3, 5], [-5, 5], [-5, -5]])
 
-  let obs = offset({ delta: 1, segments: 16 }, openline)
+  let obs = offset({ delta: 1, corners: 'round', segments: 16 }, openline)
   let pts = path2.toPoints(obs)
   let exp = [
     [ -5, -6 ],
@@ -184,7 +184,7 @@ test('offset (segments 16): offset of a path2 produces expected offset path2', t
   ]
   t.true(comparePoints(pts, exp))
 
-  obs = offset({ delta: 1, segments: 16 }, closeline)
+  obs = offset({ delta: 1, corners: 'round', segments: 16 }, closeline)
   pts = path2.toPoints(obs)
   exp = [
     [ -5.923879623413086, -5.382683277130127 ],
@@ -223,11 +223,11 @@ test('offset (segments 16): offset of a path2 produces expected offset path2', t
   t.true(comparePoints(pts, exp))
 })
 
-test('offset (segments 16): offset of a CW path2 produces expected offset path2', t => {
+test('offset (corners: round): offset of a CW path2 produces expected offset path2', t => {
   let openline = path2.fromPoints({ }, [[-5, -5], [5, -5], [5, 5], [3, 5], [3, 0], [-3, 0], [-3, 5], [-5, 5]].reverse())
   let closeline = path2.fromPoints({ }, [[-5, -5], [5, -5], [5, 5], [3, 5], [3, 0], [-3, 0], [-3, 5], [-5, 5], [-5, -5]].reverse())
 
-  let obs = offset({ delta: -0.5, segments: 16 }, openline)
+  let obs = offset({ delta: -0.5, corners: 'round', segments: 16 }, openline)
   let pts = path2.toPoints(obs)
   let exp = [
     [ -5, 4.5 ],
@@ -249,7 +249,7 @@ test('offset (segments 16): offset of a CW path2 produces expected offset path2'
   ]
   t.true(comparePoints(pts, exp))
 
-  obs = offset({ delta: 1, segments: 16 }, closeline)
+  obs = offset({ delta: 1, corners: 'round', segments: 16 }, closeline)
   pts = path2.toPoints(obs)
   exp = [
     [ -5.382683277130127, -5.923879623413086 ],
@@ -300,7 +300,7 @@ test('offset (options): offsetting of a simple geom2 produces expected offset ge
   t.true(comparePoints(pts, exp))
 
   // expand +
-  obs = offset({ delta: 1 }, geometry)
+  obs = offset({ delta: 1, corners: 'round' }, geometry)
   pts = geom2.toPoints(obs)
   exp = [
     [ -5, -6 ],
@@ -321,7 +321,7 @@ test('offset (options): offsetting of a simple geom2 produces expected offset ge
   t.true(comparePoints(pts, exp))
 
   // contract -
-  obs = offset({ delta: -0.5 }, geometry)
+  obs = offset({ delta: -0.5, corners: 'round' }, geometry)
   pts = geom2.toPoints(obs)
   exp = [
     [ -4.5, -4.5 ],
@@ -338,7 +338,7 @@ test('offset (options): offsetting of a simple geom2 produces expected offset ge
   t.true(comparePoints(pts, exp))
 
   // segments 1 - sharp points at corner
-  obs = offset({ delta: 1, segments: 1 }, geometry)
+  obs = offset({ delta: 1, corners: 'edge' }, geometry)
   pts = geom2.toPoints(obs)
   exp = [
     [ -6, -6 ],
@@ -365,7 +365,7 @@ test('offset (options): offsetting of a simple geom2 produces expected offset ge
   t.true(comparePoints(pts, exp))
 
   // segments 16 - rounded corners
-  obs = offset({ delta: -0.5, segments: 16 }, geometry)
+  obs = offset({ delta: -0.5, corners: 'round', segments: 16 }, geometry)
   pts = geom2.toPoints(obs)
   exp = [
     [ -4.5, -4.5 ],
@@ -413,7 +413,7 @@ test('offset (options): offsetting of a complex geom2 produces expected offset g
   ])
 
   // expand +
-  let obs = offset({ delta: 2, segments: 1 }, geometry)
+  let obs = offset({ delta: 2, corners: 'edge' }, geometry)
   let pts = geom2.toPoints(obs)
   let exp = [
     [ -77, -77 ],
@@ -485,7 +485,7 @@ test('offset (options): offsetting of round geom2 produces expected offset geom2
     [9.23880, -3.82683]
   ])
 
-  let obs = offset({ delta: -0.5 }, geometry)
+  let obs = offset({ delta: -0.5, corners: 'round' }, geometry)
   let pts = geom2.toPoints(obs)
   let exp = [
     [ 9.490204811096191, 0 ],

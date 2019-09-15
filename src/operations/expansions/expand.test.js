@@ -18,7 +18,7 @@ test('expand: expanding of a path2 produces an expected geom2', t => {
   let geometry = path2.fromPoints({ }, points)
 
   // test counter clock wise winding paths
-  let obs = expand({ delta: 2, segments: 8 }, geometry)
+  let obs = expand({ delta: 2, corners: 'round', segments: 8 }, geometry)
   let pts = geom2.toPoints(obs)
   let exp = [
     [ 11.97537612915039, 0.3128691613674164 ],
@@ -49,7 +49,7 @@ test('expand: expanding of a path2 produces an expected geom2', t => {
 
   // test clock wise winding paths
   geometry = path2.fromPoints({ }, points.reverse())
-  obs = expand({ delta: 2, segments: 8 }, geometry)
+  obs = expand({ delta: 2, corners: 'round', segments: 8 }, geometry)
   pts = geom2.toPoints(obs)
   exp = [
     [ 0.3128691613674164, 11.97537612915039 ],
@@ -82,7 +82,7 @@ test('expand: expanding of a path2 produces an expected geom2', t => {
 test('expand: expanding of a geom2 produces expected changes to points', t => {
   let geometry = geom2.fromPoints([[-8, -8], [8, -8], [8, 8], [-8, 8]])
 
-  let obs = expand({ delta: 2, segments: 8 }, geometry)
+  let obs = expand({ delta: 2, corners: 'round', segments: 8 }, geometry)
   let pts = geom2.toPoints(obs)
   let exp = [
     [ -9.414213180541992, -9.414213180541992 ],
@@ -113,7 +113,7 @@ test('expand: expanding of a geom3 produces expected changes to polygons', t => 
   ]
   let geometry = geom3.fromPoints(polygonsAsPoints)
 
-  let obs = expand({ delta: 2, segments: 8 }, geometry)
+  let obs = expand({ delta: 2, corners: 'round', segments: 8 }, geometry)
   let pts = geom3.toPoints(obs)
   let exp0 = [
     [ -7, -5, -5 ],
@@ -132,7 +132,7 @@ test('expand: expanding of a geom3 produces expected changes to polygons', t => 
   t.true(comparePoints(pts[61], exp61))
 })
 
-test('offset (options): offsetting of a complex geom2 produces expected offset geom2', t => {
+test('expand (options): offsetting of a complex geom2 produces expected offset geom2', t => {
   let geometry = geom2.create([
     [[-75.00000, 75.00000], [-75.00000, -75.00000]],
     [[-75.00000, -75.00000], [75.00000, -75.00000]],
@@ -157,7 +157,7 @@ test('offset (options): offsetting of a complex geom2 produces expected offset g
   ])
 
   // expand +
-  let obs = expand({ delta: 2, segments: 1 }, geometry)
+  let obs = expand({ delta: 2, corners: 'edge' }, geometry)
   let pts = geom2.toPoints(obs)
   let exp = [
     [ -77, -77 ],

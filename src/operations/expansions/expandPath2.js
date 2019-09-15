@@ -10,26 +10,33 @@ const offsetFromPoints = require('./offsetFromPoints')
  * Expand the given geometry (path2) using the given options (if any).
  * @param {Object} options - options for expand
  * @param {Number} [options.delta=1] - delta (+) of expansion
- * @param {Integer} [options.segments=0] - number of segments when creating rounded corners, or zero for chamfer
+ * @param {String} [options.corners='round'] - type corner to create during of expansion; edge, chamfer, round
+ * @param {Integer} [options.segments=16] - number of segments when creating round corners
  * @param {path2} geometry - the geometry to expand
  * @returns {geom2} expanded geometry
  */
 const expandPath2 = (options, geometry) => {
   const defaults = {
     delta: 1,
-    segments: 0
+    corners: 'round',
+    segments: 16
   }
-  let { delta, segments } = Object.assign({ }, defaults, options)
+  let { delta, corners, segments } = Object.assign({ }, defaults, options)
 
-  if (delta <= 0) throw new Error('the given delta must be positive')
+  if (delta <= 0) throw new Error('the given delta must be positive for paths')
 
+  if (!(corners === 'edge' || corners === 'chamfer' || corners === 'round')) {
+    throw new Error('corners must be "edge", "chamfer", or "round"')
+  }
+
+  let closed = geometry.isClosed
   let points = path2.toPoints(geometry)
   if (points.length === 0) throw new Error('the given geometry cannot be empty')
 
-  let offsetopts = { delta: delta, segments: segments, closed: geometry.isClosed }
+  let offsetopts = { delta, corners, segments, closed }
   let external = offsetFromPoints(offsetopts, points)
 
-  offsetopts = { delta: -delta, segments: segments, closed: geometry.isClosed }
+  offsetopts = { delta: -delta, corners, segments, closed }
   let internal = offsetFromPoints(offsetopts, points)
 
   let newgeometry = null
@@ -44,7 +51,8 @@ const expandPath2 = (options, geometry) => {
     let capsegments = Math.floor(segments / 2) // rotation is 180 degrees
     let e2iCap = []
     let i2eCap = []
-    if (capsegments > 0) {
+    if (corners === 'round' && capsegments > 0) {
+      // added round caps to the geometry
       let orientation = area(points)
       let rotation = orientation < 0 ? -Math.PI : Math.PI
       let step = rotation / capsegments
