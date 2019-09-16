@@ -1,6 +1,4 @@
-const { geom2 } = require('../../geometry')
-
-const { arePointsInside } = require('./inside')
+const { geom2, poly2 } = require('../../geometry')
 
 const offsetFromPoints = require('./offsetFromPoints')
 
@@ -25,7 +23,7 @@ const offsetGeom2 = (options, geometry) => {
   let outlines = geom2.toOutlines(geometry)
   let newoutlines = outlines.map((outline) => {
     let level = outlines.reduce((acc, polygon) => {
-      return acc + arePointsInside(outline, polygon)
+      return acc + poly2.arePointsInside(outline, poly2.create(polygon))
     }, 0)
     let outside = (level % 2) === 0
 

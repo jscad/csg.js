@@ -1,8 +1,10 @@
 const { EPS } = require('../../math/constants')
 
-const { area, intersect } = require('../../math/utils')
+const { intersect } = require('../../math/utils')
 
 const { line2, vec2 } = require('../../math')
+
+const { poly2 } = require('../../geometry')
 
 /**
  * Create a set of offset points from the given points using the given options (if any).
@@ -24,7 +26,7 @@ const offsetFromPoints = (options, points) => {
 
   if (Math.abs(delta) < EPS) return points
 
-  let rotation = area(points) // + counter clockwise, - clockwise
+  let rotation = poly2.measureArea(poly2.create(points)) // + counter clockwise, - clockwise
   if (rotation === 0) rotation = 1.0
 
   // use right hand normal?
