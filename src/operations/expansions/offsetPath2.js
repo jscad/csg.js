@@ -6,7 +6,7 @@ const offsetFromPoints = require('./offsetFromPoints')
  * Create a offset geometry from the given path using the given options (if any).
  * @param {Object} options - options for offset
  * @param {Float} [options.delta=1] - delta of offset (+ to exterior, - from interior)
- * @param {String} [options.corners='round'] - type corner to create during of expansion; edge, chamfer, round
+ * @param {String} [options.corners='edge'] - type corner to create during of expansion; edge, chamfer, round
  * @param {Integer} [options.segments=16] - number of segments when creating round corners
  * @param {path2} geometry - geometry from which to create the offset
  * @returns {path2} offset geometry, plus rounded corners
@@ -14,7 +14,7 @@ const offsetFromPoints = require('./offsetFromPoints')
 const offsetPath2 = (options, geometry) => {
   const defaults = {
     delta: 1,
-    corners: 'round',
+    corners: 'edge',
     closed: geometry.isClosed,
     segments: 16
   }

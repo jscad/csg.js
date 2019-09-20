@@ -6,7 +6,7 @@ const offsetFromPoints = require('./offsetFromPoints')
  * Create a offset geometry from the given geom2 using the given options (if any).
  * @param {Object} options - options for offset
  * @param {Float} [options.delta=1] - delta of offset (+ to exterior, - from interior)
- * @param {String} [options.corners='round'] - type corner to create during of expansion; edge, chamfer, round
+ * @param {String} [options.corners='edge'] - type corner to create during of expansion; edge, chamfer, round
  * @param {Integer} [options.segments=16] - number of segments when creating round corners
  * @param {geom2} geometry - geometry from which to create the offset
  * @returns {geom2} offset geometry, plus rounded corners
@@ -14,10 +14,14 @@ const offsetFromPoints = require('./offsetFromPoints')
 const offsetGeom2 = (options, geometry) => {
   const defaults = {
     delta: 1,
-    corners: 'round',
+    corners: 'edge',
     segments: 0
   }
   let { delta, corners, segments } = Object.assign({ }, defaults, options)
+
+  if (!(corners === 'edge' || corners === 'chamfer' || corners === 'round')) {
+    throw new Error('corners must be "edge", "chamfer", or "round"')
+  }
 
   // convert the geometry to outlines, and generate offsets from each
   let outlines = geom2.toOutlines(geometry)

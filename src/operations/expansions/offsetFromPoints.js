@@ -10,7 +10,7 @@ const { poly2 } = require('../../geometry')
  * Create a set of offset points from the given points using the given options (if any).
  * @param {Object} options - options for offset
  * @param {Float} [options.delta=1] - delta of offset (+ to exterior, - from interior)
- * @param {String} [options.corners='round'] - type corner to create during of expansion; edge, chamfer, round
+ * @param {String} [options.corners='edge'] - type corner to create during of expansion; edge, chamfer, round
  * @param {Integer} [options.segments=16] - number of segments when creating round corners
  * @param {Array} points - array of 2D points
  * @returns {Array} new set of offset points, plus points for each rounded corner
@@ -18,7 +18,7 @@ const { poly2 } = require('../../geometry')
 const offsetFromPoints = (options, points) => {
   const defaults = {
     delta: 1,
-    corners: 'round',
+    corners: 'edge',
     closed: false,
     segments: 16
   }

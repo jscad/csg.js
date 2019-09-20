@@ -6,7 +6,7 @@ const offsetFromPoints = require('./offsetFromPoints')
  * Expand the given geometry (geom2) using the given options (if any).
  * @param {Object} options - options for expand
  * @param {Number} [options.delta=1] - delta (+/-) of expansion
- * @param {String} [options.corners='round'] - type corner to create during of expansion; edge, chamfer, round
+ * @param {String} [options.corners='edge'] - type corner to create during of expansion; edge, chamfer, round
  * @param {Integer} [options.segments=16] - number of segments when creating round corners
  * @param {geom2} geometry - the geometry to expand
  * @returns {geom2} expanded geometry
@@ -14,7 +14,7 @@ const offsetFromPoints = require('./offsetFromPoints')
 const expandGeom2 = (options, geometry) => {
   const defaults = {
     delta: 1,
-    corners: 'round',
+    corners: 'edge',
     segments: 16
   }
   let { delta, corners, segments } = Object.assign({ }, defaults, options)
