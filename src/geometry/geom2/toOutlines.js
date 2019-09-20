@@ -43,7 +43,6 @@ const toOutlines = (geometry) => {
     }
     let sideslist = vertexMap.get(edge[0])
     sideslist.push(edge)
-    sideslist = vertexMap.get(edge[0])
   })
 
   let outlines = []
