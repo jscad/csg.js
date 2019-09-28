@@ -79,13 +79,19 @@ const extrudeRotate = (options, geometry) => {
   if (arePointsWithNegAndPosX && overflow === 'cap') {
     if (pointsWithNegativeX.length > pointsWithPositiveX.length) {
       shapeSides = shapeSides.map((side) => {
-        let newpoint = [Math.min(side[0][0], 0), side[0][1]]
-        return [[newpoint, side[0][1]], side[1]]
+        let point0 = side[0]
+        let point1 = side[1]
+        point0 = [Math.min(point0[0], 0), point0[1]]
+        point1 = [Math.min(point1[0], 0), point1[1]]
+        return [point0, point1]
       })
     } else if (pointsWithPositiveX.length >= pointsWithNegativeX.length) {
       shapeSides = shapeSides.map((side) => {
-        let newpoint = [Math.max(side[0][0], 0), side[0][1]]
-        return [[newpoint, side[0][1]], side[1]]
+        let point0 = side[0]
+        let point1 = side[1]
+        point0 = [Math.max(point0[0], 0), point0[1]]
+        point1 = [Math.max(point1[0], 0), point1[1]]
+        return [point0, point1]
       })
     }
     // recreate the geometry from the capped points
