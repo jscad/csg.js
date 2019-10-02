@@ -4,7 +4,6 @@ const { geom3, poly3 } = require('../../../geometry')
 
 const intersectGeom3Sub = require('../../booleans/intersectGeom3Sub')
 
-const toEdges = require('./toEdges')
 const calculatePlane = require('./calculatePlane')
 
 const toPolygon3D = (vector, edge) => {
@@ -29,7 +28,7 @@ const toPolygons = (slice) => {
   const splane = calculatePlane(slice)
 
   // find the midpoint of the slice, which will lie on the plane by definition
-  const edges = toEdges(slice)
+  const edges = slice.edges
   const midpoint = edges.reduce((point, edge) => vec3.add(point, edge[0]), vec3.create())
   vec3.scale(midpoint, 1 / edges.length, midpoint)
 

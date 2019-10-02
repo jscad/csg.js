@@ -7,7 +7,7 @@ const create = (edges) => {
   if (!edges) {
     edges = []
   }
-  return { edges: edges }
+  return { edges }
 }
 
 module.exports = create

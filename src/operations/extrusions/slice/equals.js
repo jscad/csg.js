@@ -1,7 +1,5 @@
 const vec3 = require('../../../math/vec3')
 
-const toEdges = require('./toEdges')
-
 /**
   * Determine if the given slices are equal.
   * @param {slice} a - the first slice to compare
@@ -9,8 +7,8 @@ const toEdges = require('./toEdges')
   * @returns {boolean}
   */
 const equals = (a, b) => {
-  let aedges = toEdges(a)
-  let bedges = toEdges(b)
+  let aedges = a.edges
+  let bedges = b.edges
 
   if (aedges.length !== bedges.length) {
     return false

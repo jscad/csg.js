@@ -1,7 +1,5 @@
 const { plane, vec3 } = require('../../../math')
 
-const toEdges = require('./toEdges')
-
 /**
  * Calculate the plane of the given slice.
  * NOTE: The points are assumed to be planar from the beginning.
@@ -11,7 +9,7 @@ const toEdges = require('./toEdges')
  * let myplane = toPlane(slice)
  */
 const calculatePlane = (slice) => {
-  const edges = toEdges(slice)
+  const edges = slice.edges
   if (edges.length < 3) throw new Error('slices must have 3 or more edges to calculate a plane')
 
   // find the midpoint of the slice, which will lie on the plane by definition

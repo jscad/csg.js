@@ -1,5 +1,3 @@
-const toEdges = require('./toEdges')
-
 /**
  * Produces an array of points from the given slice.
  * NOTE: The points returned do NOT define an order.
@@ -8,9 +6,6 @@ const toEdges = require('./toEdges')
  * @example
  * let sharedpoints = toPoints(slice)
  */
-const toPoints = (slice) => {
-  const edges = toEdges(slice)
-  return edges.map((edge) => edge[0])
-}
+const toPoints = (slice) => slice.edges.map((edge) => edge[0])
 
 module.exports = toPoints
