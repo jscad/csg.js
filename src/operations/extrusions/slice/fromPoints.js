@@ -5,7 +5,7 @@ const create = require('./create')
 /**
  * Create a slice from the given points.
  *
- * @param {[vec2|vec3]} points - list of points
+ * @param {vec2[]|vec3[]} points - list of points
  *
  * @example
  * const points = [

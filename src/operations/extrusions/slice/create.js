@@ -1,5 +1,5 @@
 /**
- * Creates a new empty slice
+ * Creates a new empty slice.
  *
  * @returns {slice} a new slice
  */

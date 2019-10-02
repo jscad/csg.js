@@ -3,7 +3,7 @@ const create = require('./create')
 const vec3 = require('../../../math/vec3')
 
 /**
- * Create a deep clone of the given slice
+ * Create a deep clone of the given slice.
  *
  * @param {vec3} [out] - receiving slice
  * @param {vec3} slice - slice to clone

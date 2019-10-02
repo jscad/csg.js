@@ -5,7 +5,7 @@ const create = require('./create')
 /**
  * Create a slice from the given sides (see geom2).
  *
- * @param {[sides]} sides - list of 2D sides
+ * @param {sides[]} sides - list of 2D sides
  *
  * @example
  * const myshape = circle({radius: 10})

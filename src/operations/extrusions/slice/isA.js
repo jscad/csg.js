@@ -1,7 +1,7 @@
 /**
- * Determin if the given object is a poly3.
- * @params {poly3} object - the object to interogate
- * @returns {true} if the object matches a poly3 based object
+ * Determin if the given object is a slice.
+ * @params {slice} object - the object to interogate
+ * @returns {true} if the object matches a slice based object
  */
 const isA = (object) => {
   if (object && typeof object === 'object') {

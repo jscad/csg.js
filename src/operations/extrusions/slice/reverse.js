@@ -1,7 +1,7 @@
 const create = require('./create')
 
 /**
- * Reverse the rotation of the given slice
+ * Reverse the edges of the given slice.
  *
  * @param {slice} [out] - receiving slice
  * @param {slice} slice - slice to reverse
