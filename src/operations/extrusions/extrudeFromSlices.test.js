@@ -42,10 +42,10 @@ test('extrudeFromSlices (defaults)', t => {
 })
 
 test('extrudeFromSlices (torus)', t => {
-  var sqrt3 = Math.sqrt(3) / 2
-  var radius = 10
+  let sqrt3 = Math.sqrt(3) / 2
+  let radius = 10
 
-  var hex = poly3.fromPoints([
+  let hex = poly3.fromPoints([
     [radius, 0, 0],
     [radius / 2, radius * sqrt3, 0],
     [-radius / 2, radius * sqrt3, 0],
@@ -56,7 +56,7 @@ test('extrudeFromSlices (torus)', t => {
   hex = poly3.transform(mat4.fromTranslation([0, 20, 0]), hex)
   hex = slice.fromPoints(poly3.toPoints(hex))
 
-  var angle = 45
+  let angle = 45
   let geometry3 = extrudeFromSlices(
     {
       numberOfSlices: 360 / angle,

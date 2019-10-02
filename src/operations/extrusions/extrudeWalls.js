@@ -13,9 +13,7 @@ const gcd = (a, b) => {
   return gcd(b, a % b)
 }
 
-const lcm = (a, b) => {
-  return (a * b) / gcd(a, b)
-}
+const lcm = (a, b) => (a * b) / gcd(a, b)
 
 // Return a set of edges that encloses the same area by splitting
 // the given edges to have newlength total edges.
@@ -34,7 +32,7 @@ const repartitionEdges = (newlength, edges) => {
 
     // repartition the edge
     let prev = edge[0]
-    for (var i = 1; i <= multiple; ++i) {
+    for (let i = 1; i <= multiple; ++i) {
       let next = vec3.add(prev, increment)
       newEdges.push([prev, next])
       prev = next
