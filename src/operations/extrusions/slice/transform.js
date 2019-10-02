@@ -1,4 +1,4 @@
-const { mat4, vec3 } = require('../../../math')
+const { vec3 } = require('../../../math')
 
 const create = require('./create')
 
@@ -8,10 +8,6 @@ const create = require('./create')
 const transform = (matrix, slice) => {
   const oldedges = slice.edges
   const edges = oldedges.map((edge) => [vec3.transform(matrix, edge[0]), vec3.transform(matrix, edge[1])])
-  if (mat4.isMirroring(matrix)) {
-    // reverse the order to preserve the orientation
-    // TODO vertices.reverse()
-  }
   return create(edges)
 }
 
