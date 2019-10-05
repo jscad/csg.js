@@ -8,7 +8,6 @@ module.exports = {
   isA: require('./isA'),
   reverse: require('./reverse'),
   toEdges: require('./toEdges'),
-  toPoints: require('./toPoints'),
   toPolygons: require('./toPolygons'),
   toString: require('./toString'),
   transform: require('./transform')
