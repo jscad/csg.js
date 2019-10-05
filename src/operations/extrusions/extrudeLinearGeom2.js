@@ -6,7 +6,7 @@ const slice = require('./slice')
 
 const extrudeFromSlices = require('./extrudeFromSlices')
 
-/**
+/*
  * Extrude the given geometry using the given options.
  *
  * @param {Object} [options] - options for extrude
@@ -39,13 +39,12 @@ const extrudeGeom2 = (options, geometry) => {
   const baseSlice = slice.fromSides(baseSides)
   if (offsetv[2] < 0) slice.reverse(baseSlice, baseSlice)
 
-  // NOTE: function definition is required in order to access 'this'
-  function createTwist (t, index) {
+  const createTwist = (percent, index, base) => {
     let Zrotation = index / twistSteps * twistAngle
     let Zoffset = vec3.scale(index / twistSteps, offsetv)
     let matrix = mat4.multiply(mat4.fromZRotation(Zrotation), mat4.fromTranslation(Zoffset))
 
-    return slice.transform(matrix, this)
+    return slice.transform(matrix, base)
   }
 
   options = {

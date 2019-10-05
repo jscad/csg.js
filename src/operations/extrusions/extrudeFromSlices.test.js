@@ -61,8 +61,8 @@ test('extrudeFromSlices (torus)', t => {
     {
       numberOfSlices: 360 / angle,
       isCapped: false,
-      callback: function (t, index) {
-        return slice.transform(mat4.fromXRotation(degToRad(angle * index)), this)
+      callback: function (percent, index, base) {
+        return slice.transform(mat4.fromXRotation(degToRad(angle * index)), base)
       }
     }, hex
   )
@@ -75,8 +75,8 @@ test('extrudeFromSlices (same shape, changing dimensions)', t => {
   let geometry3 = extrudeFromSlices(
     {
       numberOfSlices: 4,
-      callback: function (t, count) {
-        let newslice = slice.transform(mat4.fromTranslation([0, 0, count * 2]), this)
+      callback: function (percent, count, base) {
+        let newslice = slice.transform(mat4.fromTranslation([0, 0, count * 2]), base)
         newslice = slice.transform(mat4.fromScaling([1 + count, 1 + (count / 2), 1]), newslice)
         return newslice
       }
@@ -91,7 +91,7 @@ test('extrudeFromSlices (changing shape, changing dimensions)', t => {
   let geometry3 = extrudeFromSlices(
     {
       numberOfSlices: 5,
-      callback: (t, count) => {
+      callback: (percent, count, base) => {
         let newshape = circle({ radius: 5 + count, segments: 4 + count })
         let newslice = slice.fromSides(geom2.toSides(newshape))
         newslice = slice.transform(mat4.fromTranslation([0, 0, count * 10]), newslice)

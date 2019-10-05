@@ -6,13 +6,12 @@ const slice = require('./slice')
 
 const extrudeWalls = require('./extrudeWalls')
 
-// NOTE: function definition is required in order to access 'this'
-function defaultCallback (t, index) {
+const defaultCallback = (percent, index, base) => {
   let baseSlice = null
-  if (geom2.isA(this)) baseSlice = slice.fromSides(geom2.toSides(this))
-  if (poly3.isA(this)) baseSlice = slice.fromPoints(poly3.toPoints(this))
+  if (geom2.isA(base)) baseSlice = slice.fromSides(geom2.toSides(base))
+  if (poly3.isA(base)) baseSlice = slice.fromPoints(poly3.toPoints(base))
 
-  return t === 0 || t === 1 ? slice.transform(mat4.fromTranslation([0, 0, t]), baseSlice) : null
+  return percent === 0 || percent === 1 ? slice.transform(mat4.fromTranslation([0, 0, percent]), baseSlice) : null
 }
 
 /**
@@ -26,10 +25,16 @@ function defaultCallback (t, index) {
  * @return {geom3} the extruded shape
  *
  * @example
- * let newslice = callback(t, index)
- *     this : the given base object
- *     arguments: t = [0..1], index = [0..numberOfSlices - 1]
- *     return: slice or null (to skip)
+ * // Parameters:
+ * //   pecentage : the percentage complete [0..1]
+ * //   index : the index of the current slice [0..numberOfSlices - 1]
+ * //   base : the base object as given
+ * // Return Value:
+ * //   slice or null (to skip)
+ * const callback = (percentage, index, base) => {
+ *   ...
+ *   return slice
+ * }
  */
 const extrudeFromSlices = (options, base) => {
   const defaults = {
@@ -49,9 +54,8 @@ const extrudeFromSlices = (options, base) => {
   let polygons = []
   for (let s = 0; s < numberOfSlices; s++) {
     // invoke the callback function to get the next slice
-    // NOTE: the base object becomes 'this' inside the callback
     // NOTE: callback can return null to skip the slice
-    let currentSlice = callback.call(base, s / sMax, s)
+    let currentSlice = callback(s / sMax, s, base)
 
     if (currentSlice) {
       if (!slice.isA(currentSlice)) throw new Error('the callback function must return slice objects')
