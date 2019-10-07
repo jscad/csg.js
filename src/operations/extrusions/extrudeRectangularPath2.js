@@ -4,26 +4,24 @@ const { expand } = require('../expansions')
 
 const extrudeLinearGeom2 = require('./extrudeLinearGeom2')
 
-/**
+/*
  * Expand and extrude the given geometry (path2).
+ * @See expand for addition options
  * @param {Object} options - options for extrusion, if any
- * @param {Number} [options.radius=1] - radius of the rectangle
- * @param {Integer} [options.segments=0] - number of segments for rounded ends, or zero for chamfer
- * @param {Array} [options.offset=[0,0,1]] - direction of the extrusion as a 3D vector
- * @param {Number} [options.twistAngle=0] - final rotation (RADIANS) about the origin of the shape (if any)
- * @param {Integer} [options.twistSteps=1] - number of twist segments about the axis (if any)
+ * @param {Number} [options.size=1] - size of the rectangle
+ * @param {Number} [options.height=1] - height of the extrusion
  * @param {path2} geometry - the geometry to extrude
  * @return {geom3} the extruded geometry
  */
 const extrudeRectangularPath2 = (options, geometry) => {
   const defaults = {
-    radius: 1,
-    segments: 0
+    size: 1,
+    height: 1
   }
-  let { radius, segments } = Object.assign({ }, defaults, options)
+  let { size, height } = Object.assign({ }, defaults, options)
 
-  options.delta = radius
-  options.segments = segments
+  options.delta = size
+  options.offset = [0, 0, height]
 
   const points = path2.toPoints(geometry)
   if (points.length === 0) throw new Error('the given geometry cannot be empty')

@@ -7,12 +7,10 @@ const extrudeRectangularGeom2 = require('./extrudeRectangularGeom2')
 
 /**
  * Extrude the given object(s) by following the outline(s) with a rectangle.
+ * @See expand for addition options
  * @param {Object} options - options for extrusion, if any
- * @param {Number} [options.radius=1] - radius of the rectangle
- * @param {Integer} [options.segments=0] - number of segments for rounded ends, or zero for chamfer
- * @param {Array} [options.offset=[0,0,1]] - direction of the extrusion as a 3D vector
- * @param {Number} [options.twistAngle=0] - final rotation (RADIANS) about the origin of the shape (if any)
- * @param {Integer} [options.twistSteps=1] - number of twist segments about the axis (if any)
+ * @param {Number} [options.size=1] - size of the rectangle
+ * @param {Number} [options.height=1] - height of the extrusion
  * @param {Object|Array} objects - the objects(s) to extrude
  * @return {Object|Array} the extruded object(s)
  *
@@ -21,16 +19,16 @@ const extrudeRectangularGeom2 = require('./extrudeRectangularGeom2')
  */
 const extrudeRectangular = (options, ...objects) => {
   const defaults = {
-    radius: 1,
-    segments: 0
+    size: 1,
+    height: 1
   }
-  let { radius, segments } = Object.assign({}, defaults, options)
+  let { size, height } = Object.assign({}, defaults, options)
 
   objects = flatten(objects)
   if (objects.length === 0) throw new Error('wrong number of arguments')
 
-  if (radius <= 0) throw new Error('radius must be positive')
-  if (segments < 0) throw new Error('segments must be zero or more')
+  if (size <= 0) throw new Error('size must be positive')
+  if (height <= 0) throw new Error('height must be positive')
 
   const results = objects.map((object) => {
     if (path2.isA(object)) return extrudeRectangularPath2(options, object)

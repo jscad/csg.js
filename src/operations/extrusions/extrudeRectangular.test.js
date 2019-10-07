@@ -8,7 +8,7 @@ const { arc, rectangle } = require('../../primitives')
 
 const extrudeRectangular = require('./extrudeRectangular')
 
-test('extrudeRectangular (defaults, edge)', t => {
+test('extrudeRectangular (defaults)', t => {
   let geometry1 = arc({ radius: 5, endAngle: degToRad(90) })
   let geometry2 = rectangle({ size: [5, 5] })
 
@@ -59,7 +59,7 @@ test('extrudeRectangular (holes)', t => {
     [[-5.00000, -5.00000], [-5.00000, 5.00000]]
   ])
 
-  let obs = extrudeRectangular({ radius: 2, offset: [0, 0, 15], segments: 16, corners: 'round' }, geometry2)
+  let obs = extrudeRectangular({ size: 2, height: 15, segments: 16, corners: 'round' }, geometry2)
   let pts = geom3.toPoints(obs)
   t.is(pts.length, 122)
 })
