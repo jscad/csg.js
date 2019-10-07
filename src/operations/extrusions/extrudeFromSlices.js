@@ -6,12 +6,12 @@ const slice = require('./slice')
 
 const extrudeWalls = require('./extrudeWalls')
 
-const defaultCallback = (percent, index, base) => {
+const defaultCallback = (progress, index, base) => {
   let baseSlice = null
   if (geom2.isA(base)) baseSlice = slice.fromSides(geom2.toSides(base))
   if (poly3.isA(base)) baseSlice = slice.fromPoints(poly3.toPoints(base))
 
-  return percent === 0 || percent === 1 ? slice.transform(mat4.fromTranslation([0, 0, percent]), baseSlice) : null
+  return progress === 0 || progress === 1 ? slice.transform(mat4.fromTranslation([0, 0, progress]), baseSlice) : null
 }
 
 /**
@@ -26,12 +26,12 @@ const defaultCallback = (percent, index, base) => {
  *
  * @example
  * // Parameters:
- * //   pecentage : the percentage complete [0..1]
+ * //   progress : the percent complete [0..1]
  * //   index : the index of the current slice [0..numberOfSlices - 1]
  * //   base : the base object as given
  * // Return Value:
  * //   slice or null (to skip)
- * const callback = (percentage, index, base) => {
+ * const callback = (progress, index, base) => {
  *   ...
  *   return slice
  * }

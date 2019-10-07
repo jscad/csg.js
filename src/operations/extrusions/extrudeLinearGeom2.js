@@ -39,7 +39,7 @@ const extrudeGeom2 = (options, geometry) => {
   const baseSlice = slice.fromSides(baseSides)
   if (offsetv[2] < 0) slice.reverse(baseSlice, baseSlice)
 
-  const createTwist = (percent, index, base) => {
+  const createTwist = (progress, index, base) => {
     let Zrotation = index / twistSteps * twistAngle
     let Zoffset = vec3.scale(index / twistSteps, offsetv)
     let matrix = mat4.multiply(mat4.fromZRotation(Zrotation), mat4.fromTranslation(Zoffset))
