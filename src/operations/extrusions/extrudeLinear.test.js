@@ -32,35 +32,35 @@ test('extrudeLinear (defaults)', t => {
 test('extrudeLinear (no twist)', t => {
   let geometry2 = geom2.fromPoints([[5, 5], [-5, 5], [-5, -5], [5, -5]])
 
-  let geometry3 = extrudeLinear({ offset: [5, 5, 15] }, geometry2)
+  let geometry3 = extrudeLinear({ height: 15 }, geometry2)
   let pts = geom3.toPoints(geometry3)
   let exp = [
-    [ [ 5, -5, 0 ], [ 5, 5, 0 ], [ 10, 10, 15 ] ],
-    [ [ 5, -5, 0 ], [ 10, 10, 15 ], [ 10, 0, 15 ] ],
-    [ [ 5, 5, 0 ], [ -5, 5, 0 ], [ 0, 10, 15 ] ],
-    [ [ 5, 5, 0 ], [ 0, 10, 15 ], [ 10, 10, 15 ] ],
-    [ [ -5, 5, 0 ], [ -5, -5, 0 ], [ 0, 0, 15 ] ],
-    [ [ -5, 5, 0 ], [ 0, 0, 15 ], [ 0, 10, 15 ] ],
-    [ [ -5, -5, 0 ], [ 5, -5, 0 ], [ 10, 0, 15 ] ],
-    [ [ -5, -5, 0 ], [ 10, 0, 15 ], [ 0, 0, 15 ] ],
-    [ [ 10, 10, 15 ], [ 0, 10, 15 ], [ 0, 0, 15 ], [ 10, 0, 15 ] ],
+    [ [ 5, -5, 0 ], [ 5, 5, 0 ], [ 5, 5, 15 ] ],
+    [ [ 5, -5, 0 ], [ 5, 5, 15 ], [ 5, -5, 15 ] ],
+    [ [ 5, 5, 0 ], [ -5, 5, 0 ], [ -5, 5, 15 ] ],
+    [ [ 5, 5, 0 ], [ -5, 5, 15 ], [ 5, 5, 15 ] ],
+    [ [ -5, 5, 0 ], [ -5, -5, 0 ], [ -5, -5, 15 ] ],
+    [ [ -5, 5, 0 ], [ -5, -5, 15 ], [ -5, 5, 15 ] ],
+    [ [ -5, -5, 0 ], [ 5, -5, 0 ], [ 5, -5, 15 ] ],
+    [ [ -5, -5, 0 ], [ 5, -5, 15 ], [ -5, -5, 15 ] ],
+    [ [ 5, 5, 15 ], [ -5, 5, 15 ], [ -5, -5, 15 ], [ 5, -5, 15 ] ],
     [ [ 5, -5, 0 ], [ -5, -5, 0 ], [ -5, 5, 0 ], [ 5, 5, 0 ] ]
   ]
   t.is(pts.length, 10)
   t.true(comparePolygonsAsPoints(pts, exp))
 
-  geometry3 = extrudeLinear({ offset: [-5, -5, -15] }, geometry2)
+  geometry3 = extrudeLinear({ height: -15 }, geometry2)
   pts = geom3.toPoints(geometry3)
   exp = [
-    [ [ 5, 5, 0 ], [ 5, -5, 0 ], [ 0, -10, -15 ] ],
-    [ [ 5, 5, 0 ], [ 0, -10, -15 ], [ 0, 0, -15 ] ],
-    [ [ -5, 5, 0 ], [ 5, 5, 0 ], [ 0, 0, -15 ] ],
-    [ [ -5, 5, 0 ], [ 0, 0, -15 ], [ -10, 0, -15 ] ],
-    [ [ -5, -5, 0 ], [ -5, 5, 0 ], [ -10, 0, -15 ] ],
-    [ [ -5, -5, 0 ], [ -10, 0, -15 ], [ -10, -10, -15 ] ],
-    [ [ 5, -5, 0 ], [ -5, -5, 0 ], [ -10, -10, -15 ] ],
-    [ [ 5, -5, 0 ], [ -10, -10, -15 ], [ 0, -10, -15 ] ],
-    [ [ 0, -10, -15 ], [ -10, -10, -15 ], [ -10, 0, -15 ], [ 0, 0, -15 ] ],
+    [ [ 5, 5, 0 ], [ 5, -5, 0 ], [ 5, -5, -15 ] ],
+    [ [ 5, 5, 0 ], [ 5, -5, -15 ], [ 5, 5, -15 ] ],
+    [ [ -5, 5, 0 ], [ 5, 5, 0 ], [ 5, 5, -15 ] ],
+    [ [ -5, 5, 0 ], [ 5, 5, -15 ], [ -5, 5, -15 ] ],
+    [ [ -5, -5, 0 ], [ -5, 5, 0 ], [ -5, 5, -15 ] ],
+    [ [ -5, -5, 0 ], [ -5, 5, -15 ], [ -5, -5, -15 ] ],
+    [ [ 5, -5, 0 ], [ -5, -5, 0 ], [ -5, -5, -15 ] ],
+    [ [ 5, -5, 0 ], [ -5, -5, -15 ], [ 5, -5, -15 ] ],
+    [ [ 5, -5, -15 ], [ -5, -5, -15 ], [ -5, 5, -15 ], [ 5, 5, -15 ] ],
     [ [ 5, 5, 0 ], [ -5, 5, 0 ], [ -5, -5, 0 ], [ 5, -5, 0 ] ]
   ]
   t.is(pts.length, 10)
@@ -70,7 +70,7 @@ test('extrudeLinear (no twist)', t => {
 test('extrudeLinear (twist)', t => {
   let geometry2 = geom2.fromPoints([[5, 5], [-5, 5], [-5, -5], [5, -5]])
 
-  let geometry3 = extrudeLinear({ offset: [0, 0, 15], twistAngle: degToRad(-45) }, geometry2)
+  let geometry3 = extrudeLinear({ height: 15, twistAngle: degToRad(-45) }, geometry2)
   let pts = geom3.toPoints(geometry3)
   let exp = [
     [ [ 5, -5, 0 ], [ 5, 5, 0 ], [ 7.071067810058594, 0, 15 ] ],
@@ -89,7 +89,7 @@ test('extrudeLinear (twist)', t => {
   t.is(pts.length, 10)
   t.true(comparePolygonsAsPoints(pts, exp))
 
-  geometry3 = extrudeLinear({ offset: [0, 0, 15], twistAngle: degToRad(90), twistSteps: 3 }, geometry2)
+  geometry3 = extrudeLinear({ height: 15, twistAngle: degToRad(90), twistSteps: 3 }, geometry2)
   pts = geom3.toPoints(geometry3)
   exp = [
     [ [ 5, -5, 0 ], [ 5, 5, 0 ], [ 1.8301270008087158, 6.830126762390137, 5 ] ],
@@ -122,7 +122,7 @@ test('extrudeLinear (twist)', t => {
   t.is(pts.length, 26)
   t.true(comparePolygonsAsPoints(pts, exp))
 
-  geometry3 = extrudeLinear({ offset: [5, 5, 15], twistAngle: degToRad(90), twistSteps: 30 }, geometry2)
+  geometry3 = extrudeLinear({ height: 15, twistAngle: degToRad(90), twistSteps: 30 }, geometry2)
   pts = geom3.toPoints(geometry3)
   t.is(pts.length, 242)
 })
@@ -138,7 +138,7 @@ test('extrudeLinear (holes)', t => {
     [[2.00000, 2.00000], [2.00000, -2.00000]],
     [[-2.00000, 2.00000], [2.00000, 2.00000]]
   ])
-  let geometry3 = extrudeLinear({ offset: [0, 0, 15] }, geometry2)
+  let geometry3 = extrudeLinear({ height: 15 }, geometry2)
   let pts = geom3.toPoints(geometry3)
   let exp = [
     [ [ -5, 5, 0 ], [ -5, -5, 0 ], [ -5, -5, 15 ] ],
