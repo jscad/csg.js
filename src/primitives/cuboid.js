@@ -4,7 +4,7 @@ const {geom3, poly3} = require('../geometry')
  * Construct an axis-aligned solid cuboid.
  * @param {Object} [options] - options for construction
  * @param {Array} [options.center=[0,0,0]] - center of cuboid
- * @param {Array} [options.size=[2,2,2]] - full dimensions of cuboid; width, depth, height
+ * @param {Array} [options.size=[2,2,2]] - dimensions of cuboid; width, depth, height
  * @returns {geom3} new 3D geometry
  *
  * @example
@@ -52,7 +52,7 @@ const cuboid = (options) => {
  * @see {@link cuboid} for more options, as this is an alias to cuboid
  * @param {Object} [options] - options for construction
  * @param {Array} [options.center=[0,0,0]] - center of cube
- * @param {Number} [options.size=2] - full dimension of cube
+ * @param {Number} [options.size=2] - dimension of cube
  * @returns {geom3} new 3D geometry
  *
  * @example

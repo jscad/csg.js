@@ -6,7 +6,7 @@ const geom2 = require('../geometry/geom2')
  * Construct an axis-aligned rectangle with four sides and four 90-degree angles.
  * @param {Object} [options] - options for construction
  * @param {Array} [options.center=[0,0]] - center of rectangle
- * @param {Array} [options.size=[2,2]] - full dimension of rectangle, width and length
+ * @param {Array} [options.size=[2,2]] - dimension of rectangle, width and length
  * @returns {geom2} new 2D geometry
  *
  * @example
@@ -42,7 +42,7 @@ const rectangle = (options) => {
  * @see {@link rectangle} for additional options, as this is an alias fo rectangle
  * @param {Object} [options] - options for construction
  * @param {Array} [options.center=[0,0]] - center of square
- * @param {Number} [options.size=2] - full dimension of square
+ * @param {Number} [options.size=2] - dimension of square
  * @returns {geom2} new 2D geometry
  *
  * @example

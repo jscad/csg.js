@@ -108,7 +108,7 @@ const stitchSides = (bottomCorners, topCorners) => {
  * Construct an axis-aligned solid rounded cuboid.
  * @param {Object} [options] - options for construction
  * @param {Vector3} [options.center=[0,0,0]] - center of rounded cube
- * @param {Vector3} [options.size=[2,2,2]] - full dimension of rounded cube; width, depth, height
+ * @param {Vector3} [options.size=[2,2,2]] - dimension of rounded cube; width, depth, height
  * @param {Number} [options.roundRadius=0.2] - radius of rounded edges
  * @param {Number} [options.segments=12] - number of segments to create per 360 rotation
  * @returns {geom3} new 3D geometry
